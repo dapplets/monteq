@@ -4,8 +4,5 @@
   "description": "MonteQ - pay as you like",
   "repository": "git@github.com:dapplets/monteq.git",
   "author": "Project Dapplets",
-  "license": "MIT",
-  "workspaces": [
-    "packages/*"
-  ]
+  "license": "MIT"
 }
