@@ -5,9 +5,13 @@ import WelcomeScreen from './screens/WelcomeScreen';
 import {Web3Modal, useWeb3Modal} from '@web3modal/react-native';
 import {WC_METADATA, WC_PROJECT_ID, WC_RELAY_URL} from './common/constants';
 import InfoScreen from './screens/InfoScreen';
+import CameraScreen from './screens/CameraScreen';
+import TxScreen from './screens/TxScreen';
 
 export type RootStackParamList = {
   InfoScreen: undefined;
+  CameraScreen: undefined;
+  TxScreen: {data: string};
   WelcomeScreen: undefined;
 };
 
@@ -28,6 +32,8 @@ function App(): JSX.Element {
         {isConnected ? (
           <>
             <Stack.Screen name="InfoScreen" component={InfoScreen} />
+            <Stack.Screen name="CameraScreen" component={CameraScreen} />
+            <Stack.Screen name="TxScreen" component={TxScreen} />
           </>
         ) : (
           <>
