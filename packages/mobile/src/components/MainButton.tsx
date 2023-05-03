@@ -9,15 +9,15 @@ import {
 import {FontSize, FontFamily, Color, Border, Padding} from '../GlobalStyles';
 
 type MainButtonType = {
-  frame470?: ImageSourcePropType;
-  startWithWalletConnect?: string;
+  image: ImageSourcePropType;
+  label?: string;
 
   /** Style props */
   mainButtonBackgroundColor?: string;
   mainButtonMarginTop?: number | string;
 
   /** Action props */
-  onMainButtonPress?: () => void;
+  onPress?: () => void;
 };
 
 const getStyleValue = (key: string, value: string | number | undefined) => {
@@ -26,11 +26,11 @@ const getStyleValue = (key: string, value: string | number | undefined) => {
 };
 const MainButton = memo(
   ({
-    onMainButtonPress,
+    onPress,
     mainButtonBackgroundColor,
     mainButtonMarginTop,
-    frame470,
-    startWithWalletConnect,
+    image,
+    label: startWithWalletConnect,
   }: MainButtonType) => {
     const mainButtonStyle = useMemo(() => {
       return {
@@ -43,12 +43,12 @@ const MainButton = memo(
       <TouchableHighlight
         style={[styles.mainbutton, mainButtonStyle]}
         underlayColor="#2261a5"
-        onPress={onMainButtonPress}>
+        onPress={onPress}>
         <>
           <Image
             style={styles.mainbuttonChild}
             resizeMode="cover"
-            source={frame470}
+            source={image}
           />
           <Text style={styles.startWithWalletconnect}>
             {startWithWalletConnect}

@@ -1,12 +1,12 @@
 import * as React from 'react';
 import {Image, StyleSheet, View} from 'react-native';
-// import {useNavigation} from '@react-navigation/native';
 import MainButton from '../components/MainButton';
 import HollowButton from '../components/HollowButton';
 import {Padding, Border, Color} from '../GlobalStyles';
+import {useWeb3Modal} from '@web3modal/react-native';
 
 const WelcomeScreen = () => {
-  //   const navigation = useNavigation();
+  const {open} = useWeb3Modal();
 
   return (
     <View style={styles.initiallogin}>
@@ -26,9 +26,9 @@ const WelcomeScreen = () => {
       </View>
       <View style={[styles.mainbuttonParent, styles.logoWrapperFlexBox]}>
         <MainButton
-          //   onMainButtonPress={() => navigation.navigate('UserStartScreen1')}
-          frame470={require('../assets/frame-470.png')}
-          startWithWalletConnect="Start with WalletConnect"
+          onPress={open}
+          image={require('../assets/walletconnect.png')}
+          label="Start with WalletConnect"
         />
         <HollowButton />
       </View>
