@@ -165,6 +165,9 @@ dependencies {
     } else {
         implementation jscFlavor
     }
+
+    // https://developers.google.com/ml-kit/vision/barcode-scanning/code-scanner?hl=ru#java
+    implementation 'com.google.android.gms:play-services-code-scanner:16.0.0'
 }
 
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
