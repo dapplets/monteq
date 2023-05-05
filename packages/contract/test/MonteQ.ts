@@ -188,11 +188,11 @@ describe('MonteQ', function () {
                 amountReceipt001,
                 currencyAmount001,
             } = await loadFixture(deployOneYearLockFixture)
-            const currentTimeInSeconds = Math.round(new Date().valueOf() / 1000)
             await monteQ.connect(otherAccount).addBusiness(businessId002, businessName002)
             await monteQ.payReceipt(businessId002, currencyAmount001, amountReceipt001, {
                 value: amountReceipt001,
             })
+            const timestamp = await time.latest()
 
             const responseHistoryByPayer = await monteQ.getHistoryByPayer(
                 owner.address,
@@ -211,10 +211,7 @@ describe('MonteQ', function () {
                 },
             ])
             const historyByPayerTimestamps = responseHistoryByPayer[0].map(getHistoryTimestamp)
-            expect(
-                historyByPayerTimestamps[0] > currentTimeInSeconds - 10 &&
-                    historyByPayerTimestamps[0] < currentTimeInSeconds + 10
-            ).to.equal(true)
+            expect(historyByPayerTimestamps[0]).to.be.equal(+timestamp.toString())
 
             const responseHistoryByBusiness = await monteQ.getHistoryByBusiness(
                 businessId002,
