@@ -10,3 +10,19 @@ export const WC_METADATA: Metadata = {
   url: 'https://github.com/dapplets/monteq',
   icons: [], // ToDo: add icon
 };
+
+export const WC_SESSION_PARAMS = {
+  namespaces: {
+    eip155: {
+      chains: ['eip155:100'], // ToDo: specify network id (100 - gnosis chain)
+      methods: [
+        'eth_sendTransaction',
+        'eth_signTransaction',
+        'eth_sign',
+        'get_balance',
+        'personal_sign',
+      ],
+      events: ['accountsChanged', 'chainChanged'],
+    },
+  },
+};
