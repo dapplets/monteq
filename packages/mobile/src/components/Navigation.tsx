@@ -1,35 +1,66 @@
-import {NavigationProp, useNavigation} from '@react-navigation/native';
+// import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {useWeb3Modal} from '@web3modal/react-native';
 import * as React from 'react';
 import {View, Alert, StyleSheet, TouchableHighlight, Image} from 'react-native';
-import {type RootStackParamList} from '../App';
+// import {type RootStackParamList} from '../App';
 import BarcodeScannerModule from '../modules/BarcodeScannerModule';
 import ButtonNavigationDefault from './ButtonNavigationDefault';
+import {useMonteqContract} from '../contexts/MonteqContractContext';
+import {parseReceipt} from '../common/parseReceipt';
 export type NavigationType = {
   path: string;
 };
 const Navigation = ({path}: NavigationType) => {
   const {provider} = useWeb3Modal();
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const {payReceipt} = useMonteqContract();
+  // const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   function handleDisconnectPress() {
     provider?.disconnect();
   }
 
-  async function handleScanPress() {
-    navigation.navigate('CameraScreen');
-  }
-  console.log(navigation);
+  // async function handleScanPress() {
+  //   navigation.navigate('CameraScreen');
+  // }
+
   async function handleGmsScanPress() {
+    if (!provider) {
+      return;
+    }
+
     try {
-      const data = await BarcodeScannerModule.scan();
-      Alert.alert('Success', data);
+      const url = await BarcodeScannerModule.scan();
+
+      await new Promise(r => setTimeout(r, 500)); // Wait while QR-code scanner is closing
+      const receipt = parseReceipt(url);
+      const tokenAmount = '0.01';
+      const tipsAmount = '0.005';
+      Alert.alert(
+        'Pay the bill',
+        `BU: ${receipt.businessId}\nPrice: ${receipt.currencyReceipt} EUR\n${tokenAmount} + ${tipsAmount} xDAI`,
+        [
+          {
+            text: 'Pay',
+            onPress: () =>
+              payReceipt(
+                receipt.businessId,
+                receipt.currencyReceipt,
+                tokenAmount,
+                tipsAmount,
+              ),
+          },
+          {
+            text: 'Cancel',
+          },
+        ],
+      );
     } catch (e) {
       // ToDo: catch CANCELED and FAILURE cases
       console.error(e);
       Alert.alert('Failure or canceled');
     }
   }
+
   return (
     <View style={styles.NavigationWrapper}>
       <ButtonNavigationDefault

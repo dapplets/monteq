@@ -15,6 +15,7 @@ import TxScreen from './screens/TxScreen';
 import {View} from 'react-native';
 import {usePatchedWeb3Modal} from './hooks/usePatchedWeb3Modal';
 import InitialSplash from './screens/InitialSplash';
+import {MonteqContractProvider} from './contexts/MonteqContractContext';
 
 export type RootStackParamList = {
   InfoScreen: undefined;
@@ -40,21 +41,26 @@ function App(): JSX.Element {
       </View>
 
       {!isLoading ? (
-        <NavigationContainer>
-          <Stack.Navigator screenOptions={{headerShown: false}}>
-            {isConnected ? (
-              <>
-                <Stack.Screen name="InfoScreen" component={InfoScreen} />
-                <Stack.Screen name="CameraScreen" component={CameraScreen} />
-                <Stack.Screen name="TxScreen" component={TxScreen} />
-              </>
-            ) : (
-              <>
-                <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} />
-              </>
-            )}
-          </Stack.Navigator>
-        </NavigationContainer>
+        <MonteqContractProvider>
+          <NavigationContainer>
+            <Stack.Navigator screenOptions={{headerShown: false}}>
+              {isConnected ? (
+                <>
+                  <Stack.Screen name="InfoScreen" component={InfoScreen} />
+                  <Stack.Screen name="CameraScreen" component={CameraScreen} />
+                  <Stack.Screen name="TxScreen" component={TxScreen} />
+                </>
+              ) : (
+                <>
+                  <Stack.Screen
+                    name="WelcomeScreen"
+                    component={WelcomeScreen}
+                  />
+                </>
+              )}
+            </Stack.Navigator>
+          </NavigationContainer>
+        </MonteqContractProvider>
       ) : null}
 
       {/* ToDo: Add splashscreen ^ */}

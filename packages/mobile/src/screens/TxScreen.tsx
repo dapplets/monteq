@@ -7,7 +7,7 @@ import {useWeb3Modal} from '@web3modal/react-native';
 import * as React from 'react';
 import {Button, Text, View} from 'react-native';
 import {ethers} from 'ethers';
-import ERC20ABI from '../Erc20Abi.json';
+import ERC20ABI from '../abis/ERC20.json';
 
 type Props = {
   route: RouteProp<{params: {data: string}}, 'params'>;

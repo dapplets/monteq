@@ -23,6 +23,10 @@ const config: HardhatUserConfig = {
             url: `https://sepolia.infura.io/v3/${INFURA_API_KEY}`,
             accounts: [SEPOLIA_PRIVATE_KEY],
         },
+        xdai: {
+            url: process.env.XDAI_RPC_URL,
+            accounts: [process.env.XDAI_PRIVATE_KEY || ''],
+        }
     },
 }
 

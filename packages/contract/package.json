@@ -8,7 +8,8 @@
   "license": "MIT",
   "scripts": {
     "build": "hardhat compile",
-    "test": "REPORT_GAS=true npx hardhat test"
+    "test": "REPORT_GAS=true npx hardhat test",
+    "deploy": "hardhat run scripts/deploy.ts"
   },
   "devDependencies": {
     "@ethersproject/abi": "^5.4.7",
