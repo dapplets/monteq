@@ -1,6 +1,6 @@
 /* fonts */
 export const FontFamily = {
-  robotoBold: 'Roboto_bold',
+  robotoBold: 'Roboto-Bold',
   robotoSemibold: 'Roboto_semibold',
   robotoRegular: 'Roboto_regular',
   regular: 'Roboto',
