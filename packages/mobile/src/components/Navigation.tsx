@@ -5,8 +5,10 @@ import {View, Alert, StyleSheet, TouchableHighlight, Image} from 'react-native';
 import {type RootStackParamList} from '../App';
 import BarcodeScannerModule from '../modules/BarcodeScannerModule';
 import ButtonNavigationDefault from './ButtonNavigationDefault';
-
-const Navigation = () => {
+export type NavigationType = {
+  path: string;
+};
+const Navigation = ({path}: NavigationType) => {
   const {provider} = useWeb3Modal();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
@@ -17,7 +19,7 @@ const Navigation = () => {
   async function handleScanPress() {
     navigation.navigate('CameraScreen');
   }
-
+  console.log(navigation);
   async function handleGmsScanPress() {
     try {
       const data = await BarcodeScannerModule.scan();
@@ -30,8 +32,20 @@ const Navigation = () => {
   }
   return (
     <View style={styles.NavigationWrapper}>
-      <ButtonNavigationDefault image={require('../assets/busness.png')} />
-      <ButtonNavigationDefault image={require('../assets/helpcircle.png')} />
+      <ButtonNavigationDefault
+        image={
+          path === 'home'
+            ? require('../assets/homeGreen.png')
+            : require('../assets/busness.png')
+        }
+      />
+      <ButtonNavigationDefault
+        image={
+          path === 'help'
+            ? require('../assets/helpGreen.png')
+            : require('../assets/helpcircle.png')
+        }
+      />
       {/* <Button onPress={handleScanPress} title="Scan via third-party lib" />
       <Button onPress={handleGmsScanPress} title="Scan via gms (preferred)" /> */}
       <TouchableHighlight
@@ -40,11 +54,17 @@ const Navigation = () => {
         onPress={handleGmsScanPress}>
         <Image
           style={styles.scanButtonImg}
-          resizeMode="cover"
+          resizeMode="contain"
           source={require('../assets/scan.png')}
         />
       </TouchableHighlight>
-      <ButtonNavigationDefault image={require('../assets/user.png')} />
+      <ButtonNavigationDefault
+        image={
+          path === 'user'
+            ? require('../assets/userGreen.png')
+            : require('../assets/user.png')
+        }
+      />
       <ButtonNavigationDefault
         onPress={handleDisconnectPress}
         image={require('../assets/logout.png')}
@@ -73,13 +93,13 @@ const styles = StyleSheet.create({
     left: 0,
     shadowColor: '#000',
     shadowOffset: {
-      width: 0,
-      height: 2,
+      width: -20,
+      height: -20,
     },
-    shadowOpacity: 0.22,
-    shadowRadius: 1.22,
-
-    elevation: 3,
+    shadowOpacity: 1,
+    shadowRadius: 3.84,
+    elevation: 5,
+    zIndex: 2,
   },
   scanButton: {
     // position: 'absolute',
@@ -87,15 +107,17 @@ const styles = StyleSheet.create({
     height: 70,
     backgroundColor: '#F6F7F8',
     display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
+    // justifyContent: 'center',
+    // alignItems: 'center',
     marginBottom: 50,
     borderRadius: 45,
   },
   scanButtonImg: {
-    marginTop: 20,
-    width: 60,
-    height: 60,
+    // marginTop: 20,
+    // marginBottom: 'auto',
+    marginTop: '10%',
+    width: 70,
+    height: 70,
   },
   clockIcon: {},
   iconLayout: {},

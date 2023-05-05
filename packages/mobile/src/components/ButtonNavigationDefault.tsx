@@ -6,7 +6,6 @@ import {
   Pressable,
   ImageSourcePropType,
 } from 'react-native';
-import {Color, Border, Padding} from '../GlobalStyles';
 type ButtonNavigationDefaultType = {
   image: ImageSourcePropType;
 

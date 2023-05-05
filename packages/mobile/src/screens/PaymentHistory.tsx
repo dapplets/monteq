@@ -312,61 +312,7 @@ const UserPaymentHistory = () => {
           <Text style={styles.paymentHistory}>Payment history</Text>
         </View>
       </View>
-      <View style={styles.bottommenu}>
-        <Image
-          style={styles.headlineLayout}
-          resizeMode="cover"
-          source={require('../assets/subtract.png')}
-        />
-        {/* <LinearGradient
-          style={styles.circularbutton}
-          locations={[0, 0.44, 1]}
-          colors={['#0dd977', '#1da4ac', '#0dd977']}
-          useAngle={true}
-          angle={136.65}> */}
-        <Image
-          style={styles.icroundQrCodeScannerIcon1}
-          resizeMode="cover"
-          source={require('../assets/icroundqrcodescanner1.png')}
-        />
-        {/* </LinearGradient> */}
-        <View style={[styles.frameParent12, styles.frameParentPosition]}>
-          <View style={[styles.userWrapper, styles.wrapperBorder]}>
-            <Image
-              style={[styles.clockIcon, styles.iconLayout]}
-              resizeMode="cover"
-              source={require('../assets/user.png')}
-            />
-          </View>
-          {/* <Pressable
-            style={[styles.logOutWrapper, styles.wrapperBorder]}
-            onPress={() => navigation.navigate('InitialLogin')}>
-            <Image
-              style={[styles.clockIcon, styles.iconLayout]}
-              resizeMode="cover"
-              source={require('../assets/logout.png')}
-            />
-          </Pressable> */}
-        </View>
-        <View style={[styles.frameParent13, styles.frameParentPosition]}>
-          <View style={[styles.shoppingCartWrapper, styles.wrapperBorder]}>
-            <Image
-              style={[styles.clockIcon, styles.iconLayout]}
-              resizeMode="cover"
-              source={require('../assets/shoppingcart.png')}
-            />
-          </View>
-          {/* <Pressable
-            style={[styles.logOutWrapper, styles.wrapperBorder]}
-            onPress={() => navigation.navigate('MainFAQ')}>
-            <Image
-              style={[styles.clockIcon, styles.iconLayout]}
-              resizeMode="cover"
-              source={require('../assets/helpcircle.png')}
-            />
-          </Pressable> */}
-        </View>
-      </View>
+    
     </View>
   );
 };
