@@ -2,6 +2,7 @@ import { time, loadFixture } from '@nomicfoundation/hardhat-network-helpers'
 import { anyValue } from '@nomicfoundation/hardhat-chai-matchers/withArgs'
 import { expect } from 'chai'
 import { ethers } from 'hardhat'
+import { BigNumber } from 'ethers'
 
 describe('MonteQ', function () {
     // We define a fixture to reuse the same setup in every test.
@@ -16,9 +17,7 @@ describe('MonteQ', function () {
         const businessId002 = 'some-business-id-002'
         const businessName002 = 'Some Business 002'
 
-        const currencyType001 = 'EUR'
         const currencyAmount001 = '171'
-        const currencyTip001 = '17'
         const amountReceipt001 = '1000000000000000'
         const amountTip001 = '1000000000000'
         const amountSum001 = '1100000000000000'
@@ -41,9 +40,7 @@ describe('MonteQ', function () {
             businessName002,
             businessInfo001,
             businessInfo002,
-            currencyType001,
             currencyAmount001,
-            currencyTip001,
             emptyBusinessInfo,
             amountReceipt001,
             amountTip001,
@@ -61,17 +58,19 @@ describe('MonteQ', function () {
         })
 
         it('should attach the owner', async function () {
-            const { monteQ, owner, businessId001, businessName001, businessInfo001 } =
-                await loadFixture(deployOneYearLockFixture)
-            await monteQ.addBusiness(businessId001, owner.address, businessName001)
+            const { monteQ, businessId001, businessName001, businessInfo001 } = await loadFixture(
+                deployOneYearLockFixture
+            )
+            await monteQ.addBusiness(businessId001, businessName001)
             const [receivedOwner, name] = await monteQ.businessInfos(businessId001)
             expect([receivedOwner, name]).to.eql(businessInfo001)
         })
 
         it('should remove the owner', async function () {
-            const { monteQ, owner, businessId001, businessName001, emptyBusinessInfo } =
-                await loadFixture(deployOneYearLockFixture)
-            await monteQ.addBusiness(businessId001, owner.address, businessName001)
+            const { monteQ, businessId001, businessName001, emptyBusinessInfo } = await loadFixture(
+                deployOneYearLockFixture
+            )
+            await monteQ.addBusiness(businessId001, businessName001)
             await monteQ.removeBusiness(businessId001)
             const [receivedOwner, name] = await monteQ.businessInfos(businessId001)
             expect([receivedOwner, name]).to.eql(emptyBusinessInfo)
@@ -87,23 +86,20 @@ describe('MonteQ', function () {
                 businessName002,
                 amountReceipt001,
                 amountSum001,
-                currencyType001,
                 currencyAmount001,
-                currencyTip001,
             } = await loadFixture(deployOneYearLockFixture)
-            await monteQ.payReceipt(
-                businessId002,
-                currencyType001,
-                currencyAmount001,
-                currencyTip001,
-                amountReceipt001,
-                { value: amountSum001 }
-            )
+            await monteQ.payReceipt(businessId002, currencyAmount001, amountReceipt001, {
+                value: amountSum001,
+            })
             const balanceBefore = await otherAccount.getBalance()
-            await monteQ.addBusiness(businessId002, otherAccount.address, businessName002)
+            const tx = await monteQ
+                .connect(otherAccount)
+                .addBusiness(businessId002, businessName002)
+            const receipt = await tx.wait()
+            const gasUsed = receipt.gasUsed.mul(receipt.effectiveGasPrice)
             const balanceAfter = await otherAccount.getBalance()
             const sub = balanceAfter.sub(balanceBefore)
-            expect(sub.toString()).to.equal(amountSum001)
+            expect(sub).to.eql(BigNumber.from(amountSum001).sub(gasUsed))
         })
 
         it('should pay the check with tips to existed account', async function () {
@@ -114,20 +110,13 @@ describe('MonteQ', function () {
                 businessName002,
                 amountReceipt001,
                 amountSum001,
-                currencyType001,
                 currencyAmount001,
-                currencyTip001,
             } = await loadFixture(deployOneYearLockFixture)
-            await monteQ.addBusiness(businessId002, otherAccount.address, businessName002)
+            await monteQ.connect(otherAccount).addBusiness(businessId002, businessName002)
             const balanceBefore = await otherAccount.getBalance()
-            await monteQ.payReceipt(
-                businessId002,
-                currencyType001,
-                currencyAmount001,
-                currencyTip001,
-                amountReceipt001,
-                { value: amountSum001 }
-            )
+            await monteQ.payReceipt(businessId002, currencyAmount001, amountReceipt001, {
+                value: amountSum001,
+            })
             const balanceAfter = await otherAccount.getBalance()
             const sub = balanceAfter.sub(balanceBefore)
             expect(sub.toString()).to.equal(amountSum001)
@@ -140,23 +129,20 @@ describe('MonteQ', function () {
                 businessId002,
                 businessName002,
                 amountReceipt001,
-                currencyType001,
                 currencyAmount001,
-                currencyTip001,
             } = await loadFixture(deployOneYearLockFixture)
-            await monteQ.payReceipt(
-                businessId002,
-                currencyType001,
-                currencyAmount001,
-                currencyTip001,
-                amountReceipt001,
-                { value: amountReceipt001 }
-            )
+            await monteQ.payReceipt(businessId002, currencyAmount001, amountReceipt001, {
+                value: amountReceipt001,
+            })
             const balanceBefore = await otherAccount.getBalance()
-            await monteQ.addBusiness(businessId002, otherAccount.address, businessName002)
+            const tx = await monteQ
+                .connect(otherAccount)
+                .addBusiness(businessId002, businessName002)
+            const receipt = await tx.wait()
+            const gasUsed = receipt.gasUsed.mul(receipt.effectiveGasPrice)
             const balanceAfter = await otherAccount.getBalance()
             const sub = balanceAfter.sub(balanceBefore)
-            expect(sub.toString()).to.equal(amountReceipt001)
+            expect(sub).to.eql(BigNumber.from(amountReceipt001).sub(gasUsed))
         })
 
         it('should pay the check without tips to existed account', async function () {
@@ -166,20 +152,13 @@ describe('MonteQ', function () {
                 businessId002,
                 businessName002,
                 amountReceipt001,
-                currencyType001,
                 currencyAmount001,
-                currencyTip001,
             } = await loadFixture(deployOneYearLockFixture)
-            await monteQ.addBusiness(businessId002, otherAccount.address, businessName002)
+            await monteQ.connect(otherAccount).addBusiness(businessId002, businessName002)
             const balanceBefore = await otherAccount.getBalance()
-            await monteQ.payReceipt(
-                businessId002,
-                currencyType001,
-                currencyAmount001,
-                currencyTip001,
-                amountReceipt001,
-                { value: amountReceipt001 }
-            )
+            await monteQ.payReceipt(businessId002, currencyAmount001, amountReceipt001, {
+                value: amountReceipt001,
+            })
             const balanceAfter = await otherAccount.getBalance()
             const sub = balanceAfter.sub(balanceBefore)
             expect(sub.toString()).to.equal(amountReceipt001)
@@ -192,9 +171,7 @@ describe('MonteQ', function () {
             return {
                 businessId: data.businessId,
                 payer: data.payer,
-                currencyType: data.currencyType,
                 currencyReceipt: data.currencyReceipt.toString(),
-                currencyTip: data.currencyTip.toString(),
                 receiptAmount: data.receiptAmount.toString(),
                 tipAmount: data.tipAmount.toString(),
             }
@@ -209,20 +186,13 @@ describe('MonteQ', function () {
                 businessId002,
                 businessName002,
                 amountReceipt001,
-                currencyType001,
                 currencyAmount001,
-                currencyTip001,
             } = await loadFixture(deployOneYearLockFixture)
             const currentTimeInSeconds = Math.round(new Date().valueOf() / 1000)
-            await monteQ.addBusiness(businessId002, otherAccount.address, businessName002)
-            await monteQ.payReceipt(
-                businessId002,
-                currencyType001,
-                currencyAmount001,
-                currencyTip001,
-                amountReceipt001,
-                { value: amountReceipt001 }
-            )
+            await monteQ.connect(otherAccount).addBusiness(businessId002, businessName002)
+            await monteQ.payReceipt(businessId002, currencyAmount001, amountReceipt001, {
+                value: amountReceipt001,
+            })
 
             const responseHistoryByPayer = await monteQ.getHistoryByPayer(
                 owner.address,
@@ -235,9 +205,7 @@ describe('MonteQ', function () {
                 {
                     businessId: businessId002,
                     payer: owner.address,
-                    currencyType: currencyType001,
                     currencyReceipt: currencyAmount001,
-                    currencyTip: currencyTip001,
                     receiptAmount: amountReceipt001,
                     tipAmount: '0',
                 },
@@ -259,9 +227,7 @@ describe('MonteQ', function () {
                 {
                     businessId: businessId002,
                     payer: owner.address,
-                    currencyType: currencyType001,
                     currencyReceipt: currencyAmount001,
-                    currencyTip: currencyTip001,
                     receiptAmount: amountReceipt001,
                     tipAmount: '0',
                 },
@@ -271,70 +237,4 @@ describe('MonteQ', function () {
             expect(historyByBusinessTimestamps[0]).to.equal(historyByPayerTimestamps[0])
         })
     })
-
-    // describe("Withdrawals", function () {
-    //   describe("Validations", function () {
-    //     it("Should revert with the right error if called too soon", async function () {
-    //       const { lock } = await loadFixture(deployOneYearLockFixture);
-
-    //       await expect(lock.withdraw()).to.be.revertedWith(
-    //         "You can't withdraw yet"
-    //       );
-    //     });
-
-    //     it("Should revert with the right error if called from another account", async function () {
-    //       const { lock, unlockTime, otherAccount } = await loadFixture(
-    //         deployOneYearLockFixture
-    //       );
-
-    //       // We can increase the time in Hardhat Network
-    //       await time.increaseTo(unlockTime);
-
-    //       // We use lock.connect() to send a transaction from another account
-    //       await expect(lock.connect(otherAccount).withdraw()).to.be.revertedWith(
-    //         "You aren't the owner"
-    //       );
-    //     });
-
-    //     it("Shouldn't fail if the unlockTime has arrived and the owner calls it", async function () {
-    //       const { lock, unlockTime } = await loadFixture(
-    //         deployOneYearLockFixture
-    //       );
-
-    //       // Transactions are sent using the first signer by default
-    //       await time.increaseTo(unlockTime);
-
-    //       await expect(lock.withdraw()).not.to.be.reverted;
-    //     });
-    //   });
-
-    //   describe("Events", function () {
-    //     it("Should emit an event on withdrawals", async function () {
-    //       const { lock, unlockTime, lockedAmount } = await loadFixture(
-    //         deployOneYearLockFixture
-    //       );
-
-    //       await time.increaseTo(unlockTime);
-
-    //       await expect(lock.withdraw())
-    //         .to.emit(lock, "Withdrawal")
-    //         .withArgs(lockedAmount, anyValue); // We accept any value as `when` arg
-    //     });
-    //   });
-
-    //   describe("Transfers", function () {
-    //     it("Should transfer the funds to the owner", async function () {
-    //       const { lock, unlockTime, lockedAmount, owner } = await loadFixture(
-    //         deployOneYearLockFixture
-    //       );
-
-    //       await time.increaseTo(unlockTime);
-
-    //       await expect(lock.withdraw()).to.changeEtherBalances(
-    //         [owner, lock],
-    //         [lockedAmount, -lockedAmount]
-    //       );
-    //     });
-    //   });
-    // });
 })
