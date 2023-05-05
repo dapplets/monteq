@@ -23,14 +23,8 @@ contract MonteQ {
 
     HistoryRecord[] _history;
 
-    mapping(address => uint256[]) public historyByPayer;
-    mapping(string => uint256[]) public historyByBusiness;
-
-    // ToDo Public or private data???
-    mapping(address => uint) public payerSpentForBills; // store spent bills amount by payer
-    mapping(address => uint) public payerSpentForTips; // store spent tips amount by payer
-    mapping(string => uint) public businessGetBills; // store get bills amount by business id
-    mapping(string => uint) public businessGetTips; // store get tips amount by business id
+    mapping(address => uint256[]) _historyByPayer;
+    mapping(string => uint256[]) _historyByBusiness;
 
     mapping(string => BusinessInfo) public businessInfos; // mapping(BusinessId=>Business)
     mapping(string => uint) _credits; // mapping(BusinessId=>BusinessCredit)
@@ -40,8 +34,8 @@ contract MonteQ {
         uint256 offset,
         uint256 limit,
         bool reverse
-    ) public view returns (uint256[] memory history, uint256 total) {
-        total = historyByPayer[payer].length;
+    ) public view returns (HistoryRecord[] memory history, uint256 total) {
+        total = _historyByPayer[payer].length;
         require(
             offset < total,
             "The offset is equal to or greater than the total number of records."
@@ -49,10 +43,10 @@ contract MonteQ {
         if (limit > total - offset) {
             limit = total - offset;
         }
-        history = new uint256[](limit);
+        history = new HistoryRecord[](limit);
         for (uint256 i = 0; i < limit; ++i) {
             uint256 idx = (reverse) ? (total - offset - 1 - i) : (offset + i);
-            history[i] = historyByPayer[payer][idx];
+            history[i] = _history[_historyByPayer[payer][idx]];
         }
     }
 
@@ -61,8 +55,8 @@ contract MonteQ {
         uint256 offset,
         uint256 limit,
         bool reverse
-    ) public view returns (uint256[] memory history, uint256 total) {
-        total = historyByBusiness[businessId].length;
+    ) public view returns (HistoryRecord[] memory history, uint256 total) {
+        total = _historyByBusiness[businessId].length;
         require(
             offset < total,
             "The offset is equal to or greater than the total number of records."
@@ -70,10 +64,10 @@ contract MonteQ {
         if (limit > total - offset) {
             limit = total - offset;
         }
-        history = new uint256[](limit);
+        history = new HistoryRecord[](limit);
         for (uint256 i = 0; i < limit; ++i) {
             uint256 idx = (reverse) ? (total - offset - 1 - i) : (offset + i);
-            history[i] = historyByBusiness[businessId][idx];
+            history[i] = _history[_historyByBusiness[businessId][idx]];
         }
     }
 
@@ -109,12 +103,8 @@ contract MonteQ {
         );
         _history.push(newRecord);
         uint256 recordId = _history.length - 1;
-        historyByPayer[msg.sender].push(recordId);
-        historyByBusiness[businessId].push(recordId);
-        payerSpentForBills[msg.sender] += amountReceipt;
-        payerSpentForTips[msg.sender] += amountTips;
-        businessGetBills[businessId] += amountReceipt;
-        businessGetTips[businessId] += amountTips;
+        _historyByPayer[msg.sender].push(recordId);
+        _historyByBusiness[businessId].push(recordId);
     }
 
     // ToDo Do we really need to set as the owner some another address?  So why only this owner can delete business but not the address that created it?

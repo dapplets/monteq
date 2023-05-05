@@ -57,7 +57,6 @@ describe('MonteQ', function () {
                 deployOneYearLockFixture
             )
             const [owner, name] = await monteQ.businessInfos(businessId001)
-            console.log('result', [owner, name])
             expect([owner, name]).to.eql(emptyBusinessInfo)
         })
 
@@ -66,7 +65,6 @@ describe('MonteQ', function () {
                 await loadFixture(deployOneYearLockFixture)
             await monteQ.addBusiness(businessId001, owner.address, businessName001)
             const [receivedOwner, name] = await monteQ.businessInfos(businessId001)
-            console.log('result', [receivedOwner, name])
             expect([receivedOwner, name]).to.eql(businessInfo001)
         })
 
@@ -76,11 +74,12 @@ describe('MonteQ', function () {
             await monteQ.addBusiness(businessId001, owner.address, businessName001)
             await monteQ.removeBusiness(businessId001)
             const [receivedOwner, name] = await monteQ.businessInfos(businessId001)
-            console.log('result', [receivedOwner, name])
             expect([receivedOwner, name]).to.eql(emptyBusinessInfo)
         })
+    })
 
-        it('should pay the check without tips to nonexisted account', async function () {
+    describe('Test transfers', function () {
+        it('should pay the check with tips to nonexisted account', async function () {
             const {
                 monteQ,
                 otherAccount,
@@ -91,7 +90,6 @@ describe('MonteQ', function () {
                 currencyType001,
                 currencyAmount001,
                 currencyTip001,
-                businessInfo002,
             } = await loadFixture(deployOneYearLockFixture)
             await monteQ.payReceipt(
                 businessId002,
@@ -102,28 +100,176 @@ describe('MonteQ', function () {
                 { value: amountSum001 }
             )
             const balanceBefore = await otherAccount.getBalance()
-            console.log('balance before', balanceBefore)
             await monteQ.addBusiness(businessId002, otherAccount.address, businessName002)
             const balanceAfter = await otherAccount.getBalance()
-            console.log('balance after', balanceAfter)
             const sub = balanceAfter.sub(balanceBefore)
-            console.log('sub', sub)
-            const [receivedOwner, name] = await monteQ.businessInfos(businessId002)
-            console.log('result', [receivedOwner, name])
-            expect([receivedOwner, name]).to.eql(businessInfo002)
-            expect(sub.toString()).to.eql(amountSum001)
+            expect(sub.toString()).to.equal(amountSum001)
         })
 
-        // it('should pay the check with tips to nonexisted account', async function () {
-        //     const { monteQ, owner, businessId001, businessName001, amountReceipt001, amountTip001 } =
-        //         await loadFixture(deployOneYearLockFixture)
-        //     await monteQ.payReceipt(businessId001, ETH001, ETH000001)
-        //     console.log('balance before', await owner.getBalance())
-        //     await monteQ.attachOwner(businessId001, owner.address, businessName001)
-        //     const result = await monteQ.businessInfos(businessId001)
-        //     console.log('balance after', await owner.getBalance())
-        //     expect(result).to.equal(owner.address)
-        // })
+        it('should pay the check with tips to existed account', async function () {
+            const {
+                monteQ,
+                otherAccount,
+                businessId002,
+                businessName002,
+                amountReceipt001,
+                amountSum001,
+                currencyType001,
+                currencyAmount001,
+                currencyTip001,
+            } = await loadFixture(deployOneYearLockFixture)
+            await monteQ.addBusiness(businessId002, otherAccount.address, businessName002)
+            const balanceBefore = await otherAccount.getBalance()
+            await monteQ.payReceipt(
+                businessId002,
+                currencyType001,
+                currencyAmount001,
+                currencyTip001,
+                amountReceipt001,
+                { value: amountSum001 }
+            )
+            const balanceAfter = await otherAccount.getBalance()
+            const sub = balanceAfter.sub(balanceBefore)
+            expect(sub.toString()).to.equal(amountSum001)
+        })
+
+        it('should pay the check without tips to nonexisted account', async function () {
+            const {
+                monteQ,
+                otherAccount,
+                businessId002,
+                businessName002,
+                amountReceipt001,
+                currencyType001,
+                currencyAmount001,
+                currencyTip001,
+            } = await loadFixture(deployOneYearLockFixture)
+            await monteQ.payReceipt(
+                businessId002,
+                currencyType001,
+                currencyAmount001,
+                currencyTip001,
+                amountReceipt001,
+                { value: amountReceipt001 }
+            )
+            const balanceBefore = await otherAccount.getBalance()
+            await monteQ.addBusiness(businessId002, otherAccount.address, businessName002)
+            const balanceAfter = await otherAccount.getBalance()
+            const sub = balanceAfter.sub(balanceBefore)
+            expect(sub.toString()).to.equal(amountReceipt001)
+        })
+
+        it('should pay the check without tips to existed account', async function () {
+            const {
+                monteQ,
+                otherAccount,
+                businessId002,
+                businessName002,
+                amountReceipt001,
+                currencyType001,
+                currencyAmount001,
+                currencyTip001,
+            } = await loadFixture(deployOneYearLockFixture)
+            await monteQ.addBusiness(businessId002, otherAccount.address, businessName002)
+            const balanceBefore = await otherAccount.getBalance()
+            await monteQ.payReceipt(
+                businessId002,
+                currencyType001,
+                currencyAmount001,
+                currencyTip001,
+                amountReceipt001,
+                { value: amountReceipt001 }
+            )
+            const balanceAfter = await otherAccount.getBalance()
+            const sub = balanceAfter.sub(balanceBefore)
+            expect(sub.toString()).to.equal(amountReceipt001)
+        })
+    })
+
+    describe('History changes', function () {
+        // getHistoryData does not return timestamps for ease of comparing objects. To get timestamps, use a separate function.
+        const getHistoryData = (data: any) => {
+            return {
+                businessId: data.businessId,
+                payer: data.payer,
+                currencyType: data.currencyType,
+                currencyReceipt: data.currencyReceipt.toString(),
+                currencyTip: data.currencyTip.toString(),
+                receiptAmount: data.receiptAmount.toString(),
+                tipAmount: data.tipAmount.toString(),
+            }
+        }
+        const getHistoryTimestamp = (data: any): number => +data.timestamp.toString() // amount of SECONDS!!! since January 1, 1970
+
+        it('should pay the check without tips to existed account and get history by payer and business', async function () {
+            const {
+                monteQ,
+                owner,
+                otherAccount,
+                businessId002,
+                businessName002,
+                amountReceipt001,
+                currencyType001,
+                currencyAmount001,
+                currencyTip001,
+            } = await loadFixture(deployOneYearLockFixture)
+            const currentTimeInSeconds = Math.round(new Date().valueOf() / 1000)
+            await monteQ.addBusiness(businessId002, otherAccount.address, businessName002)
+            await monteQ.payReceipt(
+                businessId002,
+                currencyType001,
+                currencyAmount001,
+                currencyTip001,
+                amountReceipt001,
+                { value: amountReceipt001 }
+            )
+
+            const responseHistoryByPayer = await monteQ.getHistoryByPayer(
+                owner.address,
+                0,
+                10,
+                false
+            )
+            const historyByPayer = responseHistoryByPayer[0].map(getHistoryData)
+            expect(historyByPayer).to.eql([
+                {
+                    businessId: businessId002,
+                    payer: owner.address,
+                    currencyType: currencyType001,
+                    currencyReceipt: currencyAmount001,
+                    currencyTip: currencyTip001,
+                    receiptAmount: amountReceipt001,
+                    tipAmount: '0',
+                },
+            ])
+            const historyByPayerTimestamps = responseHistoryByPayer[0].map(getHistoryTimestamp)
+            expect(
+                historyByPayerTimestamps[0] > currentTimeInSeconds - 10 &&
+                    historyByPayerTimestamps[0] < currentTimeInSeconds + 10
+            ).to.equal(true)
+
+            const responseHistoryByBusiness = await monteQ.getHistoryByBusiness(
+                businessId002,
+                0,
+                10,
+                false
+            )
+            const historyByBusiness = responseHistoryByBusiness[0].map(getHistoryData)
+            expect(historyByBusiness).to.eql([
+                {
+                    businessId: businessId002,
+                    payer: owner.address,
+                    currencyType: currencyType001,
+                    currencyReceipt: currencyAmount001,
+                    currencyTip: currencyTip001,
+                    receiptAmount: amountReceipt001,
+                    tipAmount: '0',
+                },
+            ])
+            const historyByBusinessTimestamps =
+                responseHistoryByBusiness[0].map(getHistoryTimestamp)
+            expect(historyByBusinessTimestamps[0]).to.equal(historyByPayerTimestamps[0])
+        })
     })
 
     // describe("Withdrawals", function () {
