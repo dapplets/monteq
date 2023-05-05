@@ -14,6 +14,7 @@ import CameraScreen from './screens/CameraScreen';
 import TxScreen from './screens/TxScreen';
 import {View} from 'react-native';
 import {usePatchedWeb3Modal} from './hooks/usePatchedWeb3Modal';
+import InitialSplash from './screens/InitialSplash';
 
 export type RootStackParamList = {
   InfoScreen: undefined;
