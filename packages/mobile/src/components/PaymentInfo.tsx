@@ -12,7 +12,7 @@ export type PaymentInfoType = {
   title: string;
   convert: {
     convertEUR: string;
-    convertCurrensy: string;
+    convertCurrency: string;
   };
 };
 const PaymentInfo = ({price, title, convert}: PaymentInfoType) => {
@@ -26,7 +26,7 @@ const PaymentInfo = ({price, title, convert}: PaymentInfoType) => {
       <View style={styles.PaymentConvert}>
         <Text style={styles.convertEUR}>{convert.convertEUR}</Text>
         <Text style={styles.convertCurrensy}>=</Text>
-        <Text style={styles.convertCurrensy}>{convert.convertCurrensy}</Text>
+        <Text style={styles.convertCurrensy}>{convert.convertCurrency}</Text>
       </View>
       <View style={styles.PaymentDescription}>
         <Text style={styles.DescriptionText}>

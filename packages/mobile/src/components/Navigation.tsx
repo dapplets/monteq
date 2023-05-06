@@ -30,8 +30,8 @@ const Navigation = ({path}: NavigationType) => {
     }
 
     try {
-      const data = await BarcodeScannerModule.scan();
-      navigation.navigate('TxScreen', {data});
+      const url = await BarcodeScannerModule.scan();
+      navigation.navigate('TxScreen', {url});
     } catch (e) {
       // ToDo: catch CANCELED and FAILURE cases
       console.error(e);

@@ -3,18 +3,23 @@ export type ParsedReceipt = {
   currencyReceipt: string;
 };
 
-export function parseReceipt(qrdata: string): ParsedReceipt {
-  const url = new URL(qrdata.replace('/#', ''));
+export function parseReceipt(qrdata: string): ParsedReceipt | null {
+  try {
+    const url = new URL(qrdata.replace('/#', ''));
 
-  const businessId = url.searchParams.get('bu');
-  const currencyReceipt = url.searchParams.get('prc');
+    const businessId = url.searchParams.get('bu');
+    const currencyReceipt = url.searchParams.get('prc');
 
-  if (!businessId || !currencyReceipt) {
-    throw new Error('Incompatible receipt');
+    if (!businessId || !currencyReceipt) {
+      return null;
+    }
+
+    return {
+      businessId,
+      currencyReceipt,
+    };
+  } catch (e) {
+    console.error(e);
+    return null;
   }
-
-  return {
-    businessId,
-    currencyReceipt,
-  };
 }

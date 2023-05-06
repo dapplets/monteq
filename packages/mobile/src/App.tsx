@@ -19,7 +19,7 @@ import {MonteqContractProvider} from './contexts/MonteqContractContext';
 export type RootStackParamList = {
   InfoScreen: undefined;
   CameraScreen: undefined;
-  TxScreen: {data: string};
+  TxScreen: {url: string};
   WelcomeScreen: undefined;
   CodeScanned: undefined;
 };
