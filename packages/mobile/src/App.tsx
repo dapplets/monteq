@@ -14,14 +14,14 @@ import CameraScreen from './screens/CameraScreen';
 import TxScreen from './screens/TxScreen';
 import {View} from 'react-native';
 import {usePatchedWeb3Modal} from './hooks/usePatchedWeb3Modal';
-import InitialSplash from './screens/InitialSplash';
 import {MonteqContractProvider} from './contexts/MonteqContractContext';
 
 export type RootStackParamList = {
   InfoScreen: undefined;
   CameraScreen: undefined;
-  TxScreen: {data: string};
+  TxScreen: {url: string};
   WelcomeScreen: undefined;
+  CodeScanned: undefined;
 };
 
 const Stack = createNativeStackNavigator();

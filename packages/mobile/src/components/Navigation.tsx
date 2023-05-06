@@ -1,19 +1,17 @@
-// import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {useWeb3Modal} from '@web3modal/react-native';
 import * as React from 'react';
 import {View, Alert, StyleSheet, TouchableHighlight, Image} from 'react-native';
-// import {type RootStackParamList} from '../App';
+import {type RootStackParamList} from '../App';
 import BarcodeScannerModule from '../modules/BarcodeScannerModule';
 import ButtonNavigationDefault from './ButtonNavigationDefault';
-import {useMonteqContract} from '../contexts/MonteqContractContext';
-import {parseReceipt} from '../common/parseReceipt';
+
 export type NavigationType = {
   path: string;
 };
 const Navigation = ({path}: NavigationType) => {
   const {provider} = useWeb3Modal();
-  const {payReceipt} = useMonteqContract();
-  // const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   function handleDisconnectPress() {
     provider?.disconnect();
@@ -22,6 +20,9 @@ const Navigation = ({path}: NavigationType) => {
   // async function handleScanPress() {
   //   navigation.navigate('CameraScreen');
   // }
+  async function navigationUserHistory() {
+    navigation.navigate('InfoScreen');
+  }
 
   async function handleGmsScanPress() {
     if (!provider) {
@@ -30,30 +31,7 @@ const Navigation = ({path}: NavigationType) => {
 
     try {
       const url = await BarcodeScannerModule.scan();
-
-      await new Promise(r => setTimeout(r, 500)); // Wait while QR-code scanner is closing
-      const receipt = parseReceipt(url);
-      const tokenAmount = '0.01';
-      const tipsAmount = '0.005';
-      Alert.alert(
-        'Pay the bill',
-        `BU: ${receipt.businessId}\nPrice: ${receipt.currencyReceipt} EUR\n${tokenAmount} + ${tipsAmount} xDAI`,
-        [
-          {
-            text: 'Pay',
-            onPress: () =>
-              payReceipt(
-                receipt.businessId,
-                receipt.currencyReceipt,
-                tokenAmount,
-                tipsAmount,
-              ),
-          },
-          {
-            text: 'Cancel',
-          },
-        ],
-      );
+      navigation.navigate('TxScreen', {url});
     } catch (e) {
       // ToDo: catch CANCELED and FAILURE cases
       console.error(e);
@@ -90,6 +68,7 @@ const Navigation = ({path}: NavigationType) => {
         />
       </TouchableHighlight>
       <ButtonNavigationDefault
+        onPress={navigationUserHistory}
         image={
           path === 'user'
             ? require('../assets/userGreen.png')
@@ -130,7 +109,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 1,
     shadowRadius: 3.84,
     elevation: 5,
-    zIndex: 2,
+    zIndex: 100,
   },
   scanButton: {
     // position: 'absolute',
