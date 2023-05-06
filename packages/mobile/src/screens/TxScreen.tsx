@@ -16,6 +16,7 @@ import {type RootStackParamList} from '../App';
 import {parseReceipt} from '../common/parseReceipt';
 import {useMonteqContract} from '../contexts/MonteqContractContext';
 import {BASE_CRYPTO_CURRENCY, BASE_FIAT_CURRENCY} from '../common/constants';
+import SwitchBlock from '../components/SwitchBlock';
 
 type Props = {
   route: RouteProp<{params: {url: string}}, 'params'>;
@@ -31,7 +32,7 @@ const TxScreen: React.FC<Props> = ({route}) => {
     parsedReceipt?.currencyReceipt ?? '0',
   );
   const [crypto, setCrypto] = useState(false);
-
+  const [isTips, setTips] = useState(false);
   const {payReceipt} = useMonteqContract();
 
   useEffect(() => {
@@ -64,57 +65,117 @@ const TxScreen: React.FC<Props> = ({route}) => {
 
   return (
     <>
-      <View style={styles.InfoScreenWrapper}>
-        <Title label="Check your payment" />
-        <View style={styles.AvailableWrapper}>
-          <Text style={styles.AvailableTitle}>Available</Text>
-          <View style={styles.AvailableBlock}>
-            <Text style={styles.AvailableAmount}>{currencyAmount}</Text>
-            <Text style={styles.AvailableCurrency}>{BASE_CRYPTO_CURRENCY}</Text>
-            <Image
-              style={styles.AvailableImg}
-              source={require('../assets/eye.png')}
+      {!crypto ? (
+        <View style={styles.InfoScreenWrapper}>
+          <Title label="Check your payment" />
+          <View style={styles.AvailableWrapper}>
+            <Text style={styles.AvailableTitle}>Available</Text>
+            <View style={styles.AvailableBlock}>
+              <Text style={styles.AvailableAmount}>{currencyAmount}</Text>
+              <Text style={styles.AvailableCurrency}>
+                {BASE_CRYPTO_CURRENCY}
+              </Text>
+              <Image
+                style={styles.AvailableImg}
+                source={require('../assets/eye.png')}
+              />
+            </View>
+          </View>
+          <PaymentInfo
+            price={'0.22'}
+            title={'You are paying tips'}
+            convert={{
+              convertEUR: '1 ' + BASE_FIAT_CURRENCY,
+              convertCurrency: '1.2 ' + BASE_CRYPTO_CURRENCY,
+            }}
+          />
+
+          <LinearGradient
+            start={{x: 0, y: 0}}
+            end={{x: 1, y: 0}}
+            style={styles.linearGradient}
+            colors={['#7f0dd9', '#5951c0', '#7f0dd9']}>
+            <TouchableHighlight
+              style={styles.buttonSend}
+              onPress={handleSendPress}>
+              <Text style={styles.buttonText}>Send Tips</Text>
+            </TouchableHighlight>
+          </LinearGradient>
+          <View style={styles.PayInfo}>
+            <View style={styles.PayInfoTitle}>
+              <Text style={styles.PayInfoTitleText}>
+                I’ve got the consent to pay in crypto
+              </Text>
+              <Checkbox isChecked={crypto} onPress={() => setCrypto(!crypto)} />
+            </View>
+            <PaymentParameters parameters={'Date'} value={'26/04/2023 11:13'} />
+            <PaymentParameters
+              parameters={'Recipient'}
+              value={parsedReceipt.businessId}
+            />
+            <PaymentParameters
+              parameters={'Invoice total'}
+              value={`${parsedReceipt.currencyReceipt} ${BASE_FIAT_CURRENCY}`}
             />
           </View>
         </View>
-        <PaymentInfo
-          price={'0.22'}
-          title={'You are paying tips'}
-          convert={{
-            convertEUR: '1 ' + BASE_FIAT_CURRENCY,
-            convertCurrency: '1.2 ' + BASE_CRYPTO_CURRENCY,
-          }}
-        />
-
-        <LinearGradient
-          start={{x: 0, y: 0}}
-          end={{x: 1, y: 0}}
-          style={styles.linearGradient}
-          colors={['#7f0dd9', '#5951c0', '#7f0dd9']}>
-          <TouchableHighlight
-            style={styles.buttonSend}
-            onPress={handleSendPress}>
-            <Text style={styles.buttonText}>Send Tips</Text>
-          </TouchableHighlight>
-        </LinearGradient>
-        <View style={styles.PayInfo}>
-          <View style={styles.PayInfoTitle}>
-            <Text style={styles.PayInfoTitleText}>
-              I’ve got the consent to pay in crypto
-            </Text>
-            <Checkbox isChecked={crypto} onPress={() => setCrypto(!crypto)} />
+      ) : (
+        <View style={styles.InfoScreenWrapper}>
+          <Title label="Check your payment" />
+          <View style={styles.AvailableWrapper}>
+            <Text style={styles.AvailableTitle}>Available</Text>
+            <View style={styles.AvailableBlock}>
+              <Text style={styles.AvailableAmount}>{currencyAmount}</Text>
+              <Text style={styles.AvailableCurrency}>
+                {BASE_CRYPTO_CURRENCY}
+              </Text>
+              <Image
+                style={styles.AvailableImg}
+                source={require('../assets/eye.png')}
+              />
+            </View>
           </View>
-          <PaymentParameters parameters={'Date'} value={'26/04/2023 11:13'} />
-          <PaymentParameters
-            parameters={'Recipient'}
-            value={parsedReceipt.businessId}
+          <PaymentInfo
+            price={'0.22'}
+            title={'You are paying tips'}
+            convert={{
+              convertEUR: '1 ' + BASE_FIAT_CURRENCY,
+              convertCurrency: '1.2 ' + BASE_CRYPTO_CURRENCY,
+            }}
           />
-          <PaymentParameters
-            parameters={'Invoice total'}
-            value={`${parsedReceipt.currencyReceipt} ${BASE_FIAT_CURRENCY}`}
-          />
+
+          <LinearGradient
+            start={{x: 0, y: 0}}
+            end={{x: 1, y: 0}}
+            style={styles.linearGradient}
+            colors={['#0dd977', '#1da4ac', '#14c48c']}>
+            <TouchableHighlight
+              style={styles.buttonSend}
+              onPress={handleSendPress}>
+              <Text style={styles.buttonText}>Pay invoice in full</Text>
+            </TouchableHighlight>
+          </LinearGradient>
+          <View style={styles.PayInfo}>
+            <View style={styles.PayInfoTitle}>
+              <Text style={styles.PayInfoTitleText}>
+                I’ve got the consent to pay in crypto
+              </Text>
+              <Checkbox isChecked={crypto} onPress={() => setCrypto(!crypto)} />
+            </View>
+            <SwitchBlock
+              parameters={'Add 10% tips to this invoice'}
+              onPress={setTips}
+              isPress={isTips}
+            />
+            <PaymentParameters parameters={'Date'} value={'26/04/2023 11:13'} />
+            <PaymentParameters
+              parameters={'Recipient'}
+              value={parsedReceipt.businessId}
+            />
+          </View>
         </View>
-      </View>
+      )}
+
       <Navigation path="Payment" />
     </>
   );
