@@ -16,14 +16,17 @@ const Navigation = ({path}: NavigationType) => {
     provider?.disconnect();
   }
 
-  async function handleScanPress() {
-    navigation.navigate('CameraScreen');
+  // async function handleScanPress() {
+  //   navigation.navigate('CameraScreen');
+  // }
+  async function navigationUserHistory() {
+    navigation.navigate('InfoScreen');
   }
-  console.log(navigation);
   async function handleGmsScanPress() {
     try {
       const data = await BarcodeScannerModule.scan();
-      Alert.alert('Success', data);
+      // Alert.alert('Success', data);
+      navigation.navigate('TxScreen', data);
     } catch (e) {
       // ToDo: catch CANCELED and FAILURE cases
       console.error(e);
@@ -59,6 +62,7 @@ const Navigation = ({path}: NavigationType) => {
         />
       </TouchableHighlight>
       <ButtonNavigationDefault
+        onPress={navigationUserHistory}
         image={
           path === 'user'
             ? require('../assets/userGreen.png')
@@ -99,7 +103,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 1,
     shadowRadius: 3.84,
     elevation: 5,
-    zIndex: 2,
+    zIndex: 100,
   },
   scanButton: {
     // position: 'absolute',
