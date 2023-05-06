@@ -1,4 +1,5 @@
 import 'react-native-reanimated';
+import 'react-native-url-polyfill/auto';
 import '@walletconnect/react-native-compat';
 import '@ethersproject/shims';
 import {AppRegistry} from 'react-native';

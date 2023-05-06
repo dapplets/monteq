@@ -1,38 +1,65 @@
-import {RouteProp} from '@react-navigation/native';
+import {
+  RouteProp,
+  NavigationProp,
+  useNavigation,
+} from '@react-navigation/native';
 import {useWeb3Modal} from '@web3modal/react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Image, StyleSheet, Text, TouchableHighlight, View} from 'react-native';
-import {ethers} from 'ethers';
-import ERC20ABI from '../Erc20Abi.json';
 import Navigation from '../components/Navigation';
 import Title from '../components/TitlePage';
 import PaymentInfo from '../components/PaymentInfo';
 import LinearGradient from 'react-native-linear-gradient';
 import PaymentParameters from '../components/PaymentParameters';
 import Checkbox from '../components/Checkbox';
+import {type RootStackParamList} from '../App';
+import {parseReceipt} from '../common/parseReceipt';
+import {useMonteqContract} from '../contexts/MonteqContractContext';
+import {BASE_CRYPTO_CURRENCY, BASE_FIAT_CURRENCY} from '../common/constants';
 
 type Props = {
-  route: RouteProp<{params: {data: string}}, 'params'>;
+  route: RouteProp<{params: {url: string}}, 'params'>;
 };
 
 const TxScreen: React.FC<Props> = ({route}) => {
+  const parsedReceipt = parseReceipt(route.params.url);
+
   const {provider} = useWeb3Modal();
-  const [currency, setCurrency] = useState('USDT');
-  const [currencyAmount, setCurrencyAmount] = useState('11');
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+
+  const [currencyAmount, setCurrencyAmount] = useState(
+    parsedReceipt?.currencyReceipt ?? '0',
+  );
   const [crypto, setCrypto] = useState(false);
-  function handleSendPress() {
-    if (!provider) {
+
+  const {payReceipt} = useMonteqContract();
+
+  useEffect(() => {
+    if (!parsedReceipt) {
+      navigation.goBack();
+    } else {
+      setCurrencyAmount('0.01');
+    }
+  }, [parsedReceipt, navigation]);
+
+  async function handleSendPress() {
+    if (!provider || !parsedReceipt) {
       return;
     }
 
-    const web3Provider = new ethers.providers.Web3Provider(provider);
-    const contract = new ethers.Contract(
-      '0x6b175474e89094c44da98b954eedeac495271d0f',
-      ERC20ABI,
-      web3Provider.getSigner(),
-    );
+    const tokenAmount = '0.01';
+    const tipsAmount = '0.005';
 
-    contract.transfer('0x6b175474e89094c44da98b954eedeac495271d0f', '0');
+    payReceipt(
+      parsedReceipt.businessId,
+      parsedReceipt.currencyReceipt,
+      tokenAmount,
+      tipsAmount,
+    );
+  }
+
+  if (!parsedReceipt) {
+    return null;
   }
 
   return (
@@ -43,7 +70,7 @@ const TxScreen: React.FC<Props> = ({route}) => {
           <Text style={styles.AvailableTitle}>Available</Text>
           <View style={styles.AvailableBlock}>
             <Text style={styles.AvailableAmount}>{currencyAmount}</Text>
-            <Text style={styles.AvailableCurrency}>{currency}</Text>
+            <Text style={styles.AvailableCurrency}>{BASE_CRYPTO_CURRENCY}</Text>
             <Image
               style={styles.AvailableImg}
               source={require('../assets/eye.png')}
@@ -54,8 +81,8 @@ const TxScreen: React.FC<Props> = ({route}) => {
           price={'0.22'}
           title={'You are paying tips'}
           convert={{
-            convertEUR: '1 eur',
-            convertCurrensy: '1.2 usdt',
+            convertEUR: '1 ' + BASE_FIAT_CURRENCY,
+            convertCurrency: '1.2 ' + BASE_CRYPTO_CURRENCY,
           }}
         />
 
@@ -78,14 +105,21 @@ const TxScreen: React.FC<Props> = ({route}) => {
             <Checkbox isChecked={crypto} onPress={() => setCrypto(!crypto)} />
           </View>
           <PaymentParameters parameters={'Date'} value={'26/04/2023 11:13'} />
-          <PaymentParameters parameters={'Recipient'} value={'bv803pp980'} />
-          <PaymentParameters parameters={'Invoice total'} value={'3,80 EUR'} />
+          <PaymentParameters
+            parameters={'Recipient'}
+            value={parsedReceipt.businessId}
+          />
+          <PaymentParameters
+            parameters={'Invoice total'}
+            value={`${parsedReceipt.currencyReceipt} ${BASE_FIAT_CURRENCY}`}
+          />
         </View>
       </View>
       <Navigation path="Payment" />
     </>
   );
 };
+
 const styles = StyleSheet.create({
   InfoScreenWrapper: {
     display: 'flex',
@@ -183,4 +217,5 @@ const styles = StyleSheet.create({
     lineHeight: 16,
   },
 });
+
 export default TxScreen;

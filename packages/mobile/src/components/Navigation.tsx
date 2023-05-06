@@ -5,6 +5,7 @@ import {View, Alert, StyleSheet, TouchableHighlight, Image} from 'react-native';
 import {type RootStackParamList} from '../App';
 import BarcodeScannerModule from '../modules/BarcodeScannerModule';
 import ButtonNavigationDefault from './ButtonNavigationDefault';
+
 export type NavigationType = {
   path: string;
 };
@@ -22,17 +23,22 @@ const Navigation = ({path}: NavigationType) => {
   async function navigationUserHistory() {
     navigation.navigate('InfoScreen');
   }
+
   async function handleGmsScanPress() {
+    if (!provider) {
+      return;
+    }
+
     try {
       const data = await BarcodeScannerModule.scan();
-      // Alert.alert('Success', data);
-      navigation.navigate('TxScreen', data);
+      navigation.navigate('TxScreen', {data});
     } catch (e) {
       // ToDo: catch CANCELED and FAILURE cases
       console.error(e);
       Alert.alert('Failure or canceled');
     }
   }
+
   return (
     <View style={styles.NavigationWrapper}>
       <ButtonNavigationDefault

@@ -12,6 +12,10 @@ buildscript {
 
         // https://github.com/mrousavy/react-native-vision-camera/issues/1352
         kotlinVersion = "1.7.0"
+
+        https://github.com/rodgomesc/vision-camera-code-scanner/issues/100
+        VisionCameraCodeScanner_targetSdkVersion = 33 //add
+        VisionCameraCodeScanner_compileSdkVersion = 33 //add
     }
     repositories {
         google()

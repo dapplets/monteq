@@ -1,0 +1,241 @@
+[
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "businessId",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      }
+    ],
+    "name": "addBusiness",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "name": "businessInfos",
+    "outputs": [
+      {
+        "internalType": "address payable",
+        "name": "owner",
+        "type": "address"
+      },
+      {
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "name": "credits",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "businessId",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "offset",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "limit",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "reverse",
+        "type": "bool"
+      }
+    ],
+    "name": "getHistoryByBusiness",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "businessId",
+            "type": "string"
+          },
+          {
+            "internalType": "address",
+            "name": "payer",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "currencyReceipt",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "receiptAmount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "tipAmount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "timestamp",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct MonteQ.HistoryRecord[]",
+        "name": "history",
+        "type": "tuple[]"
+      },
+      {
+        "internalType": "uint256",
+        "name": "total",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "payer",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "offset",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "limit",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "reverse",
+        "type": "bool"
+      }
+    ],
+    "name": "getHistoryByPayer",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "businessId",
+            "type": "string"
+          },
+          {
+            "internalType": "address",
+            "name": "payer",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "currencyReceipt",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "receiptAmount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "tipAmount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "timestamp",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct MonteQ.HistoryRecord[]",
+        "name": "history",
+        "type": "tuple[]"
+      },
+      {
+        "internalType": "uint256",
+        "name": "total",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "businessId",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "currencyReceipt",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "amountReceipt",
+        "type": "uint256"
+      }
+    ],
+    "name": "payReceipt",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "businessId",
+        "type": "string"
+      }
+    ],
+    "name": "removeBusiness",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]
