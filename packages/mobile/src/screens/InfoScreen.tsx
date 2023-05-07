@@ -17,7 +17,7 @@ const InfoScreen = () => {
         <TimeLabel time="Month" isActive={false} />
         <TimeLabel time="Year" isActive={false} />
       </View>
-      <View style={styles.list}>
+      {/* <View style={styles.list}>
         <FlatList
           data={outHistory.map(x => ({
             key: `${x.currencyReceipt} EUR to ${x.businessId} at ${new Date(
@@ -27,7 +27,7 @@ const InfoScreen = () => {
           renderItem={({item}) => <Text>{item.key}</Text>}
         />
         <Button onPress={() => loadMoreOutHistory()} title="Refresh" />
-      </View>
+      </View> */}
       {/* <Text>Logged in</Text> */}
       {/* <Button onPress={handleDisconnectPress} title="Disconnect" /> */}
       {/* <Button onPress={handleScanPress} title="Scan via third-party lib" />

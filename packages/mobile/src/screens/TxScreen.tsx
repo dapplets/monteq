@@ -5,7 +5,15 @@ import {
 } from '@react-navigation/native';
 import {useWeb3Modal} from '@web3modal/react-native';
 import React, {useEffect, useState} from 'react';
-import {Image, StyleSheet, Text, TouchableHighlight, View} from 'react-native';
+import {
+  Image,
+  StyleSheet,
+  Text,
+  TouchableHighlight,
+  View,
+  Modal,
+  Alert,
+} from 'react-native';
 import Navigation from '../components/Navigation';
 import Title from '../components/TitlePage';
 import PaymentInfo from '../components/PaymentInfo';
@@ -33,6 +41,8 @@ const TxScreen: React.FC<Props> = ({route}) => {
   );
   const [crypto, setCrypto] = useState(false);
   const [isTips, setTips] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [transactionStatusOk, setTransactionStatusOk] = useState(false);
   const {payReceipt} = useMonteqContract();
 
   useEffect(() => {
@@ -42,21 +52,29 @@ const TxScreen: React.FC<Props> = ({route}) => {
       setCurrencyAmount('0.01');
     }
   }, [parsedReceipt, navigation]);
-
+  async function navigationUserHistory() {
+    navigation.navigate('InfoScreen');
+  }
   async function handleSendPress() {
     if (!provider || !parsedReceipt) {
       return;
     }
+    try {
+      setModalVisible(true);
+      const tokenAmount = '0.01';
+      const tipsAmount = '0.005';
 
-    const tokenAmount = '0.01';
-    const tipsAmount = '0.005';
-
-    payReceipt(
-      parsedReceipt.businessId,
-      parsedReceipt.currencyReceipt,
-      tokenAmount,
-      tipsAmount,
-    );
+      payReceipt(
+        parsedReceipt.businessId,
+        parsedReceipt.currencyReceipt,
+        tokenAmount,
+        tipsAmount,
+      );
+    } catch (error) {
+      Alert.alert(error as string);
+    } finally {
+      setTransactionStatusOk(true);
+    }
   }
 
   if (!parsedReceipt) {
@@ -175,8 +193,83 @@ const TxScreen: React.FC<Props> = ({route}) => {
           </View>
         </View>
       )}
+      {!modalVisible ? <Navigation path="Payment" /> : null}
 
-      <Navigation path="Payment" />
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Title label="Transaction sent" />
+            {transactionStatusOk ? (
+              <Image
+                resizeMode="contain"
+                style={styles.TransactionImg}
+                source={require('../assets/confirmed.png')}
+              />
+            ) : (
+              <Image
+                resizeMode="contain"
+                style={styles.TransactionImg}
+                source={require('../assets/inProgress.png')}
+              />
+            )}
+
+            <View style={styles.StatusBlock}>
+              <Text style={styles.ParametersStatus}>Status</Text>
+              {transactionStatusOk ? (
+                <View style={styles.ValueStatus}>
+                  <Text style={styles.ValueStatusTextOk}>Confirmed</Text>
+                  <View style={styles.ValueStatusLabelOk}></View>
+                </View>
+              ) : (
+                <View style={styles.ValueStatus}>
+                  <Text style={styles.ValueStatusText}>In progress</Text>
+                  <View style={styles.ValueStatusLabel}></View>
+                </View>
+              )}
+            </View>
+
+            <PaymentParameters
+              isGray
+              parameters={'Recipient'}
+              value={parsedReceipt.businessId}
+            />
+            <PaymentParameters
+              isGray
+              parameters={'Amount, fiat'}
+              value={'3,80 EUR'}
+            />
+            <PaymentParameters
+              isGray
+              parameters={'Amount, crypto'}
+              value={currencyAmount + ' ' + BASE_CRYPTO_CURRENCY}
+            />
+            <PaymentParameters
+              isGray
+              parameters={'Date'}
+              value={'26/04/2023 11:13'}
+            />
+            {transactionStatusOk ? (
+              <LinearGradient
+                start={{x: 0, y: 0}}
+                end={{x: 1, y: 0}}
+                style={styles.linearGradient}
+                colors={['#0dd977', '#1da4ac', '#14c48c']}>
+                <TouchableHighlight
+                  style={styles.buttonSend}
+                  onPress={navigationUserHistory}>
+                  <Text style={styles.buttonText}>Close</Text>
+                </TouchableHighlight>
+              </LinearGradient>
+            ) : null}
+          </View>
+        </View>
+      </Modal>
     </>
   );
 };
@@ -276,6 +369,85 @@ const styles = StyleSheet.create({
     color: '#222222',
     fontSize: 14,
     lineHeight: 16,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    width: '90%',
+    margin: 0,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 10,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+
+  TransactionImg: {
+    width: 140,
+    height: 70,
+    marginBottom: 10,
+  },
+  StatusBlock: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%',
+    padding: 10,
+    backgroundColor: '#F6F7F8',
+    marginBottom: 10,
+    borderRadius: 4,
+  },
+  ParametersStatus: {
+    fontSize: 14,
+    lineHeight: 17,
+    fontWeight: '400',
+    color: '#222222',
+    width: '50%',
+  },
+  ValueStatus: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    width: '50%',
+  },
+  ValueStatusText: {
+    fontSize: 14,
+    lineHeight: 17,
+    fontWeight: '600',
+    color: '#EBC200',
+  },
+  ValueStatusTextOk: {
+    fontSize: 14,
+    lineHeight: 17,
+    fontWeight: '600',
+    color: '#14C58B',
+  },
+  ValueStatusLabel: {
+    width: 5,
+    height: 5,
+    borderRadius: 2.5,
+    backgroundColor: '#EBC200',
+    marginLeft: 10,
+  },
+  ValueStatusLabelOk: {
+    width: 5,
+    height: 5,
+    borderRadius: 2.5,
+    backgroundColor: '#14C58B',
+    marginLeft: 10,
   },
 });
 
