@@ -25,6 +25,7 @@ import {parseReceipt} from '../common/parseReceipt';
 import {useMonteqContract} from '../contexts/MonteqContractContext';
 import {BASE_CRYPTO_CURRENCY, BASE_FIAT_CURRENCY} from '../common/constants';
 import SwitchBlock from '../components/SwitchBlock';
+import {TxStatus} from '../contexts/MonteqContractContext/MonteqContractContext';
 
 type Props = {
   route: RouteProp<{params: {url: string}}, 'params'>;
@@ -42,7 +43,6 @@ const TxScreen: React.FC<Props> = memo(({route}) => {
   const [crypto, setCrypto] = useState(false);
   const [isTips, setTips] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
-  const [transactionStatusOk, setTransactionStatusOk] = useState(false);
   const {payReceipt, paymentTxStatus} = useMonteqContract();
 
   useEffect(() => {
@@ -51,32 +51,27 @@ const TxScreen: React.FC<Props> = memo(({route}) => {
     } else {
       setCurrencyAmount('0.01');
     }
-  }, [parsedReceipt, navigation, paymentTxStatus, transactionStatusOk]);
+  }, [parsedReceipt, navigation, paymentTxStatus]);
+
   async function navigationUserHistory() {
     navigation.navigate('InfoScreen');
   }
+
   async function handleSendPress() {
     if (!provider || !parsedReceipt) {
       return;
     }
-    try {
-      setModalVisible(true);
-      const tokenAmount = '0.01';
-      const tipsAmount = '0.005';
 
-      payReceipt(
-        parsedReceipt.businessId,
-        parsedReceipt.currencyReceipt,
-        tokenAmount,
-        tipsAmount,
-      );
-    } catch (error) {
-      Alert.alert(error as string);
-    } finally {
-      if (paymentTxStatus === 3) {
-        setTransactionStatusOk(true);
-      }
-    }
+    setModalVisible(true);
+    const tokenAmount = '0.01';
+    const tipsAmount = '0.005';
+
+    payReceipt(
+      parsedReceipt.businessId,
+      parsedReceipt.currencyReceipt,
+      tokenAmount,
+      tipsAmount,
+    );
   }
 
   if (!parsedReceipt) {
@@ -207,32 +202,38 @@ const TxScreen: React.FC<Props> = memo(({route}) => {
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <Title label="Transaction sent" />
-            {transactionStatusOk ? (
+            {paymentTxStatus === TxStatus.Done ? (
               <Image
                 resizeMode="contain"
                 style={styles.TransactionImg}
                 source={require('../assets/confirmed.png')}
               />
-            ) : (
+            ) : paymentTxStatus === TxStatus.Sending ||
+              paymentTxStatus === TxStatus.Mining ? (
               <Image
                 resizeMode="contain"
                 style={styles.TransactionImg}
                 source={require('../assets/inProgress.png')}
               />
+            ) : (
+              <Text>ToDo: rejected</Text>
             )}
 
             <View style={styles.StatusBlock}>
               <Text style={styles.ParametersStatus}>Status</Text>
-              {transactionStatusOk ? (
+              {paymentTxStatus === TxStatus.Done ? (
                 <View style={styles.ValueStatus}>
                   <Text style={styles.ValueStatusTextOk}>Confirmed</Text>
                   <View style={styles.ValueStatusLabelOk}></View>
                 </View>
-              ) : (
+              ) : paymentTxStatus === TxStatus.Sending ||
+                paymentTxStatus === TxStatus.Mining ? (
                 <View style={styles.ValueStatus}>
                   <Text style={styles.ValueStatusText}>In progress</Text>
                   <View style={styles.ValueStatusLabel}></View>
                 </View>
+              ) : (
+                <Text>ToDo: rejected</Text>
               )}
             </View>
 
