@@ -4,7 +4,7 @@ import {
   useNavigation,
 } from '@react-navigation/native';
 import {useWeb3Modal} from '@web3modal/react-native';
-import React, {useEffect, useState} from 'react';
+import React, {memo, useEffect, useMemo, useState} from 'react';
 import {
   Image,
   StyleSheet,
@@ -30,7 +30,7 @@ type Props = {
   route: RouteProp<{params: {url: string}}, 'params'>;
 };
 
-const TxScreen: React.FC<Props> = ({route}) => {
+const TxScreen: React.FC<Props> = memo(({route}) => {
   const parsedReceipt = parseReceipt(route.params.url);
 
   const {provider} = useWeb3Modal();
@@ -43,7 +43,7 @@ const TxScreen: React.FC<Props> = ({route}) => {
   const [isTips, setTips] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [transactionStatusOk, setTransactionStatusOk] = useState(false);
-  const {payReceipt} = useMonteqContract();
+  const {payReceipt, paymentTxStatus} = useMonteqContract();
 
   useEffect(() => {
     if (!parsedReceipt) {
@@ -51,7 +51,7 @@ const TxScreen: React.FC<Props> = ({route}) => {
     } else {
       setCurrencyAmount('0.01');
     }
-  }, [parsedReceipt, navigation]);
+  }, [parsedReceipt, navigation, paymentTxStatus, transactionStatusOk]);
   async function navigationUserHistory() {
     navigation.navigate('InfoScreen');
   }
@@ -73,14 +73,16 @@ const TxScreen: React.FC<Props> = ({route}) => {
     } catch (error) {
       Alert.alert(error as string);
     } finally {
-      setTransactionStatusOk(true);
+      if (paymentTxStatus === 3) {
+        setTransactionStatusOk(true);
+      }
     }
   }
 
   if (!parsedReceipt) {
     return null;
   }
-
+  console.log(paymentTxStatus);
   return (
     <>
       {!crypto ? (
@@ -254,25 +256,25 @@ const TxScreen: React.FC<Props> = ({route}) => {
               parameters={'Date'}
               value={'26/04/2023 11:13'}
             />
-            {transactionStatusOk ? (
-              <LinearGradient
-                start={{x: 0, y: 0}}
-                end={{x: 1, y: 0}}
-                style={styles.linearGradient}
-                colors={['#0dd977', '#1da4ac', '#14c48c']}>
-                <TouchableHighlight
-                  style={styles.buttonSend}
-                  onPress={navigationUserHistory}>
-                  <Text style={styles.buttonText}>Close</Text>
-                </TouchableHighlight>
-              </LinearGradient>
-            ) : null}
+            {/* {transactionStatusOk ? ( */}
+            <LinearGradient
+              start={{x: 0, y: 0}}
+              end={{x: 1, y: 0}}
+              style={styles.linearGradient}
+              colors={['#0dd977', '#1da4ac', '#14c48c']}>
+              <TouchableHighlight
+                style={styles.buttonSend}
+                onPress={navigationUserHistory}>
+                <Text style={styles.buttonText}>Close</Text>
+              </TouchableHighlight>
+            </LinearGradient>
+            {/* ) : null} */}
           </View>
         </View>
       </Modal>
     </>
   );
-};
+});
 
 const styles = StyleSheet.create({
   InfoScreenWrapper: {

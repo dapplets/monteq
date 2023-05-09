@@ -43,10 +43,11 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
         web3Provider.getSigner(),
       );
       setContract(_contract);
+      setOutHistory(outHistory);
     } else {
       setContract(null);
     }
-  }, [provider]);
+  }, [provider, paymentTxStatus, outHistory]);
 
   async function loadMoreOutHistory() {
     if (!contract) {
@@ -77,7 +78,7 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
       })),
     );
   }
-
+  console.log(outHistory, 'outHistory');
   function loadMoreInHistory() {}
 
   async function payReceipt(
@@ -140,7 +141,46 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
     }
   }
 
-  function addBusiness(businessId: string, name: string) {}
+  async function addBusiness(businessId: string, name: string) {
+    if (!provider) {
+      return;
+    }
+
+    setAddBusinessTxStatus(TxStatus.Sending);
+
+    let receipt: any | null = null;
+
+    try {
+      const web3Provider = new ethers.providers.Web3Provider(provider);
+      const _contract = new ethers.Contract(
+        MONTEQ_CONTRACT_ADDRESS,
+        MONTEQ_ABI,
+        web3Provider.getSigner(),
+      );
+
+      console.log({
+        businessId,
+      });
+      receipt = await _contract.addBusiness(businessId, name);
+    } catch (e) {
+      console.error(e);
+      setAddBusinessTxStatus(TxStatus.Rejected);
+    }
+
+    if (!receipt) {
+      return;
+    }
+
+    setAddBusinessTxStatus(TxStatus.Mining);
+
+    try {
+      await receipt.wait();
+      setAddBusinessTxStatus(TxStatus.Done);
+    } catch (e) {
+      console.error(e);
+      setAddBusinessTxStatus(TxStatus.Failed);
+    }
+  }
 
   function removeBusiness(businessId: string) {}
 

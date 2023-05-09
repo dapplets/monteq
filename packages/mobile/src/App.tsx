@@ -15,6 +15,8 @@ import TxScreen from './screens/TxScreen';
 import {View} from 'react-native';
 import {usePatchedWeb3Modal} from './hooks/usePatchedWeb3Modal';
 import {MonteqContractProvider} from './contexts/MonteqContractContext';
+import MyBusiness from './screens/MyBusiness';
+import AddingMyBusiness from './screens/AddingMyBusiness';
 
 export type RootStackParamList = {
   InfoScreen: undefined;
@@ -22,6 +24,8 @@ export type RootStackParamList = {
   TxScreen: {url: string};
   WelcomeScreen: undefined;
   CodeScanned: undefined;
+  MyBusiness: undefined;
+  AddingMyBusiness: {url: string};
 };
 
 const Stack = createNativeStackNavigator();
@@ -49,6 +53,11 @@ function App(): JSX.Element {
                   <Stack.Screen name="InfoScreen" component={InfoScreen} />
                   <Stack.Screen name="CameraScreen" component={CameraScreen} />
                   <Stack.Screen name="TxScreen" component={TxScreen} />
+                  <Stack.Screen name="MyBusiness" component={MyBusiness} />
+                  <Stack.Screen
+                    name="AddingMyBusiness"
+                    component={AddingMyBusiness}
+                  />
                 </>
               ) : (
                 <>
