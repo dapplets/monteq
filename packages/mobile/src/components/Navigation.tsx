@@ -17,9 +17,9 @@ const Navigation = ({path}: NavigationType) => {
     provider?.disconnect();
   }
 
-  // async function handleScanPress() {
-  //   navigation.navigate('CameraScreen');
-  // }
+  async function navigationMyBusiness() {
+    navigation.navigate('MyBusiness');
+  }
   async function navigationUserHistory() {
     navigation.navigate('InfoScreen');
   }
@@ -42,6 +42,7 @@ const Navigation = ({path}: NavigationType) => {
   return (
     <View style={styles.NavigationWrapper}>
       <ButtonNavigationDefault
+        onPress={navigationMyBusiness}
         image={
           path === 'home'
             ? require('../assets/homeGreen.png')
