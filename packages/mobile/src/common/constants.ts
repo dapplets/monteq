@@ -11,6 +11,10 @@ export const WC_METADATA: Metadata = {
   icons: [], // ToDo: add icon
 };
 
+export const JSON_RPC_URL = 'https://rpc.gnosischain.com';
+
+export const CHAIN_ID = 100;
+
 export const WC_SESSION_PARAMS: ConnectParams = {
   namespaces: {
     eip155: {
@@ -21,11 +25,12 @@ export const WC_SESSION_PARAMS: ConnectParams = {
         'eth_sign',
         'get_balance',
         'personal_sign',
+        'eth_accounts',
       ],
       events: ['accountsChanged', 'chainChanged'],
       rpcMap: {
         11155111: 'https://rpc.sepolia.org/',
-        100: 'https://rpc.gnosischain.com',
+        [CHAIN_ID]: JSON_RPC_URL,
       },
     },
   },

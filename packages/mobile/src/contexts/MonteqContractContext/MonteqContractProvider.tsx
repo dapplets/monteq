@@ -9,7 +9,12 @@ import {
 } from './MonteqContractContext';
 import {ethers} from 'ethers';
 import {useWeb3Modal} from '@web3modal/react-native';
-import {MONTEQ_CONTRACT_ADDRESS} from '../../common/constants';
+import {
+  CHAIN_ID,
+  JSON_RPC_URL,
+  MONTEQ_CONTRACT_ADDRESS,
+  WC_SESSION_PARAMS,
+} from '../../common/constants';
 import MONTEQ_ABI from '../../abis/MonteQ.json';
 
 type Props = {
@@ -17,7 +22,7 @@ type Props = {
 };
 
 const MonteqContractProvider: FC<Props> = ({children}) => {
-  const {provider} = useWeb3Modal();
+  const {provider: writeEip1193} = useWeb3Modal();
 
   const [contract, setContract] = useState<ethers.Contract | null>(null);
   const [outHistory, setOutHistory] = useState<HistoryRecord[]>([]);
@@ -35,19 +40,35 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
     useState<TxStatus>(TxStatus.Idle);
 
   useEffect(() => {
-    if (provider) {
-      const web3Provider = new ethers.providers.Web3Provider(provider);
+    if (writeEip1193) {
+      const readProvider = new ethers.providers.JsonRpcProvider(
+        JSON_RPC_URL,
+        CHAIN_ID,
+      );
+
+      // The `eth_estimateGas` and `eth_call` calls are not resolved by WC-provider
+      // So we split read and write calls by separate providers
+      const provider = new ethers.providers.Web3Provider({
+        request: ({method, params}) => {
+          const writeMethods = WC_SESSION_PARAMS.namespaces.eip155.methods;
+          return writeMethods.includes(method)
+            ? writeEip1193.request({method, params})
+            : readProvider.send(method, params ?? []);
+        },
+      });
+
       const _contract = new ethers.Contract(
         MONTEQ_CONTRACT_ADDRESS,
         MONTEQ_ABI,
-        web3Provider.getSigner(),
+        provider.getSigner(),
       );
+
       setContract(_contract);
       setOutHistory(outHistory);
     } else {
       setContract(null);
     }
-  }, [provider, paymentTxStatus, outHistory]);
+  }, [writeEip1193, paymentTxStatus, outHistory]);
 
   async function loadMoreOutHistory() {
     if (!contract) {
@@ -55,17 +76,9 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
     }
 
     // ToDo: naive impl
-    const jsonRpcProvider = new ethers.providers.JsonRpcProvider(
-      'https://rpc.gnosischain.com',
-      100,
-    );
-    const readOnlyContract = new ethers.Contract(
-      MONTEQ_CONTRACT_ADDRESS,
-      MONTEQ_ABI,
-      jsonRpcProvider,
-    );
     const payer = await contract.signer.getAddress();
-    const data = await readOnlyContract.getHistoryByPayer(payer, 0, 100, true);
+    const data = await contract.getHistoryByPayer(payer, 0, 100, true);
+    // ToDo: pagination
 
     setOutHistory(
       data.history.map((x: any) => ({
@@ -78,7 +91,7 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
       })),
     );
   }
-  console.log(outHistory, 'outHistory');
+
   function loadMoreInHistory() {}
 
   async function payReceipt(
@@ -87,7 +100,7 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
     amountReceipt: ParsedUint,
     amountTips: ParsedUint,
   ) {
-    if (!provider) {
+    if (!contract) {
       return;
     }
 
@@ -101,28 +114,13 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
       const amountTipsBN = ethers.utils.parseEther(amountTips);
       const totalAmountBN = amountReceiptBN.add(amountTipsBN);
 
-      const web3Provider = new ethers.providers.Web3Provider(provider);
-      const _contract = new ethers.Contract(
-        MONTEQ_CONTRACT_ADDRESS,
-        MONTEQ_ABI,
-        web3Provider.getSigner(),
-      );
-
-      console.log({
-        businessId,
-        currencyReceiptBN,
-        amountReceiptBN,
-        totalAmountBN,
-      });
-
-      receipt = await _contract.payReceipt(
+      receipt = await contract.payReceipt(
         businessId,
         currencyReceiptBN,
         amountReceiptBN,
         {value: totalAmountBN},
       );
     } catch (e) {
-      console.error(e);
       setPaymentTxStatus(TxStatus.Rejected);
     }
 
@@ -142,7 +140,7 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
   }
 
   async function addBusiness(businessId: string, name: string) {
-    if (!provider) {
+    if (!writeEip1193) {
       return;
     }
 
@@ -151,7 +149,7 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
     let receipt: any | null = null;
 
     try {
-      const web3Provider = new ethers.providers.Web3Provider(provider);
+      const web3Provider = new ethers.providers.Web3Provider(writeEip1193);
       const _contract = new ethers.Contract(
         MONTEQ_CONTRACT_ADDRESS,
         MONTEQ_ABI,
