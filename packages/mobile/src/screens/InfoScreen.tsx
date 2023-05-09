@@ -1,23 +1,19 @@
 import * as React from 'react';
-import {Button, Text, FlatList, StyleSheet, View} from 'react-native';
+import {Text, StyleSheet, View} from 'react-native';
 
 import Navigation from '../components/Navigation';
 import Title from '../components/TitlePage';
 import TimeLabel from '../components/TimeLabel';
 import {useMonteqContract} from '../contexts/MonteqContractContext';
-import {useMemo, useState, useEffect} from 'react';
-const preg = /\.(\d+)/;
+import {useEffect} from 'react';
+
 const InfoScreen = () => {
   const {outHistory, loadMoreOutHistory} = useMonteqContract();
-  const [history, setHistory] = useState(outHistory);
-  useEffect(() => {
-    // loadMoreOutHistory();
-  }, []);
-  const outHistoryInfo = useMemo(() => {
-    return setHistory(outHistory);
-  }, []);
 
-  console.log(history, 'Payment history');
+  useEffect(() => {
+    loadMoreOutHistory();
+  }, [loadMoreOutHistory]);
+
   return (
     <View style={styles.InfoScreenWrapper}>
       <Title label="Payment history" />
@@ -37,23 +33,7 @@ const InfoScreen = () => {
             </View>
           );
         })}
-
-        {/* <FlatList
-          data={outHistory.map(x => ({
-            key: `${x.currencyReceipt} EUR to ${x.businessId} at ${new Date(
-              x.timestamp * 1000,
-            )
-              .toISOString()
-              .replace(preg, '')}`,
-          }))}
-          renderItem={({item}) => <Text>{item.key}</Text>}
-        /> */}
-        {/* <Button onPress={() => loadMoreOutHistory()} title="Refresh" /> */}
       </View>
-      {/* <Text>Logged in</Text> */}
-      {/* <Button onPress={handleDisconnectPress} title="Disconnect" /> */}
-      {/* <Button onPress={handleScanPress} title="Scan via third-party lib" />
-      <Button onPress={handleGmsScanPress} title="Scan via gms (preferred)" /> */}
       <Navigation path="user" />
     </View>
   );

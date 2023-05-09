@@ -64,11 +64,10 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
       );
 
       setContract(_contract);
-      setOutHistory(outHistory);
     } else {
       setContract(null);
     }
-  }, [writeEip1193, paymentTxStatus, outHistory]);
+  }, [writeEip1193]);
 
   async function loadMoreOutHistory() {
     if (!contract) {
