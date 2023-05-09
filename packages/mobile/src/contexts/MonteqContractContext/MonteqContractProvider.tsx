@@ -139,7 +139,7 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
   }
 
   async function addBusiness(businessId: string, name: string) {
-    if (!writeEip1193) {
+    if (!contract) {
       return;
     }
 
@@ -148,17 +148,7 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
     let receipt: any | null = null;
 
     try {
-      const web3Provider = new ethers.providers.Web3Provider(writeEip1193);
-      const _contract = new ethers.Contract(
-        MONTEQ_CONTRACT_ADDRESS,
-        MONTEQ_ABI,
-        web3Provider.getSigner(),
-      );
-
-      console.log({
-        businessId,
-      });
-      receipt = await _contract.addBusiness(businessId, name);
+      receipt = await contract.addBusiness(businessId, name);
     } catch (e) {
       console.error(e);
       setAddBusinessTxStatus(TxStatus.Rejected);

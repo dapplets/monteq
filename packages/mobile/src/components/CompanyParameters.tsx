@@ -17,9 +17,14 @@ const CompanyParameters = ({
       style={isGray ? styles.PaymentParametersGray : styles.PaymentParameters}>
       <Text style={styles.Parameters}>{parameters}</Text>
       <TextInput
+        autoFocus={true}
+        numberOfLines={1}
+        placeholder="Enter Name"
+        value={value}
         maxLength={12}
         onChangeText={onChangeValue}
-        style={styles.Value}></TextInput>
+        style={styles.Value}
+      />
     </View>
   );
 };
@@ -55,10 +60,15 @@ const styles = StyleSheet.create({
   },
   Value: {
     fontSize: 14,
+    lineHeight: 17,
     fontWeight: '600',
-    height: 17,
     color: '#222222',
     backgroundColor: '#fff',
+    padding: 0,
+    margin: 0,
+    textAlign: 'right',
+    width: 100,
   },
 });
+
 export default CompanyParameters;

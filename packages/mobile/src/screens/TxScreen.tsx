@@ -75,9 +75,10 @@ const TxScreen: React.FC<Props> = memo(({route}) => {
   }
 
   if (!parsedReceipt) {
+    // ToDo: invalid receipt
     return null;
   }
-  console.log(paymentTxStatus);
+  
   return (
     <>
       {!crypto ? (

@@ -25,46 +25,44 @@ import PaymentParameters from '../components/PaymentParameters';
 import {BASE_FIAT_CURRENCY} from '../common/constants';
 import CompanyParameters from '../components/CompanyParameters';
 import {useWeb3Modal} from '@web3modal/react-native';
+import {TxStatus} from '../contexts/MonteqContractContext/MonteqContractContext';
 type Props = {
   route: RouteProp<{params: {url: string}}, 'params'>;
 };
 
 const AddingMyBusiness: React.FC<Props> = memo(({route}) => {
   const parsedReceipt = parseReceipt(route.params.url);
-  const [nameCompany, setNameCompany] = useState('Name Company');
+  const [nameCompany, setNameCompany] = useState('');
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const {provider} = useWeb3Modal();
   const {addBusiness, addBusinessTxStatus} = useMonteqContract();
-  const [currencyAmount, setCurrencyAmount] = useState(
-    parsedReceipt?.currencyReceipt ?? '0',
-  );
 
   useEffect(() => {
+    // ToDo: show popup about invalid receipt
     if (!parsedReceipt) {
       navigation.goBack();
-    } else {
-      setCurrencyAmount('0.01');
     }
   }, [parsedReceipt, navigation]);
+
+  useEffect(() => {
+    if (addBusinessTxStatus === TxStatus.Done) {
+      navigation.navigate('MyBusiness');
+    }
+  }, [addBusinessTxStatus, navigation]);
 
   async function handleSendPress() {
     if (!provider || !parsedReceipt) {
       return;
     }
-    try {
-      addBusiness(parsedReceipt.businessId, nameCompany);
-    } catch (error) {
-      Alert.alert(error as string);
-    } finally {
-      //   if (addBusinessTxStatus === 3) {
-      navigation.navigate('MyBusiness');
-      //   }
-    }
+
+    addBusiness(parsedReceipt.businessId, nameCompany);
   }
+
   if (!parsedReceipt) {
+    // ToDo: invalid receipt
     return null;
   }
-  console.log(nameCompany);
+
   return (
     <>
       <Title label="Adding my business" />
@@ -83,7 +81,10 @@ const AddingMyBusiness: React.FC<Props> = memo(({route}) => {
             parameters={'Amount'}
             value={`${parsedReceipt.currencyReceipt} ${BASE_FIAT_CURRENCY}`}
           />
-          <PaymentParameters parameters={'Date'} value={'26/04/2023 11:13'} />
+          <PaymentParameters
+            parameters={'Date'}
+            value={new Date(parsedReceipt.createdAt).toLocaleString()}
+          />
         </View>
 
         <LinearGradient
@@ -92,6 +93,7 @@ const AddingMyBusiness: React.FC<Props> = memo(({route}) => {
           style={styles.linearGradient}
           colors={['#0dd977', '#1da4ac', '#14c48c']}>
           <TouchableHighlight
+            disabled={nameCompany.length === 0}
             style={styles.buttonSend}
             onPress={handleSendPress}>
             <Text style={styles.buttonText}>It's me. Add the business!</Text>
@@ -110,7 +112,6 @@ const styles = StyleSheet.create({
     height: '100%',
     padding: 10,
   },
-
   linearGradient: {
     display: 'flex',
     borderRadius: 50,
@@ -132,7 +133,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
   },
-
   PayInfo: {
     display: 'flex',
     flexDirection: 'column',
@@ -143,4 +143,5 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
 });
+
 export default AddingMyBusiness;
