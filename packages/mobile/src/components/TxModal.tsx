@@ -26,8 +26,9 @@ export enum TxStatusType {
 
 type Props = {
   title: string;
-  status: string;
-  type: TxStatusType;
+  description?: string;
+  status?: string;
+  type?: TxStatusType;
   recipient?: string;
   date?: string;
   fiatAmount?: string;
@@ -43,6 +44,7 @@ type Props = {
 
 const TxModal: React.FC<Props> = ({
   title,
+  description,
   status,
   type,
   image,
@@ -75,27 +77,33 @@ const TxModal: React.FC<Props> = ({
             />
           ) : null}
 
-          <View style={styles.StatusBlock}>
-            <Text style={styles.ParametersStatus}>Status</Text>
+          {description ? (
+            <Text style={styles.DescriptionText}>{description}</Text>
+          ) : null}
 
-            <View style={styles.ValueStatus}>
-              <Text
-                style={
-                  type === TxStatusType.Green
-                    ? styles.ValueStatusTextOk
-                    : styles.ValueStatusText
-                }>
-                {status}
-              </Text>
-              <View
-                style={
-                  type === TxStatusType.Green
-                    ? styles.ValueStatusLabelOk
-                    : styles.ValueStatusLabel
-                }
-              />
+          {status !== undefined && type !== undefined ? (
+            <View style={styles.StatusBlock}>
+              <Text style={styles.ParametersStatus}>Status</Text>
+
+              <View style={styles.ValueStatus}>
+                <Text
+                  style={
+                    type === TxStatusType.Green
+                      ? styles.ValueStatusTextOk
+                      : styles.ValueStatusText
+                  }>
+                  {status}
+                </Text>
+                <View
+                  style={
+                    type === TxStatusType.Green
+                      ? styles.ValueStatusLabelOk
+                      : styles.ValueStatusLabel
+                  }
+                />
+              </View>
             </View>
-          </View>
+          ) : null}
 
           {recipient !== undefined ? (
             <PaymentParameters
@@ -152,7 +160,7 @@ const TxModal: React.FC<Props> = ({
             <TouchableHighlight
               style={styles.secondaryButton}
               onPress={onSecondaryButtonPress}>
-              <Text style={styles.primaryButtonText}>{secondaryButton}</Text>
+              <Text style={styles.secondaryButtonText}>{secondaryButton}</Text>
             </TouchableHighlight>
           ) : null}
         </View>
@@ -244,6 +252,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     borderRadius: 50,
     width: '100%',
+    marginBottom: 10,
   },
   primaryButton: {
     backgroundColor: 'transparent',
@@ -269,6 +278,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'center',
+    borderRadius: 50,
   },
   secondaryButtonText: {
     fontSize: 14,
@@ -277,6 +287,15 @@ const styles = StyleSheet.create({
     // textAlign: 'center',
     color: '#222222',
     textDecorationLine: 'underline',
+  },
+  DescriptionText: {
+    fontSize: 14,
+    lineHeight: 21,
+    color: '#222222',
+    textAlign: 'center',
+    paddingLeft: 10,
+    paddingRight: 10,
+    marginBottom: 10,
   },
 });
 

@@ -178,15 +178,11 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
         amountReceiptBN,
         {value: totalAmountBN},
       );
+      setPaymentTxStatus(TxStatus.Mining);
     } catch (e) {
       setPaymentTxStatus(TxStatus.Rejected);
-    }
-
-    if (!receipt) {
       return;
     }
-
-    setPaymentTxStatus(TxStatus.Mining);
 
     try {
       await receipt.wait();

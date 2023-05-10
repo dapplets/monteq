@@ -290,8 +290,20 @@ const TxScreen: React.FC<Props> = memo(({route}) => {
         />
       ) : null}
 
-      {/* ToDo: TxStatus.Rejected */}
-      {/* ToDo: TxStatus.Failed */}
+      {paymentTxStatus === TxStatus.Rejected ||
+      paymentTxStatus === TxStatus.Failed ? (
+        <TxModal
+          isVisible={modalVisible}
+          title="Transaction rejected"
+          description="ToDo: write description here"
+          image={require('../assets/errorOccured.png')}
+          onRequestClose={() => setModalVisible(!modalVisible)}
+          primaryButton="Retry"
+          onPrimaryButtonPress={handleSendPress}
+          secondaryButton="Close"
+          onSecondaryButtonPress={navigationUserHistory}
+        />
+      ) : null}
     </>
   );
 });
