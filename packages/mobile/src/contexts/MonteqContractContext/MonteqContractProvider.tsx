@@ -114,60 +114,53 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
       return;
     }
 
-    // ToDo: naive impl
-    const payer = await contract.signer.getAddress();
-    const data = await contract.getHistoryByPayer(payer, 0, 100, true);
-    // ToDo: pagination
+    setIsOutHistoryLoading(true);
 
-    setOutHistory(
-      data.history.map((x: any) => ({
-        businessId: x.businessId,
-        payer: x.payer,
-        currencyReceipt: formatUnits(x.currencyReceipt, 2),
-        receiptAmount: formatEther(x.receiptAmount),
-        tipAmount: formatEther(x.tipAmount),
-        totalCryptoAmount: formatEther(x.receiptAmount.add(x.tipAmount)),
-        timestamp: x.timestamp.toNumber(),
-      })),
-    );
+    try {
+      // ToDo: naive impl
+      const payer = await contract.signer.getAddress();
+      const data = await contract.getHistoryByPayer(payer, 0, 100, true);
+      // ToDo: pagination
 
-    setSpentTotalCryptoAmount(
-      formatEther(
-        data.history.reduce(
-          (acc: ethers.BigNumber, x: any) =>
-            acc.add(x.receiptAmount.add(x.tipAmount)),
-          ethers.BigNumber.from('0'),
+      setOutHistory(
+        data.history.map((x: any) => ({
+          businessId: x.businessId,
+          payer: x.payer,
+          currencyReceipt: formatUnits(x.currencyReceipt, 2),
+          receiptAmount: formatEther(x.receiptAmount),
+          tipAmount: formatEther(x.tipAmount),
+          totalCryptoAmount: formatEther(x.receiptAmount.add(x.tipAmount)),
+          timestamp: x.timestamp.toNumber(),
+        })),
+      );
+
+      setSpentTotalCryptoAmount(
+        formatEther(
+          data.history.reduce(
+            (acc: ethers.BigNumber, x: any) =>
+              acc.add(x.receiptAmount.add(x.tipAmount)),
+            ethers.BigNumber.from('0'),
+          ),
         ),
-      ),
-    );
+      );
 
-    setSpentTipsCryptoAmount(
-      formatEther(
-        data.history.reduce(
-          (acc: ethers.BigNumber, x: any) => acc.add(x.tipAmount),
-          ethers.BigNumber.from('0'),
+      setSpentTipsCryptoAmount(
+        formatEther(
+          data.history.reduce(
+            (acc: ethers.BigNumber, x: any) => acc.add(x.tipAmount),
+            ethers.BigNumber.from('0'),
+          ),
         ),
-      ),
-    );
+      );
+    } catch (e) {
+      console.error(e);
+      setOutHistory(contextDefaultValues.outHistory);
+      setSpentTotalCryptoAmount(contextDefaultValues.spentTotalCryptoAmount);
+      setSpentTipsCryptoAmount(contextDefaultValues.spentTipsCryptoAmount);
+    }
+
+    setIsOutHistoryLoading(false);
   }, [contract]);
-
-  useEffect(() => {
-    (async () => {
-      if (!contract) {
-        return;
-      }
-
-      setIsInHistoryLoading(true);
-
-      try {
-        await loadMoreOutHistory();
-      } catch (e) {
-        console.error(e);
-      }
-
-      setIsInHistoryLoading(false);
-    })();
-  }, [contract, loadMoreOutHistory]);
 
   async function loadMoreInHistory() {
     if (!contract) {
