@@ -91,6 +91,7 @@ contract MonteQ {
         string calldata businessId,
         string calldata name
     ) public {
+        // ToDo: anyone can link a business
         require(
             businessInfos[businessId].owner == address(0),
             "The business already exists."
@@ -115,6 +116,7 @@ contract MonteQ {
 
         delete businessInfos[businessId];
 
+        // ToDo: out of gas is possible 
         string[] storage ids = businessIdsByOwner[msg.sender];
         for (uint256 i = 0; i < ids.length; ++i) {
             if (
