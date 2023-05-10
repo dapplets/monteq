@@ -112,21 +112,20 @@ contract MonteQ {
             msg.sender == businessInfos[businessId].owner,
             "Only the business owner can remove it."
         );
+
         delete businessInfos[businessId];
-        string[] memory newIds = new string[](
-            businessIdsByOwer[msg.sender].length - 1
-        );
-        uint256 j = 0;
-        for (uint256 i = 0; i < businessIdsByOwer[msg.sender].length; ++i) {
-            string memory str = businessIdsByOwer[msg.sender][i];
+
+        string[] storage ids = businessIdsByOwer[msg.sender];
+        for (uint256 i = 0; i < ids.length; ++i) {
             if (
-                keccak256(abi.encodePacked(str)) !=
+                keccak256(abi.encodePacked(ids[i])) ==
                 keccak256(abi.encodePacked(businessId))
             ) {
-                newIds[j++] = str;
+                ids[i] = ids[ids.length - 1];
+                ids.pop();
+                break;
             }
         }
-        businessIdsByOwer[msg.sender] = newIds;
     }
 
     function _paginate(
