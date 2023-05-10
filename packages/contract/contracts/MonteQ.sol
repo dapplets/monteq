@@ -29,7 +29,7 @@ contract MonteQ {
     mapping(address => string[]) public businessIdsByOwner; // mapping(owner => BusinessIds)
     mapping(string => uint) public credits; // mapping(BusinessId => BusinessCredit)
 
-    function getBusinessInfosByOwer(
+    function getBusinessInfosByOwner(
         address owner
     ) public view returns (BusinessInfo[] memory infos) {
         string[] memory ids = businessIdsByOwner[owner];

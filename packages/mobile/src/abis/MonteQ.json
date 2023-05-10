@@ -97,7 +97,7 @@
         "type": "address"
       }
     ],
-    "name": "getBusinessInfosByOwer",
+    "name": "getBusinessInfosByOwner",
     "outputs": [
       {
         "components": [
