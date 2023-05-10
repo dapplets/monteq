@@ -1,5 +1,5 @@
 import {NavigationContainer} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import React from 'react';
 import WelcomeScreen from './screens/WelcomeScreen';
 import {Web3Modal} from '@web3modal/react-native';
@@ -20,6 +20,9 @@ import AddingMyBusiness from './screens/AddingMyBusiness';
 import HowUse from './screens/HowUse';
 import RemovingMyBusiness from './screens/RemovingMyBuisness';
 import {ParsedReceipt} from './common/parseReceipt';
+import {enableScreens} from 'react-native-screens';
+
+enableScreens();
 
 export type RootStackParamList = {
   InfoScreen: undefined;
@@ -33,7 +36,7 @@ export type RootStackParamList = {
   RemovingMyBusiness: {parsedReceipt: ParsedReceipt};
 };
 
-const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
 
 function App(): JSX.Element {
   const {isConnected, isOpen, isLoading} = usePatchedWeb3Modal();
@@ -52,32 +55,32 @@ function App(): JSX.Element {
       {!isLoading ? (
         <MonteqContractProvider>
           <NavigationContainer>
-            <Stack.Navigator screenOptions={{headerShown: false}}>
+            <Tab.Navigator
+              screenOptions={{headerShown: false}}
+              tabBar={() => null}
+              detachInactiveScreens>
               {isConnected ? (
                 <>
-                  <Stack.Screen name="InfoScreen" component={InfoScreen} />
-                  <Stack.Screen name="CameraScreen" component={CameraScreen} />
-                  <Stack.Screen name="TxScreen" component={TxScreen} />
-                  <Stack.Screen name="MyBusiness" component={MyBusiness} />
-                  <Stack.Screen
+                  <Tab.Screen name="InfoScreen" component={InfoScreen} />
+                  <Tab.Screen name="CameraScreen" component={CameraScreen} />
+                  <Tab.Screen name="TxScreen" component={TxScreen} />
+                  <Tab.Screen name="MyBusiness" component={MyBusiness} />
+                  <Tab.Screen
                     name="AddingMyBusiness"
                     component={AddingMyBusiness}
                   />
-                  <Stack.Screen
+                  <Tab.Screen
                     name="RemovingMyBusiness"
                     component={RemovingMyBusiness}
                   />
-                  <Stack.Screen name="HowUse" component={HowUse} />
+                  <Tab.Screen name="HowUse" component={HowUse} />
                 </>
               ) : (
                 <>
-                  <Stack.Screen
-                    name="WelcomeScreen"
-                    component={WelcomeScreen}
-                  />
+                  <Tab.Screen name="WelcomeScreen" component={WelcomeScreen} />
                 </>
               )}
-            </Stack.Navigator>
+            </Tab.Navigator>
           </NavigationContainer>
         </MonteqContractProvider>
       ) : null}
