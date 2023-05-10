@@ -14,7 +14,10 @@ import {memo, useEffect, useState} from 'react';
 import {RootStackParamList} from '../App';
 import PaymentParameters from '../components/PaymentParameters';
 import {useWeb3Modal} from '@web3modal/react-native';
-import {TxStatus} from '../contexts/MonteqContractContext/MonteqContractContext';
+import {
+  BusinessInfo,
+  TxStatus,
+} from '../contexts/MonteqContractContext/MonteqContractContext';
 import TxModal, {TxStatusType} from '../components/TxModal';
 
 const RemovingMyBusiness: React.FC = memo(() => {
@@ -30,6 +33,16 @@ const RemovingMyBusiness: React.FC = memo(() => {
 
   const [modalVisible, setModalVisible] = useState(false);
 
+  const [savedMyBusiness, setSavedMyBusiness] = useState<BusinessInfo | null>(
+    null,
+  );
+
+  useEffect(() => {
+    if (myBusiness) {
+      setSavedMyBusiness(myBusiness);
+    }
+  }, [myBusiness]);
+
   useEffect(() => {
     resetRemoveBusinessTxStatus();
   }, [isFocused, resetRemoveBusinessTxStatus]);
@@ -39,19 +52,17 @@ const RemovingMyBusiness: React.FC = memo(() => {
   }
 
   async function handleSendPress() {
-    if (!provider || !myBusiness) {
+    if (!provider || !savedMyBusiness) {
       return;
     }
 
     setModalVisible(true);
 
     // nameCompany
-    removeBusiness(myBusiness.id);
+    removeBusiness(savedMyBusiness.id);
   }
 
-  if (!myBusiness) {
-    // ToDo: refactor
-    navigation.navigate('MyBusiness');
+  if (!savedMyBusiness) {
     return null;
   }
 
@@ -62,11 +73,11 @@ const RemovingMyBusiness: React.FC = memo(() => {
         <View style={styles.PayInfo}>
           <PaymentParameters
             parameters={'Business unit'}
-            value={myBusiness.id}
+            value={savedMyBusiness.id}
           />
           <PaymentParameters
             parameters={'Business name'}
-            value={myBusiness.name}
+            value={savedMyBusiness.name}
           />
         </View>
 
@@ -92,7 +103,7 @@ const RemovingMyBusiness: React.FC = memo(() => {
           status={'Signing'}
           type={TxStatusType.Yellow}
           image={require('../assets/inProgress.png')}
-          recipient={myBusiness.id}
+          recipient={savedMyBusiness.id}
           onRequestClose={() => setModalVisible(!modalVisible)}
         />
       ) : null}
@@ -104,7 +115,7 @@ const RemovingMyBusiness: React.FC = memo(() => {
           status={'Mining'}
           type={TxStatusType.Yellow}
           image={require('../assets/inProgress.png')}
-          recipient={myBusiness.id}
+          recipient={savedMyBusiness.id}
           onRequestClose={() => setModalVisible(!modalVisible)}
         />
       ) : null}
@@ -116,7 +127,7 @@ const RemovingMyBusiness: React.FC = memo(() => {
           status={'Confirmed'}
           type={TxStatusType.Green}
           image={require('../assets/confirmed.png')}
-          recipient={myBusiness.id}
+          recipient={savedMyBusiness.id}
           onRequestClose={() => setModalVisible(!modalVisible)}
           primaryButton="Close"
           onPrimaryButtonPress={handleCloseButtonPress}
