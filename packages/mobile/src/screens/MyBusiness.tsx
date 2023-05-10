@@ -13,7 +13,6 @@ import Title from '../components/TitlePage';
 import {useMonteqContract} from '../contexts/MonteqContractContext';
 import LinearGradient from 'react-native-linear-gradient';
 import SwitchBlock from '../components/SwitchBlock';
-import {useEffect} from 'react';
 import BarcodeScannerModule from '../modules/BarcodeScannerModule';
 import {useWeb3Modal} from '@web3modal/react-native';
 import {
@@ -76,23 +75,11 @@ const MyBusiness = () => {
   }
 
   async function handleGmsScanPressBusinessRemoving() {
-    if (!provider) {
+    if (!myBusiness) {
       return;
     }
 
-    try {
-      const url = await BarcodeScannerModule.scan();
-      const parsedReceipt = parseReceipt(url);
-      navigation.navigate('RemovingMyBusiness', {parsedReceipt});
-    } catch (e) {
-      console.error(e);
-
-      // @ts-ignore
-      if (e.message !== 'User canceled scanning') {
-        // @ts-ignore
-        Alert.alert('Error', e.message);
-      }
-    }
+    navigation.navigate('RemovingMyBusiness');
   }
 
   if (isInHistoryLoading || isMyBusinessLoading) {

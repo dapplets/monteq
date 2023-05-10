@@ -63,11 +63,6 @@ const AddingMyBusiness: React.FC<Props> = memo(({route}) => {
     addBusiness(parsedReceipt.businessId, nameCompany);
   }
 
-  if (!parsedReceipt) {
-    // ToDo: invalid receipt
-    return null;
-  }
-
   return (
     <>
       <Title label="Adding my business" />

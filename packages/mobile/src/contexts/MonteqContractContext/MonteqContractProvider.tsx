@@ -319,7 +319,18 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
 
     const receiptPromise = contract.addBusiness(businessId, name);
 
-    processTransaction(receiptPromise, setAddBusinessTxStatus);
+    const success = await processTransaction(
+      receiptPromise,
+      setAddBusinessTxStatus,
+    );
+
+    if (success) {
+      setMyBusiness({
+        id: businessId,
+        name: name,
+        owner: await contract.signer.getAddress(),
+      });
+    }
   }
 
   const resetAddBusinessTxStatus = useCallback(() => {
@@ -333,7 +344,14 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
 
     const receiptPromise = contract.removeBusiness(businessId);
 
-    processTransaction(receiptPromise, setRemoveBusinessTxStatus);
+    const success = await processTransaction(
+      receiptPromise,
+      setRemoveBusinessTxStatus,
+    );
+
+    if (success) {
+      setMyBusiness(null);
+    }
   }
 
   const resetRemoveBusinessTxStatus = useCallback(() => {
@@ -398,7 +416,7 @@ async function processTransaction(
   } catch (e) {
     console.error(e);
     setTxStatus(TxStatus.Rejected);
-    return;
+    return false;
   }
 
   try {
@@ -407,7 +425,10 @@ async function processTransaction(
   } catch (e) {
     console.error(e);
     setTxStatus(TxStatus.Failed);
+    return false;
   }
+
+  return true;
 }
 
 export {MonteqContractProvider};
