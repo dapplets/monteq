@@ -78,7 +78,7 @@ const TxScreen: React.FC<Props> = memo(({route}) => {
     // ToDo: invalid receipt
     return null;
   }
-  
+
   return (
     <>
       {!crypto ? (
@@ -203,14 +203,13 @@ const TxScreen: React.FC<Props> = memo(({route}) => {
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <Title label="Transaction sent" />
-            {paymentTxStatus === TxStatus.Done ? (
+            {paymentTxStatus === 3 ? (
               <Image
                 resizeMode="contain"
                 style={styles.TransactionImg}
                 source={require('../assets/confirmed.png')}
               />
-            ) : paymentTxStatus === TxStatus.Sending ||
-              paymentTxStatus === TxStatus.Mining ? (
+            ) : paymentTxStatus === 1 || paymentTxStatus === 2 ? (
               <Image
                 resizeMode="contain"
                 style={styles.TransactionImg}
@@ -222,13 +221,12 @@ const TxScreen: React.FC<Props> = memo(({route}) => {
 
             <View style={styles.StatusBlock}>
               <Text style={styles.ParametersStatus}>Status</Text>
-              {paymentTxStatus === TxStatus.Done ? (
+              {paymentTxStatus === 3 ? (
                 <View style={styles.ValueStatus}>
                   <Text style={styles.ValueStatusTextOk}>Confirmed</Text>
                   <View style={styles.ValueStatusLabelOk}></View>
                 </View>
-              ) : paymentTxStatus === TxStatus.Sending ||
-                paymentTxStatus === TxStatus.Mining ? (
+              ) : paymentTxStatus === 1 || paymentTxStatus === 2 ? (
                 <View style={styles.ValueStatus}>
                   <Text style={styles.ValueStatusText}>In progress</Text>
                   <View style={styles.ValueStatusLabel}></View>
@@ -258,19 +256,19 @@ const TxScreen: React.FC<Props> = memo(({route}) => {
               parameters={'Date'}
               value={'26/04/2023 11:13'}
             />
-            {/* {transactionStatusOk ? ( */}
-            <LinearGradient
-              start={{x: 0, y: 0}}
-              end={{x: 1, y: 0}}
-              style={styles.linearGradient}
-              colors={['#0dd977', '#1da4ac', '#14c48c']}>
-              <TouchableHighlight
-                style={styles.buttonSend}
-                onPress={navigationUserHistory}>
-                <Text style={styles.buttonText}>Close</Text>
-              </TouchableHighlight>
-            </LinearGradient>
-            {/* ) : null} */}
+            {paymentTxStatus === 3 ? (
+              <LinearGradient
+                start={{x: 0, y: 0}}
+                end={{x: 1, y: 0}}
+                style={styles.linearGradient}
+                colors={['#0dd977', '#1da4ac', '#14c48c']}>
+                <TouchableHighlight
+                  style={styles.buttonSend}
+                  onPress={navigationUserHistory}>
+                  <Text style={styles.buttonText}>Close</Text>
+                </TouchableHighlight>
+              </LinearGradient>
+            ) : null}
           </View>
         </View>
       </Modal>

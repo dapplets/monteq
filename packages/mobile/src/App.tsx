@@ -17,6 +17,8 @@ import {usePatchedWeb3Modal} from './hooks/usePatchedWeb3Modal';
 import {MonteqContractProvider} from './contexts/MonteqContractContext';
 import MyBusiness from './screens/MyBusiness';
 import AddingMyBusiness from './screens/AddingMyBusiness';
+import HowUse from './screens/HowUse';
+import RemovingMyBusiness from './screens/RemovingMyBuisness';
 
 export type RootStackParamList = {
   InfoScreen: undefined;
@@ -26,6 +28,8 @@ export type RootStackParamList = {
   CodeScanned: undefined;
   MyBusiness: undefined;
   AddingMyBusiness: {url: string};
+  HowUse: undefined;
+  RemovingMyBusiness: {url: string};
 };
 
 const Stack = createNativeStackNavigator();
@@ -58,6 +62,11 @@ function App(): JSX.Element {
                     name="AddingMyBusiness"
                     component={AddingMyBusiness}
                   />
+                  <Stack.Screen
+                    name="RemovingMyBusiness"
+                    component={RemovingMyBusiness}
+                  />
+                  <Stack.Screen name="HowUse" component={HowUse} />
                 </>
               ) : (
                 <>

@@ -1,4 +1,10 @@
-import {Pressable, StyleSheet, Text, TouchableHighlight, View} from 'react-native';
+import {
+  Pressable,
+  StyleSheet,
+  Text,
+  TouchableHighlight,
+  View,
+} from 'react-native';
 import React from 'react';
 export type TimeLabelType = {
   time: string;
@@ -31,7 +37,7 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     paddingRight: 10,
     width: 67,
-    height:38,
+    height: 38,
     borderRadius: 6,
   },
   timeDefault: {
@@ -41,7 +47,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'inherit',
     justifyContent: 'center',
     width: 67,
-    height:38,
+    height: 38,
     borderColor: '#919191',
     borderRadius: 6,
     borderWidth: 1,
@@ -62,7 +68,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 17,
     color: '#14C58B',
-    fontWeight:'700'
+    fontWeight: '700',
   },
 });
 export default TimeLabel;

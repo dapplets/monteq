@@ -91,7 +91,34 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
     );
   }
 
-  function loadMoreInHistory() {}
+  async function loadMoreInHistory() {
+    if (!contract) {
+      return;
+    }
+
+    // ToDo: naive impl
+    // todo: mocked businessid
+    //'test-bu-02'
+    // const payer = await contract.signer.getAddress();
+    const data = await contract.getHistoryByBusiness(
+      'test-bu-02',
+      0,
+      100,
+      true,
+    );
+    // ToDo: pagination
+
+    setInHistory(
+      data.history.map((x: any) => ({
+        businessId: x.businessId,
+        payer: x.payer,
+        currencyReceipt: ethers.utils.formatUnits(x.currencyReceipt, 2),
+        receiptAmount: ethers.utils.formatEther(x.receiptAmount),
+        tipAmount: ethers.utils.formatEther(x.tipAmount),
+        timestamp: x.timestamp.toNumber(),
+      })),
+    );
+  }
 
   async function payReceipt(
     businessId: string,
@@ -169,7 +196,35 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
     }
   }
 
-  function removeBusiness(businessId: string) {}
+  async function removeBusiness(businessId: string) {
+    if (!contract) {
+      return;
+    }
+
+    setRemoveBusinessTxStatus(TxStatus.Sending);
+
+    let receipt: any | null = null;
+    try {
+      receipt = await contract.removeBusiness(businessId);
+    } catch (e) {
+      console.error(e);
+      setRemoveBusinessTxStatus(TxStatus.Rejected);
+    }
+
+    if (!receipt) {
+      return;
+    }
+
+    setRemoveBusinessTxStatus(TxStatus.Mining);
+
+    try {
+      await receipt.wait();
+      setRemoveBusinessTxStatus(TxStatus.Done);
+    } catch (e) {
+      console.error(e);
+      setRemoveBusinessTxStatus(TxStatus.Failed);
+    }
+  }
 
   if (!contract) {
     return (

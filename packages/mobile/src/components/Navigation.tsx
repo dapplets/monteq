@@ -20,6 +20,9 @@ const Navigation = ({path}: NavigationType) => {
   async function navigationMyBusiness() {
     navigation.navigate('MyBusiness');
   }
+  async function navigationHowUse() {
+    navigation.navigate('HowUse');
+  }
   async function navigationUserHistory() {
     navigation.navigate('InfoScreen');
   }
@@ -50,6 +53,7 @@ const Navigation = ({path}: NavigationType) => {
         }
       />
       <ButtonNavigationDefault
+        onPress={navigationHowUse}
         image={
           path === 'help'
             ? require('../assets/helpGreen.png')
