@@ -116,14 +116,17 @@ contract MonteQ {
 
         delete businessInfos[businessId];
 
-        // ToDo: out of gas is possible 
+        // ToDo: out of gas is possible
         string[] storage ids = businessIdsByOwner[msg.sender];
         for (uint256 i = 0; i < ids.length; ++i) {
             if (
                 keccak256(abi.encodePacked(ids[i])) ==
                 keccak256(abi.encodePacked(businessId))
             ) {
-                ids[i] = ids[ids.length - 1];
+                if (ids.length > 1) {
+                    ids[i] = ids[ids.length - 1];
+                }
+
                 ids.pop();
                 break;
             }
