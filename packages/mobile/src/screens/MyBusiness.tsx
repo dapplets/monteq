@@ -21,6 +21,7 @@ import {RootStackParamList} from '../App';
 import HistoryPay from '../components/HistoryPay';
 import GeneralPayInfo from '../components/GeneralPayInfo';
 import {BASE_CRYPTO_CURRENCY, BASE_FIAT_CURRENCY} from '../common/constants';
+import {parseReceipt} from '../common/parseReceipt';
 
 const MyBusiness = () => {
   const {inHistory, loadMoreInHistory} = useMonteqContract();
@@ -39,12 +40,16 @@ const MyBusiness = () => {
 
     try {
       const url = await BarcodeScannerModule.scan();
-
-      navigation.navigate('AddingMyBusiness', {url});
+      const parsedReceipt = parseReceipt(url);
+      navigation.navigate('AddingMyBusiness', {parsedReceipt});
     } catch (e) {
-      // ToDo: catch CANCELED and FAILURE cases
       console.error(e);
-      Alert.alert('Failure or canceled');
+
+      // @ts-ignore
+      if (e.message !== 'User canceled scanning') {
+        // @ts-ignore
+        Alert.alert('Error', e.message);
+      }
     }
   }
 
@@ -55,12 +60,16 @@ const MyBusiness = () => {
 
     try {
       const url = await BarcodeScannerModule.scan();
-
-      navigation.navigate('RemovingMyBusiness', {url});
+      const parsedReceipt = parseReceipt(url);
+      navigation.navigate('RemovingMyBusiness', {parsedReceipt});
     } catch (e) {
-      // ToDo: catch CANCELED and FAILURE cases
       console.error(e);
-      Alert.alert('Failure or canceled');
+
+      // @ts-ignore
+      if (e.message !== 'User canceled scanning') {
+        // @ts-ignore
+        Alert.alert('Error', e.message);
+      }
     }
   }
 

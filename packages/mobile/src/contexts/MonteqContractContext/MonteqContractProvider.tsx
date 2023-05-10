@@ -162,36 +162,19 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
       return;
     }
 
-    setPaymentTxStatus(TxStatus.Sending);
+    const currencyReceiptBN = ethers.utils.parseUnits(currencyReceipt, 2); // Fiat currency has 2 decimals
+    const amountReceiptBN = ethers.utils.parseEther(amountReceipt);
+    const amountTipsBN = ethers.utils.parseEther(amountTips);
+    const totalAmountBN = amountReceiptBN.add(amountTipsBN);
 
-    let receipt: any | null = null;
+    const receiptPromise = contract.payReceipt(
+      businessId,
+      currencyReceiptBN,
+      amountReceiptBN,
+      {value: totalAmountBN},
+    );
 
-    try {
-      const currencyReceiptBN = ethers.utils.parseUnits(currencyReceipt, 2); // Fiat currency has 2 decimals
-      const amountReceiptBN = ethers.utils.parseEther(amountReceipt);
-      const amountTipsBN = ethers.utils.parseEther(amountTips);
-      const totalAmountBN = amountReceiptBN.add(amountTipsBN);
-
-      receipt = await contract.payReceipt(
-        businessId,
-        currencyReceiptBN,
-        amountReceiptBN,
-        {value: totalAmountBN},
-      );
-      setPaymentTxStatus(TxStatus.Mining);
-    } catch (e) {
-      console.error(e);
-      setPaymentTxStatus(TxStatus.Rejected);
-      return;
-    }
-
-    try {
-      await receipt.wait();
-      setPaymentTxStatus(TxStatus.Done);
-    } catch (e) {
-      console.error(e);
-      setPaymentTxStatus(TxStatus.Failed);
-    }
+    processTransaction(receiptPromise, setPaymentTxStatus);
   }
 
   async function addBusiness(businessId: string, name: string) {
@@ -199,30 +182,9 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
       return;
     }
 
-    setAddBusinessTxStatus(TxStatus.Sending);
+    const receiptPromise = contract.addBusiness(businessId, name);
 
-    let receipt: any | null = null;
-
-    try {
-      receipt = await contract.addBusiness(businessId, name);
-    } catch (e) {
-      console.error(e);
-      setAddBusinessTxStatus(TxStatus.Rejected);
-    }
-
-    if (!receipt) {
-      return;
-    }
-
-    setAddBusinessTxStatus(TxStatus.Mining);
-
-    try {
-      await receipt.wait();
-      setAddBusinessTxStatus(TxStatus.Done);
-    } catch (e) {
-      console.error(e);
-      setAddBusinessTxStatus(TxStatus.Failed);
-    }
+    processTransaction(receiptPromise, setAddBusinessTxStatus);
   }
 
   async function removeBusiness(businessId: string) {
@@ -230,29 +192,9 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
       return;
     }
 
-    setRemoveBusinessTxStatus(TxStatus.Sending);
+    const receiptPromise = contract.removeBusiness(businessId);
 
-    let receipt: any | null = null;
-    try {
-      receipt = await contract.removeBusiness(businessId);
-    } catch (e) {
-      console.error(e);
-      setRemoveBusinessTxStatus(TxStatus.Rejected);
-    }
-
-    if (!receipt) {
-      return;
-    }
-
-    setRemoveBusinessTxStatus(TxStatus.Mining);
-
-    try {
-      await receipt.wait();
-      setRemoveBusinessTxStatus(TxStatus.Done);
-    } catch (e) {
-      console.error(e);
-      setRemoveBusinessTxStatus(TxStatus.Failed);
-    }
+    processTransaction(receiptPromise, setRemoveBusinessTxStatus);
   }
 
   if (!contract) {
@@ -288,5 +230,31 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
     </MonteqContractContext.Provider>
   );
 };
+
+async function processTransaction(
+  promise: Promise<any>,
+  setTxStatus: (status: TxStatus) => void,
+) {
+  setTxStatus(TxStatus.Sending);
+
+  let receipt: any | null = null;
+
+  try {
+    receipt = await promise;
+    setTxStatus(TxStatus.Mining);
+  } catch (e) {
+    console.error(e);
+    setTxStatus(TxStatus.Rejected);
+    return;
+  }
+
+  try {
+    await receipt.wait();
+    setTxStatus(TxStatus.Done);
+  } catch (e) {
+    console.error(e);
+    setTxStatus(TxStatus.Failed);
+  }
+}
 
 export {MonteqContractProvider};

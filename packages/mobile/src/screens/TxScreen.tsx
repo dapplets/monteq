@@ -13,7 +13,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import PaymentParameters from '../components/PaymentParameters';
 import Checkbox from '../components/Checkbox';
 import {type RootStackParamList} from '../App';
-import {parseReceipt} from '../common/parseReceipt';
+import {ParsedReceipt} from '../common/parseReceipt';
 import {useMonteqContract} from '../contexts/MonteqContractContext';
 import {
   BASE_CRYPTO_CURRENCY,
@@ -26,7 +26,7 @@ import TxModal, {TxStatusType} from '../components/TxModal';
 import {TxStatus} from '../contexts/MonteqContractContext/MonteqContractContext';
 
 type Props = {
-  route: RouteProp<{params: {url: string}}, 'params'>;
+  route: RouteProp<{params: {parsedReceipt: ParsedReceipt}}, 'params'>;
 };
 
 enum PaymentType {
@@ -36,7 +36,7 @@ enum PaymentType {
 }
 
 const TxScreen: React.FC<Props> = memo(({route}) => {
-  const parsedReceipt = parseReceipt(route.params.url);
+  const parsedReceipt = route.params.parsedReceipt;
 
   const {provider} = useWeb3Modal();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();

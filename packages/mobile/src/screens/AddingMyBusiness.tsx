@@ -19,7 +19,7 @@ import {
   useNavigation,
 } from '@react-navigation/native';
 import {memo, useEffect, useState} from 'react';
-import {parseReceipt} from '../common/parseReceipt';
+import {ParsedReceipt} from '../common/parseReceipt';
 import {RootStackParamList} from '../App';
 import PaymentParameters from '../components/PaymentParameters';
 import {BASE_FIAT_CURRENCY} from '../common/constants';
@@ -27,11 +27,12 @@ import CompanyParameters from '../components/CompanyParameters';
 import {useWeb3Modal} from '@web3modal/react-native';
 import {TxStatus} from '../contexts/MonteqContractContext/MonteqContractContext';
 type Props = {
-  route: RouteProp<{params: {url: string}}, 'params'>;
+  route: RouteProp<{params: {parsedReceipt: ParsedReceipt}}, 'params'>;
 };
 
 const AddingMyBusiness: React.FC<Props> = memo(({route}) => {
-  const parsedReceipt = parseReceipt(route.params.url);
+  const parsedReceipt = route.params.parsedReceipt;
+
   const [nameCompany, setNameCompany] = useState('');
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const {provider} = useWeb3Modal();
