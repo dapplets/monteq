@@ -180,6 +180,7 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
       );
       setPaymentTxStatus(TxStatus.Mining);
     } catch (e) {
+      console.error(e);
       setPaymentTxStatus(TxStatus.Rejected);
       return;
     }
