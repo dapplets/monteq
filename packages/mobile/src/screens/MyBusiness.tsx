@@ -18,6 +18,9 @@ import BarcodeScannerModule from '../modules/BarcodeScannerModule';
 import {useWeb3Modal} from '@web3modal/react-native';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {RootStackParamList} from '../App';
+import HistoryPay from '../components/HistoryPay';
+import GeneralPayInfo from '../components/GeneralPayInfo';
+import {BASE_CRYPTO_CURRENCY, BASE_FIAT_CURRENCY} from '../common/constants';
 
 const MyBusiness = () => {
   const {inHistory, loadMoreInHistory} = useMonteqContract();
@@ -26,8 +29,8 @@ const MyBusiness = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   useEffect(() => {
     loadMoreInHistory();
-  }, []);
-  console.log(inHistory,'MyBusiness');
+  }, [loadMoreInHistory]);
+
   async function handleGmsScanPressBusiness() {
     if (!provider) {
       return;
@@ -35,7 +38,23 @@ const MyBusiness = () => {
 
     try {
       const url = await BarcodeScannerModule.scan();
+
       navigation.navigate('AddingMyBusiness', {url});
+    } catch (e) {
+      // ToDo: catch CANCELED and FAILURE cases
+      console.error(e);
+      Alert.alert('Failure or canceled');
+    }
+  }
+  async function handleGmsScanPressBusinessRemoving() {
+    if (!provider) {
+      return;
+    }
+
+    try {
+      const url = await BarcodeScannerModule.scan();
+
+      navigation.navigate('RemovingMyBusiness', {url});
     } catch (e) {
       // ToDo: catch CANCELED and FAILURE cases
       console.error(e);
@@ -44,36 +63,99 @@ const MyBusiness = () => {
   }
   return (
     <>
-      <Title label="Owner’s View" />
-      <View style={styles.InfoScreenWrapper}>
-        <SwitchBlock
-          parameters={'Always start from business page'}
-          onPress={setRemember}
-          isPress={isRemember}
-        />
-        <Image
-          resizeMode="contain"
-          style={styles.BusinessImg}
-          source={require('../assets/Lines.png')}
-        />
-        <Text style={styles.DescriptionText}>
-          No business is associated with this wallet right now. Connect a
-          business to start getting paid in cryptocurrency or log in with the
-          right wallet.
-        </Text>
-        <LinearGradient
-          start={{x: 0, y: 0}}
-          end={{x: 1, y: 0}}
-          style={styles.linearGradient}
-          colors={['#0dd977', '#1da4ac', '#14c48c']}>
-          <TouchableHighlight
-            style={styles.buttonSend}
-            onPress={handleGmsScanPressBusiness}>
-            <Text style={styles.buttonText}>Connect my business</Text>
-          </TouchableHighlight>
-        </LinearGradient>
-      </View>
-      <Navigation path="home" />
+      {inHistory && inHistory.length > 0 ? (
+        <>
+          <View style={styles.InfoScreenWrapper}>
+            <Title label="Owner’s View" />
+            <GeneralPayInfo
+              // todo: must be eur
+              generalPayAmount={inHistory.reduce(
+                (s, i) => (s = s + +i.currencyReceipt),
+                0,
+              )}
+              title={'Paid for invoices'}
+              generalPayAmountSubtitle={BASE_FIAT_CURRENCY}
+              TipsAmount={inHistory.reduce(
+                (s, i) => (s = s + +i.currencyReceipt),
+                0,
+              )}
+              TipsSubtitleRight={BASE_CRYPTO_CURRENCY}
+            />
+            <GeneralPayInfo
+              generalPayAmount={inHistory.reduce(
+                (s, i) => (s = s + +i.tipAmount),
+                0,
+              )}
+              title={'Tips'}
+              generalPayAmountSubtitle={BASE_CRYPTO_CURRENCY}
+            />
+            <SwitchBlock
+              parameters={'Always start from this page'}
+              onPress={setRemember}
+              isPress={isRemember}
+            />
+            <LinearGradient
+              start={{x: 0, y: 0}}
+              end={{x: 1, y: 0}}
+              style={styles.linearGradient}
+              colors={['#0dd977', '#1da4ac', '#14c48c']}>
+              <TouchableHighlight
+                style={styles.buttonSend}
+                onPress={handleGmsScanPressBusinessRemoving}>
+                <Text style={styles.buttonText}>Remove my business</Text>
+              </TouchableHighlight>
+            </LinearGradient>
+            <View style={styles.list}>
+              {inHistory.map((x, i) => {
+                return (
+                  <HistoryPay
+                    key={i}
+                    time={new Date(x.timestamp * 1000).toISOString()}
+                    company={x.businessId}
+                    amount={
+                      '+' + x.currencyReceipt + ' ' + BASE_CRYPTO_CURRENCY
+                    }
+                  />
+                );
+              })}
+            </View>
+          </View>
+          <Navigation path="home" />
+        </>
+      ) : (
+        <>
+          <Title label="Owner’s View" />
+          <View style={styles.InfoScreenWrapper}>
+            <SwitchBlock
+              parameters={'Always start from business page'}
+              onPress={setRemember}
+              isPress={isRemember}
+            />
+            <Image
+              resizeMode="contain"
+              style={styles.BusinessImg}
+              source={require('../assets/Lines.png')}
+            />
+            <Text style={styles.DescriptionText}>
+              No business is associated with this wallet right now. Connect a
+              business to start getting paid in cryptocurrency or log in with
+              the right wallet.
+            </Text>
+            <LinearGradient
+              start={{x: 0, y: 0}}
+              end={{x: 1, y: 0}}
+              style={styles.linearGradient}
+              colors={['#0dd977', '#1da4ac', '#14c48c']}>
+              <TouchableHighlight
+                style={styles.buttonSend}
+                onPress={handleGmsScanPressBusiness}>
+                <Text style={styles.buttonText}>Connect my business</Text>
+              </TouchableHighlight>
+            </LinearGradient>
+          </View>
+          <Navigation path="home" />
+        </>
+      )}
     </>
   );
 };
@@ -100,13 +182,17 @@ const styles = StyleSheet.create({
   list: {
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
     width: '100%',
-    height: 300,
-    paddingLeft: 20,
-    paddingRight: 20,
+    height: '100%',
+    paddingLeft: 10,
+    paddingRight: 10,
     marginBottom: 'auto',
+    borderRadius: 4,
+    borderStyle: 'solid',
+    borderWidth: 1,
+    borderColor: '#E3E3E3',
+    marginTop: 10,
   },
   wrapperBorder: {},
   clockIcon: {},

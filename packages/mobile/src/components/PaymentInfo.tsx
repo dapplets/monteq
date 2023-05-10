@@ -7,6 +7,7 @@ import {
   Image,
   Text,
 } from 'react-native';
+import { BASE_CRYPTO_CURRENCY } from '../common/constants';
 export type PaymentInfoType = {
   price: string;
   title: string;
@@ -21,7 +22,7 @@ const PaymentInfo = ({price, title, convert}: PaymentInfoType) => {
       <Text style={styles.PaymentTitle}>{title}</Text>
       <View style={styles.PaymentPrice}>
         <Text style={styles.priceTitle}>{price}</Text>
-        <Text style={styles.priceSubtitle}>usdt</Text>
+        <Text style={styles.priceSubtitle}>{BASE_CRYPTO_CURRENCY}</Text>
       </View>
       <View style={styles.PaymentConvert}>
         <Text style={styles.convertEUR}>{convert.convertEUR}</Text>

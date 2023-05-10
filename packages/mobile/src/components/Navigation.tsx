@@ -20,6 +20,11 @@ const Navigation = ({path}: NavigationType) => {
   async function navigationMyBusiness() {
     navigation.navigate('MyBusiness');
   }
+
+  async function navigationHowUse() {
+    navigation.navigate('HowUse');
+  }
+
   async function navigationUserHistory() {
     navigation.navigate('InfoScreen');
   }
@@ -50,14 +55,13 @@ const Navigation = ({path}: NavigationType) => {
         }
       />
       <ButtonNavigationDefault
+        onPress={navigationHowUse}
         image={
           path === 'help'
             ? require('../assets/helpGreen.png')
             : require('../assets/helpcircle.png')
         }
       />
-      {/* <Button onPress={handleScanPress} title="Scan via third-party lib" />
-      <Button onPress={handleGmsScanPress} title="Scan via gms (preferred)" /> */}
       <TouchableHighlight
         style={styles.scanButton}
         underlayColor="#2261a5"
@@ -134,4 +138,5 @@ const styles = StyleSheet.create({
   iconLayout: {},
   logOutWrapper: {},
 });
+
 export default Navigation;

@@ -25,6 +25,12 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
   const {provider: writeEip1193} = useWeb3Modal();
 
   const [contract, setContract] = useState<ethers.Contract | null>(null);
+  const [balance, setBalance] = useState<ParsedUint>(
+    contextDefaultValues.balance,
+  );
+  const [isBalanceLoading, setIsBalanceLoading] = useState(false);
+  const [rate, setRate] = useState<ParsedUint>(contextDefaultValues.rate);
+  const [isRateLoading, setIsRateLoading] = useState(false);
   const [outHistory, setOutHistory] = useState<HistoryRecord[]>([]);
   const [isOutHistoryLoading, setIsOutHistoryLoading] =
     useState<boolean>(false);
@@ -69,6 +75,32 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
     }
   }, [writeEip1193]);
 
+  useEffect(() => {
+    (async () => {
+      setIsBalanceLoading(true);
+
+      if (contract) {
+        try {
+          // ToDo: refresh balance
+          const _balance = await contract.signer.getBalance();
+          setBalance(ethers.utils.formatEther(_balance));
+        } catch (e) {
+          console.error(e);
+          setBalance(contextDefaultValues.balance);
+        }
+      } else {
+        setBalance(contextDefaultValues.balance);
+      }
+
+      setIsBalanceLoading(false);
+    })();
+  }, [contract]);
+
+  useEffect(() => {
+    // ToDo: fetch real rate
+    setRate('1.1'); // 1 EUR = 1.1 XDAI
+  }, []);
+
   async function loadMoreOutHistory() {
     if (!contract) {
       return;
@@ -91,7 +123,34 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
     );
   }
 
-  function loadMoreInHistory() {}
+  async function loadMoreInHistory() {
+    if (!contract) {
+      return;
+    }
+
+    // ToDo: naive impl
+    // todo: mocked businessid
+    //'test-bu-02'
+    // const payer = await contract.signer.getAddress();
+    const data = await contract.getHistoryByBusiness(
+      'test-bu-02',
+      0,
+      100,
+      true,
+    );
+    // ToDo: pagination
+
+    setInHistory(
+      data.history.map((x: any) => ({
+        businessId: x.businessId,
+        payer: x.payer,
+        currencyReceipt: ethers.utils.formatUnits(x.currencyReceipt, 2),
+        receiptAmount: ethers.utils.formatEther(x.receiptAmount),
+        tipAmount: ethers.utils.formatEther(x.tipAmount),
+        timestamp: x.timestamp.toNumber(),
+      })),
+    );
+  }
 
   async function payReceipt(
     businessId: string,
@@ -169,7 +228,35 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
     }
   }
 
-  function removeBusiness(businessId: string) {}
+  async function removeBusiness(businessId: string) {
+    if (!contract) {
+      return;
+    }
+
+    setRemoveBusinessTxStatus(TxStatus.Sending);
+
+    let receipt: any | null = null;
+    try {
+      receipt = await contract.removeBusiness(businessId);
+    } catch (e) {
+      console.error(e);
+      setRemoveBusinessTxStatus(TxStatus.Rejected);
+    }
+
+    if (!receipt) {
+      return;
+    }
+
+    setRemoveBusinessTxStatus(TxStatus.Mining);
+
+    try {
+      await receipt.wait();
+      setRemoveBusinessTxStatus(TxStatus.Done);
+    } catch (e) {
+      console.error(e);
+      setRemoveBusinessTxStatus(TxStatus.Failed);
+    }
+  }
 
   if (!contract) {
     return (
@@ -180,6 +267,10 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
   }
 
   const state: MonteqContractContextState = {
+    balance,
+    isBalanceLoading,
+    rate,
+    isRateLoading,
     outHistory,
     isOutHistoryLoading,
     loadMoreOutHistory,

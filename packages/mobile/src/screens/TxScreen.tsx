@@ -4,7 +4,7 @@ import {
   useNavigation,
 } from '@react-navigation/native';
 import {useWeb3Modal} from '@web3modal/react-native';
-import React, {memo, useEffect, useMemo, useState} from 'react';
+import React, {memo, useEffect, useState} from 'react';
 import {
   Image,
   StyleSheet,
@@ -12,7 +12,6 @@ import {
   TouchableHighlight,
   View,
   Modal,
-  Alert,
 } from 'react-native';
 import Navigation from '../components/Navigation';
 import Title from '../components/TitlePage';
@@ -23,13 +22,24 @@ import Checkbox from '../components/Checkbox';
 import {type RootStackParamList} from '../App';
 import {parseReceipt} from '../common/parseReceipt';
 import {useMonteqContract} from '../contexts/MonteqContractContext';
-import {BASE_CRYPTO_CURRENCY, BASE_FIAT_CURRENCY} from '../common/constants';
+import {
+  BASE_CRYPTO_CURRENCY,
+  BASE_CRYPTO_MAX_DIGITS,
+  BASE_FIAT_CURRENCY,
+  BASE_FIAT_MAX_DIGITS,
+} from '../common/constants';
 import SwitchBlock from '../components/SwitchBlock';
-import {TxStatus} from '../contexts/MonteqContractContext/MonteqContractContext';
+import {addStr, mulStr, truncate} from '../common/helpers';
 
 type Props = {
   route: RouteProp<{params: {url: string}}, 'params'>;
 };
+
+enum PaymentType {
+  TIPS_ONLY,
+  BILL_ONLY,
+  BILL_AND_TIPS,
+}
 
 const TxScreen: React.FC<Props> = memo(({route}) => {
   const parsedReceipt = parseReceipt(route.params.url);
@@ -40,10 +50,14 @@ const TxScreen: React.FC<Props> = memo(({route}) => {
   const [currencyAmount, setCurrencyAmount] = useState(
     parsedReceipt?.currencyReceipt ?? '0',
   );
-  const [crypto, setCrypto] = useState(false);
-  const [isTips, setTips] = useState(false);
+
+  const [paymentType, setPaymentType] = useState<PaymentType>(
+    PaymentType.TIPS_ONLY,
+  );
+
   const [modalVisible, setModalVisible] = useState(false);
-  const {payReceipt, paymentTxStatus} = useMonteqContract();
+  const {balance, isBalanceLoading, payReceipt, paymentTxStatus, rate} =
+    useMonteqContract();
 
   useEffect(() => {
     if (!parsedReceipt) {
@@ -57,52 +71,71 @@ const TxScreen: React.FC<Props> = memo(({route}) => {
     navigation.navigate('InfoScreen');
   }
 
+  if (!parsedReceipt) {
+    // ToDo: invalid receipt
+    return null;
+  }
+
+  // ToDo: move the calculations into business logic hook
+  const billAmountInCrypto =
+    paymentType === PaymentType.BILL_ONLY ||
+    paymentType === PaymentType.BILL_AND_TIPS
+      ? mulStr(parsedReceipt.currencyReceipt, rate)
+      : '0';
+
+  const tipsAmountInCrypto =
+    paymentType === PaymentType.TIPS_ONLY ||
+    paymentType === PaymentType.BILL_AND_TIPS
+      ? mulStr(mulStr(parsedReceipt.currencyReceipt, '0.1'), rate)
+      : '0';
+
+  const amountInCrypto = addStr(billAmountInCrypto, tipsAmountInCrypto);
+
   async function handleSendPress() {
     if (!provider || !parsedReceipt) {
       return;
     }
 
     setModalVisible(true);
-    const tokenAmount = '0.01';
-    const tipsAmount = '0.005';
 
     payReceipt(
       parsedReceipt.businessId,
       parsedReceipt.currencyReceipt,
-      tokenAmount,
-      tipsAmount,
+      billAmountInCrypto,
+      tipsAmountInCrypto,
     );
   }
 
-  if (!parsedReceipt) {
-    // ToDo: invalid receipt
-    return null;
-  }
-  
   return (
     <>
-      {!crypto ? (
+      {paymentType === PaymentType.TIPS_ONLY ? (
         <View style={styles.InfoScreenWrapper}>
           <Title label="Check your payment" />
           <View style={styles.AvailableWrapper}>
             <Text style={styles.AvailableTitle}>Available</Text>
             <View style={styles.AvailableBlock}>
-              <Text style={styles.AvailableAmount}>{currencyAmount}</Text>
+              <Text style={styles.AvailableAmount}>
+                {isBalanceLoading
+                  ? '-'
+                  : truncate(balance, BASE_CRYPTO_MAX_DIGITS)}
+              </Text>
               <Text style={styles.AvailableCurrency}>
                 {BASE_CRYPTO_CURRENCY}
               </Text>
+              {/* 
+              // ToDo: implement hide balance
               <Image
                 style={styles.AvailableImg}
                 source={require('../assets/eye.png')}
-              />
+              /> */}
             </View>
           </View>
           <PaymentInfo
-            price={'0.22'}
+            price={truncate(amountInCrypto, BASE_CRYPTO_MAX_DIGITS)}
             title={'You are paying tips'}
             convert={{
               convertEUR: '1 ' + BASE_FIAT_CURRENCY,
-              convertCurrency: '1.2 ' + BASE_CRYPTO_CURRENCY,
+              convertCurrency: rate + ' ' + BASE_CRYPTO_CURRENCY,
             }}
           />
 
@@ -122,12 +155,18 @@ const TxScreen: React.FC<Props> = memo(({route}) => {
               <Text style={styles.PayInfoTitleText}>
                 I’ve got the consent to pay in crypto
               </Text>
-              <Checkbox isChecked={crypto} onPress={() => setCrypto(!crypto)} />
+              <Checkbox
+                isChecked={false}
+                onPress={() => setPaymentType(PaymentType.BILL_AND_TIPS)}
+              />
             </View>
-            <PaymentParameters parameters={'Date'} value={'26/04/2023 11:13'} />
+            <PaymentParameters
+              parameters={'Date'}
+              value={new Date(parsedReceipt.createdAt).toLocaleString()}
+            />
             <PaymentParameters
               parameters={'Recipient'}
-              value={parsedReceipt.businessId}
+              value={parsedReceipt.businessId} // ToDo: read a business name from the contract
             />
             <PaymentParameters
               parameters={'Invoice total'}
@@ -152,11 +191,11 @@ const TxScreen: React.FC<Props> = memo(({route}) => {
             </View>
           </View>
           <PaymentInfo
-            price={'0.22'}
+            price={truncate(amountInCrypto, BASE_CRYPTO_MAX_DIGITS)}
             title={'You are paying tips'}
             convert={{
               convertEUR: '1 ' + BASE_FIAT_CURRENCY,
-              convertCurrency: '1.2 ' + BASE_CRYPTO_CURRENCY,
+              convertCurrency: rate + ' ' + BASE_CRYPTO_CURRENCY,
             }}
           />
 
@@ -176,14 +215,26 @@ const TxScreen: React.FC<Props> = memo(({route}) => {
               <Text style={styles.PayInfoTitleText}>
                 I’ve got the consent to pay in crypto
               </Text>
-              <Checkbox isChecked={crypto} onPress={() => setCrypto(!crypto)} />
+              <Checkbox
+                isChecked={true}
+                onPress={() => setPaymentType(PaymentType.TIPS_ONLY)}
+              />
             </View>
             <SwitchBlock
               parameters={'Add 10% tips to this invoice'}
-              onPress={setTips}
-              isPress={isTips}
+              onPress={() =>
+                setPaymentType(
+                  paymentType === PaymentType.BILL_AND_TIPS
+                    ? PaymentType.BILL_ONLY
+                    : PaymentType.BILL_AND_TIPS,
+                )
+              }
+              isPress={paymentType !== PaymentType.BILL_ONLY}
             />
-            <PaymentParameters parameters={'Date'} value={'26/04/2023 11:13'} />
+            <PaymentParameters
+              parameters={'Date'}
+              value={new Date(parsedReceipt.createdAt).toLocaleString()}
+            />
             <PaymentParameters
               parameters={'Recipient'}
               value={parsedReceipt.businessId}
@@ -203,14 +254,13 @@ const TxScreen: React.FC<Props> = memo(({route}) => {
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <Title label="Transaction sent" />
-            {paymentTxStatus === TxStatus.Done ? (
+            {paymentTxStatus === 3 ? (
               <Image
                 resizeMode="contain"
                 style={styles.TransactionImg}
                 source={require('../assets/confirmed.png')}
               />
-            ) : paymentTxStatus === TxStatus.Sending ||
-              paymentTxStatus === TxStatus.Mining ? (
+            ) : paymentTxStatus === 1 || paymentTxStatus === 2 ? (
               <Image
                 resizeMode="contain"
                 style={styles.TransactionImg}
@@ -222,13 +272,12 @@ const TxScreen: React.FC<Props> = memo(({route}) => {
 
             <View style={styles.StatusBlock}>
               <Text style={styles.ParametersStatus}>Status</Text>
-              {paymentTxStatus === TxStatus.Done ? (
+              {paymentTxStatus === 3 ? (
                 <View style={styles.ValueStatus}>
                   <Text style={styles.ValueStatusTextOk}>Confirmed</Text>
                   <View style={styles.ValueStatusLabelOk}></View>
                 </View>
-              ) : paymentTxStatus === TxStatus.Sending ||
-                paymentTxStatus === TxStatus.Mining ? (
+              ) : paymentTxStatus === 1 || paymentTxStatus === 2 ? (
                 <View style={styles.ValueStatus}>
                   <Text style={styles.ValueStatusText}>In progress</Text>
                   <View style={styles.ValueStatusLabel}></View>
@@ -246,7 +295,7 @@ const TxScreen: React.FC<Props> = memo(({route}) => {
             <PaymentParameters
               isGray
               parameters={'Amount, fiat'}
-              value={'3,80 EUR'}
+              value={'3,80 ' + BASE_FIAT_CURRENCY} // ToDo: mocked
             />
             <PaymentParameters
               isGray
@@ -256,21 +305,21 @@ const TxScreen: React.FC<Props> = memo(({route}) => {
             <PaymentParameters
               isGray
               parameters={'Date'}
-              value={'26/04/2023 11:13'}
+              value={'26/04/2023 11:13'} // ToDo: mocked
             />
-            {/* {transactionStatusOk ? ( */}
-            <LinearGradient
-              start={{x: 0, y: 0}}
-              end={{x: 1, y: 0}}
-              style={styles.linearGradient}
-              colors={['#0dd977', '#1da4ac', '#14c48c']}>
-              <TouchableHighlight
-                style={styles.buttonSend}
-                onPress={navigationUserHistory}>
-                <Text style={styles.buttonText}>Close</Text>
-              </TouchableHighlight>
-            </LinearGradient>
-            {/* ) : null} */}
+            {paymentTxStatus === 3 ? (
+              <LinearGradient
+                start={{x: 0, y: 0}}
+                end={{x: 1, y: 0}}
+                style={styles.linearGradient}
+                colors={['#0dd977', '#1da4ac', '#14c48c']}>
+                <TouchableHighlight
+                  style={styles.buttonSend}
+                  onPress={navigationUserHistory}>
+                  <Text style={styles.buttonText}>Close</Text>
+                </TouchableHighlight>
+              </LinearGradient>
+            ) : null}
           </View>
         </View>
       </Modal>
