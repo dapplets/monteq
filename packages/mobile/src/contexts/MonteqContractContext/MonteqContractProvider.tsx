@@ -25,6 +25,12 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
   const {provider: writeEip1193} = useWeb3Modal();
 
   const [contract, setContract] = useState<ethers.Contract | null>(null);
+  const [balance, setBalance] = useState<ParsedUint>(
+    contextDefaultValues.balance,
+  );
+  const [isBalanceLoading, setIsBalanceLoading] = useState(false);
+  const [rate, setRate] = useState<ParsedUint>(contextDefaultValues.rate);
+  const [isRateLoading, setIsRateLoading] = useState(false);
   const [outHistory, setOutHistory] = useState<HistoryRecord[]>([]);
   const [isOutHistoryLoading, setIsOutHistoryLoading] =
     useState<boolean>(false);
@@ -68,6 +74,32 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
       setContract(null);
     }
   }, [writeEip1193]);
+
+  useEffect(() => {
+    (async () => {
+      setIsBalanceLoading(true);
+
+      if (contract) {
+        try {
+          // ToDo: refresh balance
+          const _balance = await contract.signer.getBalance();
+          setBalance(ethers.utils.formatEther(_balance));
+        } catch (e) {
+          console.error(e);
+          setBalance(contextDefaultValues.balance);
+        }
+      } else {
+        setBalance(contextDefaultValues.balance);
+      }
+
+      setIsBalanceLoading(false);
+    })();
+  }, [contract]);
+
+  useEffect(() => {
+    // ToDo: fetch real rate
+    setRate('1.1'); // 1 EUR = 1.1 XDAI
+  }, []);
 
   async function loadMoreOutHistory() {
     if (!contract) {
@@ -235,6 +267,10 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
   }
 
   const state: MonteqContractContextState = {
+    balance,
+    isBalanceLoading,
+    rate,
+    isRateLoading,
     outHistory,
     isOutHistoryLoading,
     loadMoreOutHistory,

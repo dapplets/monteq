@@ -20,6 +20,7 @@ import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {RootStackParamList} from '../App';
 import HistoryPay from '../components/HistoryPay';
 import GeneralPayInfo from '../components/GeneralPayInfo';
+import {BASE_CRYPTO_CURRENCY, BASE_FIAT_CURRENCY} from '../common/constants';
 
 const MyBusiness = () => {
   const {inHistory, loadMoreInHistory} = useMonteqContract();
@@ -73,12 +74,12 @@ const MyBusiness = () => {
                 0,
               )}
               title={'Paid for invoices'}
-              generalPayAmountSubtitle={'EUR'}
+              generalPayAmountSubtitle={BASE_FIAT_CURRENCY}
               TipsAmount={inHistory.reduce(
                 (s, i) => (s = s + +i.currencyReceipt),
                 0,
               )}
-              TipsSubtitleRight={'USDT'}
+              TipsSubtitleRight={BASE_CRYPTO_CURRENCY}
             />
             <GeneralPayInfo
               generalPayAmount={inHistory.reduce(
@@ -86,7 +87,7 @@ const MyBusiness = () => {
                 0,
               )}
               title={'Tips'}
-              generalPayAmountSubtitle={'USDT'}
+              generalPayAmountSubtitle={BASE_CRYPTO_CURRENCY}
             />
             <SwitchBlock
               parameters={'Always start from this page'}
@@ -111,7 +112,9 @@ const MyBusiness = () => {
                     key={i}
                     time={new Date(x.timestamp * 1000).toISOString()}
                     company={x.businessId}
-                    amount={'+' + x.currencyReceipt + ' USDT'}
+                    amount={
+                      '+' + x.currencyReceipt + ' ' + BASE_CRYPTO_CURRENCY
+                    }
                   />
                 );
               })}

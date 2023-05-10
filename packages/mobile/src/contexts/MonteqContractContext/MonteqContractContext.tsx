@@ -21,6 +21,13 @@ export type HistoryRecord = {
 };
 
 export type MonteqContractContextState = {
+  // common data
+  balance: ParsedUint;
+  isBalanceLoading: boolean;
+
+  rate: ParsedUint;
+  isRateLoading: boolean;
+
   // outgoing payments history (payer view)
   outHistory: HistoryRecord[];
   isOutHistoryLoading: boolean;
@@ -50,6 +57,12 @@ export type MonteqContractContextState = {
 };
 
 export const contextDefaultValues: MonteqContractContextState = {
+  balance: '0',
+  isBalanceLoading: false,
+
+  rate: '0',
+  isRateLoading: false,
+
   outHistory: [],
   isOutHistoryLoading: false,
   loadMoreOutHistory: () => undefined,

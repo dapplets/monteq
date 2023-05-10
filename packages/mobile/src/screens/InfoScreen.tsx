@@ -8,6 +8,7 @@ import {useMonteqContract} from '../contexts/MonteqContractContext';
 import {useEffect} from 'react';
 import HistoryPay from '../components/HistoryPay';
 import GeneralPayInfo from '../components/GeneralPayInfo';
+import {BASE_CRYPTO_CURRENCY} from '../common/constants';
 
 const InfoScreen = () => {
   const {outHistory, loadMoreOutHistory} = useMonteqContract();
@@ -28,13 +29,13 @@ const InfoScreen = () => {
                 0,
               )}
               title={'Spent'}
-              generalPayAmountSubtitle={'USDT'}
+              generalPayAmountSubtitle={BASE_CRYPTO_CURRENCY}
               TipsSubtitleLeft={'including'}
               TipsAmount={outHistory.reduce(
                 (s, i) => (s = s + +i.tipAmount),
                 0,
               )}
-              TipsSubtitleRight={'USDT tips'}
+              TipsSubtitleRight={BASE_CRYPTO_CURRENCY + ' tips'}
             />
 
             <View style={styles.list}>
@@ -44,7 +45,9 @@ const InfoScreen = () => {
                     key={i}
                     time={new Date(x.timestamp * 1000).toISOString()}
                     company={x.businessId}
-                    amount={'-' + x.currencyReceipt + ' USDT'}
+                    amount={
+                      '-' + x.currencyReceipt + ' ' + BASE_CRYPTO_CURRENCY
+                    }
                   />
                 );
               })}
