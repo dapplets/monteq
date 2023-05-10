@@ -1,4 +1,4 @@
-import React, {FC, ReactElement, useEffect, useState} from 'react';
+import React, {FC, ReactElement, useCallback, useEffect, useState} from 'react';
 import {
   HistoryRecord,
   MonteqContractContext,
@@ -17,6 +17,8 @@ import {
 } from '../../common/constants';
 import MONTEQ_ABI from '../../abis/MonteQ.json';
 
+const {formatUnits, parseUnits, parseEther, formatEther} = ethers.utils;
+
 type Props = {
   children: ReactElement;
 };
@@ -31,6 +33,12 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
   const [isBalanceLoading, setIsBalanceLoading] = useState(false);
   const [rate, setRate] = useState<ParsedUint>(contextDefaultValues.rate);
   const [isRateLoading, setIsRateLoading] = useState(false);
+  const [spentTotalCryptoAmount, setSpentTotalCryptoAmount] = useState(
+    contextDefaultValues.spentTotalCryptoAmount,
+  );
+  const [spentTipsCryptoAmount, setSpentTipsCryptoAmount] = useState(
+    contextDefaultValues.spentTipsCryptoAmount,
+  );
   const [outHistory, setOutHistory] = useState<HistoryRecord[]>([]);
   const [isOutHistoryLoading, setIsOutHistoryLoading] =
     useState<boolean>(false);
@@ -83,7 +91,7 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
         try {
           // ToDo: refresh balance
           const _balance = await contract.signer.getBalance();
-          setBalance(ethers.utils.formatEther(_balance));
+          setBalance(formatEther(_balance));
         } catch (e) {
           console.error(e);
           setBalance(contextDefaultValues.balance);
@@ -101,7 +109,7 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
     setRate('1.1'); // 1 EUR = 1.1 XDAI
   }, []);
 
-  async function loadMoreOutHistory() {
+  const loadMoreOutHistory = useCallback(async () => {
     if (!contract) {
       return;
     }
@@ -115,13 +123,51 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
       data.history.map((x: any) => ({
         businessId: x.businessId,
         payer: x.payer,
-        currencyReceipt: ethers.utils.formatUnits(x.currencyReceipt, 2),
-        receiptAmount: ethers.utils.formatEther(x.receiptAmount),
-        tipAmount: ethers.utils.formatEther(x.tipAmount),
+        currencyReceipt: formatUnits(x.currencyReceipt, 2),
+        receiptAmount: formatEther(x.receiptAmount),
+        tipAmount: formatEther(x.tipAmount),
+        totalCryptoAmount: formatEther(x.receiptAmount.add(x.tipAmount)),
         timestamp: x.timestamp.toNumber(),
       })),
     );
-  }
+
+    setSpentTotalCryptoAmount(
+      formatEther(
+        data.history.reduce(
+          (acc: ethers.BigNumber, x: any) =>
+            acc.add(x.receiptAmount.add(x.tipAmount)),
+          ethers.BigNumber.from('0'),
+        ),
+      ),
+    );
+
+    setSpentTipsCryptoAmount(
+      formatEther(
+        data.history.reduce(
+          (acc: ethers.BigNumber, x: any) => acc.add(x.tipAmount),
+          ethers.BigNumber.from('0'),
+        ),
+      ),
+    );
+  }, [contract]);
+
+  useEffect(() => {
+    (async () => {
+      if (!contract) {
+        return;
+      }
+
+      setIsInHistoryLoading(true);
+
+      try {
+        await loadMoreOutHistory();
+      } catch (e) {
+        console.error(e);
+      }
+
+      setIsInHistoryLoading(false);
+    })();
+  }, [contract, loadMoreOutHistory]);
 
   async function loadMoreInHistory() {
     if (!contract) {
@@ -144,9 +190,9 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
       data.history.map((x: any) => ({
         businessId: x.businessId,
         payer: x.payer,
-        currencyReceipt: ethers.utils.formatUnits(x.currencyReceipt, 2),
-        receiptAmount: ethers.utils.formatEther(x.receiptAmount),
-        tipAmount: ethers.utils.formatEther(x.tipAmount),
+        currencyReceipt: formatUnits(x.currencyReceipt, 2),
+        receiptAmount: formatEther(x.receiptAmount),
+        tipAmount: formatEther(x.tipAmount),
         timestamp: x.timestamp.toNumber(),
       })),
     );
@@ -162,9 +208,9 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
       return;
     }
 
-    const currencyReceiptBN = ethers.utils.parseUnits(currencyReceipt, 2); // Fiat currency has 2 decimals
-    const amountReceiptBN = ethers.utils.parseEther(amountReceipt);
-    const amountTipsBN = ethers.utils.parseEther(amountTips);
+    const currencyReceiptBN = parseUnits(currencyReceipt, 2); // Fiat currency has 2 decimals
+    const amountReceiptBN = parseEther(amountReceipt);
+    const amountTipsBN = parseEther(amountTips);
     const totalAmountBN = amountReceiptBN.add(amountTipsBN);
 
     const receiptPromise = contract.payReceipt(
@@ -210,6 +256,8 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
     isBalanceLoading,
     rate,
     isRateLoading,
+    spentTotalCryptoAmount,
+    spentTipsCryptoAmount,
     outHistory,
     isOutHistoryLoading,
     loadMoreOutHistory,

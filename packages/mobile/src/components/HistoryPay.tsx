@@ -1,20 +1,22 @@
 import {Image, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
+
 export type HistoryPayType = {
   time: string;
   company: string;
   amount: string;
 };
-const HistoryPay = ({time, company, amount}: HistoryPayType) => {
-  const formatedDate = time => {
-    const d = new Date(time);
-    const str = d.toLocaleDateString('en-EN', {
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-    return str;
-  };
 
+const formatedDate = (_time: string) => {
+  const d = new Date(_time);
+  const str = d.toLocaleDateString('en-EN', {
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+  return str;
+};
+
+const HistoryPay = ({time, company, amount}: HistoryPayType) => {
   return (
     <View style={styles.HistoryWrapper}>
       <Image

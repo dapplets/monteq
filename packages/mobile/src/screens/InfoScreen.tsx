@@ -1,39 +1,59 @@
 import * as React from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 
 import Navigation from '../components/Navigation';
 import Title from '../components/TitlePage';
 // import TimeLabel from '../components/TimeLabel';
 import {useMonteqContract} from '../contexts/MonteqContractContext';
-import {useEffect} from 'react';
 import HistoryPay from '../components/HistoryPay';
 import GeneralPayInfo from '../components/GeneralPayInfo';
-import {BASE_CRYPTO_CURRENCY} from '../common/constants';
+import {
+  BASE_CRYPTO_CURRENCY,
+  BASE_CRYPTO_MAX_DIGITS,
+} from '../common/constants';
+import {truncate} from '../common/helpers';
+import {useIsFocused} from '@react-navigation/native';
 
 const InfoScreen = () => {
-  const {outHistory, loadMoreOutHistory} = useMonteqContract();
+  const isFocused = useIsFocused();
+  const {
+    outHistory,
+    spentTotalCryptoAmount,
+    spentTipsCryptoAmount,
+    loadMoreOutHistory,
+    isOutHistoryLoading,
+  } = useMonteqContract();
 
-  useEffect(() => {
-    loadMoreOutHistory();
-  }, [loadMoreOutHistory]);
+  React.useEffect(() => {
+    if (isFocused) {
+      loadMoreOutHistory();
+    }
+  }, [isFocused, loadMoreOutHistory]);
 
   return (
     <>
       <View style={styles.InfoScreenWrapper}>
         <Title label="Payment history" />
-        {outHistory && outHistory.length > 0 ? (
+
+        {isOutHistoryLoading ? <Text>ToDo: loading</Text> : null}
+
+        {!isOutHistoryLoading && outHistory.length === 0 ? (
+          <Text>ToDo: show picture for empty history</Text>
+        ) : null}
+
+        {outHistory.length > 0 ? (
           <>
             <GeneralPayInfo
-              generalPayAmount={outHistory.reduce(
-                (s, i) => (s = s + +i.currencyReceipt),
-                0,
+              generalPayAmount={truncate(
+                spentTotalCryptoAmount,
+                BASE_CRYPTO_MAX_DIGITS,
               )}
               title={'Spent'}
               generalPayAmountSubtitle={BASE_CRYPTO_CURRENCY}
               TipsSubtitleLeft={'including'}
-              TipsAmount={outHistory.reduce(
-                (s, i) => (s = s + +i.tipAmount),
-                0,
+              TipsAmount={truncate(
+                spentTipsCryptoAmount,
+                BASE_CRYPTO_MAX_DIGITS,
               )}
               TipsSubtitleRight={BASE_CRYPTO_CURRENCY + ' tips'}
             />
@@ -46,7 +66,10 @@ const InfoScreen = () => {
                     time={new Date(x.timestamp * 1000).toISOString()}
                     company={x.businessId}
                     amount={
-                      '-' + x.currencyReceipt + ' ' + BASE_CRYPTO_CURRENCY
+                      '-' +
+                      truncate(x.totalCryptoAmount, BASE_CRYPTO_MAX_DIGITS) +
+                      ' ' +
+                      BASE_CRYPTO_CURRENCY
                     }
                   />
                 );
@@ -152,4 +175,5 @@ const styles = StyleSheet.create({
   iconLayout: {},
   logOutWrapper: {},
 });
+
 export default InfoScreen;

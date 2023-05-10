@@ -17,6 +17,7 @@ export type HistoryRecord = {
   currencyReceipt: ParsedUint;
   receiptAmount: ParsedUint;
   tipAmount: ParsedUint;
+  totalCryptoAmount: ParsedUint;
   timestamp: number;
 };
 
@@ -27,6 +28,9 @@ export type MonteqContractContextState = {
 
   rate: ParsedUint;
   isRateLoading: boolean;
+
+  spentTotalCryptoAmount: ParsedUint;
+  spentTipsCryptoAmount: ParsedUint;
 
   // outgoing payments history (payer view)
   outHistory: HistoryRecord[];
@@ -62,6 +66,9 @@ export const contextDefaultValues: MonteqContractContextState = {
 
   rate: '0',
   isRateLoading: false,
+
+  spentTotalCryptoAmount: '0',
+  spentTipsCryptoAmount: '0',
 
   outHistory: [],
   isOutHistoryLoading: false,
