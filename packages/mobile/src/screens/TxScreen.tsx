@@ -41,10 +41,6 @@ const TxScreen: React.FC<Props> = memo(({route}) => {
   const {provider} = useWeb3Modal();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
-  const [currencyAmount, setCurrencyAmount] = useState(
-    parsedReceipt?.currencyReceipt ?? '0',
-  );
-
   const [paymentType, setPaymentType] = useState<PaymentType>(
     PaymentType.TIPS_ONLY,
   );
@@ -52,14 +48,6 @@ const TxScreen: React.FC<Props> = memo(({route}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const {balance, isBalanceLoading, payReceipt, paymentTxStatus, rate} =
     useMonteqContract();
-
-  useEffect(() => {
-    if (!parsedReceipt) {
-      navigation.goBack();
-    } else {
-      setCurrencyAmount('0.01');
-    }
-  }, [parsedReceipt, navigation, paymentTxStatus]);
 
   async function navigationUserHistory() {
     navigation.navigate('InfoScreen');
@@ -174,14 +162,18 @@ const TxScreen: React.FC<Props> = memo(({route}) => {
           <View style={styles.AvailableWrapper}>
             <Text style={styles.AvailableTitle}>Available</Text>
             <View style={styles.AvailableBlock}>
-              <Text style={styles.AvailableAmount}>{currencyAmount}</Text>
+              <Text style={styles.AvailableAmount}>
+                {isBalanceLoading
+                  ? '-'
+                  : truncate(balance, BASE_CRYPTO_MAX_DIGITS)}
+              </Text>
               <Text style={styles.AvailableCurrency}>
                 {BASE_CRYPTO_CURRENCY}
               </Text>
-              <Image
+              {/* <Image
                 style={styles.AvailableImg}
                 source={require('../assets/eye.png')}
-              />
+              /> */}
             </View>
           </View>
           <PaymentInfo
