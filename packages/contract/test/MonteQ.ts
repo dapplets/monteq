@@ -65,7 +65,7 @@ describe('MonteQ', function () {
             expect([businessInfosById.id, businessInfosById.owner, businessInfosById.name]).to.eql(
                 emptyBusinessInfo
             )
-            const response = await monteQ.getBusinessInfosByOwer(owner.address)
+            const response = await monteQ.getBusinessInfosByOwner(owner.address)
             expect(parseBusinessInfos(response)).to.eql([])
         })
 
@@ -82,7 +82,7 @@ describe('MonteQ', function () {
             await monteQ.addBusiness(businessId001, businessName001)
             const [id, receivedOwner, name] = await monteQ.businessInfos(businessId001)
             expect([id, receivedOwner, name]).to.eql(businessInfo001)
-            const response = await monteQ.getBusinessInfosByOwer(owner.address)
+            const response = await monteQ.getBusinessInfosByOwner(owner.address)
             expect(parseBusinessInfos(response)).to.eql([
                 {
                     id: businessId001,
@@ -101,7 +101,7 @@ describe('MonteQ', function () {
             await monteQ.removeBusiness(businessId001)
             const [id, receivedOwner, name] = await monteQ.businessInfos(businessId001)
             expect([id, receivedOwner, name]).to.eql(emptyBusinessInfo)
-            const response = await monteQ.getBusinessInfosByOwer(owner.address)
+            const response = await monteQ.getBusinessInfosByOwner(owner.address)
             expect(parseBusinessInfos(response)).to.eql([])
         })
 
@@ -119,7 +119,7 @@ describe('MonteQ', function () {
             await monteQ.addBusiness(businessId001, businessName001)
             await monteQ.addBusiness(businessId002, businessName002)
             await monteQ.addBusiness(businessId003, businessName003)
-            const result = await monteQ.getBusinessInfosByOwer(owner.address)
+            const result = await monteQ.getBusinessInfosByOwner(owner.address)
             expect(parseBusinessInfos(result)).to.eql([
                 { id: businessId001, owner: owner.address, name: businessName001 },
                 { id: businessId002, owner: owner.address, name: businessName002 },
@@ -142,7 +142,7 @@ describe('MonteQ', function () {
             await monteQ.addBusiness(businessId002, businessName002)
             await monteQ.addBusiness(businessId003, businessName003)
             await monteQ.removeBusiness(businessId001)
-            const result = await monteQ.getBusinessInfosByOwer(owner.address)
+            const result = await monteQ.getBusinessInfosByOwner(owner.address)
             expect(parseBusinessInfos(result)).to.eql([
                 { id: businessId003, owner: owner.address, name: businessName003 },
                 { id: businessId002, owner: owner.address, name: businessName002 },
@@ -164,7 +164,7 @@ describe('MonteQ', function () {
             await monteQ.addBusiness(businessId002, businessName002)
             await monteQ.addBusiness(businessId003, businessName003)
             await monteQ.removeBusiness(businessId003)
-            const result = await monteQ.getBusinessInfosByOwer(owner.address)
+            const result = await monteQ.getBusinessInfosByOwner(owner.address)
             expect(parseBusinessInfos(result)).to.eql([
                 { id: businessId001, owner: owner.address, name: businessName001 },
                 { id: businessId002, owner: owner.address, name: businessName002 },

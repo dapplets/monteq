@@ -2,6 +2,7 @@ import {
   RouteProp,
   NavigationProp,
   useNavigation,
+  useIsFocused,
 } from '@react-navigation/native';
 import {useWeb3Modal} from '@web3modal/react-native';
 import React, {memo, useEffect, useState} from 'react';
@@ -41,22 +42,33 @@ const TxScreen: React.FC<Props> = memo(({route}) => {
 
   const {provider} = useWeb3Modal();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const isFocused = useIsFocused();
 
   const [paymentType, setPaymentType] = useState<PaymentType>(
     PaymentType.TIPS_ONLY,
   );
-
   const [modalVisible, setModalVisible] = useState(false);
-  const {balance, isBalanceLoading, payReceipt, paymentTxStatus, rate} =
-    useMonteqContract();
 
-  async function navigationUserHistory() {
-    navigation.navigate('InfoScreen');
-  }
+  const {
+    balance,
+    isBalanceLoading,
+    payReceipt,
+    paymentTxStatus,
+    rate,
+    resetPaymentTxStatus,
+  } = useMonteqContract();
+
+  useEffect(() => {
+    resetPaymentTxStatus();
+  }, [isFocused, resetPaymentTxStatus]);
 
   if (!parsedReceipt) {
     // ToDo: invalid receipt
     return null;
+  }
+
+  async function handleCloseButtonPress() {
+    navigation.navigate('InfoScreen');
   }
 
   // ToDo: move the calculations into business logic hook
@@ -279,7 +291,7 @@ const TxScreen: React.FC<Props> = memo(({route}) => {
           cryptoAmount={amountInCrypto}
           onRequestClose={() => setModalVisible(!modalVisible)}
           primaryButton="Close"
-          onPrimaryButtonPress={navigationUserHistory}
+          onPrimaryButtonPress={handleCloseButtonPress}
         />
       ) : null}
 
@@ -294,7 +306,7 @@ const TxScreen: React.FC<Props> = memo(({route}) => {
           primaryButton="Retry"
           onPrimaryButtonPress={handleSendPress}
           secondaryButton="Close"
-          onSecondaryButtonPress={navigationUserHistory}
+          onSecondaryButtonPress={handleCloseButtonPress}
         />
       ) : null}
     </>

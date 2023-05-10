@@ -1,21 +1,13 @@
 import * as React from 'react';
-import {
-  Text,
-  StyleSheet,
-  View,
-  TouchableHighlight,
-  Image,
-  Alert,
-} from 'react-native';
-
+import {Text, StyleSheet, View, TouchableHighlight} from 'react-native';
 import Navigation from '../components/Navigation';
 import Title from '../components/TitlePage';
 import {useMonteqContract} from '../contexts/MonteqContractContext';
 import LinearGradient from 'react-native-linear-gradient';
-import SwitchBlock from '../components/SwitchBlock';
 import {
   NavigationProp,
   RouteProp,
+  useIsFocused,
   useNavigation,
 } from '@react-navigation/native';
 import {memo, useEffect, useState} from 'react';
@@ -26,7 +18,9 @@ import {BASE_FIAT_CURRENCY} from '../common/constants';
 import CompanyParameters from '../components/CompanyParameters';
 import {useWeb3Modal} from '@web3modal/react-native';
 import {TxStatus} from '../contexts/MonteqContractContext/MonteqContractContext';
-import { FontFamily } from '../GlobalStyles';
+import TxModal, {TxStatusType} from '../components/TxModal';
+import {FontFamily} from '../GlobalStyles';
+
 type Props = {
   route: RouteProp<{params: {parsedReceipt: ParsedReceipt}}, 'params'>;
 };
@@ -34,43 +28,32 @@ type Props = {
 const AddingMyBusiness: React.FC<Props> = memo(({route}) => {
   const parsedReceipt = route.params.parsedReceipt;
 
+  const isFocused = useIsFocused();
+
   const [nameCompany, setNameCompany] = useState('');
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const {provider} = useWeb3Modal();
-  const {
-    addBusiness,
-    removeBusiness,
-    addBusinessTxStatus,
-    removeBusinessTxStatus,
-  } = useMonteqContract();
+  const {addBusiness, resetAddBusinessTxStatus, addBusinessTxStatus} =
+    useMonteqContract();
+  const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
-    // ToDo: show popup about invalid receipt
-    if (!parsedReceipt) {
-      navigation.goBack();
-    }
-  }, [parsedReceipt, navigation]);
+    resetAddBusinessTxStatus();
+  }, [isFocused, resetAddBusinessTxStatus]);
 
-  useEffect(() => {
-    if (
-      addBusinessTxStatus === TxStatus.Done ||
-      removeBusinessTxStatus === TxStatus.Done
-    ) {
-      navigation.navigate('MyBusiness');
-    }
-  }, [addBusinessTxStatus, removeBusinessTxStatus, navigation]);
+  async function handleCloseButtonPress() {
+    navigation.navigate('MyBusiness');
+  }
 
   async function handleSendPress() {
     if (!provider || !parsedReceipt) {
       return;
     }
+
+    setModalVisible(true);
+
     // nameCompany
     addBusiness(parsedReceipt.businessId, nameCompany);
-  }
-
-  if (!parsedReceipt) {
-    // ToDo: invalid receipt
-    return null;
   }
 
   return (
@@ -110,7 +93,64 @@ const AddingMyBusiness: React.FC<Props> = memo(({route}) => {
           </TouchableHighlight>
         </LinearGradient>
       </View>
-      <Navigation path="home" />
+
+      {!modalVisible ? <Navigation path="home" /> : null}
+
+      {addBusinessTxStatus === TxStatus.Sending ? (
+        <TxModal
+          isVisible={modalVisible}
+          title="Transaction signing"
+          status={'Signing'}
+          type={TxStatusType.Yellow}
+          image={require('../assets/inProgress.png')}
+          recipient={parsedReceipt.businessId}
+          busienssName={nameCompany}
+          onRequestClose={() => setModalVisible(!modalVisible)}
+        />
+      ) : null}
+
+      {addBusinessTxStatus === TxStatus.Mining ? (
+        <TxModal
+          isVisible={modalVisible}
+          title="Transaction sent"
+          status={'Mining'}
+          type={TxStatusType.Yellow}
+          image={require('../assets/inProgress.png')}
+          recipient={parsedReceipt.businessId}
+          busienssName={nameCompany}
+          onRequestClose={() => setModalVisible(!modalVisible)}
+        />
+      ) : null}
+
+      {addBusinessTxStatus === TxStatus.Done ? (
+        <TxModal
+          isVisible={modalVisible}
+          title="Transaction sent"
+          status={'Confirmed'}
+          type={TxStatusType.Green}
+          image={require('../assets/confirmed.png')}
+          recipient={parsedReceipt.businessId}
+          busienssName={nameCompany}
+          onRequestClose={() => setModalVisible(!modalVisible)}
+          primaryButton="Close"
+          onPrimaryButtonPress={handleCloseButtonPress}
+        />
+      ) : null}
+
+      {addBusinessTxStatus === TxStatus.Rejected ||
+      addBusinessTxStatus === TxStatus.Failed ? (
+        <TxModal
+          isVisible={modalVisible}
+          title="Transaction rejected"
+          description="ToDo: write description here"
+          image={require('../assets/errorOccured.png')}
+          onRequestClose={() => setModalVisible(!modalVisible)}
+          primaryButton="Retry"
+          onPrimaryButtonPress={handleSendPress}
+          secondaryButton="Close"
+          onSecondaryButtonPress={handleCloseButtonPress}
+        />
+      ) : null}
     </>
   );
 });

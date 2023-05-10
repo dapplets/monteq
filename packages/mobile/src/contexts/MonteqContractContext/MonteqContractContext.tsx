@@ -21,6 +21,12 @@ export type HistoryRecord = {
   timestamp: number;
 };
 
+export type BusinessInfo = {
+  id: string;
+  name: string;
+  owner: string;
+};
+
 export type MonteqContractContextState = {
   // common data
   balance: ParsedUint;
@@ -31,6 +37,12 @@ export type MonteqContractContextState = {
 
   spentTotalCryptoAmount: ParsedUint;
   spentTipsCryptoAmount: ParsedUint;
+  earnedInvoicesCryptoAmount: ParsedUint;
+  earnedTipsCryptoAmount: ParsedUint;
+  earnedInvoicesFiatAmount: ParsedUint;
+
+  myBusiness: BusinessInfo | null;
+  isMyBusinessLoading: boolean;
 
   // outgoing payments history (payer view)
   outHistory: HistoryRecord[];
@@ -50,14 +62,17 @@ export type MonteqContractContextState = {
     amountReceipt: ParsedUint,
     amountTips: ParsedUint,
   ) => void;
+  resetPaymentTxStatus: () => void;
 
   // for owner
   // ToDo: rename add/remove to link/unlink or attach/detach
   addBusinessTxStatus: TxStatus;
   addBusiness: (businessId: string, name: string) => void;
+  resetAddBusinessTxStatus: () => void;
 
   removeBusinessTxStatus: TxStatus;
   removeBusiness: (businessId: string) => void;
+  resetRemoveBusinessTxStatus: () => void;
 };
 
 export const contextDefaultValues: MonteqContractContextState = {
@@ -69,6 +84,12 @@ export const contextDefaultValues: MonteqContractContextState = {
 
   spentTotalCryptoAmount: '0',
   spentTipsCryptoAmount: '0',
+  earnedInvoicesCryptoAmount: '0',
+  earnedTipsCryptoAmount: '0',
+  earnedInvoicesFiatAmount: '0',
+
+  myBusiness: null,
+  isMyBusinessLoading: false,
 
   outHistory: [],
   isOutHistoryLoading: false,
@@ -80,12 +101,15 @@ export const contextDefaultValues: MonteqContractContextState = {
 
   paymentTxStatus: TxStatus.Idle,
   payReceipt: () => undefined,
+  resetPaymentTxStatus: () => undefined,
 
   addBusinessTxStatus: TxStatus.Idle,
   addBusiness: () => undefined,
+  resetAddBusinessTxStatus: () => undefined,
 
   removeBusinessTxStatus: TxStatus.Idle,
   removeBusiness: () => undefined,
+  resetRemoveBusinessTxStatus: () => undefined,
 };
 
 export const MonteqContractContext =

@@ -34,7 +34,7 @@ export type RootStackParamList = {
   MyBusiness: undefined;
   AddingMyBusiness: {parsedReceipt: ParsedReceipt};
   HowUse: undefined;
-  RemovingMyBusiness: {parsedReceipt: ParsedReceipt};
+  RemovingMyBusiness: undefined;
 };
 
 const Tab = createBottomTabNavigator();

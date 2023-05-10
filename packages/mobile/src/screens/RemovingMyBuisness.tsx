@@ -1,69 +1,68 @@
 import * as React from 'react';
-import {
-  Text,
-  StyleSheet,
-  View,
-  TouchableHighlight,
-  Image,
-  Alert,
-} from 'react-native';
-
+import {Text, StyleSheet, View, TouchableHighlight} from 'react-native';
 import Navigation from '../components/Navigation';
 import Title from '../components/TitlePage';
 import {useMonteqContract} from '../contexts/MonteqContractContext';
 import LinearGradient from 'react-native-linear-gradient';
-import SwitchBlock from '../components/SwitchBlock';
 import {
   NavigationProp,
-  RouteProp,
+  useIsFocused,
   useNavigation,
 } from '@react-navigation/native';
 import {memo, useEffect, useState} from 'react';
-import {ParsedReceipt} from '../common/parseReceipt';
 import {RootStackParamList} from '../App';
 import PaymentParameters from '../components/PaymentParameters';
-import {BASE_FIAT_CURRENCY} from '../common/constants';
-import CompanyParameters from '../components/CompanyParameters';
 import {useWeb3Modal} from '@web3modal/react-native';
-import {TxStatus} from '../contexts/MonteqContractContext/MonteqContractContext';
+import {
+  BusinessInfo,
+  TxStatus,
+} from '../contexts/MonteqContractContext/MonteqContractContext';
+import TxModal, {TxStatusType} from '../components/TxModal';
 import {FontFamily} from '../GlobalStyles';
-type Props = {
-  route: RouteProp<{params: {parsedReceipt: ParsedReceipt}}, 'params'>;
-};
 
-const RemovingMyBusiness: React.FC<Props> = memo(({route}) => {
-  const parsedReceipt = route.params.parsedReceipt;
+const RemovingMyBusiness: React.FC = memo(() => {
+  const isFocused = useIsFocused();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const {provider} = useWeb3Modal();
   const {
+    myBusiness,
     removeBusiness,
-
     removeBusinessTxStatus,
+    resetRemoveBusinessTxStatus,
   } = useMonteqContract();
 
-  useEffect(() => {
-    // ToDo: show popup about invalid receipt
-    if (!parsedReceipt) {
-      navigation.goBack();
-    }
-  }, [parsedReceipt, navigation]);
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const [savedMyBusiness, setSavedMyBusiness] = useState<BusinessInfo | null>(
+    null,
+  );
 
   useEffect(() => {
-    if (removeBusinessTxStatus === TxStatus.Done) {
-      navigation.navigate('MyBusiness');
+    if (myBusiness) {
+      setSavedMyBusiness(myBusiness);
     }
-  }, [removeBusinessTxStatus, navigation]);
+  }, [myBusiness]);
 
-  async function handleSendPress() {
-    if (!provider || !parsedReceipt) {
-      return;
-    }
-    // nameCompany
-    removeBusiness(parsedReceipt.businessId);
+  useEffect(() => {
+    resetRemoveBusinessTxStatus();
+  }, [isFocused, resetRemoveBusinessTxStatus]);
+
+  async function handleCloseButtonPress() {
+    navigation.navigate('MyBusiness');
   }
 
-  if (!parsedReceipt) {
-    // ToDo: invalid receipt
+  async function handleSendPress() {
+    if (!provider || !savedMyBusiness) {
+      return;
+    }
+
+    setModalVisible(true);
+
+    // nameCompany
+    removeBusiness(savedMyBusiness.id);
+  }
+
+  if (!savedMyBusiness) {
     return null;
   }
 
@@ -74,15 +73,11 @@ const RemovingMyBusiness: React.FC<Props> = memo(({route}) => {
         <View style={styles.PayInfo}>
           <PaymentParameters
             parameters={'Business unit'}
-            value={parsedReceipt.businessId}
+            value={savedMyBusiness.id}
           />
           <PaymentParameters
-            parameters={'Amount'}
-            value={`${parsedReceipt.currencyReceipt} ${BASE_FIAT_CURRENCY}`}
-          />
-          <PaymentParameters
-            parameters={'Date'}
-            value={new Date(parsedReceipt.createdAt).toLocaleString()}
+            parameters={'Business name'}
+            value={savedMyBusiness.name}
           />
         </View>
 
@@ -98,7 +93,61 @@ const RemovingMyBusiness: React.FC<Props> = memo(({route}) => {
           </TouchableHighlight>
         </LinearGradient>
       </View>
-      <Navigation path="home" />
+
+      {!modalVisible ? <Navigation path="home" /> : null}
+
+      {removeBusinessTxStatus === TxStatus.Sending ? (
+        <TxModal
+          isVisible={modalVisible}
+          title="Transaction signing"
+          status={'Signing'}
+          type={TxStatusType.Yellow}
+          image={require('../assets/inProgress.png')}
+          recipient={savedMyBusiness.id}
+          onRequestClose={() => setModalVisible(!modalVisible)}
+        />
+      ) : null}
+
+      {removeBusinessTxStatus === TxStatus.Mining ? (
+        <TxModal
+          isVisible={modalVisible}
+          title="Transaction sent"
+          status={'Mining'}
+          type={TxStatusType.Yellow}
+          image={require('../assets/inProgress.png')}
+          recipient={savedMyBusiness.id}
+          onRequestClose={() => setModalVisible(!modalVisible)}
+        />
+      ) : null}
+
+      {removeBusinessTxStatus === TxStatus.Done ? (
+        <TxModal
+          isVisible={modalVisible}
+          title="Transaction sent"
+          status={'Confirmed'}
+          type={TxStatusType.Green}
+          image={require('../assets/confirmed.png')}
+          recipient={savedMyBusiness.id}
+          onRequestClose={() => setModalVisible(!modalVisible)}
+          primaryButton="Close"
+          onPrimaryButtonPress={handleCloseButtonPress}
+        />
+      ) : null}
+
+      {removeBusinessTxStatus === TxStatus.Rejected ||
+      removeBusinessTxStatus === TxStatus.Failed ? (
+        <TxModal
+          isVisible={modalVisible}
+          title="Transaction rejected"
+          description="ToDo: write description here"
+          image={require('../assets/errorOccured.png')}
+          onRequestClose={() => setModalVisible(!modalVisible)}
+          primaryButton="Retry"
+          onPrimaryButtonPress={handleSendPress}
+          secondaryButton="Close"
+          onSecondaryButtonPress={handleCloseButtonPress}
+        />
+      ) : null}
     </>
   );
 });

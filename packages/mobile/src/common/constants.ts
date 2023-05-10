@@ -37,11 +37,14 @@ export const WC_SESSION_PARAMS: ConnectParams = {
 };
 
 // previous xdai contract was 0x4cB9AC2D41092c739AD00620dbCC7396249A6d82
+// 0x902d5cD7414Fa175e7558b329b4eD40E7b1aF407
 export const MONTEQ_CONTRACT_ADDRESS =
-  '0x902d5cD7414Fa175e7558b329b4eD40E7b1aF407';
+  '0x6ecd78Cb2505309bAe00E11105666D2fD93e9634';
 
 export const BASE_FIAT_CURRENCY = 'EUR';
 export const BASE_FIAT_MAX_DIGITS = 2;
 
 export const BASE_CRYPTO_CURRENCY = 'XDAI';
 export const BASE_CRYPTO_MAX_DIGITS = 4;
+
+// ToDo: parametrize decimals
