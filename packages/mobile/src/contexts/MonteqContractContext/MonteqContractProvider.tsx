@@ -6,6 +6,7 @@ import {
   TxStatus,
   ParsedUint,
   contextDefaultValues,
+  BusinessInfo,
 } from './MonteqContractContext';
 import {ethers} from 'ethers';
 import {useWeb3Modal} from '@web3modal/react-native';
@@ -16,6 +17,7 @@ import {
   WC_SESSION_PARAMS,
 } from '../../common/constants';
 import MONTEQ_ABI from '../../abis/MonteQ.json';
+import {divStr} from '../../common/helpers';
 
 const {formatUnits, parseUnits, parseEther, formatEther} = ethers.utils;
 
@@ -39,11 +41,23 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
   const [spentTipsCryptoAmount, setSpentTipsCryptoAmount] = useState(
     contextDefaultValues.spentTipsCryptoAmount,
   );
+  const [earnedInvoicesCryptoAmount, setEarnedInvoicesCryptoAmount] = useState(
+    contextDefaultValues.earnedInvoicesCryptoAmount,
+  );
+  const [earnedTipsCryptoAmount, setEarnedTipsCryptoAmount] = useState(
+    contextDefaultValues.earnedTipsCryptoAmount,
+  );
+  const [earnedInvoicesFiatAmount, setEarnedInvoicesFiatAmount] = useState(
+    contextDefaultValues.earnedInvoicesFiatAmount,
+  );
   const [outHistory, setOutHistory] = useState<HistoryRecord[]>([]);
   const [isOutHistoryLoading, setIsOutHistoryLoading] =
     useState<boolean>(false);
   const [inHistory, setInHistory] = useState<HistoryRecord[]>([]);
   const [isInHistoryLoading, setIsInHistoryLoading] = useState<boolean>(false);
+  const [myBusiness, setMyBusiness] = useState<BusinessInfo | null>(null);
+  const [isMyBusinessLoading, setIsMyBusinessLoading] =
+    useState<boolean>(false);
   const [paymentTxStatus, setPaymentTxStatus] = useState<TxStatus>(
     TxStatus.Idle,
   );
@@ -112,6 +126,7 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
   const loadMoreOutHistory = useCallback(async () => {
     if (!contract) {
       return;
+      // ToDo: clear state?
     }
 
     setIsOutHistoryLoading(true);
@@ -162,34 +177,111 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
     setIsOutHistoryLoading(false);
   }, [contract]);
 
-  async function loadMoreInHistory() {
+  useEffect(() => {
+    (async () => {
+      if (!contract) {
+        return;
+        // ToDo: clear state?
+      }
+
+      setIsMyBusinessLoading(true);
+
+      try {
+        const owner = await contract.signer.getAddress();
+        const businessInfos = await contract.getBusinessInfosByOwner(owner);
+
+        if (businessInfos.length > 0) {
+          setMyBusiness({
+            id: businessInfos[0].id,
+            name: businessInfos[0].name,
+            owner: businessInfos[0].owner,
+          });
+        } else {
+          setMyBusiness(null);
+        }
+      } catch (e) {
+        console.error(e);
+        setMyBusiness(null);
+      }
+
+      setIsMyBusinessLoading(false);
+    })();
+  }, [contract]);
+
+  const loadMoreInHistory = useCallback(async () => {
     if (!contract) {
       return;
     }
 
-    // ToDo: naive impl
-    // todo: mocked businessid
-    //'test-bu-02'
-    // const payer = await contract.signer.getAddress();
-    const data = await contract.getHistoryByBusiness(
-      'test-bu-02',
-      0,
-      100,
-      true,
-    );
-    // ToDo: pagination
+    if (!myBusiness) {
+      setInHistory([]);
+      return;
+    }
 
-    setInHistory(
-      data.history.map((x: any) => ({
-        businessId: x.businessId,
-        payer: x.payer,
-        currencyReceipt: formatUnits(x.currencyReceipt, 2),
-        receiptAmount: formatEther(x.receiptAmount),
-        tipAmount: formatEther(x.tipAmount),
-        timestamp: x.timestamp.toNumber(),
-      })),
-    );
-  }
+    setIsInHistoryLoading(true);
+
+    try {
+      // ToDo: naive impl
+      // ToDo: pagination
+      const data = await contract.getHistoryByBusiness(
+        myBusiness.id,
+        0,
+        100,
+        true,
+      );
+
+      setInHistory(
+        data.history.map((x: any) => ({
+          businessId: x.businessId,
+          payer: x.payer,
+          currencyReceipt: formatUnits(x.currencyReceipt, 2),
+          receiptAmount: formatEther(x.receiptAmount),
+          tipAmount: formatEther(x.tipAmount),
+          totalCryptoAmount: formatEther(x.receiptAmount.add(x.tipAmount)),
+          timestamp: x.timestamp.toNumber(),
+        })),
+      );
+
+      setEarnedInvoicesCryptoAmount(
+        formatEther(
+          data.history.reduce(
+            (acc: ethers.BigNumber, x: any) => acc.add(x.receiptAmount),
+            ethers.BigNumber.from('0'),
+          ),
+        ),
+      );
+
+      setEarnedTipsCryptoAmount(
+        formatEther(
+          data.history.reduce(
+            (acc: ethers.BigNumber, x: any) => acc.add(x.tipAmount),
+            ethers.BigNumber.from('0'),
+          ),
+        ),
+      );
+
+      setEarnedInvoicesFiatAmount(
+        formatUnits(
+          data.history.reduce(
+            (acc: ethers.BigNumber, x: any) => acc.add(x.currencyReceipt),
+            ethers.BigNumber.from('0'),
+          ),
+          2,
+        ),
+      );
+    } catch (e) {
+      console.error(e);
+      setInHistory(contextDefaultValues.inHistory);
+      setEarnedInvoicesCryptoAmount(
+        contextDefaultValues.earnedInvoicesCryptoAmount,
+      );
+      setEarnedTipsCryptoAmount(contextDefaultValues.earnedTipsCryptoAmount);
+    }
+
+    setIsInHistoryLoading(false);
+  }, [contract, myBusiness]);
+
+  // ToDo: wrap all functions to useCallback
 
   async function payReceipt(
     businessId: string,
@@ -216,6 +308,10 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
     processTransaction(receiptPromise, setPaymentTxStatus);
   }
 
+  const resetPaymentTxStatus = useCallback(() => {
+    setPaymentTxStatus(TxStatus.Idle);
+  }, []);
+
   async function addBusiness(businessId: string, name: string) {
     if (!contract) {
       return;
@@ -226,6 +322,10 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
     processTransaction(receiptPromise, setAddBusinessTxStatus);
   }
 
+  const resetAddBusinessTxStatus = useCallback(() => {
+    setAddBusinessTxStatus(TxStatus.Idle);
+  }, []);
+
   async function removeBusiness(businessId: string) {
     if (!contract) {
       return;
@@ -235,6 +335,10 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
 
     processTransaction(receiptPromise, setRemoveBusinessTxStatus);
   }
+
+  const resetRemoveBusinessTxStatus = useCallback(() => {
+    setRemoveBusinessTxStatus(TxStatus.Idle);
+  }, []);
 
   if (!contract) {
     return (
@@ -251,6 +355,11 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
     isRateLoading,
     spentTotalCryptoAmount,
     spentTipsCryptoAmount,
+    earnedInvoicesCryptoAmount,
+    earnedTipsCryptoAmount,
+    earnedInvoicesFiatAmount,
+    myBusiness,
+    isMyBusinessLoading,
     outHistory,
     isOutHistoryLoading,
     loadMoreOutHistory,
@@ -259,10 +368,13 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
     loadMoreInHistory,
     paymentTxStatus,
     payReceipt,
+    resetPaymentTxStatus,
     addBusinessTxStatus,
     addBusiness,
+    resetAddBusinessTxStatus,
     removeBusinessTxStatus,
     removeBusiness,
+    resetRemoveBusinessTxStatus,
   };
 
   return (

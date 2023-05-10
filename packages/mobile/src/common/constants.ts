@@ -46,3 +46,5 @@ export const BASE_FIAT_MAX_DIGITS = 2;
 
 export const BASE_CRYPTO_CURRENCY = 'XDAI';
 export const BASE_CRYPTO_MAX_DIGITS = 4;
+
+// ToDo: parametrize decimals

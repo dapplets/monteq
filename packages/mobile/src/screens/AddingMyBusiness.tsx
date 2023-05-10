@@ -16,6 +16,7 @@ import SwitchBlock from '../components/SwitchBlock';
 import {
   NavigationProp,
   RouteProp,
+  useIsFocused,
   useNavigation,
 } from '@react-navigation/native';
 import {memo, useEffect, useState} from 'react';
@@ -26,6 +27,7 @@ import {BASE_FIAT_CURRENCY} from '../common/constants';
 import CompanyParameters from '../components/CompanyParameters';
 import {useWeb3Modal} from '@web3modal/react-native';
 import {TxStatus} from '../contexts/MonteqContractContext/MonteqContractContext';
+import TxModal, {TxStatusType} from '../components/TxModal';
 type Props = {
   route: RouteProp<{params: {parsedReceipt: ParsedReceipt}}, 'params'>;
 };
@@ -33,36 +35,30 @@ type Props = {
 const AddingMyBusiness: React.FC<Props> = memo(({route}) => {
   const parsedReceipt = route.params.parsedReceipt;
 
+  const isFocused = useIsFocused();
+
   const [nameCompany, setNameCompany] = useState('');
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const {provider} = useWeb3Modal();
-  const {
-    addBusiness,
-    removeBusiness,
-    addBusinessTxStatus,
-    removeBusinessTxStatus,
-  } = useMonteqContract();
+  const {addBusiness, resetAddBusinessTxStatus, addBusinessTxStatus} =
+    useMonteqContract();
+  const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
-    // ToDo: show popup about invalid receipt
-    if (!parsedReceipt) {
-      navigation.goBack();
-    }
-  }, [parsedReceipt, navigation]);
+    resetAddBusinessTxStatus();
+  }, [isFocused, resetAddBusinessTxStatus]);
 
-  useEffect(() => {
-    if (
-      addBusinessTxStatus === TxStatus.Done ||
-      removeBusinessTxStatus === TxStatus.Done
-    ) {
-      navigation.navigate('MyBusiness');
-    }
-  }, [addBusinessTxStatus, removeBusinessTxStatus, navigation]);
+  async function handleCloseButtonPress() {
+    navigation.navigate('MyBusiness');
+  }
 
   async function handleSendPress() {
     if (!provider || !parsedReceipt) {
       return;
     }
+
+    setModalVisible(true);
+
     // nameCompany
     addBusiness(parsedReceipt.businessId, nameCompany);
   }
@@ -109,7 +105,64 @@ const AddingMyBusiness: React.FC<Props> = memo(({route}) => {
           </TouchableHighlight>
         </LinearGradient>
       </View>
-      <Navigation path="home" />
+
+      {!modalVisible ? <Navigation path="home" /> : null}
+
+      {addBusinessTxStatus === TxStatus.Sending ? (
+        <TxModal
+          isVisible={modalVisible}
+          title="Transaction signing"
+          status={'Signing'}
+          type={TxStatusType.Yellow}
+          image={require('../assets/inProgress.png')}
+          recipient={parsedReceipt.businessId}
+          busienssName={nameCompany}
+          onRequestClose={() => setModalVisible(!modalVisible)}
+        />
+      ) : null}
+
+      {addBusinessTxStatus === TxStatus.Mining ? (
+        <TxModal
+          isVisible={modalVisible}
+          title="Transaction sent"
+          status={'Mining'}
+          type={TxStatusType.Yellow}
+          image={require('../assets/inProgress.png')}
+          recipient={parsedReceipt.businessId}
+          busienssName={nameCompany}
+          onRequestClose={() => setModalVisible(!modalVisible)}
+        />
+      ) : null}
+
+      {addBusinessTxStatus === TxStatus.Done ? (
+        <TxModal
+          isVisible={modalVisible}
+          title="Transaction sent"
+          status={'Confirmed'}
+          type={TxStatusType.Green}
+          image={require('../assets/confirmed.png')}
+          recipient={parsedReceipt.businessId}
+          busienssName={nameCompany}
+          onRequestClose={() => setModalVisible(!modalVisible)}
+          primaryButton="Close"
+          onPrimaryButtonPress={handleCloseButtonPress}
+        />
+      ) : null}
+
+      {addBusinessTxStatus === TxStatus.Rejected ||
+      addBusinessTxStatus === TxStatus.Failed ? (
+        <TxModal
+          isVisible={modalVisible}
+          title="Transaction rejected"
+          description="ToDo: write description here"
+          image={require('../assets/errorOccured.png')}
+          onRequestClose={() => setModalVisible(!modalVisible)}
+          primaryButton="Retry"
+          onPrimaryButtonPress={handleSendPress}
+          secondaryButton="Close"
+          onSecondaryButtonPress={handleCloseButtonPress}
+        />
+      ) : null}
     </>
   );
 });

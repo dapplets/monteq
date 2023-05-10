@@ -16,22 +16,44 @@ import SwitchBlock from '../components/SwitchBlock';
 import {useEffect} from 'react';
 import BarcodeScannerModule from '../modules/BarcodeScannerModule';
 import {useWeb3Modal} from '@web3modal/react-native';
-import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {
+  NavigationProp,
+  useIsFocused,
+  useNavigation,
+} from '@react-navigation/native';
 import {RootStackParamList} from '../App';
 import HistoryPay from '../components/HistoryPay';
 import GeneralPayInfo from '../components/GeneralPayInfo';
-import {BASE_CRYPTO_CURRENCY, BASE_FIAT_CURRENCY} from '../common/constants';
+import {
+  BASE_CRYPTO_CURRENCY,
+  BASE_CRYPTO_MAX_DIGITS,
+  BASE_FIAT_CURRENCY,
+  BASE_FIAT_MAX_DIGITS,
+} from '../common/constants';
 import {parseReceipt} from '../common/parseReceipt';
+import {truncate} from '../common/helpers';
 
 const MyBusiness = () => {
-  const {inHistory, loadMoreInHistory} = useMonteqContract();
+  const isFocused = useIsFocused();
+  const {
+    isInHistoryLoading,
+    inHistory,
+    loadMoreInHistory,
+    earnedTipsCryptoAmount,
+    earnedInvoicesCryptoAmount,
+    earnedInvoicesFiatAmount,
+    myBusiness,
+    isMyBusinessLoading,
+  } = useMonteqContract();
   const [isRemember, setRemember] = React.useState(false);
   const {provider} = useWeb3Modal();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
-  useEffect(() => {
-    loadMoreInHistory();
-  }, [loadMoreInHistory]);
+  React.useEffect(() => {
+    if (isFocused) {
+      loadMoreInHistory();
+    }
+  }, [isFocused, loadMoreInHistory]);
 
   async function handleGmsScanPressBusiness() {
     if (!provider) {
@@ -73,65 +95,86 @@ const MyBusiness = () => {
     }
   }
 
+  if (isInHistoryLoading || isMyBusinessLoading) {
+    return (
+      <>
+        <View style={styles.InfoScreenWrapper}>
+          <Title label="Owner’s View" />
+          <Text>ToDo: loading</Text>
+        </View>
+        <Navigation path="home" />
+      </>
+    );
+  }
+
+  // ToDo: empty history
+
   return (
     <>
-      {inHistory && inHistory.length > 0 ? (
+      {myBusiness ? (
         <>
-          <View style={styles.InfoScreenWrapper}>
-            <Title label="Owner’s View" />
-            <GeneralPayInfo
-              // todo: must be eur
-              generalPayAmount={inHistory.reduce(
-                (s, i) => (s = s + +i.currencyReceipt),
-                0,
-              )}
-              title={'Paid for invoices'}
-              generalPayAmountSubtitle={BASE_FIAT_CURRENCY}
-              TipsAmount={inHistory.reduce(
-                (s, i) => (s = s + +i.currencyReceipt),
-                0,
-              )}
-              TipsSubtitleRight={BASE_CRYPTO_CURRENCY}
-            />
-            <GeneralPayInfo
-              generalPayAmount={inHistory.reduce(
-                (s, i) => (s = s + +i.tipAmount),
-                0,
-              )}
-              title={'Tips'}
-              generalPayAmountSubtitle={BASE_CRYPTO_CURRENCY}
-            />
-            <SwitchBlock
-              parameters={'Always start from this page'}
-              onPress={setRemember}
-              isPress={isRemember}
-            />
-            <LinearGradient
-              start={{x: 0, y: 0}}
-              end={{x: 1, y: 0}}
-              style={styles.linearGradient}
-              colors={['#0dd977', '#1da4ac', '#14c48c']}>
-              <TouchableHighlight
-                style={styles.buttonSend}
-                onPress={handleGmsScanPressBusinessRemoving}>
-                <Text style={styles.buttonText}>Remove my business</Text>
-              </TouchableHighlight>
-            </LinearGradient>
-            <View style={styles.list}>
-              {inHistory.map((x, i) => {
-                return (
-                  <HistoryPay
-                    key={i}
-                    time={new Date(x.timestamp * 1000).toISOString()}
-                    company={x.businessId}
-                    amount={
-                      '+' + x.currencyReceipt + ' ' + BASE_CRYPTO_CURRENCY
-                    }
-                  />
-                );
-              })}
+          {inHistory.length === 0 ? (
+            <View style={styles.InfoScreenWrapper}>
+              <Title label="Owner’s View" />
+              <Text>ToDo: add empty history picture</Text>
             </View>
-          </View>
+          ) : (
+            <View style={styles.InfoScreenWrapper}>
+              <Title label="Owner’s View" />
+              <GeneralPayInfo
+                // todo: must be eur
+                generalPayAmount={truncate(
+                  earnedInvoicesFiatAmount,
+                  BASE_FIAT_MAX_DIGITS,
+                )}
+                title={'Paid for invoices'}
+                generalPayAmountSubtitle={BASE_FIAT_CURRENCY}
+                TipsAmount={truncate(
+                  earnedInvoicesCryptoAmount,
+                  BASE_CRYPTO_MAX_DIGITS,
+                )}
+                TipsSubtitleRight={BASE_CRYPTO_CURRENCY}
+              />
+              <GeneralPayInfo
+                generalPayAmount={truncate(
+                  earnedTipsCryptoAmount,
+                  BASE_CRYPTO_MAX_DIGITS,
+                )}
+                title={'Tips'}
+                generalPayAmountSubtitle={BASE_CRYPTO_CURRENCY}
+              />
+              <SwitchBlock
+                parameters={'Always start from this page'}
+                onPress={setRemember}
+                isPress={isRemember}
+              />
+              <LinearGradient
+                start={{x: 0, y: 0}}
+                end={{x: 1, y: 0}}
+                style={styles.linearGradient}
+                colors={['#0dd977', '#1da4ac', '#14c48c']}>
+                <TouchableHighlight
+                  style={styles.buttonSend}
+                  onPress={handleGmsScanPressBusinessRemoving}>
+                  <Text style={styles.buttonText}>Remove my business</Text>
+                </TouchableHighlight>
+              </LinearGradient>
+              <View style={styles.list}>
+                {inHistory.map((x, i) => {
+                  return (
+                    <HistoryPay
+                      key={i}
+                      time={new Date(x.timestamp * 1000).toISOString()}
+                      company={x.businessId}
+                      amount={
+                        '+' + x.currencyReceipt + ' ' + BASE_CRYPTO_CURRENCY
+                      }
+                    />
+                  );
+                })}
+              </View>
+            </View>
+          )}
           <Navigation path="home" />
         </>
       ) : (
