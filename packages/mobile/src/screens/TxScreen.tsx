@@ -285,7 +285,8 @@ const TxScreen: React.FC<Props> = memo(({route}) => {
           fiatAmount={parsedReceipt.currencyReceipt}
           cryptoAmount={amountInCrypto}
           onRequestClose={() => setModalVisible(!modalVisible)}
-          onClosePress={navigationUserHistory}
+          primaryButton="Close"
+          onPrimaryButtonPress={navigationUserHistory}
         />
       ) : null}
 

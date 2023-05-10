@@ -34,8 +34,11 @@ type Props = {
   cryptoAmount?: string;
   image?: ImageSourcePropType;
   isVisible: boolean;
+  primaryButton?: string;
+  secondaryButton?: string;
   onRequestClose: () => void;
-  onClosePress?: () => void;
+  onPrimaryButtonPress?: () => void;
+  onSecondaryButtonPress?: () => void;
 };
 
 const TxModal: React.FC<Props> = ({
@@ -48,8 +51,11 @@ const TxModal: React.FC<Props> = ({
   fiatAmount,
   cryptoAmount,
   isVisible,
+  primaryButton,
+  secondaryButton,
   onRequestClose,
-  onClosePress,
+  onPrimaryButtonPress,
+  onSecondaryButtonPress,
 }) => {
   return (
     <Modal
@@ -127,18 +133,27 @@ const TxModal: React.FC<Props> = ({
             <PaymentParameters isGray parameters={'Date'} value={date} />
           ) : null}
 
-          {onClosePress !== undefined ? (
+          {onPrimaryButtonPress !== undefined && primaryButton !== undefined ? (
             <LinearGradient
               start={{x: 0, y: 0}}
               end={{x: 1, y: 0}}
               style={styles.linearGradient}
               colors={['#0dd977', '#1da4ac', '#14c48c']}>
               <TouchableHighlight
-                style={styles.buttonSend}
-                onPress={onClosePress}>
-                <Text style={styles.buttonText}>Close</Text>
+                style={styles.primaryButton}
+                onPress={onPrimaryButtonPress}>
+                <Text style={styles.primaryButtonText}>{primaryButton}</Text>
               </TouchableHighlight>
             </LinearGradient>
+          ) : null}
+
+          {onSecondaryButtonPress !== undefined &&
+          secondaryButton !== undefined ? (
+            <TouchableHighlight
+              style={styles.secondaryButton}
+              onPress={onSecondaryButtonPress}>
+              <Text style={styles.primaryButtonText}>{secondaryButton}</Text>
+            </TouchableHighlight>
           ) : null}
         </View>
       </View>
@@ -230,7 +245,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     width: '100%',
   },
-  buttonSend: {
+  primaryButton: {
     backgroundColor: 'transparent',
     width: '100%',
     height: 48,
@@ -239,12 +254,29 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
   },
-  buttonText: {
+  primaryButtonText: {
     fontSize: 14,
     fontWeight: '700',
     lineHeight: 16,
     // textAlign: 'center',
     color: '#ffffff',
+  },
+  secondaryButton: {
+    backgroundColor: '#F6F7F8',
+    width: '100%',
+    height: 48,
+    display: 'flex',
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  secondaryButtonText: {
+    fontSize: 14,
+    fontWeight: '700',
+    lineHeight: 16,
+    // textAlign: 'center',
+    color: '#222222',
+    textDecorationLine: 'underline',
   },
 });
 
