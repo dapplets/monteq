@@ -9,13 +9,16 @@ describe('MonteQ', function () {
     // We use loadFixture to run this setup once, snapshot that state,
     // and reset Hardhat Network to that snapshot in every test.
     async function deployOneYearLockFixture() {
-        const emptyBusinessInfo = ['0x0000000000000000000000000000000000000000', '']
+        const emptyBusinessInfo = ['', '0x0000000000000000000000000000000000000000', '']
 
         const businessId001 = 'some-business-id-001'
         const businessName001 = 'Some Business 001'
 
         const businessId002 = 'some-business-id-002'
         const businessName002 = 'Some Business 002'
+
+        const businessId003 = 'some-business-id-003'
+        const businessName003 = 'Some Business 003'
 
         const currencyAmount001 = '171'
         const amountReceipt001 = '1000000000000000'
@@ -24,8 +27,8 @@ describe('MonteQ', function () {
 
         // Contracts are deployed using the first signer/account by default
         const [owner, otherAccount] = await ethers.getSigners()
-        const businessInfo001 = [owner.address, businessName001]
-        const businessInfo002 = [otherAccount.address, businessName002]
+        const businessInfo001 = [businessId001, owner.address, businessName001]
+        const businessInfo002 = [businessId002, otherAccount.address, businessName002]
 
         const MonteQ = await ethers.getContractFactory('MonteQ')
         const monteQ = await MonteQ.deploy()
@@ -38,6 +41,8 @@ describe('MonteQ', function () {
             businessName001,
             businessId002,
             businessName002,
+            businessId003,
+            businessName003,
             businessInfo001,
             businessInfo002,
             currencyAmount001,
@@ -53,8 +58,8 @@ describe('MonteQ', function () {
             const { monteQ, businessId001, emptyBusinessInfo } = await loadFixture(
                 deployOneYearLockFixture
             )
-            const [owner, name] = await monteQ.businessInfos(businessId001)
-            expect([owner, name]).to.eql(emptyBusinessInfo)
+            const [id, owner, name] = await monteQ.businessInfos(businessId001)
+            expect([id, owner, name]).to.eql(emptyBusinessInfo)
         })
 
         it('should attach the owner', async function () {
@@ -62,8 +67,8 @@ describe('MonteQ', function () {
                 deployOneYearLockFixture
             )
             await monteQ.addBusiness(businessId001, businessName001)
-            const [receivedOwner, name] = await monteQ.businessInfos(businessId001)
-            expect([receivedOwner, name]).to.eql(businessInfo001)
+            const [id, receivedOwner, name] = await monteQ.businessInfos(businessId001)
+            expect([id, receivedOwner, name]).to.eql(businessInfo001)
         })
 
         it('should remove the owner', async function () {
@@ -72,8 +77,30 @@ describe('MonteQ', function () {
             )
             await monteQ.addBusiness(businessId001, businessName001)
             await monteQ.removeBusiness(businessId001)
-            const [receivedOwner, name] = await monteQ.businessInfos(businessId001)
-            expect([receivedOwner, name]).to.eql(emptyBusinessInfo)
+            const [id, receivedOwner, name] = await monteQ.businessInfos(businessId001)
+            expect([id, receivedOwner, name]).to.eql(emptyBusinessInfo)
+        })
+
+        it('should get the businesses by the owner', async function () {
+            const {
+                owner,
+                monteQ,
+                businessId001,
+                businessName001,
+                businessId002,
+                businessName002,
+                businessId003,
+                businessName003,
+            } = await loadFixture(deployOneYearLockFixture)
+            await monteQ.addBusiness(businessId001, businessName001)
+            await monteQ.addBusiness(businessId002, businessName002)
+            await monteQ.addBusiness(businessId003, businessName003)
+            const result = await monteQ.getBusinessInfosByOwer(owner.address)
+            expect(result.map((res) => ({ id: res.id, owner: res.owner, name: res.name }))).to.eql([
+                { id: businessId001, owner: owner.address, name: businessName001 },
+                { id: businessId002, owner: owner.address, name: businessName002 },
+                { id: businessId003, owner: owner.address, name: businessName003 },
+            ])
         })
     })
 

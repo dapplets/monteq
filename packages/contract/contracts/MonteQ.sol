@@ -6,6 +6,7 @@ pragma solidity ^0.8.9;
 
 contract MonteQ {
     struct BusinessInfo {
+        string id;
         address payable owner;
         string name;
     }
@@ -25,7 +26,18 @@ contract MonteQ {
     mapping(string => uint256[]) _historyByBusiness; // mapping(BusinessId => IDs of the HistoryRecords in the History)
 
     mapping(string => BusinessInfo) public businessInfos; // mapping(BusinessId => BusinessInfo)
+    mapping(address => string[]) public businessIdsByOwer; // mapping(owner => BusinessIds)
     mapping(string => uint) public credits; // mapping(BusinessId => BusinessCredit)
+
+    function getBusinessInfosByOwer(
+        address owner
+    ) public view returns (BusinessInfo[] memory infos) {
+        string[] memory ids = businessIdsByOwer[owner];
+        infos = new BusinessInfo[](ids.length);
+        for (uint256 i = 0; i < ids.length; ++i) {
+            infos[i] = businessInfos[ids[i]];
+        }
+    }
 
     function getHistoryByPayer(
         address payer,
@@ -83,7 +95,12 @@ contract MonteQ {
             businessInfos[businessId].owner == address(0),
             "The business already exists."
         );
-        businessInfos[businessId] = BusinessInfo(payable(msg.sender), name);
+        businessInfos[businessId] = BusinessInfo(
+            businessId,
+            payable(msg.sender),
+            name
+        );
+        businessIdsByOwer[msg.sender].push(businessId);
         if (credits[businessId] > 0) {
             payable(msg.sender).transfer(credits[businessId]);
             delete credits[businessId];
@@ -96,6 +113,20 @@ contract MonteQ {
             "Only the business owner can remove it."
         );
         delete businessInfos[businessId];
+        string[] memory newIds = new string[](
+            businessIdsByOwer[msg.sender].length - 1
+        );
+        uint256 j = 0;
+        for (uint256 i = 0; i < businessIdsByOwer[msg.sender].length; ++i) {
+            string memory str = businessIdsByOwer[msg.sender][i];
+            if (
+                keccak256(abi.encodePacked(str)) !=
+                keccak256(abi.encodePacked(businessId))
+            ) {
+                newIds[j++] = str;
+            }
+        }
+        businessIdsByOwer[msg.sender] = newIds;
     }
 
     function _paginate(
