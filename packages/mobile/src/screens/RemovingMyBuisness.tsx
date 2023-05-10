@@ -30,15 +30,14 @@ type Props = {
   route: RouteProp<{params: {url: string}}, 'params'>;
 };
 
-const AddingMyBusiness: React.FC<Props> = memo(({route}) => {
+const RemovingMyBusiness: React.FC<Props> = memo(({route}) => {
   const parsedReceipt = parseReceipt(route.params.url);
   const [nameCompany, setNameCompany] = useState('');
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const {provider} = useWeb3Modal();
   const {
-    addBusiness,
     removeBusiness,
-    addBusinessTxStatus,
+
     removeBusinessTxStatus,
   } = useMonteqContract();
 
@@ -50,20 +49,17 @@ const AddingMyBusiness: React.FC<Props> = memo(({route}) => {
   }, [parsedReceipt, navigation]);
 
   useEffect(() => {
-    if (
-      addBusinessTxStatus === TxStatus.Done ||
-      removeBusinessTxStatus === TxStatus.Done
-    ) {
+    if (removeBusinessTxStatus === TxStatus.Done) {
       navigation.navigate('MyBusiness');
     }
-  }, [addBusinessTxStatus, removeBusinessTxStatus, navigation]);
+  }, [removeBusinessTxStatus, navigation]);
 
   async function handleSendPress() {
     if (!provider || !parsedReceipt) {
       return;
     }
     // nameCompany
-    addBusiness(parsedReceipt.businessId, nameCompany);
+    removeBusiness(parsedReceipt.businessId);
   }
 
   if (!parsedReceipt) {
@@ -73,14 +69,9 @@ const AddingMyBusiness: React.FC<Props> = memo(({route}) => {
 
   return (
     <>
-      <Title label="Adding my business" />
+      <Title label="Removing my business" />
       <View style={styles.InfoScreenWrapper}>
         <View style={styles.PayInfo}>
-          <CompanyParameters
-            parameters={'Company'}
-            value={nameCompany}
-            onChangeValue={setNameCompany}
-          />
           <PaymentParameters
             parameters={'Business unit'}
             value={parsedReceipt.businessId}
@@ -101,10 +92,9 @@ const AddingMyBusiness: React.FC<Props> = memo(({route}) => {
           style={styles.linearGradient}
           colors={['#0dd977', '#1da4ac', '#14c48c']}>
           <TouchableHighlight
-            disabled={nameCompany.length === 0}
             style={styles.buttonSend}
             onPress={handleSendPress}>
-            <Text style={styles.buttonText}>It's me. Add the business!</Text>
+            <Text style={styles.buttonText}>It's me. Remove the business!</Text>
           </TouchableHighlight>
         </LinearGradient>
       </View>
@@ -152,4 +142,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AddingMyBusiness;
+export default RemovingMyBusiness;
