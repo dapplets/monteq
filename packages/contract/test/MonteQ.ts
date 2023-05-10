@@ -144,8 +144,8 @@ describe('MonteQ', function () {
             await monteQ.removeBusiness(businessId001)
             const result = await monteQ.getBusinessInfosByOwer(owner.address)
             expect(parseBusinessInfos(result)).to.eql([
-                { id: businessId002, owner: owner.address, name: businessName002 },
                 { id: businessId003, owner: owner.address, name: businessName003 },
+                { id: businessId002, owner: owner.address, name: businessName002 },
             ])
         })
 
