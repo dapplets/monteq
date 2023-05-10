@@ -1,5 +1,6 @@
 import {Image, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
+import {FontFamily} from '../GlobalStyles';
 
 export type HistoryPayType = {
   time: string;
@@ -72,12 +73,14 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 16,
     color: '#222222',
+    fontFamily: FontFamily.robotoBold,
   },
   company: {
     fontWeight: '400',
     fontSize: 10,
     lineHeight: 12,
     color: '#919191',
+    fontFamily: FontFamily.robotoRegular,
   },
   time: {
     fontWeight: '400',
@@ -87,6 +90,7 @@ const styles = StyleSheet.create({
     marginLeft: 'auto',
     paddingTop: 5,
     paddingBottom: 5,
+    fontFamily: FontFamily.robotoRegular,
   },
 });
 export default HistoryPay;

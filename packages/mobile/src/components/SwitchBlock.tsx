@@ -1,6 +1,7 @@
 import {Alert, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import CustomSwitch from './Switch';
+import {FontFamily} from '../GlobalStyles';
 export type SwitchBlockType = {
   parameters: string;
   onPress: any;
@@ -40,12 +41,14 @@ const styles = StyleSheet.create({
     lineHeight: 17,
     fontWeight: '400',
     color: '#222222',
+    fontFamily: FontFamily.robotoRegular,
   },
   Value: {
     fontSize: 14,
     lineHeight: 17,
     fontWeight: '600',
     color: '#222222',
+    fontFamily: FontFamily.robotoBold,
   },
 });
 export default SwitchBlock;

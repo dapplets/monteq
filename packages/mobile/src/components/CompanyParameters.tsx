@@ -1,5 +1,6 @@
 import {StyleSheet, Text, TextInput, View} from 'react-native';
 import React from 'react';
+import {FontFamily} from '../GlobalStyles';
 export type CompanyParametersType = {
   parameters: string;
   value: string;
@@ -57,6 +58,7 @@ const styles = StyleSheet.create({
     lineHeight: 17,
     fontWeight: '400',
     color: '#222222',
+    fontFamily: FontFamily.robotoRegular,
   },
   Value: {
     fontSize: 14,
@@ -68,6 +70,7 @@ const styles = StyleSheet.create({
     margin: 0,
     textAlign: 'right',
     width: 100,
+    fontFamily: FontFamily.robotoBold,
   },
 });
 

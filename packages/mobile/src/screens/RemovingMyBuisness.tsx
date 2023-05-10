@@ -26,6 +26,7 @@ import {BASE_FIAT_CURRENCY} from '../common/constants';
 import CompanyParameters from '../components/CompanyParameters';
 import {useWeb3Modal} from '@web3modal/react-native';
 import {TxStatus} from '../contexts/MonteqContractContext/MonteqContractContext';
+import {FontFamily} from '../GlobalStyles';
 type Props = {
   route: RouteProp<{params: {parsedReceipt: ParsedReceipt}}, 'params'>;
 };
@@ -120,6 +121,7 @@ const styles = StyleSheet.create({
     lineHeight: 16,
     // textAlign: 'center',
     color: '#ffffff',
+    fontFamily: FontFamily.robotoBold,
   },
   buttonSend: {
     backgroundColor: 'transparent',

@@ -1,9 +1,9 @@
 /* fonts */
 export const FontFamily = {
-  robotoBold: 'Roboto-Bold',
-  robotoSemibold: 'Roboto_semibold',
-  robotoRegular: 'Roboto_regular',
-  regular: 'Roboto',
+  robotoBold: 'roboto_bold',
+  robotoSemibold: 'roboto_black',
+  robotoRegular: 'roboto_regular',
+  robotoThin: 'roboto_thin',
 };
 /* font sizes */
 export const FontSize = {

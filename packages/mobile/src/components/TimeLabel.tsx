@@ -6,6 +6,7 @@ import {
   View,
 } from 'react-native';
 import React from 'react';
+import {FontFamily} from '../GlobalStyles';
 export type TimeLabelType = {
   time: string;
   isActive: boolean;
@@ -57,6 +58,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 17,
     color: '#919191',
+    fontFamily: FontFamily.robotoRegular,
   },
   timeActiveImg: {
     backgroundColor: '#14C58B',
@@ -69,6 +71,7 @@ const styles = StyleSheet.create({
     lineHeight: 17,
     color: '#14C58B',
     fontWeight: '700',
+    fontFamily: FontFamily.robotoBold,
   },
 });
 export default TimeLabel;

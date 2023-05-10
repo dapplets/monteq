@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {View, StyleSheet, Text} from 'react-native';
 import {BASE_CRYPTO_CURRENCY} from '../common/constants';
+import {FontFamily} from '../GlobalStyles';
 
 export type PaymentInfoType = {
   price: string;
@@ -52,6 +53,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     lineHeight: 14,
     marginBottom: 10,
+    fontFamily: FontFamily.robotoRegular,
   },
   PaymentPrice: {
     width: '100%',
@@ -73,6 +75,7 @@ const styles = StyleSheet.create({
     color: '#14C58B',
     fontWeight: '700',
     marginRight: 10,
+    fontFamily: FontFamily.robotoBold,
   },
   priceSubtitle: {
     fontSize: 10,
@@ -82,6 +85,7 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     marginTop: 'auto',
     marginBottom: 6,
+    fontFamily: FontFamily.robotoBold,
   },
   PaymentConvert: {
     width: '100%',
@@ -96,6 +100,7 @@ const styles = StyleSheet.create({
     color: '#14C58B',
     textTransform: 'uppercase',
     marginRight: 5,
+    fontFamily: FontFamily.robotoRegular,
   },
   convertCurrensy: {
     fontSize: 10,
@@ -103,6 +108,7 @@ const styles = StyleSheet.create({
     color: '#14C58B',
     textTransform: 'uppercase',
     marginLeft: 5,
+    fontFamily: FontFamily.robotoRegular,
   },
   PaymentDescription: {
     marginTop: 10,
@@ -113,6 +119,7 @@ const styles = StyleSheet.create({
     lineHeight: 14,
     color: '#919191',
     textAlign: 'center',
+    fontFamily: FontFamily.robotoRegular,
   },
 });
 
