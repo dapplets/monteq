@@ -1,18 +1,9 @@
 import * as React from 'react';
-import {
-  Text,
-  StyleSheet,
-  View,
-  TouchableHighlight,
-  Image,
-  Alert,
-} from 'react-native';
-
+import {Text, StyleSheet, View, TouchableHighlight} from 'react-native';
 import Navigation from '../components/Navigation';
 import Title from '../components/TitlePage';
 import {useMonteqContract} from '../contexts/MonteqContractContext';
 import LinearGradient from 'react-native-linear-gradient';
-import SwitchBlock from '../components/SwitchBlock';
 import {
   NavigationProp,
   RouteProp,
@@ -28,6 +19,8 @@ import CompanyParameters from '../components/CompanyParameters';
 import {useWeb3Modal} from '@web3modal/react-native';
 import {TxStatus} from '../contexts/MonteqContractContext/MonteqContractContext';
 import TxModal, {TxStatusType} from '../components/TxModal';
+import {FontFamily} from '../GlobalStyles';
+
 type Props = {
   route: RouteProp<{params: {parsedReceipt: ParsedReceipt}}, 'params'>;
 };
@@ -180,6 +173,7 @@ const styles = StyleSheet.create({
     lineHeight: 16,
     // textAlign: 'center',
     color: '#ffffff',
+    fontFamily: FontFamily.robotoBold,
   },
   buttonSend: {
     backgroundColor: 'transparent',

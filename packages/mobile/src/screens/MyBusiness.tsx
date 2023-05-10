@@ -31,6 +31,7 @@ import {
 } from '../common/constants';
 import {parseReceipt} from '../common/parseReceipt';
 import {truncate} from '../common/helpers';
+import {FontFamily} from '../GlobalStyles';
 
 const MyBusiness = () => {
   const isFocused = useIsFocused();
@@ -251,6 +252,7 @@ const styles = StyleSheet.create({
     lineHeight: 16,
     // textAlign: 'center',
     color: '#ffffff',
+    fontFamily: FontFamily.robotoBold,
   },
   buttonSend: {
     backgroundColor: 'transparent',
@@ -277,6 +279,7 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     paddingRight: 20,
     marginBottom: 20,
+    fontFamily: FontFamily.robotoRegular,
   },
 });
 

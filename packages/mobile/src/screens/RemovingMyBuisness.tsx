@@ -6,7 +6,6 @@ import {useMonteqContract} from '../contexts/MonteqContractContext';
 import LinearGradient from 'react-native-linear-gradient';
 import {
   NavigationProp,
-  RouteProp,
   useIsFocused,
   useNavigation,
 } from '@react-navigation/native';
@@ -19,6 +18,7 @@ import {
   TxStatus,
 } from '../contexts/MonteqContractContext/MonteqContractContext';
 import TxModal, {TxStatusType} from '../components/TxModal';
+import {FontFamily} from '../GlobalStyles';
 
 const RemovingMyBusiness: React.FC = memo(() => {
   const isFocused = useIsFocused();
@@ -170,6 +170,7 @@ const styles = StyleSheet.create({
     lineHeight: 16,
     // textAlign: 'center',
     color: '#ffffff',
+    fontFamily: FontFamily.robotoBold,
   },
   buttonSend: {
     backgroundColor: 'transparent',

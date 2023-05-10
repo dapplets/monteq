@@ -18,6 +18,7 @@ import {
   BASE_FIAT_MAX_DIGITS,
 } from '../common/constants';
 import {truncate} from '../common/helpers';
+import {FontFamily} from '../GlobalStyles';
 
 export enum TxStatusType {
   Green,
@@ -224,6 +225,7 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     color: '#222222',
     width: '50%',
+    fontFamily: FontFamily.robotoRegular,
   },
   ValueStatus: {
     display: 'flex',
@@ -237,13 +239,16 @@ const styles = StyleSheet.create({
     lineHeight: 17,
     fontWeight: '600',
     color: '#EBC200',
+    fontFamily: FontFamily.robotoBold,
   },
   ValueStatusTextOk: {
     fontSize: 14,
     lineHeight: 17,
     fontWeight: '600',
     color: '#14C58B',
+    fontFamily: FontFamily.robotoBold,
   },
+
   ValueStatusLabel: {
     width: 5,
     height: 5,
@@ -279,6 +284,7 @@ const styles = StyleSheet.create({
     lineHeight: 16,
     // textAlign: 'center',
     color: '#ffffff',
+    fontFamily: FontFamily.robotoBold,
   },
   secondaryButton: {
     backgroundColor: '#F6F7F8',
@@ -297,6 +303,7 @@ const styles = StyleSheet.create({
     // textAlign: 'center',
     color: '#222222',
     textDecorationLine: 'underline',
+    fontFamily: FontFamily.robotoBold,
   },
   DescriptionText: {
     fontSize: 14,
@@ -306,6 +313,7 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     paddingRight: 10,
     marginBottom: 10,
+    fontFamily: FontFamily.robotoRegular,
   },
 });
 

@@ -25,6 +25,7 @@ import SwitchBlock from '../components/SwitchBlock';
 import {addStr, mulStr, truncate} from '../common/helpers';
 import TxModal, {TxStatusType} from '../components/TxModal';
 import {TxStatus} from '../contexts/MonteqContractContext/MonteqContractContext';
+import {FontFamily} from '../GlobalStyles';
 
 type Props = {
   route: RouteProp<{params: {parsedReceipt: ParsedReceipt}}, 'params'>;
@@ -337,6 +338,7 @@ const styles = StyleSheet.create({
     lineHeight: 17,
     width: '60%',
     fontWeight: '400',
+    fontFamily: FontFamily.robotoRegular,
   },
   AvailableBlock: {
     display: 'flex',
@@ -351,6 +353,7 @@ const styles = StyleSheet.create({
     lineHeight: 17,
     fontWeight: '600',
     marginRight: 5,
+    fontFamily: FontFamily.robotoBold,
   },
   AvailableCurrency: {
     color: '#222222',
@@ -358,6 +361,7 @@ const styles = StyleSheet.create({
     lineHeight: 17,
     fontWeight: '600',
     marginRight: 10,
+    fontFamily: FontFamily.robotoBold,
   },
   AvailableImg: {
     width: 20,
@@ -386,6 +390,7 @@ const styles = StyleSheet.create({
     color: '#222222',
     fontSize: 14,
     lineHeight: 16,
+    fontFamily: FontFamily.robotoRegular,
   },
   // ToDo: code duplicated in TxModal.tsx
   linearGradient: {
@@ -409,6 +414,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     lineHeight: 16,
     color: '#ffffff',
+    fontFamily: FontFamily.robotoBold,
   },
 });
 
