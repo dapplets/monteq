@@ -19,17 +19,18 @@ import MyBusiness from './screens/MyBusiness';
 import AddingMyBusiness from './screens/AddingMyBusiness';
 import HowUse from './screens/HowUse';
 import RemovingMyBusiness from './screens/RemovingMyBuisness';
+import {ParsedReceipt} from './common/parseReceipt';
 
 export type RootStackParamList = {
   InfoScreen: undefined;
   CameraScreen: undefined;
-  TxScreen: {url: string};
+  TxScreen: {parsedReceipt: ParsedReceipt};
   WelcomeScreen: undefined;
   CodeScanned: undefined;
   MyBusiness: undefined;
-  AddingMyBusiness: {url: string};
+  AddingMyBusiness: {parsedReceipt: ParsedReceipt};
   HowUse: undefined;
-  RemovingMyBusiness: {url: string};
+  RemovingMyBusiness: {parsedReceipt: ParsedReceipt};
 };
 
 const Stack = createNativeStackNavigator();

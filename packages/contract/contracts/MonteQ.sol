@@ -26,13 +26,13 @@ contract MonteQ {
     mapping(string => uint256[]) _historyByBusiness; // mapping(BusinessId => IDs of the HistoryRecords in the History)
 
     mapping(string => BusinessInfo) public businessInfos; // mapping(BusinessId => BusinessInfo)
-    mapping(address => string[]) public businessIdsByOwer; // mapping(owner => BusinessIds)
+    mapping(address => string[]) public businessIdsByOwner; // mapping(owner => BusinessIds)
     mapping(string => uint) public credits; // mapping(BusinessId => BusinessCredit)
 
     function getBusinessInfosByOwer(
         address owner
     ) public view returns (BusinessInfo[] memory infos) {
-        string[] memory ids = businessIdsByOwer[owner];
+        string[] memory ids = businessIdsByOwner[owner];
         infos = new BusinessInfo[](ids.length);
         for (uint256 i = 0; i < ids.length; ++i) {
             infos[i] = businessInfos[ids[i]];
@@ -91,6 +91,7 @@ contract MonteQ {
         string calldata businessId,
         string calldata name
     ) public {
+        // ToDo: anyone can link a business
         require(
             businessInfos[businessId].owner == address(0),
             "The business already exists."
@@ -100,7 +101,7 @@ contract MonteQ {
             payable(msg.sender),
             name
         );
-        businessIdsByOwer[msg.sender].push(businessId);
+        businessIdsByOwner[msg.sender].push(businessId);
         if (credits[businessId] > 0) {
             payable(msg.sender).transfer(credits[businessId]);
             delete credits[businessId];
@@ -112,21 +113,24 @@ contract MonteQ {
             msg.sender == businessInfos[businessId].owner,
             "Only the business owner can remove it."
         );
+
         delete businessInfos[businessId];
-        string[] memory newIds = new string[](
-            businessIdsByOwer[msg.sender].length - 1
-        );
-        uint256 j = 0;
-        for (uint256 i = 0; i < businessIdsByOwer[msg.sender].length; ++i) {
-            string memory str = businessIdsByOwer[msg.sender][i];
+
+        // ToDo: out of gas is possible
+        string[] storage ids = businessIdsByOwner[msg.sender];
+        for (uint256 i = 0; i < ids.length; ++i) {
             if (
-                keccak256(abi.encodePacked(str)) !=
+                keccak256(abi.encodePacked(ids[i])) ==
                 keccak256(abi.encodePacked(businessId))
             ) {
-                newIds[j++] = str;
+                if (ids.length > 1) {
+                    ids[i] = ids[ids.length - 1];
+                }
+
+                ids.pop();
+                break;
             }
         }
-        businessIdsByOwer[msg.sender] = newIds;
     }
 
     function _paginate(

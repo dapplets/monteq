@@ -1,13 +1,7 @@
 import * as React from 'react';
-import {
-  View,
-  Alert,
-  StyleSheet,
-  TouchableHighlight,
-  Image,
-  Text,
-} from 'react-native';
-import { BASE_CRYPTO_CURRENCY } from '../common/constants';
+import {View, StyleSheet, Text} from 'react-native';
+import {BASE_CRYPTO_CURRENCY} from '../common/constants';
+
 export type PaymentInfoType = {
   price: string;
   title: string;
@@ -16,6 +10,7 @@ export type PaymentInfoType = {
     convertCurrency: string;
   };
 };
+
 const PaymentInfo = ({price, title, convert}: PaymentInfoType) => {
   return (
     <View style={styles.PaymentWrapper}>
@@ -120,4 +115,5 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
+
 export default PaymentInfo;

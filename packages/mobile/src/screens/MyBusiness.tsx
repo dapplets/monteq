@@ -21,12 +21,14 @@ import {RootStackParamList} from '../App';
 import HistoryPay from '../components/HistoryPay';
 import GeneralPayInfo from '../components/GeneralPayInfo';
 import {BASE_CRYPTO_CURRENCY, BASE_FIAT_CURRENCY} from '../common/constants';
+import {parseReceipt} from '../common/parseReceipt';
 
 const MyBusiness = () => {
   const {inHistory, loadMoreInHistory} = useMonteqContract();
   const [isRemember, setRemember] = React.useState(false);
   const {provider} = useWeb3Modal();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+
   useEffect(() => {
     loadMoreInHistory();
   }, [loadMoreInHistory]);
@@ -38,14 +40,19 @@ const MyBusiness = () => {
 
     try {
       const url = await BarcodeScannerModule.scan();
-
-      navigation.navigate('AddingMyBusiness', {url});
+      const parsedReceipt = parseReceipt(url);
+      navigation.navigate('AddingMyBusiness', {parsedReceipt});
     } catch (e) {
-      // ToDo: catch CANCELED and FAILURE cases
       console.error(e);
-      Alert.alert('Failure or canceled');
+
+      // @ts-ignore
+      if (e.message !== 'User canceled scanning') {
+        // @ts-ignore
+        Alert.alert('Error', e.message);
+      }
     }
   }
+
   async function handleGmsScanPressBusinessRemoving() {
     if (!provider) {
       return;
@@ -53,14 +60,19 @@ const MyBusiness = () => {
 
     try {
       const url = await BarcodeScannerModule.scan();
-
-      navigation.navigate('RemovingMyBusiness', {url});
+      const parsedReceipt = parseReceipt(url);
+      navigation.navigate('RemovingMyBusiness', {parsedReceipt});
     } catch (e) {
-      // ToDo: catch CANCELED and FAILURE cases
       console.error(e);
-      Alert.alert('Failure or canceled');
+
+      // @ts-ignore
+      if (e.message !== 'User canceled scanning') {
+        // @ts-ignore
+        Alert.alert('Error', e.message);
+      }
     }
   }
+
   return (
     <>
       {inHistory && inHistory.length > 0 ? (
@@ -219,7 +231,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
   },
-
   BusinessImg: {
     width: 174,
     height: 158,
@@ -238,4 +249,5 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
 });
+
 export default MyBusiness;

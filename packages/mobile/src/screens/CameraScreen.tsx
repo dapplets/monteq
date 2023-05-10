@@ -48,7 +48,7 @@ const CameraScreen = () => {
       barcodes.forEach(async (scannedBarcode: any) => {
         if (scannedBarcode.rawValue !== '') {
           navigation.goBack();
-          navigation.navigate('TxScreen', {data: scannedBarcode.rawValue});
+          // navigation.navigate('TxScreen', {data: scannedBarcode.rawValue});
         }
       });
     }

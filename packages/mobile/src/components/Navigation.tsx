@@ -5,6 +5,7 @@ import {View, Alert, StyleSheet, TouchableHighlight, Image} from 'react-native';
 import {type RootStackParamList} from '../App';
 import BarcodeScannerModule from '../modules/BarcodeScannerModule';
 import ButtonNavigationDefault from './ButtonNavigationDefault';
+import {parseReceipt} from '../common/parseReceipt';
 
 export type NavigationType = {
   path: string;
@@ -36,11 +37,16 @@ const Navigation = ({path}: NavigationType) => {
 
     try {
       const url = await BarcodeScannerModule.scan();
-      navigation.navigate('TxScreen', {url});
+      const parsedReceipt = parseReceipt(url);
+      navigation.navigate('TxScreen', {parsedReceipt});
     } catch (e) {
-      // ToDo: catch CANCELED and FAILURE cases
       console.error(e);
-      Alert.alert('Failure or canceled');
+
+      // @ts-ignore
+      if (e.message !== 'User canceled scanning') {
+        // @ts-ignore
+        Alert.alert('Error', e.message);
+      }
     }
   }
 
