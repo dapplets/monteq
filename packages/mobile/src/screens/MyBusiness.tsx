@@ -27,6 +27,7 @@ const MyBusiness = () => {
   const [isRemember, setRemember] = React.useState(false);
   const {provider} = useWeb3Modal();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+
   useEffect(() => {
     loadMoreInHistory();
   }, [loadMoreInHistory]);
@@ -46,6 +47,7 @@ const MyBusiness = () => {
       Alert.alert('Failure or canceled');
     }
   }
+
   async function handleGmsScanPressBusinessRemoving() {
     if (!provider) {
       return;
@@ -61,6 +63,7 @@ const MyBusiness = () => {
       Alert.alert('Failure or canceled');
     }
   }
+
   return (
     <>
       {inHistory && inHistory.length > 0 ? (
@@ -219,7 +222,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
   },
-
   BusinessImg: {
     width: 174,
     height: 158,
@@ -238,4 +240,5 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
 });
+
 export default MyBusiness;

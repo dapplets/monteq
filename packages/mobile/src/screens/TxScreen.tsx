@@ -5,14 +5,7 @@ import {
 } from '@react-navigation/native';
 import {useWeb3Modal} from '@web3modal/react-native';
 import React, {memo, useEffect, useState} from 'react';
-import {
-  Image,
-  StyleSheet,
-  Text,
-  TouchableHighlight,
-  View,
-  Modal,
-} from 'react-native';
+import {Image, StyleSheet, Text, TouchableHighlight, View} from 'react-native';
 import Navigation from '../components/Navigation';
 import Title from '../components/TitlePage';
 import PaymentInfo from '../components/PaymentInfo';
@@ -26,10 +19,11 @@ import {
   BASE_CRYPTO_CURRENCY,
   BASE_CRYPTO_MAX_DIGITS,
   BASE_FIAT_CURRENCY,
-  BASE_FIAT_MAX_DIGITS,
 } from '../common/constants';
 import SwitchBlock from '../components/SwitchBlock';
 import {addStr, mulStr, truncate} from '../common/helpers';
+import TxModal, {TxStatusType} from '../components/TxModal';
+import {TxStatus} from '../contexts/MonteqContractContext/MonteqContractContext';
 
 type Props = {
   route: RouteProp<{params: {url: string}}, 'params'>;
@@ -239,90 +233,64 @@ const TxScreen: React.FC<Props> = memo(({route}) => {
               parameters={'Recipient'}
               value={parsedReceipt.businessId}
             />
+            <PaymentParameters
+              parameters={'Invoice total'}
+              value={`${parsedReceipt.currencyReceipt} ${BASE_FIAT_CURRENCY}`}
+            />
           </View>
         </View>
       )}
+
       {!modalVisible ? <Navigation path="Payment" /> : null}
 
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}>
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Title label="Transaction sent" />
-            {paymentTxStatus === 3 ? (
-              <Image
-                resizeMode="contain"
-                style={styles.TransactionImg}
-                source={require('../assets/confirmed.png')}
-              />
-            ) : paymentTxStatus === 1 || paymentTxStatus === 2 ? (
-              <Image
-                resizeMode="contain"
-                style={styles.TransactionImg}
-                source={require('../assets/inProgress.png')}
-              />
-            ) : (
-              <Text>ToDo: rejected</Text>
-            )}
+      {paymentTxStatus === TxStatus.Sending ? (
+        <TxModal
+          isVisible={modalVisible}
+          title="Transaction signing"
+          status={'Signing'}
+          type={TxStatusType.Yellow}
+          image={require('../assets/inProgress.png')}
+          recipient={parsedReceipt.businessId}
+          date={new Date(parsedReceipt.createdAt).toLocaleString()}
+          fiatAmount={parsedReceipt.currencyReceipt}
+          cryptoAmount={amountInCrypto}
+          onRequestClose={() => setModalVisible(!modalVisible)}
+        />
+      ) : null}
 
-            <View style={styles.StatusBlock}>
-              <Text style={styles.ParametersStatus}>Status</Text>
-              {paymentTxStatus === 3 ? (
-                <View style={styles.ValueStatus}>
-                  <Text style={styles.ValueStatusTextOk}>Confirmed</Text>
-                  <View style={styles.ValueStatusLabelOk}></View>
-                </View>
-              ) : paymentTxStatus === 1 || paymentTxStatus === 2 ? (
-                <View style={styles.ValueStatus}>
-                  <Text style={styles.ValueStatusText}>In progress</Text>
-                  <View style={styles.ValueStatusLabel}></View>
-                </View>
-              ) : (
-                <Text>ToDo: rejected</Text>
-              )}
-            </View>
+      {paymentTxStatus === TxStatus.Mining ? (
+        <TxModal
+          isVisible={modalVisible}
+          title="Transaction sent"
+          status={'Mining'}
+          type={TxStatusType.Yellow}
+          image={require('../assets/inProgress.png')}
+          recipient={parsedReceipt.businessId}
+          date={new Date(parsedReceipt.createdAt).toLocaleString()}
+          fiatAmount={parsedReceipt.currencyReceipt}
+          cryptoAmount={amountInCrypto}
+          onRequestClose={() => setModalVisible(!modalVisible)}
+        />
+      ) : null}
 
-            <PaymentParameters
-              isGray
-              parameters={'Recipient'}
-              value={parsedReceipt.businessId}
-            />
-            <PaymentParameters
-              isGray
-              parameters={'Amount, fiat'}
-              value={'3,80 ' + BASE_FIAT_CURRENCY} // ToDo: mocked
-            />
-            <PaymentParameters
-              isGray
-              parameters={'Amount, crypto'}
-              value={currencyAmount + ' ' + BASE_CRYPTO_CURRENCY}
-            />
-            <PaymentParameters
-              isGray
-              parameters={'Date'}
-              value={'26/04/2023 11:13'} // ToDo: mocked
-            />
-            {paymentTxStatus === 3 ? (
-              <LinearGradient
-                start={{x: 0, y: 0}}
-                end={{x: 1, y: 0}}
-                style={styles.linearGradient}
-                colors={['#0dd977', '#1da4ac', '#14c48c']}>
-                <TouchableHighlight
-                  style={styles.buttonSend}
-                  onPress={navigationUserHistory}>
-                  <Text style={styles.buttonText}>Close</Text>
-                </TouchableHighlight>
-              </LinearGradient>
-            ) : null}
-          </View>
-        </View>
-      </Modal>
+      {paymentTxStatus === TxStatus.Done ? (
+        <TxModal
+          isVisible={modalVisible}
+          title="Transaction sent"
+          status={'Confirmed'}
+          type={TxStatusType.Green}
+          image={require('../assets/confirmed.png')}
+          recipient={parsedReceipt.businessId}
+          date={new Date(parsedReceipt.createdAt).toLocaleString()}
+          fiatAmount={parsedReceipt.currencyReceipt}
+          cryptoAmount={amountInCrypto}
+          onRequestClose={() => setModalVisible(!modalVisible)}
+          onClosePress={navigationUserHistory}
+        />
+      ) : null}
+
+      {/* ToDo: TxStatus.Rejected */}
+      {/* ToDo: TxStatus.Failed */}
     </>
   );
 });
@@ -378,27 +346,6 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
   },
-  buttonText: {
-    fontSize: 14,
-    fontWeight: '700',
-    lineHeight: 16,
-    // textAlign: 'center',
-    color: '#ffffff',
-  },
-  linearGradient: {
-    display: 'flex',
-    borderRadius: 50,
-    width: '100%',
-  },
-  buttonSend: {
-    backgroundColor: 'transparent',
-    width: '100%',
-    height: 48,
-    display: 'flex',
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'center',
-  },
   PayInfo: {
     display: 'flex',
     flexDirection: 'column',
@@ -423,84 +370,28 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 16,
   },
-  centeredView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 22,
-  },
-  modalView: {
-    width: '90%',
-    margin: 0,
-    backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 10,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-
-  TransactionImg: {
-    width: 140,
-    height: 70,
-    marginBottom: 10,
-  },
-  StatusBlock: {
+  // ToDo: code duplicated in TxModal.tsx
+  linearGradient: {
     display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    borderRadius: 50,
     width: '100%',
-    padding: 10,
-    backgroundColor: '#F6F7F8',
-    marginBottom: 10,
-    borderRadius: 4,
   },
-  ParametersStatus: {
-    fontSize: 14,
-    lineHeight: 17,
-    fontWeight: '400',
-    color: '#222222',
-    width: '50%',
-  },
-  ValueStatus: {
+  // ToDo: code duplicated in TxModal.tsx
+  buttonSend: {
+    backgroundColor: 'transparent',
+    width: '100%',
+    height: 48,
     display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
     alignItems: 'center',
-    width: '50%',
+    flexDirection: 'row',
+    justifyContent: 'center',
   },
-  ValueStatusText: {
+  // ToDo: code duplicated in TxModal.tsx
+  buttonText: {
     fontSize: 14,
-    lineHeight: 17,
-    fontWeight: '600',
-    color: '#EBC200',
-  },
-  ValueStatusTextOk: {
-    fontSize: 14,
-    lineHeight: 17,
-    fontWeight: '600',
-    color: '#14C58B',
-  },
-  ValueStatusLabel: {
-    width: 5,
-    height: 5,
-    borderRadius: 2.5,
-    backgroundColor: '#EBC200',
-    marginLeft: 10,
-  },
-  ValueStatusLabelOk: {
-    width: 5,
-    height: 5,
-    borderRadius: 2.5,
-    backgroundColor: '#14C58B',
-    marginLeft: 10,
+    fontWeight: '700',
+    lineHeight: 16,
+    color: '#ffffff',
   },
 });
 
