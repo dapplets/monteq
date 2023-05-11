@@ -29,7 +29,7 @@ import {
   BASE_FIAT_MAX_DIGITS,
 } from '../common/constants';
 import {parseReceipt} from '../common/parseReceipt';
-import {truncate} from '../common/helpers';
+import {mulStr, truncate} from '../common/helpers';
 import {FontFamily} from '../GlobalStyles';
 import {useCamera} from '../contexts/CameraContext';
 
@@ -42,7 +42,7 @@ const MyBusiness = () => {
     loadMoreInHistory,
     earnedTipsCryptoAmount,
     earnedInvoicesCryptoAmount,
-    earnedInvoicesFiatAmount,
+    rate,
     myBusiness,
     isMyBusinessLoading,
   } = useMonteqContract();
@@ -111,9 +111,8 @@ const MyBusiness = () => {
             <ScrollView style={styles.InfoScreenWrapper}>
               <Title label="Owner’s View" />
               <GeneralPayInfo
-                // todo: must be eur
                 generalPayAmount={truncate(
-                  earnedInvoicesFiatAmount,
+                  mulStr(earnedInvoicesCryptoAmount, rate),
                   BASE_FIAT_MAX_DIGITS,
                 )}
                 title={'Paid for invoices'}

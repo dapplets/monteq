@@ -286,6 +286,7 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
         ),
       );
 
+      // ToDo: unused value. remove?
       setEarnedInvoicesFiatAmount(
         formatUnits(
           data.history.reduce(
