@@ -2,11 +2,8 @@ import * as React from 'react';
 import {
   Text,
   StyleSheet,
-  View,
-  Image,
   Pressable,
   ScrollView,
-  FlatList,
 } from 'react-native';
 
 import Navigation from '../components/Navigation';
@@ -21,14 +18,21 @@ export type HowUseType = {};
 const info = [
   {
     id: '1',
-    title: 'Amet scelerisque pretium ultrices ac.',
+    title: 'Connect Trust Wallet (there can be a problems with others)',
     description:
       'Eget sed mauris ornare nulla pharetra. Felis fringilla mattis aliquet amet. Habitant pellentesque erat morbi morbi aliquet venenatis in. Duis nunc nec vulputate lorem elementum lobortis mauris molestie lectus. Id parturient scelerisque commodo suscipit in ac. Libero volutpat pretium fermentum ultrices molestie.',
     img: require('../assets/howUseTest1.png'),
   },
   {
     id: '2',
-    title: 'Eget sed mauris ornare nulla pharetra.',
+    title: 'Scan QR code to generate transaction for tip and/or payment',
+    description:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lacus laoreet non curabitur gravida arcu ac. Malesuada proin libero nunc consequat interdum varius sit amet.',
+    img: require('../assets/howUseTest1.png'),
+  },
+  {
+    id: '3',
+    title: 'Sign transaction as you always dot',
     description:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lacus laoreet non curabitur gravida arcu ac. Malesuada proin libero nunc consequat interdum varius sit amet.',
     img: require('../assets/howUseTest1.png'),
