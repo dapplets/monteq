@@ -81,7 +81,7 @@ const TxScreen: React.FC<Props> = memo(({route}) => {
   const tipsAmountInCrypto =
     paymentType === PaymentType.TIPS_ONLY ||
     paymentType === PaymentType.BILL_AND_TIPS
-      ? mulStr(mulStr(parsedReceipt.currencyReceipt, '0.1'), rate)
+      ? mulStr(mulStr(parsedReceipt.currencyReceipt, '0.1'), rate) // ToDo: 10% tips hardcoded
       : '0';
 
   const amountInCrypto = addStr(billAmountInCrypto, tipsAmountInCrypto);
@@ -130,7 +130,10 @@ const TxScreen: React.FC<Props> = memo(({route}) => {
             title={'You are paying tips'}
             convert={{
               convertEUR: '1 ' + BASE_FIAT_CURRENCY,
-              convertCurrency: rate + ' ' + BASE_CRYPTO_CURRENCY,
+              convertCurrency:
+                truncate(rate, BASE_CRYPTO_MAX_DIGITS) +
+                ' ' +
+                BASE_CRYPTO_CURRENCY,
             }}
           />
 
@@ -194,7 +197,10 @@ const TxScreen: React.FC<Props> = memo(({route}) => {
             title={'You are paying tips'}
             convert={{
               convertEUR: '1 ' + BASE_FIAT_CURRENCY,
-              convertCurrency: rate + ' ' + BASE_CRYPTO_CURRENCY,
+              convertCurrency:
+                truncate(rate, BASE_CRYPTO_MAX_DIGITS) +
+                ' ' +
+                BASE_CRYPTO_CURRENCY,
             }}
           />
 

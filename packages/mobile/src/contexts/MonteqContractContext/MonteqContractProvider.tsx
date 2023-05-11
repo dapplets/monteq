@@ -11,13 +11,17 @@ import {
 import {ethers} from 'ethers';
 import {useWeb3Modal} from '@web3modal/react-native';
 import {
+  BASE_CRYPTO_MAX_DIGITS,
   CHAIN_ID,
+  COINGECKO_CRYPTO_CURRENCY_ID,
+  COINGECKO_FIAT_CURRENCY_ID,
+  COINGECKO_PRICE_URL,
   JSON_RPC_URL,
   MONTEQ_CONTRACT_ADDRESS,
   WC_SESSION_PARAMS,
 } from '../../common/constants';
 import MONTEQ_ABI from '../../abis/MonteQ.json';
-import {divStr} from '../../common/helpers';
+import {truncate} from '../../common/helpers';
 
 const {formatUnits, parseUnits, parseEther, formatEther} = ethers.utils;
 
@@ -66,6 +70,33 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
   );
   const [removeBusinessTxStatus, setRemoveBusinessTxStatus] =
     useState<TxStatus>(TxStatus.Idle);
+
+  // ToDo: move to separate hook?
+  useEffect(() => {
+    (async () => {
+      setIsRateLoading(true);
+
+      try {
+        const resp = await fetch(COINGECKO_PRICE_URL);
+        const json = await resp.json();
+        const price =
+          json[COINGECKO_CRYPTO_CURRENCY_ID][COINGECKO_FIAT_CURRENCY_ID];
+
+        if (isNaN(price)) {
+          throw new Error('Invalid price from CoinGecko received');
+        }
+
+        // 1 EUR = ??? XDAI
+        const reversedPrice = 1 / price;
+
+        setRate(truncate(reversedPrice.toString(), BASE_CRYPTO_MAX_DIGITS));
+      } catch (e) {
+        console.error(e);
+      }
+
+      setIsRateLoading(false);
+    })();
+  }, []);
 
   useEffect(() => {
     if (writeEip1193) {
@@ -117,11 +148,6 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
       setIsBalanceLoading(false);
     })();
   }, [contract]);
-
-  useEffect(() => {
-    // ToDo: fetch real rate
-    setRate('1.1'); // 1 EUR = 1.1 XDAI
-  }, []);
 
   const loadMoreOutHistory = useCallback(async () => {
     if (!contract) {
