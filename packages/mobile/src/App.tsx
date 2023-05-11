@@ -21,6 +21,8 @@ import {ParsedReceipt} from './common/parseReceipt';
 import {enableScreens} from 'react-native-screens';
 import {CameraProvider} from './contexts/CameraContext';
 import SplashScreen from 'react-native-splash-screen';
+import {useNetInfo} from '@react-native-community/netinfo';
+import {Text, View} from 'react-native';
 
 enableScreens();
 
@@ -39,11 +41,20 @@ export type RootStackParamList = {
 const Tab = createBottomTabNavigator();
 
 function App(): JSX.Element {
-  const {isConnected, provider} = useWeb3Modal();
+  const {isConnected: isInternetConnected} = useNetInfo();
+  const {isConnected: isWalletConnected, provider} = useWeb3Modal();
 
   useEffect(() => {
     SplashScreen.hide();
   }, []);
+
+  if (!isInternetConnected) {
+    return (
+      <View>
+        <Text>ToDo: no internet connection</Text>
+      </View>
+    );
+  }
 
   return (
     <>
@@ -62,7 +73,7 @@ function App(): JSX.Element {
                 screenOptions={{headerShown: false}}
                 tabBar={() => null}
                 detachInactiveScreens>
-                {isConnected ? (
+                {isWalletConnected ? (
                   <>
                     <Tab.Screen name="InfoScreen" component={InfoScreen} />
                     <Tab.Screen name="CameraScreen" component={CameraScreen} />
