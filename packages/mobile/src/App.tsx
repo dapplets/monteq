@@ -21,7 +21,7 @@ import HowUse from './screens/HowUse';
 import RemovingMyBusiness from './screens/RemovingMyBuisness';
 import {ParsedReceipt} from './common/parseReceipt';
 import {enableScreens} from 'react-native-screens';
-import SplashScreen from 'react-native-splash-screen'; //import SplashScreen
+import SplashScreen from 'react-native-splash-screen';
 
 enableScreens();
 
@@ -81,6 +81,7 @@ function App(): JSX.Element {
               ) : (
                 <>
                   <Tab.Screen name="WelcomeScreen" component={WelcomeScreen} />
+                  <Tab.Screen name="HowUse" component={HowUse} />
                 </>
               )}
             </Tab.Navigator>

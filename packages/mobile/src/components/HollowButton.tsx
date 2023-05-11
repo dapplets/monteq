@@ -1,10 +1,16 @@
 import React, {memo} from 'react';
 import {Pressable, Text, StyleSheet} from 'react-native';
 import {FontSize, FontFamily, Color, Border, Padding} from '../GlobalStyles';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {RootStackParamList} from '../App';
 
 const HollowButton = memo(() => {
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  async function navigationConnect() {
+    navigation.navigate('HowUse');
+  }
   return (
-    <Pressable style={styles.mainbutton}>
+    <Pressable onPress={navigationConnect} style={styles.mainbutton}>
       <Text style={styles.howItWorks}>How it works?</Text>
     </Pressable>
   );
