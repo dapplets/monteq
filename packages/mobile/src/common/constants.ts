@@ -51,3 +51,5 @@ export const BASE_CRYPTO_MAX_DIGITS = 4;
 export const COINGECKO_FIAT_CURRENCY_ID = 'eur';
 export const COINGECKO_CRYPTO_CURRENCY_ID = 'xdai';
 export const COINGECKO_PRICE_URL = `https://api.coingecko.com/api/v3/simple/price?ids=${COINGECKO_CRYPTO_CURRENCY_ID}&vs_currencies=${COINGECKO_FIAT_CURRENCY_ID}`;
+
+export const IS_OWNER_VIEW_PREFERRED_KEY = 'IS_OWNER_VIEW_PREFERRED';

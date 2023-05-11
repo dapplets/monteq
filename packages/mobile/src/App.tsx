@@ -1,9 +1,10 @@
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import WelcomeScreen from './screens/WelcomeScreen';
 import {Web3Modal, useWeb3Modal} from '@web3modal/react-native';
 import {
+  IS_OWNER_VIEW_PREFERRED_KEY,
   WC_METADATA,
   WC_PROJECT_ID,
   WC_RELAY_URL,
@@ -23,6 +24,7 @@ import {CameraProvider} from './contexts/CameraContext';
 import SplashScreen from 'react-native-splash-screen';
 import {useNetInfo} from '@react-native-community/netinfo';
 import {Text, View} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 enableScreens();
 
@@ -44,8 +46,26 @@ function App(): JSX.Element {
   const {isConnected: isInternetConnected} = useNetInfo();
   const {isConnected: isWalletConnected, provider} = useWeb3Modal();
 
+  const [initialRouteName, setInitialRouteName] = useState<string | null>(null);
+
   useEffect(() => {
     SplashScreen.hide();
+
+    // ToDo: move to separate hook?
+    (async () => {
+      try {
+        const isOwnerViewPreferred = await AsyncStorage.getItem(
+          IS_OWNER_VIEW_PREFERRED_KEY,
+        );
+
+        setInitialRouteName(
+          isOwnerViewPreferred === 'true' ? 'MyBusiness' : 'InfoScreen',
+        );
+      } catch (e) {
+        console.error(e);
+        setInitialRouteName('InfoScreen');
+      }
+    })();
   }, []);
 
   if (!isInternetConnected) {
@@ -65,7 +85,7 @@ function App(): JSX.Element {
         sessionParams={WC_SESSION_PARAMS}
       />
 
-      {provider ? (
+      {provider && initialRouteName ? (
         <MonteqContractProvider>
           <CameraProvider>
             <NavigationContainer>
@@ -75,10 +95,21 @@ function App(): JSX.Element {
                 detachInactiveScreens>
                 {isWalletConnected ? (
                   <>
-                    <Tab.Screen name="InfoScreen" component={InfoScreen} />
+                    {/* ToDo: workaround for initial route name */}
+                    {initialRouteName === 'InfoScreen' ? (
+                      <>
+                        <Tab.Screen name="InfoScreen" component={InfoScreen} />
+                        <Tab.Screen name="MyBusiness" component={MyBusiness} />
+                      </>
+                    ) : (
+                      <>
+                        <Tab.Screen name="MyBusiness" component={MyBusiness} />
+                        <Tab.Screen name="InfoScreen" component={InfoScreen} />
+                      </>
+                    )}
+
                     <Tab.Screen name="CameraScreen" component={CameraScreen} />
                     <Tab.Screen name="TxScreen" component={TxScreen} />
-                    <Tab.Screen name="MyBusiness" component={MyBusiness} />
                     <Tab.Screen
                       name="AddingMyBusiness"
                       component={AddingMyBusiness}

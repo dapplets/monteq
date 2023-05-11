@@ -27,11 +27,13 @@ import {
   BASE_CRYPTO_MAX_DIGITS,
   BASE_FIAT_CURRENCY,
   BASE_FIAT_MAX_DIGITS,
+  IS_OWNER_VIEW_PREFERRED_KEY,
 } from '../common/constants';
 import {parseReceipt} from '../common/parseReceipt';
 import {mulStr, truncate} from '../common/helpers';
 import {FontFamily} from '../GlobalStyles';
 import {useCamera} from '../contexts/CameraContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const MyBusiness = () => {
   const {scan} = useCamera();
@@ -46,7 +48,8 @@ const MyBusiness = () => {
     myBusiness,
     isMyBusinessLoading,
   } = useMonteqContract();
-  const [isRemember, setRemember] = React.useState(false);
+
+  const [isRemember, setIsRemember] = React.useState(false);
   const {provider} = useWeb3Modal();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
@@ -55,6 +58,31 @@ const MyBusiness = () => {
       loadMoreInHistory();
     }
   }, [isFocused, loadMoreInHistory]);
+
+  React.useEffect(() => {
+    (async () => {
+      try {
+        // ToDo: move to separate hook?
+        const isOwnerViewPreferred = await AsyncStorage.getItem(
+          IS_OWNER_VIEW_PREFERRED_KEY,
+        );
+        setIsRemember(isOwnerViewPreferred === 'true');
+      } catch (e) {
+        console.error(e);
+      }
+    })();
+  }, []);
+
+  async function handleRememberSwitch(value: boolean) {
+    setIsRemember(value);
+
+    try {
+      // ToDo: move to separate hook?
+      await AsyncStorage.setItem(IS_OWNER_VIEW_PREFERRED_KEY, value.toString());
+    } catch (e) {
+      console.error(e);
+    }
+  }
 
   async function handleGmsScanPressBusiness() {
     if (!provider) {
@@ -133,7 +161,7 @@ const MyBusiness = () => {
               />
               <SwitchBlock
                 parameters={'Always start from this page'}
-                onPress={setRemember}
+                onPress={handleRememberSwitch}
                 isPress={isRemember}
               />
               <LinearGradient
@@ -174,7 +202,7 @@ const MyBusiness = () => {
           <View style={styles.InfoScreenWrapper}>
             <SwitchBlock
               parameters={'Always start from business page'}
-              onPress={setRemember}
+              onPress={handleRememberSwitch}
               isPress={isRemember}
             />
             <Image
