@@ -1,6 +1,8 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {Animated, StyleSheet} from 'react-native';
 
+// ToDo: remove?
+
 export function WithSplashScreen({
   children,
   isAppReady,
@@ -99,4 +101,5 @@ const style = StyleSheet.create({
     height: 250,
   },
 });
+
 export default WithSplashScreen;
