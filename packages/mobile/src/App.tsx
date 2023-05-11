@@ -2,7 +2,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import React, {useEffect} from 'react';
 import WelcomeScreen from './screens/WelcomeScreen';
-import {Web3Modal} from '@web3modal/react-native';
+import {Web3Modal, useWeb3Modal} from '@web3modal/react-native';
 import {
   WC_METADATA,
   WC_PROJECT_ID,
@@ -12,8 +12,6 @@ import {
 import InfoScreen from './screens/InfoScreen';
 import CameraScreen from './components/CameraComponent';
 import TxScreen from './screens/TxScreen';
-import {View} from 'react-native';
-import {usePatchedWeb3Modal} from './hooks/usePatchedWeb3Modal';
 import {MonteqContractProvider} from './contexts/MonteqContractContext';
 import MyBusiness from './screens/MyBusiness';
 import AddingMyBusiness from './screens/AddingMyBusiness';
@@ -41,22 +39,22 @@ export type RootStackParamList = {
 const Tab = createBottomTabNavigator();
 
 function App(): JSX.Element {
-  const {isConnected, isOpen, isLoading} = usePatchedWeb3Modal();
+  const {isConnected, provider} = useWeb3Modal();
+
   useEffect(() => {
     SplashScreen.hide();
   }, []);
+
   return (
     <>
-      <View style={{display: isOpen ? undefined : 'none'}}>
-        <Web3Modal
-          projectId={WC_PROJECT_ID}
-          relayUrl={WC_RELAY_URL}
-          providerMetadata={WC_METADATA}
-          sessionParams={WC_SESSION_PARAMS}
-        />
-      </View>
+      <Web3Modal
+        projectId={WC_PROJECT_ID}
+        relayUrl={WC_RELAY_URL}
+        providerMetadata={WC_METADATA}
+        sessionParams={WC_SESSION_PARAMS}
+      />
 
-      {!isLoading ? (
+      {provider ? (
         <MonteqContractProvider>
           <CameraProvider>
             <NavigationContainer>
@@ -94,8 +92,6 @@ function App(): JSX.Element {
           </CameraProvider>
         </MonteqContractProvider>
       ) : null}
-
-      {/* ToDo: Add splashscreen ^ */}
     </>
   );
 }

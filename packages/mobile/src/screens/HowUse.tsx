@@ -1,20 +1,13 @@
 import * as React from 'react';
-import {
-  Text,
-  StyleSheet,
-  Pressable,
-  ScrollView,
-} from 'react-native';
-
+import {Text, StyleSheet, Pressable, ScrollView} from 'react-native';
 import Navigation from '../components/Navigation';
 import Title from '../components/TitlePage';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {RootStackParamList} from '../App';
-import {usePatchedWeb3Modal} from '../hooks/usePatchedWeb3Modal';
 import {FontFamily} from '../GlobalStyles';
 import InfoUseItem from '../components/InfoUseItem';
+import {useWeb3Modal} from '@web3modal/react-native';
 
-export type HowUseType = {};
 const info = [
   {
     id: '1',
@@ -38,12 +31,17 @@ const info = [
     img: require('../assets/howUseTest1.png'),
   },
 ];
-const HowUse = ({}: HowUseType) => {
+
+export type HowUseProps = {};
+
+const HowUse = ({}: HowUseProps) => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-  const {isConnected} = usePatchedWeb3Modal();
+  const {isConnected} = useWeb3Modal();
+
   async function navigationConnect() {
     navigation.navigate('WelcomeScreen');
   }
+
   return (
     <>
       <ScrollView style={styles.InfoScreenWrapper}>
@@ -102,4 +100,5 @@ const styles = StyleSheet.create({
   },
   logOutWrapper: {},
 });
+
 export default HowUse;

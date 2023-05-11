@@ -14,7 +14,7 @@
     "@react-native-async-storage/async-storage": "^1.18.1",
     "@react-navigation/bottom-tabs": "^6.5.7",
     "@react-navigation/native": "^6.1.6",
-    "@web3modal/react-native": "^1.0.0-alpha.2",
+    "@web3modal/react-native": "^1.0.0-alpha.3",
     "ethers": "5.7.2",
     "link": "^1.5.1",
     "react": "18.2.0",
