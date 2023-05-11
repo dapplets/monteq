@@ -1,9 +1,7 @@
 import * as React from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
-
 import Navigation from '../components/Navigation';
 import Title from '../components/TitlePage';
-// import TimeLabel from '../components/TimeLabel';
 import {useMonteqContract} from '../contexts/MonteqContractContext';
 import HistoryPay from '../components/HistoryPay';
 import GeneralPayInfo from '../components/GeneralPayInfo';
