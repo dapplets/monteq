@@ -1,6 +1,6 @@
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import React from 'react';
+import React, {useEffect} from 'react';
 import WelcomeScreen from './screens/WelcomeScreen';
 import {Web3Modal} from '@web3modal/react-native';
 import {
@@ -21,6 +21,7 @@ import HowUse from './screens/HowUse';
 import RemovingMyBusiness from './screens/RemovingMyBuisness';
 import {ParsedReceipt} from './common/parseReceipt';
 import {enableScreens} from 'react-native-screens';
+import SplashScreen from 'react-native-splash-screen';
 
 enableScreens();
 
@@ -40,7 +41,9 @@ const Tab = createBottomTabNavigator();
 
 function App(): JSX.Element {
   const {isConnected, isOpen, isLoading} = usePatchedWeb3Modal();
-
+  useEffect(() => {
+    SplashScreen.hide();
+  }, []);
   return (
     <>
       <View style={{display: isOpen ? undefined : 'none'}}>
@@ -78,6 +81,7 @@ function App(): JSX.Element {
               ) : (
                 <>
                   <Tab.Screen name="WelcomeScreen" component={WelcomeScreen} />
+                  <Tab.Screen name="HowUse" component={HowUse} />
                 </>
               )}
             </Tab.Navigator>

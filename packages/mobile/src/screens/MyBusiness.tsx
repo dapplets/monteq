@@ -6,6 +6,7 @@ import {
   TouchableHighlight,
   Image,
   Alert,
+  ScrollView,
 } from 'react-native';
 
 import Navigation from '../components/Navigation';
@@ -107,7 +108,7 @@ const MyBusiness = () => {
               <Text>ToDo: add empty history picture</Text>
             </View>
           ) : (
-            <View style={styles.InfoScreenWrapper}>
+            <ScrollView style={styles.InfoScreenWrapper}>
               <Title label="Owner’s View" />
               <GeneralPayInfo
                 // todo: must be eur
@@ -161,7 +162,7 @@ const MyBusiness = () => {
                   );
                 })}
               </View>
-            </View>
+            </ScrollView>
           )}
           <Navigation path="home" />
         </>
@@ -210,6 +211,7 @@ const styles = StyleSheet.create({
     height: '100%',
     backgroundColor: '#F6F7F8',
     padding: 10,
+    marginBottom: 60,
   },
   timeNavigation: {
     display: 'flex',
