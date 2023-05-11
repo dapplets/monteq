@@ -10,7 +10,7 @@ import {
   WC_SESSION_PARAMS,
 } from './common/constants';
 import InfoScreen from './screens/InfoScreen';
-import CameraScreen from './screens/CameraScreen';
+import CameraScreen from './components/CameraComponent';
 import TxScreen from './screens/TxScreen';
 import {View} from 'react-native';
 import {usePatchedWeb3Modal} from './hooks/usePatchedWeb3Modal';
@@ -21,6 +21,7 @@ import HowUse from './screens/HowUse';
 import RemovingMyBusiness from './screens/RemovingMyBuisness';
 import {ParsedReceipt} from './common/parseReceipt';
 import {enableScreens} from 'react-native-screens';
+import {CameraProvider} from './contexts/CameraContext';
 
 enableScreens();
 
@@ -54,34 +55,38 @@ function App(): JSX.Element {
 
       {!isLoading ? (
         <MonteqContractProvider>
-          <NavigationContainer>
-            <Tab.Navigator
-              screenOptions={{headerShown: false}}
-              tabBar={() => null}
-              detachInactiveScreens>
-              {isConnected ? (
-                <>
-                  <Tab.Screen name="InfoScreen" component={InfoScreen} />
-                  <Tab.Screen name="CameraScreen" component={CameraScreen} />
-                  <Tab.Screen name="TxScreen" component={TxScreen} />
-                  <Tab.Screen name="MyBusiness" component={MyBusiness} />
-                  <Tab.Screen
-                    name="AddingMyBusiness"
-                    component={AddingMyBusiness}
-                  />
-                  <Tab.Screen
-                    name="RemovingMyBusiness"
-                    component={RemovingMyBusiness}
-                  />
-                  <Tab.Screen name="HowUse" component={HowUse} />
-                </>
-              ) : (
-                <>
-                  <Tab.Screen name="WelcomeScreen" component={WelcomeScreen} />
-                </>
-              )}
-            </Tab.Navigator>
-          </NavigationContainer>
+          <CameraProvider>
+            <NavigationContainer>
+              <Tab.Navigator
+                screenOptions={{headerShown: false}}
+                tabBar={() => null}
+                detachInactiveScreens>
+                {isConnected ? (
+                  <>
+                    <Tab.Screen name="InfoScreen" component={InfoScreen} />
+                    <Tab.Screen name="TxScreen" component={TxScreen} />
+                    <Tab.Screen name="MyBusiness" component={MyBusiness} />
+                    <Tab.Screen
+                      name="AddingMyBusiness"
+                      component={AddingMyBusiness}
+                    />
+                    <Tab.Screen
+                      name="RemovingMyBusiness"
+                      component={RemovingMyBusiness}
+                    />
+                    <Tab.Screen name="HowUse" component={HowUse} />
+                  </>
+                ) : (
+                  <>
+                    <Tab.Screen
+                      name="WelcomeScreen"
+                      component={WelcomeScreen}
+                    />
+                  </>
+                )}
+              </Tab.Navigator>
+            </NavigationContainer>
+          </CameraProvider>
         </MonteqContractProvider>
       ) : null}
 

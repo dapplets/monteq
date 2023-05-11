@@ -1,37 +1,36 @@
-import * as React from 'react';
-import {StyleSheet} from 'react-native';
+import React, {FC} from 'react';
+import {StyleSheet, Text, View} from 'react-native';
 import {useCameraDevices, Camera} from 'react-native-vision-camera';
 import {useScanBarcodes, BarcodeFormat} from 'vision-camera-code-scanner';
 import {RNHoleView} from 'react-native-hole-view';
 import {heightToDP, widthToDP} from 'react-native-responsive-screens';
-import {
-  NavigationProp,
-  useIsFocused,
-  useNavigation,
-} from '@react-navigation/native';
-import {RootStackParamList} from '../App';
 
-const CameraScreen = () => {
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+type Props = {
+  onQrCodeFound: (data: string) => void;
+};
+
+const CameraComponent: FC<Props> = ({onQrCodeFound}) => {
   const devices = useCameraDevices();
-  const isFocused = useIsFocused();
   const device = devices.back;
 
-  const [frameProcessor, barcodes] = useScanBarcodes([
-    BarcodeFormat.QR_CODE, // You can only specify a particular format
-  ]);
+  const [frameProcessor, barcodes] = useScanBarcodes([BarcodeFormat.QR_CODE]);
 
   const [hasPermission, setHasPermission] = React.useState(false);
   const [isScanned, setIsScanned] = React.useState(false);
 
   React.useEffect(() => {
     checkCameraPermission();
+    console.log('test');
   }, []);
 
   const checkCameraPermission = async () => {
-    const status = await Camera.getCameraPermissionStatus();
+    // const status = await Camera.getCameraPermissionStatus();
+    const status = await Camera.requestCameraPermission();
+    console.log('status ' + status);
     setHasPermission(status === 'authorized');
   };
+
+  console.log(barcodes)
 
   React.useEffect(() => {
     toggleActiveState();
@@ -47,39 +46,52 @@ const CameraScreen = () => {
       // setBarcode('');
       barcodes.forEach(async (scannedBarcode: any) => {
         if (scannedBarcode.rawValue !== '') {
-          navigation.goBack();
-          // navigation.navigate('TxScreen', {data: scannedBarcode.rawValue});
+          onQrCodeFound(scannedBarcode.rawValue);
+          return;
         }
       });
     }
   }
 
+  if (!hasPermission) {
+    return (
+      <View>
+        <Text>ToDo: No permission</Text>
+      </View>
+    );
+  }
+
+  if (device == null) {
+    return (
+      <View>
+        <Text>ToDo: No camera device found</Text>
+      </View>
+    );
+  }
+
   return (
-    device != null &&
-    hasPermission && (
-      <>
-        <Camera
-          style={StyleSheet.absoluteFill}
-          device={device}
-          isActive={!isScanned && isFocused}
-          frameProcessor={frameProcessor}
-          frameProcessorFps={5}
-          audio={false}
-        />
-        <RNHoleView
-          holes={[
-            {
-              x: widthToDP('10%'),
-              y: heightToDP('20%'),
-              width: widthToDP('80%'),
-              height: heightToDP('83%'),
-              borderRadius: 10,
-            },
-          ]}
-          style={styles.rnholeView}
-        />
-      </>
-    )
+    <>
+      <Camera
+        style={StyleSheet.absoluteFill}
+        device={device}
+        isActive={!isScanned}
+        frameProcessor={frameProcessor}
+        frameProcessorFps={5}
+        audio={false}
+      />
+      <RNHoleView
+        holes={[
+          {
+            x: widthToDP('10%'),
+            y: heightToDP('20%'),
+            width: widthToDP('80%'),
+            height: heightToDP('83%'),
+            borderRadius: 10,
+          },
+        ]}
+        style={styles.rnholeView}
+      />
+    </>
   );
 };
 
@@ -95,4 +107,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CameraScreen;
+export default CameraComponent;
