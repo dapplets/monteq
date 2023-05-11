@@ -86,28 +86,29 @@ function App(): JSX.Element {
       />
 
       {provider && initialRouteName ? (
-        <MonteqContractProvider>
-          <CameraProvider>
+        <>
+          {!isWalletConnected ? (
             <NavigationContainer>
               <Tab.Navigator
                 screenOptions={{headerShown: false}}
                 tabBar={() => null}
-                detachInactiveScreens>
-                {isWalletConnected ? (
-                  <>
-                    {/* ToDo: workaround for initial route name */}
-                    {initialRouteName === 'InfoScreen' ? (
-                      <>
-                        <Tab.Screen name="InfoScreen" component={InfoScreen} />
-                        <Tab.Screen name="MyBusiness" component={MyBusiness} />
-                      </>
-                    ) : (
-                      <>
-                        <Tab.Screen name="MyBusiness" component={MyBusiness} />
-                        <Tab.Screen name="InfoScreen" component={InfoScreen} />
-                      </>
-                    )}
-
+                detachInactiveScreens
+                initialRouteName="WelcomeScreen">
+                <Tab.Screen name="WelcomeScreen" component={WelcomeScreen} />
+                <Tab.Screen name="HowUse" component={HowUse} />
+              </Tab.Navigator>
+            </NavigationContainer>
+          ) : (
+            <MonteqContractProvider>
+              <CameraProvider>
+                <NavigationContainer>
+                  <Tab.Navigator
+                    screenOptions={{headerShown: false}}
+                    tabBar={() => null}
+                    detachInactiveScreens
+                    initialRouteName={initialRouteName}>
+                    <Tab.Screen name="InfoScreen" component={InfoScreen} />
+                    <Tab.Screen name="MyBusiness" component={MyBusiness} />
                     <Tab.Screen name="CameraScreen" component={CameraScreen} />
                     <Tab.Screen name="TxScreen" component={TxScreen} />
                     <Tab.Screen
@@ -119,20 +120,12 @@ function App(): JSX.Element {
                       component={RemovingMyBusiness}
                     />
                     <Tab.Screen name="HowUse" component={HowUse} />
-                  </>
-                ) : (
-                  <>
-                    <Tab.Screen
-                      name="WelcomeScreen"
-                      component={WelcomeScreen}
-                    />
-                    <Tab.Screen name="HowUse" component={HowUse} />
-                  </>
-                )}
-              </Tab.Navigator>
-            </NavigationContainer>
-          </CameraProvider>
-        </MonteqContractProvider>
+                  </Tab.Navigator>
+                </NavigationContainer>
+              </CameraProvider>
+            </MonteqContractProvider>
+          )}
+        </>
       ) : null}
     </>
   );
