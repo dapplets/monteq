@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {ScrollView, StyleSheet, Text, View} from 'react-native';
 
 import Navigation from '../components/Navigation';
 import Title from '../components/TitlePage';
@@ -33,7 +33,7 @@ const InfoScreen = () => {
 
   return (
     <>
-      <View style={styles.InfoScreenWrapper}>
+      <ScrollView style={styles.InfoScreenWrapper}>
         <Title label="Payment history" />
 
         {isOutHistoryLoading ? <Text>ToDo: loading</Text> : null}
@@ -78,7 +78,7 @@ const InfoScreen = () => {
             </View>
           </>
         ) : null}
-      </View>
+      </ScrollView>
       <Navigation path="user" />
     </>
   );
@@ -91,6 +91,7 @@ const styles = StyleSheet.create({
     height: '100%',
     paddingLeft: 20,
     paddingRight: 20,
+    marginBottom: 60,
   },
   GeneralPay: {
     display: 'flex',
