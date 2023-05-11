@@ -71,7 +71,7 @@ function App(): JSX.Element {
   if (!isInternetConnected) {
     return (
       <View>
-        <Text>ToDo: no internet connection</Text>
+        <Text>ToDo: no internet connection !!!!!</Text>
       </View>
     );
   }

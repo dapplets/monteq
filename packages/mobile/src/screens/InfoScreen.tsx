@@ -34,10 +34,10 @@ const InfoScreen = () => {
       <ScrollView style={styles.InfoScreenWrapper}>
         <Title label="Payment history" />
 
-        {isOutHistoryLoading ? <Text>ToDo: loading</Text> : null}
+        {isOutHistoryLoading ? <Text>ToDo: loading !!!!!</Text> : null}
 
         {!isOutHistoryLoading && outHistory.length === 0 ? (
-          <Text>ToDo: show picture for empty history</Text>
+          <Text>ToDo: show picture for empty history !!!!!</Text>
         ) : null}
 
         {outHistory.length > 0 ? (

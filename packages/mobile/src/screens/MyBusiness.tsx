@@ -117,7 +117,7 @@ const MyBusiness = () => {
       <>
         <View style={styles.InfoScreenWrapper}>
           <Title label="Owner’s View" />
-          <Text>ToDo: loading</Text>
+          <Text>ToDo: loading !!!!!</Text>
         </View>
         <Navigation path="home" />
       </>
@@ -133,7 +133,7 @@ const MyBusiness = () => {
           {inHistory.length === 0 ? (
             <View style={styles.InfoScreenWrapper}>
               <Title label="Owner’s View" />
-              <Text>ToDo: add empty history picture</Text>
+              <Text>ToDo: add empty history picture !!!!!</Text>
             </View>
           ) : (
             <ScrollView style={styles.InfoScreenWrapper}>

@@ -134,7 +134,7 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
 
       if (contract) {
         try {
-          // ToDo: refresh balance
+          // ToDo: refresh balance !!!!!
           const _balance = await contract.signer.getBalance();
           setBalance(formatEther(_balance));
         } catch (e) {
