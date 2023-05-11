@@ -26,9 +26,9 @@ const CameraProvider: FC<Props> = ({children}) => {
     }
   }
 
-  function handleScanningError(reason: string) {
+  function handleScanningError(error: Error) {
     if (scanningPromise) {
-      scanningPromise.reject(new Error(reason));
+      scanningPromise.reject(error);
       setScanningPromise(null);
     }
   }

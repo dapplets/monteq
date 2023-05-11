@@ -1,4 +1,4 @@
-import React, {FC, useCallback} from 'react';
+import React, {FC, useCallback, useState} from 'react';
 import {BackHandler, StyleSheet, Text, View} from 'react-native';
 import {useCameraDevices, Camera} from 'react-native-vision-camera';
 import {useScanBarcodes, BarcodeFormat} from 'vision-camera-code-scanner';
@@ -8,7 +8,7 @@ import {heightToDP, widthToDP} from 'react-native-responsive-screens';
 type Props = {
   onQrCodeFound: (data: string) => void;
   onCanceled: () => void;
-  onError: (reason: string) => void;
+  onError: (error: Error) => void;
 };
 
 const CameraComponent: FC<Props> = ({onQrCodeFound, onCanceled, onError}) => {
@@ -19,9 +19,11 @@ const CameraComponent: FC<Props> = ({onQrCodeFound, onCanceled, onError}) => {
 
   const [hasPermission, setHasPermission] = React.useState(false);
   const [result, setResult] = React.useState<string | null>(null);
+  const [isActive, setIsActive] = useState(false);
 
   const handleBackButtonPress = useCallback(() => {
-    onCanceled();
+    setIsActive(false);
+    setTimeout(() => onCanceled(), 500); // ToDo: hack
     return true;
   }, [onCanceled]);
 
@@ -30,7 +32,9 @@ const CameraComponent: FC<Props> = ({onQrCodeFound, onCanceled, onError}) => {
     const status = await Camera.requestCameraPermission();
 
     if (status !== 'authorized') {
-      onError('Camera Permission Denied');
+      onError(new Error('Camera Permission Denied'));
+    } else {
+      setIsActive(true);
     }
 
     setHasPermission(status === 'authorized');
@@ -59,7 +63,8 @@ const CameraComponent: FC<Props> = ({onQrCodeFound, onCanceled, onError}) => {
 
   React.useEffect(() => {
     if (result) {
-      onQrCodeFound(result);
+      setIsActive(false);
+      setTimeout(() => onQrCodeFound(result), 1000);
     }
   }, [onQrCodeFound, result]);
 
@@ -86,10 +91,11 @@ const CameraComponent: FC<Props> = ({onQrCodeFound, onCanceled, onError}) => {
       <Camera
         style={styles.container}
         device={device}
-        isActive={!result}
+        isActive={isActive}
         frameProcessor={frameProcessor}
         frameProcessorFps={5}
         audio={false}
+        onError={onError}
       />
       <RNHoleView
         holes={[
