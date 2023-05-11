@@ -31,7 +31,7 @@
     "react-native-svg": "^13.9.0",
     "react-native-url-polyfill": "^1.3.0",
     "react-native-vision-camera": "^2.15.4",
-    "vision-camera-code-scanner": "^0.2.0"
+    "vision-camera-code-scanner": "https://github.com/jorgebrunetto/vision-camera-code-scanner.git"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

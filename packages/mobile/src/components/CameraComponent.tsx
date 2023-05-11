@@ -1,5 +1,5 @@
-import React, {FC} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import React, {FC, useCallback} from 'react';
+import {BackHandler, StyleSheet, Text, View} from 'react-native';
 import {useCameraDevices, Camera} from 'react-native-vision-camera';
 import {useScanBarcodes, BarcodeFormat} from 'vision-camera-code-scanner';
 import {RNHoleView} from 'react-native-hole-view';
@@ -7,51 +7,61 @@ import {heightToDP, widthToDP} from 'react-native-responsive-screens';
 
 type Props = {
   onQrCodeFound: (data: string) => void;
+  onCanceled: () => void;
+  onError: (reason: string) => void;
 };
 
-const CameraComponent: FC<Props> = ({onQrCodeFound}) => {
+const CameraComponent: FC<Props> = ({onQrCodeFound, onCanceled, onError}) => {
   const devices = useCameraDevices();
   const device = devices.back;
 
   const [frameProcessor, barcodes] = useScanBarcodes([BarcodeFormat.QR_CODE]);
 
   const [hasPermission, setHasPermission] = React.useState(false);
-  const [isScanned, setIsScanned] = React.useState(false);
+  const [result, setResult] = React.useState<string | null>(null);
+
+  const handleBackButtonPress = useCallback(() => {
+    onCanceled();
+    return true;
+  }, [onCanceled]);
+
+  const checkCameraPermission = useCallback(async () => {
+    // const status = await Camera.getCameraPermissionStatus();
+    const status = await Camera.requestCameraPermission();
+
+    if (status !== 'authorized') {
+      onError('Camera Permission Denied');
+    }
+
+    setHasPermission(status === 'authorized');
+  }, [onError]);
 
   React.useEffect(() => {
     checkCameraPermission();
-    console.log('test');
-  }, []);
 
-  const checkCameraPermission = async () => {
-    // const status = await Camera.getCameraPermissionStatus();
-    const status = await Camera.requestCameraPermission();
-    console.log('status ' + status);
-    setHasPermission(status === 'authorized');
-  };
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      handleBackButtonPress,
+    );
 
-  console.log(barcodes)
+    return () => backHandler.remove();
+  }, [handleBackButtonPress, checkCameraPermission]);
 
   React.useEffect(() => {
-    toggleActiveState();
-    return () => {
-      barcodes;
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [barcodes]);
+    if (barcodes && barcodes.length > 0 && result === null) {
+      if (!barcodes[0].rawValue) {
+        return;
+      }
 
-  async function toggleActiveState() {
-    if (barcodes && barcodes.length > 0 && isScanned === false) {
-      setIsScanned(true);
-      // setBarcode('');
-      barcodes.forEach(async (scannedBarcode: any) => {
-        if (scannedBarcode.rawValue !== '') {
-          onQrCodeFound(scannedBarcode.rawValue);
-          return;
-        }
-      });
+      setResult(barcodes[0].rawValue);
     }
-  }
+  }, [barcodes, result]);
+
+  React.useEffect(() => {
+    if (result) {
+      onQrCodeFound(result);
+    }
+  }, [onQrCodeFound, result]);
 
   if (!hasPermission) {
     return (
@@ -69,12 +79,14 @@ const CameraComponent: FC<Props> = ({onQrCodeFound}) => {
     );
   }
 
+  // ToDo: add close scanning button
+
   return (
     <>
       <Camera
-        style={StyleSheet.absoluteFill}
+        style={styles.container}
         device={device}
-        isActive={!isScanned}
+        isActive={!result}
         frameProcessor={frameProcessor}
         frameProcessorFps={5}
         audio={false}
@@ -83,9 +95,9 @@ const CameraComponent: FC<Props> = ({onQrCodeFound}) => {
         holes={[
           {
             x: widthToDP('10%'),
-            y: heightToDP('20%'),
+            y: heightToDP('30%'),
             width: widthToDP('80%'),
-            height: heightToDP('83%'),
+            height: heightToDP('40%'),
             borderRadius: 10,
           },
         ]}
@@ -104,6 +116,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  container: {
+    height: '100%',
+    aspectRatio: 1,
+    alignSelf: 'center',
   },
 });
 

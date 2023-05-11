@@ -3,15 +3,17 @@ import {useWeb3Modal} from '@web3modal/react-native';
 import * as React from 'react';
 import {View, Alert, StyleSheet, TouchableHighlight, Image} from 'react-native';
 import {type RootStackParamList} from '../App';
-import BarcodeScannerModule from '../modules/BarcodeScannerModule';
 import ButtonNavigationDefault from './ButtonNavigationDefault';
 import {parseReceipt} from '../common/parseReceipt';
+import {useCamera} from '../contexts/CameraContext';
 
 export type NavigationType = {
   path: string;
 };
+
 const Navigation = ({path}: NavigationType) => {
   const {provider} = useWeb3Modal();
+  const {scan} = useCamera();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   function handleDisconnectPress() {
@@ -36,7 +38,7 @@ const Navigation = ({path}: NavigationType) => {
     }
 
     try {
-      const url = await BarcodeScannerModule.scan();
+      const url = await scan();
       const parsedReceipt = parseReceipt(url);
       navigation.navigate('TxScreen', {parsedReceipt});
     } catch (e) {

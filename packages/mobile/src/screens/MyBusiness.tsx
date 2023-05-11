@@ -7,13 +7,11 @@ import {
   Image,
   Alert,
 } from 'react-native';
-
 import Navigation from '../components/Navigation';
 import Title from '../components/TitlePage';
 import {useMonteqContract} from '../contexts/MonteqContractContext';
 import LinearGradient from 'react-native-linear-gradient';
 import SwitchBlock from '../components/SwitchBlock';
-import BarcodeScannerModule from '../modules/BarcodeScannerModule';
 import {useWeb3Modal} from '@web3modal/react-native';
 import {
   NavigationProp,
@@ -32,8 +30,10 @@ import {
 import {parseReceipt} from '../common/parseReceipt';
 import {truncate} from '../common/helpers';
 import {FontFamily} from '../GlobalStyles';
+import {useCamera} from '../contexts/CameraContext';
 
 const MyBusiness = () => {
+  const {scan} = useCamera();
   const isFocused = useIsFocused();
   const {
     isInHistoryLoading,
@@ -61,7 +61,7 @@ const MyBusiness = () => {
     }
 
     try {
-      const url = await BarcodeScannerModule.scan();
+      const url = await scan();
       const parsedReceipt = parseReceipt(url);
       navigation.navigate('AddingMyBusiness', {parsedReceipt});
     } catch (e) {
