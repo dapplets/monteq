@@ -153,9 +153,12 @@ const MyBusiness = () => {
                     <HistoryPay
                       key={i}
                       time={new Date(x.timestamp * 1000).toISOString()}
-                      company={x.businessId}
+                      company={x.payer}
                       amount={
-                        '+' + x.currencyReceipt + ' ' + BASE_CRYPTO_CURRENCY
+                        '+' +
+                        truncate(x.totalCryptoAmount, BASE_CRYPTO_MAX_DIGITS) +
+                        ' ' +
+                        BASE_CRYPTO_CURRENCY
                       }
                     />
                   );
