@@ -24,11 +24,17 @@ import {
 import SwitchBlock from '../components/SwitchBlock';
 import {addStr, mulStr, truncate} from '../common/helpers';
 import TxModal, {TxStatusType} from '../components/TxModal';
-import {TxStatus} from '../contexts/MonteqContractContext/MonteqContractContext';
+import {
+  BusinessInfo,
+  TxStatus,
+} from '../contexts/MonteqContractContext/MonteqContractContext';
 import {FontFamily} from '../GlobalStyles';
 
 type Props = {
-  route: RouteProp<{params: {parsedReceipt: ParsedReceipt}}, 'params'>;
+  route: RouteProp<
+    {params: {parsedReceipt: ParsedReceipt; businessInfo: BusinessInfo}},
+    'params'
+  >;
 };
 
 enum PaymentType {
@@ -39,6 +45,7 @@ enum PaymentType {
 
 const TxScreen: React.FC<Props> = memo(({route}) => {
   const parsedReceipt = route.params.parsedReceipt;
+  const businessInfo = route.params.businessInfo;
 
   const {provider} = useWeb3Modal();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -165,9 +172,15 @@ const TxScreen: React.FC<Props> = memo(({route}) => {
               value={new Date(parsedReceipt.createdAt).toLocaleString()}
             />
             <PaymentParameters
-              parameters={'Recipient'}
-              value={parsedReceipt.businessId} // ToDo: read a business name from the contract
+              parameters={'Recipient ID'}
+              value={parsedReceipt.businessId}
             />
+            {businessInfo.name && (
+              <PaymentParameters
+                parameters={'Recipient Name'}
+                value={businessInfo.name}
+              />
+            )}
             <PaymentParameters
               parameters={'Invoice total'}
               value={`${parsedReceipt.currencyReceipt} ${BASE_FIAT_CURRENCY}`}
@@ -245,9 +258,15 @@ const TxScreen: React.FC<Props> = memo(({route}) => {
               value={new Date(parsedReceipt.createdAt).toLocaleString()}
             />
             <PaymentParameters
-              parameters={'Recipient'}
+              parameters={'Recipient ID'}
               value={parsedReceipt.businessId}
             />
+            {businessInfo.name && (
+              <PaymentParameters
+                parameters={'Recipient Name'}
+                value={businessInfo.name}
+              />
+            )}
             <PaymentParameters
               parameters={'Invoice total'}
               value={`${parsedReceipt.currencyReceipt} ${BASE_FIAT_CURRENCY}`}
@@ -265,7 +284,8 @@ const TxScreen: React.FC<Props> = memo(({route}) => {
           status={'Signing'}
           type={TxStatusType.Yellow}
           image={require('../assets/inProgress.png')}
-          recipient={parsedReceipt.businessId}
+          recipientId={parsedReceipt.businessId}
+          recipientName={businessInfo.name}
           date={new Date(parsedReceipt.createdAt).toLocaleString()}
           fiatAmount={parsedReceipt.currencyReceipt}
           cryptoAmount={amountInCrypto}
@@ -280,7 +300,8 @@ const TxScreen: React.FC<Props> = memo(({route}) => {
           status={'Mining'}
           type={TxStatusType.Yellow}
           image={require('../assets/inProgress.png')}
-          recipient={parsedReceipt.businessId}
+          recipientId={parsedReceipt.businessId}
+          recipientName={businessInfo.name}
           date={new Date(parsedReceipt.createdAt).toLocaleString()}
           fiatAmount={parsedReceipt.currencyReceipt}
           cryptoAmount={amountInCrypto}
@@ -295,7 +316,8 @@ const TxScreen: React.FC<Props> = memo(({route}) => {
           status={'Confirmed'}
           type={TxStatusType.Green}
           image={require('../assets/confirmed.png')}
-          recipient={parsedReceipt.businessId}
+          recipientId={parsedReceipt.businessId}
+          recipientName={businessInfo.name}
           date={new Date(parsedReceipt.createdAt).toLocaleString()}
           fiatAmount={parsedReceipt.currencyReceipt}
           cryptoAmount={amountInCrypto}

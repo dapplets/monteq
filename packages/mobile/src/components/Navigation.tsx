@@ -14,6 +14,7 @@ import SvgComponentHomeActive from '../components/SVGHomeActive';
 import SvgComponentHomeDefault from '../components/SVGHomeDefault';
 import SvgComponentHowActive from '../components/SVGHowActive';
 import SvgComponentHowDefault from '../components/SVGHowDefault';
+import {useMonteqContract} from '../contexts/MonteqContractContext';
 export type NavigationType = {
   path: string;
 };
@@ -22,6 +23,8 @@ const Navigation = ({path}: NavigationType) => {
   const {provider} = useWeb3Modal();
   const {scan} = useCamera();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+
+  const {getBusinessInfoById} = useMonteqContract();
 
   function handleDisconnectPress() {
     provider?.disconnect();
@@ -47,7 +50,8 @@ const Navigation = ({path}: NavigationType) => {
     try {
       const url = await scan();
       const parsedReceipt = parseReceipt(url);
-      navigation.navigate('TxScreen', {parsedReceipt});
+      const businessInfo = await getBusinessInfoById(parsedReceipt.businessId);
+      navigation.navigate('TxScreen', {parsedReceipt, businessInfo});
     } catch (e) {
       console.error(e);
 

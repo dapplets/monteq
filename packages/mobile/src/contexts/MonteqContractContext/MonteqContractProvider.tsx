@@ -7,6 +7,7 @@ import {
   ParsedUint,
   contextDefaultValues,
   BusinessInfo,
+  defaultBusinessInfo,
 } from './MonteqContractContext';
 import {ethers} from 'ethers';
 import {useWeb3Modal} from '@web3modal/react-native';
@@ -202,6 +203,20 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
 
     setIsOutHistoryLoading(false);
   }, [contract]);
+
+  const getBusinessInfoById = async (
+    businessId: string,
+  ): Promise<BusinessInfo> => {
+    let businessInfo = defaultBusinessInfo;
+    if (contract) {
+      try {
+        businessInfo = await contract.businessInfos(businessId);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+    return businessInfo;
+  };
 
   useEffect(() => {
     (async () => {
@@ -408,6 +423,7 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
     outHistory,
     isOutHistoryLoading,
     loadMoreOutHistory,
+    getBusinessInfoById,
     inHistory,
     isInHistoryLoading,
     loadMoreInHistory,
