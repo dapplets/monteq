@@ -32,6 +32,7 @@ contract MonteQ {
     function getBusinessInfosByOwner(
         address owner
     ) public view returns (BusinessInfo[] memory infos) {
+        // ToDo: add history record id
         string[] memory ids = businessIdsByOwner[owner];
         infos = new BusinessInfo[](ids.length);
         for (uint256 i = 0; i < ids.length; ++i) {
@@ -45,6 +46,8 @@ contract MonteQ {
         uint256 limit,
         bool reverse
     ) public view returns (HistoryRecord[] memory history, uint256 total) {
+        // ToDo: add business name
+        // ToDo: add history record id
         return _paginate(_historyByPayer[payer], offset, limit, reverse);
     }
 
