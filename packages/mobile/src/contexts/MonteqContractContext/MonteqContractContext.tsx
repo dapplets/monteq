@@ -77,7 +77,7 @@ export type MonteqContractContextState = {
 };
 
 export const defaultBusinessInfo: BusinessInfo = {
-  id: '',
+  id: '', // ToDo: may affect TxScreen
   owner: '0x0000000000000000000000000000000000000000',
   name: '',
 };
@@ -101,7 +101,7 @@ export const contextDefaultValues: MonteqContractContextState = {
   outHistory: [],
   isOutHistoryLoading: false,
   loadMoreOutHistory: () => undefined,
-  getBusinessInfoById: () => new Promise(() => defaultBusinessInfo),
+  getBusinessInfoById: () => Promise.resolve(defaultBusinessInfo),
 
   inHistory: [],
   isInHistoryLoading: false,
