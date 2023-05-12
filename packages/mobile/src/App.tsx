@@ -25,13 +25,14 @@ import SplashScreen from 'react-native-splash-screen';
 import {useNetInfo} from '@react-native-community/netinfo';
 import {Text, View} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {BusinessInfo} from './contexts/MonteqContractContext/MonteqContractContext';
 
 enableScreens();
 
 export type RootStackParamList = {
   InfoScreen: undefined;
   CameraScreen: undefined;
-  TxScreen: {parsedReceipt: ParsedReceipt};
+  TxScreen: {parsedReceipt: ParsedReceipt; businessInfo: BusinessInfo};
   WelcomeScreen: undefined;
   CodeScanned: undefined;
   MyBusiness: undefined;

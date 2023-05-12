@@ -108,7 +108,8 @@ const RemovingMyBusiness: React.FC = memo(() => {
           status={'Signing'}
           type={TxStatusType.Yellow}
           image={require('../assets/inProgress.png')}
-          recipient={savedMyBusiness.id}
+          recipientId={savedMyBusiness.id}
+          recipientName={savedMyBusiness.name}
           onRequestClose={() => setModalVisible(!modalVisible)}
         />
       ) : null}
@@ -120,7 +121,8 @@ const RemovingMyBusiness: React.FC = memo(() => {
           status={'Mining'}
           type={TxStatusType.Yellow}
           image={require('../assets/inProgress.png')}
-          recipient={savedMyBusiness.id}
+          recipientId={savedMyBusiness.id}
+          recipientName={savedMyBusiness.name}
           onRequestClose={() => setModalVisible(!modalVisible)}
         />
       ) : null}
@@ -132,7 +134,8 @@ const RemovingMyBusiness: React.FC = memo(() => {
           status={'Confirmed'}
           type={TxStatusType.Green}
           image={require('../assets/confirmed.png')}
-          recipient={savedMyBusiness.id}
+          recipientId={savedMyBusiness.id}
+          recipientName={savedMyBusiness.name}
           onRequestClose={() => setModalVisible(!modalVisible)}
           primaryButton="Close"
           onPrimaryButtonPress={handleCloseButtonPress}

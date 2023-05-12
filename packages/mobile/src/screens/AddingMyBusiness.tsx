@@ -105,8 +105,8 @@ const AddingMyBusiness: React.FC<Props> = memo(({route}) => {
           status={'Signing'}
           type={TxStatusType.Yellow}
           image={require('../assets/inProgress.png')}
-          recipient={parsedReceipt.businessId}
-          busienssName={nameCompany}
+          recipientId={parsedReceipt.businessId}
+          recipientName={nameCompany}
           onRequestClose={() => setModalVisible(!modalVisible)}
         />
       ) : null}
@@ -118,8 +118,8 @@ const AddingMyBusiness: React.FC<Props> = memo(({route}) => {
           status={'Mining'}
           type={TxStatusType.Yellow}
           image={require('../assets/inProgress.png')}
-          recipient={parsedReceipt.businessId}
-          busienssName={nameCompany}
+          recipientId={parsedReceipt.businessId}
+          recipientName={nameCompany}
           onRequestClose={() => setModalVisible(!modalVisible)}
         />
       ) : null}
@@ -131,8 +131,8 @@ const AddingMyBusiness: React.FC<Props> = memo(({route}) => {
           status={'Confirmed'}
           type={TxStatusType.Green}
           image={require('../assets/confirmed.png')}
-          recipient={parsedReceipt.businessId}
-          busienssName={nameCompany}
+          recipientId={parsedReceipt.businessId}
+          recipientName={nameCompany}
           onRequestClose={() => setModalVisible(!modalVisible)}
           primaryButton="Close"
           onPrimaryButtonPress={handleCloseButtonPress}

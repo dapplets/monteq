@@ -30,8 +30,8 @@ type Props = {
   description?: string;
   status?: string;
   type?: TxStatusType;
-  recipient?: string;
-  busienssName?: string;
+  recipientId?: string;
+  recipientName?: string;
   date?: string;
   fiatAmount?: string;
   cryptoAmount?: string;
@@ -50,8 +50,8 @@ const TxModal: React.FC<Props> = ({
   status,
   type,
   image,
-  recipient,
-  busienssName,
+  recipientId,
+  recipientName,
   date,
   fiatAmount,
   cryptoAmount,
@@ -108,19 +108,19 @@ const TxModal: React.FC<Props> = ({
             </View>
           ) : null}
 
-          {recipient !== undefined ? (
+          {recipientId !== undefined ? (
             <PaymentParameters
               isGray
-              parameters={'Recipient'}
-              value={recipient}
+              parameters={'Recipient ID'}
+              value={recipientId}
             />
           ) : null}
 
-          {busienssName !== undefined ? (
+          {recipientName !== undefined && recipientName !== '' ? (
             <PaymentParameters
               isGray
-              parameters={'Business Name'}
-              value={busienssName}
+              parameters={'Recipient Name'}
+              value={recipientName}
             />
           ) : null}
 

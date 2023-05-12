@@ -48,6 +48,7 @@ export type MonteqContractContextState = {
   outHistory: HistoryRecord[];
   isOutHistoryLoading: boolean;
   loadMoreOutHistory: () => void;
+  getBusinessInfoById: (businessId: string) => Promise<BusinessInfo>;
 
   // incoming payments histroy (owner view)
   inHistory: HistoryRecord[];
@@ -75,6 +76,12 @@ export type MonteqContractContextState = {
   resetRemoveBusinessTxStatus: () => void;
 };
 
+export const defaultBusinessInfo: BusinessInfo = {
+  id: '',
+  owner: '0x0000000000000000000000000000000000000000',
+  name: '',
+};
+
 export const contextDefaultValues: MonteqContractContextState = {
   balance: '0',
   isBalanceLoading: false,
@@ -94,6 +101,7 @@ export const contextDefaultValues: MonteqContractContextState = {
   outHistory: [],
   isOutHistoryLoading: false,
   loadMoreOutHistory: () => undefined,
+  getBusinessInfoById: () => new Promise(() => defaultBusinessInfo),
 
   inHistory: [],
   isInHistoryLoading: false,
