@@ -78,12 +78,10 @@ const styles = StyleSheet.create({
     display: 'flex',
     width: '100%',
     height: '100%',
-    paddingLeft: 20,
-    paddingRight: 20,
+    padding: 10,
     overflow: 'scroll',
     marginBottom: 60,
   },
-
   back: {
     position: 'absolute',
     display: 'flex',

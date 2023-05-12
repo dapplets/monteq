@@ -68,11 +68,11 @@ const RemovingMyBusiness: React.FC = memo(() => {
 
   return (
     <>
-      <View style={styles.wrapperTitle}>
-        <Title label="Removing my business" />
-      </View>
-
       <View style={styles.InfoScreenWrapper}>
+        <View style={styles.wrapperTitle}>
+          <Title label="Removing my business" />
+        </View>
+
         <View style={styles.PayInfo}>
           <PaymentParameters
             parameters={'Business unit'}
@@ -170,7 +170,6 @@ const styles = StyleSheet.create({
   wrapperTitle: {
     display: 'flex',
     width: '100%',
-    paddingLeft: 20,
   },
   linearGradient: {
     display: 'flex',
@@ -202,7 +201,7 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: '#F6F7F8',
     borderRadius: 10,
-    marginTop: 10,
+    marginBottom: 10,
   },
 });
 

@@ -7,6 +7,9 @@ import {
   Image,
   Alert,
   ScrollView,
+  FlatList,
+  RefreshControl,
+  ActivityIndicator,
 } from 'react-native';
 import Navigation from '../components/Navigation';
 import Title from '../components/TitlePage';
@@ -112,19 +115,14 @@ const MyBusiness = () => {
     navigation.navigate('RemovingMyBusiness');
   }
 
-  if (isInHistoryLoading || isMyBusinessLoading) {
+  if (isMyBusinessLoading || (isInHistoryLoading && inHistory.length === 0)) {
     return (
-      <>
-        <View style={styles.InfoScreenWrapper}>
-          <Title label="Owner’s View" />
-          <Text>ToDo: loading !!!!!</Text>
-        </View>
-        <Navigation path="home" />
-      </>
+      <View style={styles.InfoScreenWrapper}>
+        <Title label="Owner’s View" />
+        <ActivityIndicator size="large" color="#000" />
+      </View>
     );
   }
-
-  // ToDo: empty history
 
   return (
     <>
@@ -136,103 +134,123 @@ const MyBusiness = () => {
               <Text>ToDo: add empty history picture !!!!!</Text>
             </View>
           ) : (
-            <ScrollView style={styles.InfoScreenWrapper}>
+            <View style={styles.InfoScreenWrapper}>
               <Title label="Owner’s View" />
-              <GeneralPayInfo
-                generalPayAmount={truncate(
-                  mulStr(earnedInvoicesCryptoAmount, rate),
-                  BASE_FIAT_MAX_DIGITS,
-                )}
-                title={'Paid for invoices'}
-                generalPayAmountSubtitle={BASE_FIAT_CURRENCY}
-                TipsAmount={truncate(
-                  earnedInvoicesCryptoAmount,
-                  BASE_CRYPTO_MAX_DIGITS,
-                )}
-                TipsSubtitleRight={BASE_CRYPTO_CURRENCY}
-              />
-              <GeneralPayInfo
-                generalPayAmount={truncate(
-                  earnedTipsCryptoAmount,
-                  BASE_CRYPTO_MAX_DIGITS,
-                )}
-                title={'Tips'}
-                generalPayAmountSubtitle={BASE_CRYPTO_CURRENCY}
-              />
-              <SwitchBlock
-                parameters={'Always start from this page'}
-                onPress={handleRememberSwitch}
-                isPress={isRemember}
-              />
-              <LinearGradient
-                start={{x: 0, y: 0}}
-                end={{x: 1, y: 0}}
-                style={styles.linearGradient}
-                colors={['#0dd977', '#1da4ac', '#14c48c']}>
-                <TouchableHighlight
-                  underlayColor={'#1da4ac'}
-                  activeOpacity={0.5}
-                  style={styles.buttonSend}
-                  onPress={handleGmsScanPressBusinessRemoving}>
-                  <Text style={styles.buttonText}>Remove my business</Text>
-                </TouchableHighlight>
-              </LinearGradient>
-              <ScrollView style={styles.list}>
-                {inHistory.map((x, i) => {
-                  return (
-                    <HistoryPay
-                      key={i}
-                      time={new Date(x.timestamp * 1000).toISOString()}
-                      company={x.payer}
-                      amount={
-                        '+' +
-                        truncate(x.totalCryptoAmount, BASE_CRYPTO_MAX_DIGITS) +
-                        ' ' +
-                        BASE_CRYPTO_CURRENCY
-                      }
+
+              <FlatList
+                data={[]}
+                renderItem={() => null}
+                refreshing={isInHistoryLoading}
+                onRefresh={loadMoreInHistory}
+                overScrollMode="never"
+                ListHeaderComponent={
+                  <>
+                    <GeneralPayInfo
+                      generalPayAmount={truncate(
+                        mulStr(earnedInvoicesCryptoAmount, rate),
+                        BASE_FIAT_MAX_DIGITS,
+                      )}
+                      title={'Paid for invoices'}
+                      generalPayAmountSubtitle={BASE_FIAT_CURRENCY}
+                      TipsAmount={truncate(
+                        earnedInvoicesCryptoAmount,
+                        BASE_CRYPTO_MAX_DIGITS,
+                      )}
+                      TipsSubtitleRight={BASE_CRYPTO_CURRENCY}
                     />
-                  );
-                })}
-              </ScrollView>
-            </ScrollView>
+                    <GeneralPayInfo
+                      generalPayAmount={truncate(
+                        earnedTipsCryptoAmount,
+                        BASE_CRYPTO_MAX_DIGITS,
+                      )}
+                      title={'Tips'}
+                      generalPayAmountSubtitle={BASE_CRYPTO_CURRENCY}
+                    />
+                    <SwitchBlock
+                      parameters={'Always start from this page'}
+                      onPress={handleRememberSwitch}
+                      isPress={isRemember}
+                    />
+                    <LinearGradient
+                      start={{x: 0, y: 0}}
+                      end={{x: 1, y: 0}}
+                      style={styles.linearGradient}
+                      colors={['#0dd977', '#1da4ac', '#14c48c']}>
+                      <TouchableHighlight
+                        underlayColor={'#1da4ac'}
+                        activeOpacity={0.5}
+                        style={styles.buttonSend}
+                        onPress={handleGmsScanPressBusinessRemoving}>
+                        <Text style={styles.buttonText}>
+                          Remove my business
+                        </Text>
+                      </TouchableHighlight>
+                    </LinearGradient>
+                  </>
+                }
+                // Workaround for:
+                // https://stackoverflow.com/questions/61541163/style-the-container-of-react-natives-flatlist-items-separate-from-the-header
+                ListFooterComponent={
+                  <FlatList
+                    style={styles.list}
+                    data={inHistory}
+                    keyExtractor={item => item.id}
+                    renderItem={({item}) => (
+                      <HistoryPay
+                        time={new Date(item.timestamp * 1000).toISOString()}
+                        company={item.payer}
+                        amount={
+                          '-' +
+                          truncate(
+                            item.totalCryptoAmount,
+                            BASE_CRYPTO_MAX_DIGITS,
+                          ) +
+                          ' ' +
+                          BASE_CRYPTO_CURRENCY
+                        }
+                      />
+                    )}
+                    ListFooterComponent={<View style={{height: 30}} />}
+                  />
+                }
+              />
+            </View>
           )}
           <Navigation path="home" />
         </>
       ) : (
-        <>
+        <View style={styles.InfoScreenWrapper}>
           <Title label="Owner’s View" />
-          <View style={styles.InfoScreenWrapper}>
-            <SwitchBlock
-              parameters={'Always start from business page'}
-              onPress={handleRememberSwitch}
-              isPress={isRemember}
-            />
-            <Image
-              resizeMode="contain"
-              style={styles.BusinessImg}
-              source={require('../assets/Lines.png')}
-            />
-            <Text style={styles.DescriptionText}>
-              No business is associated with this wallet right now. Connect a
-              business to start getting paid in cryptocurrency or log in with
-              the right wallet.
-            </Text>
-            <LinearGradient
-              start={{x: 0, y: 0}}
-              end={{x: 1, y: 0}}
-              style={styles.linearGradient}
-              colors={['#0dd977', '#1da4ac', '#14c48c']}>
-              <TouchableHighlight
-                underlayColor={'#1da4ac'}
-                activeOpacity={0.5}
-                style={styles.buttonSend}
-                onPress={handleGmsScanPressBusiness}>
-                <Text style={styles.buttonText}>Connect my business</Text>
-              </TouchableHighlight>
-            </LinearGradient>
-          </View>
+          <SwitchBlock
+            parameters={'Always start from business page'}
+            onPress={handleRememberSwitch}
+            isPress={isRemember}
+          />
+          <Image
+            resizeMode="contain"
+            style={styles.BusinessImg}
+            source={require('../assets/Lines.png')}
+          />
+          <Text style={styles.DescriptionText}>
+            No business is associated with this wallet right now. Connect a
+            business to start getting paid in cryptocurrency or log in with the
+            right wallet.
+          </Text>
+          <LinearGradient
+            start={{x: 0, y: 0}}
+            end={{x: 1, y: 0}}
+            style={styles.linearGradient}
+            colors={['#0dd977', '#1da4ac', '#14c48c']}>
+            <TouchableHighlight
+              underlayColor={'#1da4ac'}
+              activeOpacity={0.5}
+              style={styles.buttonSend}
+              onPress={handleGmsScanPressBusiness}>
+              <Text style={styles.buttonText}>Connect my business</Text>
+            </TouchableHighlight>
+          </LinearGradient>
           <Navigation path="home" />
-        </>
+        </View>
       )}
     </>
   );
@@ -266,13 +284,12 @@ const styles = StyleSheet.create({
     height: '100%',
     paddingLeft: 10,
     paddingRight: 10,
-    marginBottom: 20,
     borderRadius: 4,
     borderStyle: 'solid',
     borderWidth: 1,
     borderColor: '#E3E3E3',
     marginTop: 10,
-    paddingBottom: 10,
+    marginBottom: 60,
   },
   wrapperBorder: {},
   clockIcon: {},
