@@ -26,6 +26,7 @@ import {useNetInfo} from '@react-native-community/netinfo';
 import {Text, View} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {BusinessInfo} from './contexts/MonteqContractContext/MonteqContractContext';
+import TxModal from './components/TxModal';
 
 enableScreens();
 
@@ -72,7 +73,12 @@ function App(): JSX.Element {
   if (!isInternetConnected) {
     return (
       <View>
-        <Text>ToDo: no internet connection !!!!!</Text>
+        <TxModal
+          isVisible={true}
+          title="Check your connection"
+          description="Try turning on your Wi-Fi or Mobile Data for using the app."
+          image={require('./assets/noConnection.png')}
+        />
       </View>
     );
   }

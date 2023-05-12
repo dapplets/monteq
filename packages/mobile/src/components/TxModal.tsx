@@ -39,7 +39,7 @@ type Props = {
   isVisible: boolean;
   primaryButton?: string;
   secondaryButton?: string;
-  onRequestClose: () => void;
+  onRequestClose?: () => void;
   onPrimaryButtonPress?: () => void;
   onSecondaryButtonPress?: () => void;
 };
