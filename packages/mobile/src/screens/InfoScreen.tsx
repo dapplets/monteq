@@ -5,6 +5,7 @@ import {
   StyleSheet,
   Text,
   ActivityIndicator,
+  Image,
 } from 'react-native';
 import Navigation from '../components/Navigation';
 import Title from '../components/TitlePage';
@@ -50,7 +51,16 @@ const InfoScreen = () => {
         <Title label="Payment history" />
 
         {!isOutHistoryLoading && outHistory.length === 0 ? (
-          <Text>ToDo: show picture for empty history !!!!!</Text>
+          <>
+            <Image
+              resizeMode="contain"
+              style={styles.BusinessImg}
+              source={require('../assets/Lines.png')}
+            />
+            <Text style={styles.DescriptionText}>
+              No history is associated with this wallet right now.
+            </Text>
+          </>
         ) : null}
 
         {outHistory.length > 0 ? (
@@ -191,10 +201,24 @@ const styles = StyleSheet.create({
     // marginLeft: 10,
     // marginRight: 40,
   },
-  wrapperBorder: {},
-  clockIcon: {},
-  iconLayout: {},
-  logOutWrapper: {},
+  BusinessImg: {
+    width: 174,
+    height: 158,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    marginTop: 10,
+    marginBottom: 20,
+  },
+  DescriptionText: {
+    fontSize: 12,
+    lineHeight: 14,
+    color: '#919191',
+    textAlign: 'center',
+    paddingLeft: 20,
+    paddingRight: 20,
+    marginBottom: 20,
+    fontFamily: FontFamily.robotoRegular,
+  },
 });
 
 export default InfoScreen;

@@ -58,8 +58,8 @@ const AddingMyBusiness: React.FC<Props> = memo(({route}) => {
 
   return (
     <>
-      <Title label="Adding my business" />
       <View style={styles.InfoScreenWrapper}>
+        <Title label="Adding my business" />
         <View style={styles.PayInfo}>
           <CompanyParameters
             parameters={'Company'}

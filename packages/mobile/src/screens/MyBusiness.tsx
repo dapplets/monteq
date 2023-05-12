@@ -131,7 +131,14 @@ const MyBusiness = () => {
           {inHistory.length === 0 ? (
             <View style={styles.InfoScreenWrapper}>
               <Title label="Owner’s View" />
-              <Text>ToDo: add empty history picture !!!!!</Text>
+              <Image
+                resizeMode="contain"
+                style={styles.BusinessImg}
+                source={require('../assets/Lines.png')}
+              />
+              <Text style={styles.DescriptionText}>
+                No history is associated with this wallet right now.
+              </Text>
             </View>
           ) : (
             <View style={styles.InfoScreenWrapper}>
@@ -219,38 +226,40 @@ const MyBusiness = () => {
           <Navigation path="home" />
         </>
       ) : (
-        <View style={styles.InfoScreenWrapper}>
-          <Title label="Owner’s View" />
-          <SwitchBlock
-            parameters={'Always start from business page'}
-            onPress={handleRememberSwitch}
-            isPress={isRemember}
-          />
-          <Image
-            resizeMode="contain"
-            style={styles.BusinessImg}
-            source={require('../assets/Lines.png')}
-          />
-          <Text style={styles.DescriptionText}>
-            No business is associated with this wallet right now. Connect a
-            business to start getting paid in cryptocurrency or log in with the
-            right wallet.
-          </Text>
-          <LinearGradient
-            start={{x: 0, y: 0}}
-            end={{x: 1, y: 0}}
-            style={styles.linearGradient}
-            colors={['#0dd977', '#1da4ac', '#14c48c']}>
-            <TouchableHighlight
-              underlayColor={'#1da4ac'}
-              activeOpacity={0.5}
-              style={styles.buttonSend}
-              onPress={handleGmsScanPressBusiness}>
-              <Text style={styles.buttonText}>Connect my business</Text>
-            </TouchableHighlight>
-          </LinearGradient>
+        <>
+          <View style={styles.InfoScreenWrapper}>
+            <Title label="Owner’s View" />
+            <SwitchBlock
+              parameters={'Always start from business page'}
+              onPress={handleRememberSwitch}
+              isPress={isRemember}
+            />
+            <Image
+              resizeMode="contain"
+              style={styles.BusinessImg}
+              source={require('../assets/Lines.png')}
+            />
+            <Text style={styles.DescriptionText}>
+              No business is associated with this wallet right now. Connect a
+              business to start getting paid in cryptocurrency or log in with
+              the right wallet.
+            </Text>
+            <LinearGradient
+              start={{x: 0, y: 0}}
+              end={{x: 1, y: 0}}
+              style={styles.linearGradient}
+              colors={['#0dd977', '#1da4ac', '#14c48c']}>
+              <TouchableHighlight
+                underlayColor={'#1da4ac'}
+                activeOpacity={0.5}
+                style={styles.buttonSend}
+                onPress={handleGmsScanPressBusiness}>
+                <Text style={styles.buttonText}>Connect my business</Text>
+              </TouchableHighlight>
+            </LinearGradient>
+          </View>
           <Navigation path="home" />
-        </View>
+        </>
       )}
     </>
   );
