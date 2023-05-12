@@ -80,6 +80,7 @@ const styles = StyleSheet.create({
   arrow: {
     width: 12,
     height: 6,
+    marginRight: 4,
   },
   descriptonBlock: {
     display: 'flex',

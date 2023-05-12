@@ -37,10 +37,13 @@ const InfoScreen = () => {
 
   if (isOutHistoryLoading && outHistory.length === 0) {
     return (
-      <View style={styles.InfoScreenWrapper}>
-        <Title label="Payment history" />
-        <ActivityIndicator size="large" color="#000" />
-      </View>
+      <>
+        <View style={styles.InfoScreenWrapper}>
+          <Title label="Payment history" />
+          <ActivityIndicator size="large" color="#000" />
+        </View>
+        <Navigation path="user" />
+      </>
     );
   }
 
