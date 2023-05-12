@@ -7,28 +7,34 @@ import {RootStackParamList} from '../App';
 import {FontFamily} from '../GlobalStyles';
 import InfoUseItem from '../components/InfoUseItem';
 import {useWeb3Modal} from '@web3modal/react-native';
+import SvgComponentHowBgMain from '../icons/SVGHowBgMain';
 
 const info = [
   {
     id: '1',
-    title: 'Connect Trust Wallet (there can be a problems with others)',
+    title: 'Connect your crypto wallet',
     description:
-      'Eget sed mauris ornare nulla pharetra. Felis fringilla mattis aliquet amet. Habitant pellentesque erat morbi morbi aliquet venenatis in. Duis nunc nec vulputate lorem elementum lobortis mauris molestie lectus. Id parturient scelerisque commodo suscipit in ac. Libero volutpat pretium fermentum ultrices molestie.',
-    img: require('../assets/howUseTest1.png'),
+      'Use WalletConnect to connect MonteQ to your crypto wallet (we recommend Trust Wallet).',
+    img: require('../assets/bgHow1.png'),
   },
   {
     id: '2',
-    title: 'Scan QR code to generate transaction for tip and/or payment',
+    title: 'Negotiate with a business',
     description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lacus laoreet non curabitur gravida arcu ac. Malesuada proin libero nunc consequat interdum varius sit amet.',
-    img: require('../assets/howUseTest1.png'),
+      'Make sure the recipient is ready to accept crypto instead of cash.',
+    img: require('../assets/bgHow2.png'),
   },
   {
     id: '3',
-    title: 'Sign transaction as you always dot',
-    description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lacus laoreet non curabitur gravida arcu ac. Malesuada proin libero nunc consequat interdum varius sit amet.',
-    img: require('../assets/howUseTest1.png'),
+    title: 'QR Codes',
+    description: 'Scan QR code to generate transaction for tip and/or payment.',
+    img: require('../assets/bgHow3.png'),
+  },
+  {
+    id: '4',
+    title: 'Confirming transaction',
+    description: 'Sign transaction as you always do.',
+    img: require('../assets/bgHow4.png'),
   },
 ];
 
@@ -46,7 +52,9 @@ const HowUse = ({}: HowUseProps) => {
     <>
       <ScrollView style={styles.InfoScreenWrapper}>
         {isConnected ? <Title label="How it works?" /> : null}
-
+        <SvgComponentHowBgMain
+          style={isConnected ? styles.mainBg : styles.mainBgNoConnect}
+        />
         {info.map((x, i) => {
           return (
             <InfoUseItem
@@ -81,6 +89,15 @@ const styles = StyleSheet.create({
     padding: 10,
     overflow: 'scroll',
     marginBottom: 60,
+  },
+  mainBg: {
+    marginLeft: 'auto',
+    marginRight: 'auto',
+  },
+  mainBgNoConnect: {
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    marginTop: 20,
   },
   back: {
     position: 'absolute',
