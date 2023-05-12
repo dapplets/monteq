@@ -39,9 +39,8 @@ const InfoScreen = () => {
   if (isOutHistoryLoading && outHistory.length === 0) {
     return (
       <>
-        <View style={styles.InfoScreenWrapper}>
-          <Title label="Payment history" />
-          <ActivityIndicator size="large" color="#000" />
+        <View style={styles.CenterContentWrapper}>
+          <ActivityIndicator size="large" color="#919191" />
         </View>
         <Navigation path="user" />
       </>
@@ -51,23 +50,23 @@ const InfoScreen = () => {
   return (
     <>
       <View style={styles.InfoScreenWrapper}>
-        <Title label="Payment history" />
-
         {!isOutHistoryLoading && outHistory.length === 0 ? (
-          <>
+          <View style={styles.CenterContentWrapper}>
             <Image
               resizeMode="contain"
               style={styles.BusinessImg}
               source={require('../assets/Lines.png')}
             />
             <Text style={styles.DescriptionText}>
-              No history is associated with this wallet right now.
+              No history of outgoing transactions associated to your wallet
+              right now.
             </Text>
-          </>
+          </View>
         ) : null}
 
         {outHistory.length > 0 ? (
           <>
+            <Title label="Payment history" />
             <GeneralPayInfo
               generalPayAmount={truncate(
                 spentTotalCryptoAmount,
@@ -119,6 +118,14 @@ const styles = StyleSheet.create({
     height: '100%',
     padding: 10,
     marginBottom: 60,
+  },
+  CenterContentWrapper: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 100,
   },
   GeneralPay: {
     display: 'flex',

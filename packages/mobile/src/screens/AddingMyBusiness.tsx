@@ -144,7 +144,7 @@ const AddingMyBusiness: React.FC<Props> = memo(({route}) => {
         <TxModal
           isVisible={modalVisible}
           title="Transaction rejected"
-          description="ToDo: write description here !!!!!"
+          description="You have rejected the transaction in the wallet"
           image={require('../assets/errorOccured.png')}
           onRequestClose={() => setModalVisible(!modalVisible)}
           primaryButton="Retry"

@@ -6,9 +6,7 @@ import {
   TouchableHighlight,
   Image,
   Alert,
-  ScrollView,
   FlatList,
-  RefreshControl,
   ActivityIndicator,
 } from 'react-native';
 import Navigation from '../components/Navigation';
@@ -118,9 +116,8 @@ const MyBusiness = () => {
   if (isMyBusinessLoading || (isInHistoryLoading && inHistory.length === 0)) {
     return (
       <>
-        <View style={styles.InfoScreenWrapper}>
-          <Title label="Owner’s View" />
-          <ActivityIndicator size="large" color="#000" />
+        <View style={styles.CenterContentWrapper}>
+          <ActivityIndicator size="large" color="#919191" />
         </View>
         <Navigation path="home" />
       </>
@@ -132,15 +129,15 @@ const MyBusiness = () => {
       {myBusiness ? (
         <>
           {inHistory.length === 0 ? (
-            <View style={styles.InfoScreenWrapper}>
-              <Title label="Owner’s View" />
+            <View style={styles.CenterContentWrapper}>
               <Image
                 resizeMode="contain"
                 style={styles.BusinessImg}
                 source={require('../assets/Lines.png')}
               />
               <Text style={styles.DescriptionText}>
-                No history is associated with this wallet right now.
+                No history of incoming transactions associated to your business
+                right now.
               </Text>
             </View>
           ) : (
@@ -181,21 +178,15 @@ const MyBusiness = () => {
                       onPress={handleRememberSwitch}
                       isPress={isRemember}
                     />
-                    <LinearGradient
-                      start={{x: 0, y: 0}}
-                      end={{x: 1, y: 0}}
-                      style={styles.linearGradient}
-                      colors={['#0dd977', '#1da4ac', '#14c48c']}>
-                      <TouchableHighlight
-                        underlayColor={'#1da4ac'}
-                        activeOpacity={0.5}
-                        style={styles.buttonSend}
-                        onPress={handleGmsScanPressBusinessRemoving}>
-                        <Text style={styles.buttonText}>
-                          Remove my business
-                        </Text>
-                      </TouchableHighlight>
-                    </LinearGradient>
+                    <TouchableHighlight
+                      underlayColor={'#ca3131'}
+                      activeOpacity={0.5}
+                      style={styles.buttonRemove}
+                      onPress={handleGmsScanPressBusinessRemoving}>
+                      <Text style={styles.buttonRemoveText}>
+                        Remove my business
+                      </Text>
+                    </TouchableHighlight>
                   </>
                 }
                 // Workaround for:
@@ -237,29 +228,31 @@ const MyBusiness = () => {
               onPress={handleRememberSwitch}
               isPress={isRemember}
             />
-            <Image
-              resizeMode="contain"
-              style={styles.BusinessImg}
-              source={require('../assets/Lines.png')}
-            />
-            <Text style={styles.DescriptionText}>
-              No business is associated with this wallet right now. Connect a
-              business to start getting paid in cryptocurrency or log in with
-              the right wallet.
-            </Text>
-            <LinearGradient
-              start={{x: 0, y: 0}}
-              end={{x: 1, y: 0}}
-              style={styles.linearGradient}
-              colors={['#0dd977', '#1da4ac', '#14c48c']}>
-              <TouchableHighlight
-                underlayColor={'#1da4ac'}
-                activeOpacity={0.5}
-                style={styles.buttonSend}
-                onPress={handleGmsScanPressBusiness}>
-                <Text style={styles.buttonText}>Connect my business</Text>
-              </TouchableHighlight>
-            </LinearGradient>
+            <View style={styles.CenterContentWrapper}>
+              <Image
+                resizeMode="contain"
+                style={styles.BusinessImg}
+                source={require('../assets/Lines.png')}
+              />
+              <Text style={styles.DescriptionText}>
+                No business is associated with this wallet right now. Connect a
+                business to start getting paid in cryptocurrency or log in with
+                the right wallet.
+              </Text>
+              <LinearGradient
+                start={{x: 0, y: 0}}
+                end={{x: 1, y: 0}}
+                style={styles.linearGradient}
+                colors={['#0dd977', '#1da4ac', '#14c48c']}>
+                <TouchableHighlight
+                  underlayColor={'#1da4ac'}
+                  activeOpacity={0.5}
+                  style={styles.buttonSend}
+                  onPress={handleGmsScanPressBusiness}>
+                  <Text style={styles.buttonText}>Connect my business</Text>
+                </TouchableHighlight>
+              </LinearGradient>
+            </View>
           </View>
           <Navigation path="home" />
         </>
@@ -276,6 +269,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#F6F7F8',
     padding: 10,
     marginBottom: 60,
+  },
+  CenterContentWrapper: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 100,
   },
   timeNavigation: {
     display: 'flex',
@@ -329,6 +330,26 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     borderRadius: 50,
+  },
+  buttonRemove: {
+    backgroundColor: '#FF3E3E',
+    width: '100%',
+    height: 48,
+    display: 'flex',
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    borderRadius: 50,
+  },
+  buttonRemoveText: {
+    fontSize: 14,
+    fontWeight: '700',
+    lineHeight: 16,
+    textDecorationLine: 'underline',
+    textDecorationColor: '#fff',
+    textDecorationStyle: 'solid',
+    color: '#fff',
+    fontFamily: FontFamily.robotoBold,
   },
   BusinessImg: {
     width: 174,
