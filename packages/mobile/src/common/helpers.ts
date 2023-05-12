@@ -26,3 +26,9 @@ export function addStr(a: string, b: string): string {
 
   return ethers.utils.formatEther(_c);
 }
+
+export function gteStr(a: string, b: string): boolean {
+  const _a = ethers.utils.parseEther(a);
+  const _b = ethers.utils.parseEther(b);
+  return _a.gte(_b);
+}

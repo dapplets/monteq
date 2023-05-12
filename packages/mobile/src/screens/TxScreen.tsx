@@ -22,7 +22,7 @@ import {
   BASE_FIAT_CURRENCY,
 } from '../common/constants';
 import SwitchBlock from '../components/SwitchBlock';
-import {addStr, mulStr, truncate} from '../common/helpers';
+import {addStr, gteStr, mulStr, truncate} from '../common/helpers';
 import TxModal, {TxStatusType} from '../components/TxModal';
 import {
   BusinessInfo,
@@ -92,6 +92,7 @@ const TxScreen: React.FC<Props> = memo(({route}) => {
       : '0';
 
   const amountInCrypto = addStr(billAmountInCrypto, tipsAmountInCrypto);
+  const isEnoughTokens = gteStr(balance, amountInCrypto);
 
   async function handleSendPress() {
     if (!provider || !parsedReceipt) {
@@ -144,19 +145,28 @@ const TxScreen: React.FC<Props> = memo(({route}) => {
             }}
           />
 
-          <LinearGradient
-            start={{x: 0, y: 0}}
-            end={{x: 1, y: 0}}
-            style={styles.linearGradient}
-            colors={['#7f0dd9', '#5951c0', '#7f0dd9']}>
-            <TouchableHighlight
-              underlayColor={'#5951c0'}
-              activeOpacity={0.5}
-              style={styles.buttonSend}
-              onPress={handleSendPress}>
-              <Text style={styles.buttonText}>Send Tips</Text>
+          {isEnoughTokens ? (
+            <LinearGradient
+              start={{x: 0, y: 0}}
+              end={{x: 1, y: 0}}
+              style={styles.linearGradient}
+              colors={['#7f0dd9', '#5951c0', '#7f0dd9']}>
+              <TouchableHighlight
+                underlayColor={'#5951c0'}
+                activeOpacity={0.5}
+                style={styles.buttonSend}
+                onPress={handleSendPress}>
+                <Text style={styles.buttonText}>Send Tips</Text>
+              </TouchableHighlight>
+            </LinearGradient>
+          ) : (
+            <TouchableHighlight disabled style={styles.buttonInsufficient}>
+              <Text style={styles.buttonInsufficientText}>
+                Insufficient funds
+              </Text>
             </TouchableHighlight>
-          </LinearGradient>
+          )}
+
           <View style={styles.PayInfo}>
             <View style={styles.PayInfoTitle}>
               <Text style={styles.PayInfoTitleText}>
@@ -219,19 +229,28 @@ const TxScreen: React.FC<Props> = memo(({route}) => {
             }}
           />
 
-          <LinearGradient
-            start={{x: 0, y: 0}}
-            end={{x: 1, y: 0}}
-            style={styles.linearGradient}
-            colors={['#0dd977', '#1da4ac', '#14c48c']}>
-            <TouchableHighlight
-              underlayColor={'#1da4ac'}
-              activeOpacity={0.5}
-              style={styles.buttonSend}
-              onPress={handleSendPress}>
-              <Text style={styles.buttonText}>Pay invoice in full</Text>
+          {isEnoughTokens ? (
+            <LinearGradient
+              start={{x: 0, y: 0}}
+              end={{x: 1, y: 0}}
+              style={styles.linearGradient}
+              colors={['#0dd977', '#1da4ac', '#14c48c']}>
+              <TouchableHighlight
+                underlayColor={'#1da4ac'}
+                activeOpacity={0.5}
+                style={styles.buttonSend}
+                onPress={handleSendPress}>
+                <Text style={styles.buttonText}>Pay invoice in full</Text>
+              </TouchableHighlight>
+            </LinearGradient>
+          ) : (
+            <TouchableHighlight disabled style={styles.buttonInsufficient}>
+              <Text style={styles.buttonInsufficientText}>
+                Insufficient funds
+              </Text>
             </TouchableHighlight>
-          </LinearGradient>
+          )}
+
           <View style={styles.PayInfo}>
             <View style={styles.PayInfoTitle}>
               <Text style={styles.PayInfoTitleText}>
@@ -447,6 +466,26 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     lineHeight: 16,
     color: '#ffffff',
+    fontFamily: FontFamily.robotoBold,
+  },
+  buttonInsufficient: {
+    backgroundColor: '#FF3E3E',
+    width: '100%',
+    height: 48,
+    display: 'flex',
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    borderRadius: 50,
+  },
+  buttonInsufficientText: {
+    fontSize: 14,
+    fontWeight: '700',
+    lineHeight: 16,
+    textDecorationLine: 'underline',
+    textDecorationColor: '#fff',
+    textDecorationStyle: 'solid',
+    color: '#fff',
     fontFamily: FontFamily.robotoBold,
   },
 });
