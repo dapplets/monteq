@@ -3,26 +3,32 @@ import {
   Image,
   StyleSheet,
   View,
-  Pressable,
+  TouchableHighlight,
   ImageSourcePropType,
 } from 'react-native';
 type ButtonNavigationDefaultType = {
-  image: ImageSourcePropType;
+  image?: ImageSourcePropType;
 
   onPress?: () => void;
+  children: any;
 };
 
 const ButtonNavigationDefault = memo(
-  ({onPress, image}: ButtonNavigationDefaultType) => {
+  ({onPress, image, children}: ButtonNavigationDefaultType) => {
     return (
       <View style={styles.buttonWrapper}>
-        <Pressable style={styles.logOutWrapper} onPress={onPress}>
-          <Image
+        <TouchableHighlight
+          underlayColor={'#14C58B'}
+          activeOpacity={0.5}
+          style={styles.logOutWrapper}
+          onPress={onPress}>
+          {/* <Image
             style={[styles.clockIcon, styles.iconLayout]}
             resizeMode="cover"
             source={image}
-          />
-        </Pressable>
+          /> */}
+          {children}
+        </TouchableHighlight>
       </View>
     );
   },
@@ -57,6 +63,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     height: '100%',
+    borderRadius: 6,
   },
 });
 export default ButtonNavigationDefault;

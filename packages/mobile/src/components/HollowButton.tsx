@@ -1,5 +1,5 @@
 import React, {memo} from 'react';
-import {Pressable, Text, StyleSheet} from 'react-native';
+import {TouchableHighlight, Text, StyleSheet} from 'react-native';
 import {FontSize, FontFamily, Color, Border, Padding} from '../GlobalStyles';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {RootStackParamList} from '../App';
@@ -10,9 +10,13 @@ const HollowButton = memo(() => {
     navigation.navigate('HowUse');
   }
   return (
-    <Pressable onPress={navigationConnect} style={styles.mainbutton}>
+    <TouchableHighlight
+      underlayColor={'transparent'}
+      activeOpacity={0.5}
+      onPress={navigationConnect}
+      style={styles.mainbutton}>
       <Text style={styles.howItWorks}>How it works?</Text>
-    </Pressable>
+    </TouchableHighlight>
   );
 });
 

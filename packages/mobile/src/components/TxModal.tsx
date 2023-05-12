@@ -70,7 +70,7 @@ const TxModal: React.FC<Props> = ({
       onRequestClose={onRequestClose}>
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
-          <Title label={title} />
+          <Title isCenter label={title} />
 
           {image ? (
             <Image
@@ -159,6 +159,8 @@ const TxModal: React.FC<Props> = ({
               style={styles.linearGradient}
               colors={['#0dd977', '#1da4ac', '#14c48c']}>
               <TouchableHighlight
+                underlayColor={'#1da4ac'}
+                activeOpacity={0.5}
                 style={styles.primaryButton}
                 onPress={onPrimaryButtonPress}>
                 <Text style={styles.primaryButtonText}>{primaryButton}</Text>
@@ -169,6 +171,8 @@ const TxModal: React.FC<Props> = ({
           {onSecondaryButtonPress !== undefined &&
           secondaryButton !== undefined ? (
             <TouchableHighlight
+              underlayColor={'#F6F7F8'}
+              activeOpacity={0.5}
               style={styles.secondaryButton}
               onPress={onSecondaryButtonPress}>
               <Text style={styles.secondaryButtonText}>{secondaryButton}</Text>
@@ -277,6 +281,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'center',
+    borderRadius: 50,
   },
   primaryButtonText: {
     fontSize: 14,

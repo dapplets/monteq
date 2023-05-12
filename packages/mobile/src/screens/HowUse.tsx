@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Text, StyleSheet, Pressable, ScrollView} from 'react-native';
+import {Text, StyleSheet, ScrollView, TouchableHighlight} from 'react-native';
 import Navigation from '../components/Navigation';
 import Title from '../components/TitlePage';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
@@ -61,9 +61,13 @@ const HowUse = ({}: HowUseProps) => {
       {isConnected ? (
         <Navigation path="help" />
       ) : (
-        <Pressable style={styles.back} onPress={navigationConnect}>
+        <TouchableHighlight
+          underlayColor={'#3B99FC'}
+          activeOpacity={0.5}
+          style={styles.back}
+          onPress={navigationConnect}>
           <Text style={styles.backText}>Back</Text>
-        </Pressable>
+        </TouchableHighlight>
       )}
     </>
   );

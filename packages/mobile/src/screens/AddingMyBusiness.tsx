@@ -86,6 +86,8 @@ const AddingMyBusiness: React.FC<Props> = memo(({route}) => {
           style={styles.linearGradient}
           colors={['#0dd977', '#1da4ac', '#14c48c']}>
           <TouchableHighlight
+            underlayColor={'#1da4ac'}
+            activeOpacity={0.5}
             disabled={nameCompany.length === 0}
             style={styles.buttonSend}
             onPress={handleSendPress}>
@@ -183,6 +185,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'center',
+    borderRadius: 50,
   },
   PayInfo: {
     display: 'flex',

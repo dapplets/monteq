@@ -20,7 +20,10 @@ const TimeLabel = ({time, isActive}: TimeLabelType) => {
           <Text style={styles.timeActiveText}>{time}</Text>
         </Pressable>
       ) : (
-        <TouchableHighlight style={styles.timeDefault}>
+        <TouchableHighlight
+          underlayColor={'transparent'}
+          activeOpacity={0.5}
+          style={styles.timeDefault}>
           <Text style={styles.timeActiveDefault}>{time}</Text>
         </TouchableHighlight>
       )}
