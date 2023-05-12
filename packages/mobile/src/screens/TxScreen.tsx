@@ -6,7 +6,7 @@ import {
 } from '@react-navigation/native';
 import {useWeb3Modal} from '@web3modal/react-native';
 import React, {memo, useEffect, useState} from 'react';
-import {Image, StyleSheet, Text, TouchableHighlight, View} from 'react-native';
+import {StyleSheet, Text, TouchableHighlight, View} from 'react-native';
 import Navigation from '../components/Navigation';
 import Title from '../components/TitlePage';
 import PaymentInfo from '../components/PaymentInfo';

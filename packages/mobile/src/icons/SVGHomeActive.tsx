@@ -1,6 +1,7 @@
 import * as React from 'react';
-import Svg, {Path} from 'react-native-svg';
-const SvgComponentHomeActive = props => (
+import Svg, {Path, SvgProps} from 'react-native-svg';
+
+const SvgComponentHomeActive: React.FC<SvgProps> = props => (
   <Svg
     xmlns="http://www.w3.org/2000/svg"
     width={24}
@@ -38,4 +39,5 @@ const SvgComponentHomeActive = props => (
     />
   </Svg>
 );
+
 export default SvgComponentHomeActive;

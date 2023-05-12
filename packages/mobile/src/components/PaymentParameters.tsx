@@ -1,16 +1,18 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import {FontFamily} from '../GlobalStyles';
+
 export type PaymentParametersType = {
   parameters: string;
   value: string;
   isGray?: boolean;
 };
-const PaymentParameters = ({
+
+const PaymentParameters: React.FC<PaymentParametersType> = ({
   parameters,
   value,
   isGray,
-}: PaymentParametersType) => {
+}) => {
   return (
     <View
       style={isGray ? styles.PaymentParametersGray : styles.PaymentParameters}>
@@ -58,4 +60,5 @@ const styles = StyleSheet.create({
     fontFamily: FontFamily.robotoBold,
   },
 });
+
 export default PaymentParameters;

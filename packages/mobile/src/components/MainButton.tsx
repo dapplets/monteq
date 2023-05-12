@@ -21,9 +21,13 @@ type MainButtonType = {
 };
 
 const getStyleValue = (key: string, value: string | number | undefined) => {
-  if (value === undefined) return;
+  if (value === undefined) {
+    return;
+  }
+
   return {[key]: value === 'unset' ? undefined : value};
 };
+
 const MainButton = memo(
   ({
     onPress,

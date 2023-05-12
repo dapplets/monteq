@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {ScrollView, StyleSheet, Text, View} from 'react-native';
+import {ScrollView, StyleSheet, Text} from 'react-native';
 import Navigation from '../components/Navigation';
 import Title from '../components/TitlePage';
 import {useMonteqContract} from '../contexts/MonteqContractContext';
@@ -12,6 +12,7 @@ import {
 import {truncate} from '../common/helpers';
 import {useIsFocused} from '@react-navigation/native';
 import {FontFamily} from '../GlobalStyles';
+
 const InfoScreen = () => {
   const isFocused = useIsFocused();
   const {

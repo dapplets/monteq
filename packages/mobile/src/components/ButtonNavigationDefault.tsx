@@ -1,20 +1,19 @@
 import React, {memo} from 'react';
 import {
-  Image,
   StyleSheet,
   View,
   TouchableHighlight,
   ImageSourcePropType,
 } from 'react-native';
+
 type ButtonNavigationDefaultType = {
   image?: ImageSourcePropType;
-
   onPress?: () => void;
   children: any;
 };
 
 const ButtonNavigationDefault = memo(
-  ({onPress, image, children}: ButtonNavigationDefaultType) => {
+  ({onPress, children}: ButtonNavigationDefaultType) => {
     return (
       <View style={styles.buttonWrapper}>
         <TouchableHighlight
@@ -22,17 +21,13 @@ const ButtonNavigationDefault = memo(
           activeOpacity={0.5}
           style={styles.logOutWrapper}
           onPress={onPress}>
-          {/* <Image
-            style={[styles.clockIcon, styles.iconLayout]}
-            resizeMode="cover"
-            source={image}
-          /> */}
           {children}
         </TouchableHighlight>
       </View>
     );
   },
 );
+
 const styles = StyleSheet.create({
   buttonWrapper: {
     borderRadius: 6,
@@ -48,7 +43,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-
   clockIcon: {
     overflow: 'hidden',
   },
@@ -66,4 +60,5 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
 });
+
 export default ButtonNavigationDefault;

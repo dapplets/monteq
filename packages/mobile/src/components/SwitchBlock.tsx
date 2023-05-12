@@ -1,14 +1,19 @@
-import {Alert, StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import CustomSwitch from './Switch';
 import {FontFamily} from '../GlobalStyles';
+
 export type SwitchBlockType = {
   parameters: string;
   onPress: any;
   isPress: boolean;
-  //   value: string;
 };
-const SwitchBlock = ({parameters, onPress, isPress}: SwitchBlockType) => {
+
+const SwitchBlock: React.FC<SwitchBlockType> = ({
+  parameters,
+  onPress,
+  isPress,
+}) => {
   return (
     <View style={styles.PaymentParameters}>
       <Text style={styles.Parameters}>{parameters}</Text>
@@ -51,4 +56,5 @@ const styles = StyleSheet.create({
     fontFamily: FontFamily.robotoBold,
   },
 });
+
 export default SwitchBlock;
