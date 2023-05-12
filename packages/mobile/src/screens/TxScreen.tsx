@@ -143,6 +143,8 @@ const TxScreen: React.FC<Props> = memo(({route}) => {
             style={styles.linearGradient}
             colors={['#7f0dd9', '#5951c0', '#7f0dd9']}>
             <TouchableHighlight
+              underlayColor={'#5951c0'}
+              activeOpacity={0.5}
               style={styles.buttonSend}
               onPress={handleSendPress}>
               <Text style={styles.buttonText}>Send Tips</Text>
@@ -210,6 +212,8 @@ const TxScreen: React.FC<Props> = memo(({route}) => {
             style={styles.linearGradient}
             colors={['#0dd977', '#1da4ac', '#14c48c']}>
             <TouchableHighlight
+              underlayColor={'#1da4ac'}
+              activeOpacity={0.5}
               style={styles.buttonSend}
               onPress={handleSendPress}>
               <Text style={styles.buttonText}>Pay invoice in full</Text>
@@ -413,6 +417,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'center',
+    borderRadius: 50,
   },
   // ToDo: code duplicated in TxModal.tsx
   buttonText: {

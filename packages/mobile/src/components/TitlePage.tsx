@@ -3,10 +3,11 @@ import {View, StyleSheet, Text} from 'react-native';
 import {Color, FontFamily, FontSize} from '../GlobalStyles';
 export type TitleType = {
   label: string;
+  isCenter?: boolean;
 };
-const Title = ({label}: TitleType) => {
+const Title = ({label, isCenter}: TitleType) => {
   return (
-    <View style={styles.TextWrapper}>
+    <View style={isCenter ? styles.TextWrapperCenter : styles.TextWrapper}>
       <Text style={styles.TitleText}>{label}</Text>
     </View>
   );
@@ -19,10 +20,18 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     width: '100%',
     height: 60,
-    paddingLeft: 20,
+    paddingLeft: 0,
     // marginBottom: 'auto',
   },
-
+  TextWrapperCenter: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    height: 60,
+    paddingLeft: 0,
+  },
   TitleText: {
     fontFamily: FontFamily.robotoBold,
     color: '#222222',

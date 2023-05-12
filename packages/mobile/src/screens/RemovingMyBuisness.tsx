@@ -68,7 +68,10 @@ const RemovingMyBusiness: React.FC = memo(() => {
 
   return (
     <>
-      <Title label="Removing my business" />
+      <View style={styles.wrapperTitle}>
+        <Title label="Removing my business" />
+      </View>
+
       <View style={styles.InfoScreenWrapper}>
         <View style={styles.PayInfo}>
           <PaymentParameters
@@ -87,6 +90,8 @@ const RemovingMyBusiness: React.FC = memo(() => {
           style={styles.linearGradient}
           colors={['#0dd977', '#1da4ac', '#14c48c']}>
           <TouchableHighlight
+            underlayColor={'#1da4ac'}
+            activeOpacity={0.5}
             style={styles.buttonSend}
             onPress={handleSendPress}>
             <Text style={styles.buttonText}>It's me. Remove the business!</Text>
@@ -159,6 +164,11 @@ const styles = StyleSheet.create({
     height: '100%',
     padding: 10,
   },
+  wrapperTitle: {
+    display: 'flex',
+    width: '100%',
+    paddingLeft: 20,
+  },
   linearGradient: {
     display: 'flex',
     borderRadius: 50,
@@ -180,6 +190,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'center',
+    borderRadius: 50,
   },
   PayInfo: {
     display: 'flex',

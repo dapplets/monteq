@@ -6,7 +6,14 @@ import {type RootStackParamList} from '../App';
 import ButtonNavigationDefault from './ButtonNavigationDefault';
 import {parseReceipt} from '../common/parseReceipt';
 import {useCamera} from '../contexts/CameraContext';
-
+import SvgComponentUserActive from '../components/SVGUserActive';
+import SvgComponentUserDefault from '../components/SVGUserDefault';
+import SvgComponentExitActive from '../components/SVGExitActive';
+import SvgComponentExitDefault from '../components/SVGExitDefault';
+import SvgComponentHomeActive from '../components/SVGHomeActive';
+import SvgComponentHomeDefault from '../components/SVGHomeDefault';
+import SvgComponentHowActive from '../components/SVGHowActive';
+import SvgComponentHowDefault from '../components/SVGHowDefault';
 export type NavigationType = {
   path: string;
 };
@@ -56,23 +63,28 @@ const Navigation = ({path}: NavigationType) => {
     <View style={styles.NavigationWrapper}>
       <ButtonNavigationDefault
         onPress={navigationMyBusiness}
-        image={
-          path === 'home'
-            ? require('../assets/homeGreen.png')
-            : require('../assets/busness.png')
+        children={
+          path === 'home' ? (
+            <SvgComponentHomeActive />
+          ) : (
+            <SvgComponentHomeDefault />
+          )
         }
       />
       <ButtonNavigationDefault
         onPress={navigationHowUse}
-        image={
-          path === 'help'
-            ? require('../assets/helpGreen.png')
-            : require('../assets/helpcircle.png')
+        children={
+          path === 'help' ? (
+            <SvgComponentHowActive />
+          ) : (
+            <SvgComponentHowDefault />
+          )
         }
       />
       <TouchableHighlight
         style={styles.scanButton}
-        underlayColor="#2261a5"
+        underlayColor={'transparent'}
+        activeOpacity={0.5}
         onPress={handleGmsScanPress}>
         <Image
           style={styles.scanButtonImg}
@@ -82,15 +94,17 @@ const Navigation = ({path}: NavigationType) => {
       </TouchableHighlight>
       <ButtonNavigationDefault
         onPress={navigationUserHistory}
-        image={
-          path === 'user'
-            ? require('../assets/userGreen.png')
-            : require('../assets/user.png')
+        children={
+          path === 'user' ? (
+            <SvgComponentUserActive />
+          ) : (
+            <SvgComponentUserDefault />
+          )
         }
       />
       <ButtonNavigationDefault
         onPress={handleDisconnectPress}
-        image={require('../assets/logout.png')}
+        children={<SvgComponentExitDefault />}
       />
     </View>
   );

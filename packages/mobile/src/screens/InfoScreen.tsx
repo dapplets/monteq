@@ -12,7 +12,6 @@ import {
 import {truncate} from '../common/helpers';
 import {useIsFocused} from '@react-navigation/native';
 import {FontFamily} from '../GlobalStyles';
-
 const InfoScreen = () => {
   const isFocused = useIsFocused();
   const {
@@ -57,7 +56,7 @@ const InfoScreen = () => {
               TipsSubtitleRight={BASE_CRYPTO_CURRENCY + ' tips'}
             />
 
-            <View style={styles.list}>
+            <ScrollView style={styles.list}>
               {outHistory.map((x, i) => {
                 return (
                   <HistoryPay
@@ -73,7 +72,7 @@ const InfoScreen = () => {
                   />
                 );
               })}
-            </View>
+            </ScrollView>
           </>
         ) : null}
       </ScrollView>
@@ -162,16 +161,17 @@ const styles = StyleSheet.create({
   list: {
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'flex-start',
+    // justifyContent: 'flex-start',
     width: '100%',
     height: '100%',
     paddingLeft: 10,
     paddingRight: 10,
-    marginBottom: 'auto',
+    // marginBottom: 'auto',
     borderRadius: 4,
     borderStyle: 'solid',
     borderWidth: 1,
     borderColor: '#E3E3E3',
+    paddingBottom: 10,
     // marginLeft: 10,
     // marginRight: 40,
   },

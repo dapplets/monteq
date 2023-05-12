@@ -1,6 +1,7 @@
 import {Image, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import {FontFamily} from '../GlobalStyles';
+import SvgComponentPay from './SVGPay';
 
 export type HistoryPayType = {
   time: string;
@@ -20,11 +21,12 @@ const formatedDate = (_time: string) => {
 const HistoryPay = ({time, company, amount}: HistoryPayType) => {
   return (
     <View style={styles.HistoryWrapper}>
-      <Image
+      {/* <Image
         resizeMode="cover"
         source={require('../assets/history.png')}
         style={styles.ImgHistory}
-      />
+      /> */}
+      <SvgComponentPay style={styles.ImgHistory} />
       <View style={styles.HistoryPayBlock}>
         <Text style={styles.HistoryAmount}>{amount}</Text>
         <Text style={styles.company}>{company}</Text>

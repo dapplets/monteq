@@ -170,12 +170,14 @@ const MyBusiness = () => {
                 style={styles.linearGradient}
                 colors={['#0dd977', '#1da4ac', '#14c48c']}>
                 <TouchableHighlight
+                  underlayColor={'#1da4ac'}
+                  activeOpacity={0.5}
                   style={styles.buttonSend}
                   onPress={handleGmsScanPressBusinessRemoving}>
                   <Text style={styles.buttonText}>Remove my business</Text>
                 </TouchableHighlight>
               </LinearGradient>
-              <View style={styles.list}>
+              <ScrollView style={styles.list}>
                 {inHistory.map((x, i) => {
                   return (
                     <HistoryPay
@@ -191,7 +193,7 @@ const MyBusiness = () => {
                     />
                   );
                 })}
-              </View>
+              </ScrollView>
             </ScrollView>
           )}
           <Navigation path="home" />
@@ -221,6 +223,8 @@ const MyBusiness = () => {
               style={styles.linearGradient}
               colors={['#0dd977', '#1da4ac', '#14c48c']}>
               <TouchableHighlight
+                underlayColor={'#1da4ac'}
+                activeOpacity={0.5}
                 style={styles.buttonSend}
                 onPress={handleGmsScanPressBusiness}>
                 <Text style={styles.buttonText}>Connect my business</Text>
@@ -257,17 +261,18 @@ const styles = StyleSheet.create({
   list: {
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'flex-start',
+    // justifyContent: 'flex-start',
     width: '100%',
     height: '100%',
     paddingLeft: 10,
     paddingRight: 10,
-    marginBottom: 'auto',
+    marginBottom: 20,
     borderRadius: 4,
     borderStyle: 'solid',
     borderWidth: 1,
     borderColor: '#E3E3E3',
     marginTop: 10,
+    paddingBottom: 10,
   },
   wrapperBorder: {},
   clockIcon: {},
@@ -294,6 +299,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'center',
+    borderRadius: 50,
   },
   BusinessImg: {
     width: 174,
