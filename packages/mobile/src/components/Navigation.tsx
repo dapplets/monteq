@@ -6,14 +6,14 @@ import {type RootStackParamList} from '../App';
 import ButtonNavigationDefault from './ButtonNavigationDefault';
 import {parseReceipt} from '../common/parseReceipt';
 import {useCamera} from '../contexts/CameraContext';
-import SvgComponentUserActive from '../components/SVGUserActive';
-import SvgComponentUserDefault from '../components/SVGUserDefault';
-import SvgComponentExitActive from '../components/SVGExitActive';
-import SvgComponentExitDefault from '../components/SVGExitDefault';
-import SvgComponentHomeActive from '../components/SVGHomeActive';
-import SvgComponentHomeDefault from '../components/SVGHomeDefault';
-import SvgComponentHowActive from '../components/SVGHowActive';
-import SvgComponentHowDefault from '../components/SVGHowDefault';
+import SvgComponentUserActive from '../icons/SVGUserActive';
+import SvgComponentUserDefault from '../icons/SVGUserDefault';
+import SvgComponentExitDefault from '../icons/SVGExitDefault';
+import SvgComponentHomeActive from '../icons/SVGHomeActive';
+import SvgComponentHomeDefault from '../icons/SVGHomeDefault';
+import SvgComponentHowActive from '../icons/SVGHowActive';
+import SvgComponentHowDefault from '../icons/SVGHowDefault';
+
 export type NavigationType = {
   path: string;
 };

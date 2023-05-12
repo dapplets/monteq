@@ -7,10 +7,12 @@ import {
 } from 'react-native';
 import React from 'react';
 import {FontFamily} from '../GlobalStyles';
+
 export type TimeLabelType = {
   time: string;
   isActive: boolean;
 };
+
 const TimeLabel = ({time, isActive}: TimeLabelType) => {
   return (
     <>
@@ -77,4 +79,5 @@ const styles = StyleSheet.create({
     fontFamily: FontFamily.robotoBold,
   },
 });
+
 export default TimeLabel;

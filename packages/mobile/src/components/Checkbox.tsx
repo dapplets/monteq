@@ -1,9 +1,11 @@
 import {StyleSheet, Image, View, Pressable} from 'react-native';
 import React from 'react';
+
 export type CheckboxType = {
   onPress: any;
   isChecked: boolean;
 };
+
 const Checkbox = ({onPress, isChecked}: CheckboxType) => {
   return (
     <View style={styles.container}>
@@ -51,4 +53,5 @@ const styles = StyleSheet.create({
     borderRadius: 2,
   },
 });
+
 export default Checkbox;

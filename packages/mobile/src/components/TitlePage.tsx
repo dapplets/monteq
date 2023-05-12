@@ -1,10 +1,12 @@
 import * as React from 'react';
 import {View, StyleSheet, Text} from 'react-native';
-import {Color, FontFamily, FontSize} from '../GlobalStyles';
+import {FontFamily, FontSize} from '../GlobalStyles';
+
 export type TitleType = {
   label: string;
   isCenter?: boolean;
 };
+
 const Title = ({label, isCenter}: TitleType) => {
   return (
     <View style={isCenter ? styles.TextWrapperCenter : styles.TextWrapper}>
@@ -12,6 +14,7 @@ const Title = ({label, isCenter}: TitleType) => {
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   TextWrapper: {
     display: 'flex',
@@ -40,4 +43,5 @@ const styles = StyleSheet.create({
     lineHeight: 28,
   },
 });
+
 export default Title;

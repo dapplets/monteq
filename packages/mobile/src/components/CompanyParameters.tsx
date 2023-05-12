@@ -1,12 +1,14 @@
 import {StyleSheet, Text, TextInput, View} from 'react-native';
 import React from 'react';
 import {FontFamily} from '../GlobalStyles';
+
 export type CompanyParametersType = {
   parameters: string;
   value: string;
   isGray?: boolean;
   onChangeValue: any;
 };
+
 const CompanyParameters = ({
   parameters,
   value,

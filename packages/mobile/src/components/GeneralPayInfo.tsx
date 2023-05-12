@@ -10,6 +10,7 @@ export type GeneralPayInfoType = {
   TipsAmount?: string | number;
   TipsSubtitleRight?: string;
 };
+
 const GeneralPayInfo = ({
   generalPayAmount,
   title,
@@ -73,7 +74,6 @@ const styles = StyleSheet.create({
     marginTop: 5,
     marginBottom: 5,
   },
-
   GeneralPayAmount: {
     fontWeight: '700',
     fontSize: 28,
@@ -113,4 +113,5 @@ const styles = StyleSheet.create({
     fontFamily: FontFamily.robotoBold,
   },
 });
+
 export default GeneralPayInfo;

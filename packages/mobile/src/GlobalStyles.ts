@@ -5,6 +5,7 @@ export const FontFamily = {
   robotoRegular: 'roboto_regular',
   robotoThin: 'roboto_thin',
 };
+
 /* font sizes */
 export const FontSize = {
   semibold_size: 14,
@@ -17,6 +18,7 @@ export const FontSize = {
   size_13xl: 32,
   size_base: 16,
 };
+
 /* Colors */
 export const Color = {
   whitesmoke: '#f6f7f8',
@@ -34,6 +36,7 @@ export const Color = {
   mediumseagreen: '#14c58b',
   lightgray: '#cecece',
 };
+
 /* Paddings */
 export const Padding = {
   p_3xs: 10,
@@ -43,6 +46,7 @@ export const Padding = {
   p_11xl: 30,
   p_9xs: 4,
 };
+
 /* border radiuses */
 export const Border = {
   br_9xs: 4,

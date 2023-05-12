@@ -7,7 +7,6 @@ import {
   Pressable,
   ImageSourcePropType,
 } from 'react-native';
-
 import {FontFamily} from '../GlobalStyles';
 import {useState} from 'react';
 
@@ -100,4 +99,5 @@ const styles = StyleSheet.create({
     height: 260,
   },
 });
+
 export default InfoUseItem;
