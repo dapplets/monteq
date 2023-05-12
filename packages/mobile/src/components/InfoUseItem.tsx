@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import {FontFamily} from '../GlobalStyles';
 import {useState} from 'react';
+import SvgComponentHowBgMain from '../icons/SVGHowBgMain';
 
 export type InfoUseItemType = {
   title: string;
@@ -25,6 +26,7 @@ const InfoUseItem = ({title, description, img}: InfoUseItemType) => {
     <View style={styles.item}>
       <Pressable onPress={openFAQ} style={styles.itemTitle}>
         <Text style={styles.title}>{title}</Text>
+
         <Image
           resizeMode="contain"
           style={styles.arrow}
@@ -37,12 +39,12 @@ const InfoUseItem = ({title, description, img}: InfoUseItemType) => {
       </Pressable>
       {isOpen ? (
         <View style={styles.descriptonBlock}>
-          <Text style={styles.descripton}>{description}</Text>
           <Image
             resizeMode="contain"
             style={styles.descriptonImg}
             source={img}
           />
+          <Text style={styles.descripton}>{description}</Text>
         </View>
       ) : null}
     </View>
@@ -87,16 +89,17 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   descripton: {
-    marginBottom: 20,
     width: '100%',
     fontFamily: FontFamily.robotoRegular,
     fontSize: 14,
     lineHeight: 16,
     color: '#222222',
+    marginBottom: 10,
   },
   descriptonImg: {
     width: 260,
-    height: 260,
+    height: 100,
+    marginBottom: 20,
   },
 });
 
