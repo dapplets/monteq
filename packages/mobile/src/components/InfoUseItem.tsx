@@ -9,22 +9,25 @@ import {
 } from 'react-native';
 import {FontFamily} from '../GlobalStyles';
 import {useState} from 'react';
+import SvgComponentHowBgMain from '../icons/SVGHowBgMain';
 
 export type InfoUseItemType = {
   title: string;
   description: string;
   img: ImageSourcePropType;
+  isLast?: boolean;
 };
 
-const InfoUseItem = ({title, description, img}: InfoUseItemType) => {
+const InfoUseItem = ({title, description, img, isLast}: InfoUseItemType) => {
   const [isOpen, setOpen] = useState(false);
   const openFAQ = () => {
     setOpen(!isOpen);
   };
   return (
-    <View style={styles.item}>
+    <View style={isLast ? styles.itemLast : styles.item}>
       <Pressable onPress={openFAQ} style={styles.itemTitle}>
         <Text style={styles.title}>{title}</Text>
+
         <Image
           resizeMode="contain"
           style={styles.arrow}
@@ -37,12 +40,12 @@ const InfoUseItem = ({title, description, img}: InfoUseItemType) => {
       </Pressable>
       {isOpen ? (
         <View style={styles.descriptonBlock}>
-          <Text style={styles.descripton}>{description}</Text>
           <Image
             resizeMode="contain"
             style={styles.descriptonImg}
             source={img}
           />
+          <Text style={styles.descripton}>{description}</Text>
         </View>
       ) : null}
     </View>
@@ -59,6 +62,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     padding: 10,
     marginTop: 10,
+  },
+  itemLast: {
+    display: 'flex',
+    flexDirection: 'column',
+    width: '100%',
+    // height: 'auto',
+    marginTop: 10,
+    borderRadius: 20,
+    backgroundColor: '#fff',
+    padding: 10,
+    marginBottom: 30,
   },
   itemTitle: {
     display: 'flex',
@@ -78,6 +92,7 @@ const styles = StyleSheet.create({
   arrow: {
     width: 12,
     height: 6,
+    marginRight: 4,
   },
   descriptonBlock: {
     display: 'flex',
@@ -87,16 +102,17 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   descripton: {
-    marginBottom: 20,
     width: '100%',
     fontFamily: FontFamily.robotoRegular,
     fontSize: 14,
     lineHeight: 16,
     color: '#222222',
+    marginBottom: 10,
   },
   descriptonImg: {
     width: 260,
-    height: 260,
+    height: 100,
+    marginBottom: 20,
   },
 });
 

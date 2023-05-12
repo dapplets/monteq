@@ -58,8 +58,8 @@ const AddingMyBusiness: React.FC<Props> = memo(({route}) => {
 
   return (
     <>
-      <Title label="Adding my business" />
       <View style={styles.InfoScreenWrapper}>
+        <Title label="Adding my business" />
         <View style={styles.PayInfo}>
           <CompanyParameters
             parameters={'Company'}
@@ -144,7 +144,7 @@ const AddingMyBusiness: React.FC<Props> = memo(({route}) => {
         <TxModal
           isVisible={modalVisible}
           title="Transaction rejected"
-          description="ToDo: write description here !!!!!"
+          description="You have rejected the transaction in the wallet"
           image={require('../assets/errorOccured.png')}
           onRequestClose={() => setModalVisible(!modalVisible)}
           primaryButton="Retry"
@@ -191,10 +191,12 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     width: '100%',
-    padding: 10,
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingTop: 10,
     backgroundColor: '#F6F7F8',
     borderRadius: 10,
-    marginTop: 10,
+    marginBottom: 10,
   },
 });
 

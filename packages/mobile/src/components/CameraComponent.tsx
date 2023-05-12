@@ -69,19 +69,11 @@ const CameraComponent: FC<Props> = ({onQrCodeFound, onCanceled, onError}) => {
   }, [onQrCodeFound, result]);
 
   if (!hasPermission) {
-    return (
-      <View>
-        <Text>ToDo: No permission !!!!!</Text>
-      </View>
-    );
+    return null;
   }
 
   if (device == null) {
-    return (
-      <View>
-        <Text>ToDo: No camera device found !!!!!</Text>
-      </View>
-    );
+    return null;
   }
 
   // ToDo: add close scanning button !!!!!

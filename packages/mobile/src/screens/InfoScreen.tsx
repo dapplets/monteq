@@ -1,5 +1,12 @@
 import * as React from 'react';
-import {ScrollView, StyleSheet, Text} from 'react-native';
+import {
+  FlatList,
+  View,
+  StyleSheet,
+  Text,
+  ActivityIndicator,
+  Image,
+} from 'react-native';
 import Navigation from '../components/Navigation';
 import Title from '../components/TitlePage';
 import {useMonteqContract} from '../contexts/MonteqContractContext';
@@ -29,19 +36,37 @@ const InfoScreen = () => {
     }
   }, [isFocused, loadMoreOutHistory]);
 
+  if (isOutHistoryLoading && outHistory.length === 0) {
+    return (
+      <>
+        <View style={styles.CenterContentWrapper}>
+          <ActivityIndicator size="large" color="#919191" />
+        </View>
+        <Navigation path="user" />
+      </>
+    );
+  }
+
   return (
     <>
-      <ScrollView style={styles.InfoScreenWrapper}>
-        <Title label="Payment history" />
-
-        {isOutHistoryLoading ? <Text>ToDo: loading !!!!!</Text> : null}
-
+      <View style={styles.InfoScreenWrapper}>
         {!isOutHistoryLoading && outHistory.length === 0 ? (
-          <Text>ToDo: show picture for empty history !!!!!</Text>
+          <View style={styles.CenterContentWrapper}>
+            <Image
+              resizeMode="contain"
+              style={styles.BusinessImg}
+              source={require('../assets/Lines.png')}
+            />
+            <Text style={styles.DescriptionText}>
+              No history of outgoing transactions associated to your wallet
+              right now.
+            </Text>
+          </View>
         ) : null}
 
         {outHistory.length > 0 ? (
           <>
+            <Title label="Payment history" />
             <GeneralPayInfo
               generalPayAmount={truncate(
                 spentTotalCryptoAmount,
@@ -57,26 +82,30 @@ const InfoScreen = () => {
               TipsSubtitleRight={BASE_CRYPTO_CURRENCY + ' tips'}
             />
 
-            <ScrollView style={styles.list}>
-              {outHistory.map((x, i) => {
-                return (
-                  <HistoryPay
-                    key={i}
-                    time={new Date(x.timestamp * 1000).toISOString()}
-                    company={x.businessId}
-                    amount={
-                      '-' +
-                      truncate(x.totalCryptoAmount, BASE_CRYPTO_MAX_DIGITS) +
-                      ' ' +
-                      BASE_CRYPTO_CURRENCY
-                    }
-                  />
-                );
-              })}
-            </ScrollView>
+            <FlatList
+              style={styles.list}
+              refreshing={isOutHistoryLoading}
+              onRefresh={loadMoreOutHistory}
+              progressViewOffset={-90}
+              data={outHistory}
+              keyExtractor={item => item.id}
+              renderItem={({item}) => (
+                <HistoryPay
+                  time={new Date(item.timestamp * 1000).toISOString()}
+                  company={item.businessId}
+                  amount={
+                    '-' +
+                    truncate(item.totalCryptoAmount, BASE_CRYPTO_MAX_DIGITS) +
+                    ' ' +
+                    BASE_CRYPTO_CURRENCY
+                  }
+                />
+              )}
+              ListFooterComponent={<View style={{height: 30}} />}
+            />
           </>
         ) : null}
-      </ScrollView>
+      </View>
       <Navigation path="user" />
     </>
   );
@@ -87,9 +116,16 @@ const styles = StyleSheet.create({
     display: 'flex',
     width: '100%',
     height: '100%',
-    paddingLeft: 20,
-    paddingRight: 20,
+    padding: 10,
     marginBottom: 60,
+  },
+  CenterContentWrapper: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 100,
   },
   GeneralPay: {
     display: 'flex',
@@ -120,7 +156,6 @@ const styles = StyleSheet.create({
     marginTop: 7,
     marginBottom: 7,
   },
-
   GeneralPayAmount: {
     fontWeight: '700',
     fontSize: 28,
@@ -172,14 +207,28 @@ const styles = StyleSheet.create({
     borderStyle: 'solid',
     borderWidth: 1,
     borderColor: '#E3E3E3',
-    paddingBottom: 10,
+    marginBottom: 70,
     // marginLeft: 10,
     // marginRight: 40,
   },
-  wrapperBorder: {},
-  clockIcon: {},
-  iconLayout: {},
-  logOutWrapper: {},
+  BusinessImg: {
+    width: 174,
+    height: 158,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    marginTop: 10,
+    marginBottom: 20,
+  },
+  DescriptionText: {
+    fontSize: 12,
+    lineHeight: 14,
+    color: '#919191',
+    textAlign: 'center',
+    paddingLeft: 20,
+    paddingRight: 20,
+    marginBottom: 20,
+    fontFamily: FontFamily.robotoRegular,
+  },
 });
 
 export default InfoScreen;

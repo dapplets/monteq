@@ -14,6 +14,7 @@ import SvgComponentHomeDefault from '../icons/SVGHomeDefault';
 import SvgComponentHowActive from '../icons/SVGHowActive';
 import SvgComponentHowDefault from '../icons/SVGHowDefault';
 import {useMonteqContract} from '../contexts/MonteqContractContext';
+import SvgComponentScan from '../icons/SVGScanBtn';
 export type NavigationType = {
   path: string;
 };
@@ -90,10 +91,10 @@ const Navigation = ({path}: NavigationType) => {
         underlayColor={'transparent'}
         activeOpacity={0.5}
         onPress={handleGmsScanPress}>
-        <Image
+        <SvgComponentScan
           style={styles.scanButtonImg}
-          resizeMode="contain"
-          source={require('../assets/scan.png')}
+          // resizeMode="contain"
+          // source={require('../assets/scan.png')}
         />
       </TouchableHighlight>
       <ButtonNavigationDefault
@@ -156,9 +157,12 @@ const styles = StyleSheet.create({
   scanButtonImg: {
     // marginTop: 20,
     // marginBottom: 'auto',
-    marginTop: '10%',
-    width: 70,
-    height: 70,
+    marginTop: '5%',
+    // width: 70,
+    // height: 70,
+    // marginLeft: 'auto',
+    // marginRight: 'auto',
+    alignSelf: 'center',
   },
   clockIcon: {},
   iconLayout: {},

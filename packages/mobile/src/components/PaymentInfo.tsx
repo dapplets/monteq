@@ -61,12 +61,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     // alignItems: 'flex-end',
     justifyContent: 'center',
-    borderRadius: 4,
-    borderStyle: 'solid',
-    borderWidth: 1,
-    borderColor: '#F5F6F7',
     // padding: 10,
-    paddingTop: 10,
     marginBottom: 5,
   },
   priceTitle: {
@@ -99,7 +94,6 @@ const styles = StyleSheet.create({
     // lineHeight: 14,
     color: '#14C58B',
     textTransform: 'uppercase',
-    marginRight: 5,
     fontFamily: FontFamily.robotoRegular,
   },
   convertCurrensy: {

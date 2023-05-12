@@ -12,6 +12,7 @@ export enum TxStatus {
 export type ParsedUint = string;
 
 export type HistoryRecord = {
+  id: string;
   businessId: string;
   payer: string;
   currencyReceipt: ParsedUint;

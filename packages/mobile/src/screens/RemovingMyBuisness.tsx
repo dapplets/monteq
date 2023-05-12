@@ -68,11 +68,11 @@ const RemovingMyBusiness: React.FC = memo(() => {
 
   return (
     <>
-      <View style={styles.wrapperTitle}>
-        <Title label="Removing my business" />
-      </View>
-
       <View style={styles.InfoScreenWrapper}>
+        <View style={styles.wrapperTitle}>
+          <Title label="Removing my business" />
+        </View>
+
         <View style={styles.PayInfo}>
           <PaymentParameters
             parameters={'Business unit'}
@@ -84,19 +84,13 @@ const RemovingMyBusiness: React.FC = memo(() => {
           />
         </View>
 
-        <LinearGradient
-          start={{x: 0, y: 0}}
-          end={{x: 1, y: 0}}
-          style={styles.linearGradient}
-          colors={['#0dd977', '#1da4ac', '#14c48c']}>
-          <TouchableHighlight
-            underlayColor={'#1da4ac'}
-            activeOpacity={0.5}
-            style={styles.buttonSend}
-            onPress={handleSendPress}>
-            <Text style={styles.buttonText}>It's me. Remove the business!</Text>
-          </TouchableHighlight>
-        </LinearGradient>
+        <TouchableHighlight
+          underlayColor={'#ca3131'}
+          activeOpacity={0.5}
+          style={styles.buttonRemove}
+          onPress={handleSendPress}>
+          <Text style={styles.buttonRemoveText}>Remove my business</Text>
+        </TouchableHighlight>
       </View>
 
       {!modalVisible ? <Navigation path="home" /> : null}
@@ -147,7 +141,7 @@ const RemovingMyBusiness: React.FC = memo(() => {
         <TxModal
           isVisible={modalVisible}
           title="Transaction rejected"
-          description="ToDo: write description here !!!!!"
+          description="You have rejected the transaction in the wallet"
           image={require('../assets/errorOccured.png')}
           onRequestClose={() => setModalVisible(!modalVisible)}
           primaryButton="Retry"
@@ -170,23 +164,14 @@ const styles = StyleSheet.create({
   wrapperTitle: {
     display: 'flex',
     width: '100%',
-    paddingLeft: 20,
   },
   linearGradient: {
     display: 'flex',
     borderRadius: 50,
     width: '100%',
   },
-  buttonText: {
-    fontSize: 14,
-    fontWeight: '700',
-    lineHeight: 16,
-    // textAlign: 'center',
-    color: '#ffffff',
-    fontFamily: FontFamily.robotoBold,
-  },
-  buttonSend: {
-    backgroundColor: 'transparent',
+  buttonRemove: {
+    backgroundColor: '#FF3E3E',
     width: '100%',
     height: 48,
     display: 'flex',
@@ -195,6 +180,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 50,
   },
+  buttonRemoveText: {
+    fontSize: 14,
+    fontWeight: '700',
+    lineHeight: 16,
+    textDecorationLine: 'underline',
+    textDecorationColor: '#fff',
+    textDecorationStyle: 'solid',
+    color: '#fff',
+    fontFamily: FontFamily.robotoBold,
+  },
   PayInfo: {
     display: 'flex',
     flexDirection: 'column',
@@ -202,7 +197,7 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: '#F6F7F8',
     borderRadius: 10,
-    marginTop: 10,
+    marginBottom: 10,
   },
 });
 

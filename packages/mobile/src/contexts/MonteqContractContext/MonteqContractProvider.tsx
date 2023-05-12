@@ -172,7 +172,8 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
       // ToDo: pagination
 
       setOutHistory(
-        data.history.map((x: any) => ({
+        data.history.map((x: any, index: number) => ({
+          id: index, // ToDo: use better id
           businessId: x.businessId,
           payer: x.payer,
           currencyReceipt: formatUnits(x.currencyReceipt, 2),
@@ -279,7 +280,8 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
       );
 
       setInHistory(
-        data.history.map((x: any) => ({
+        data.history.map((x: any, index: number) => ({
+          id: index, // ToDo: use better id
           businessId: x.businessId,
           payer: x.payer,
           currencyReceipt: formatUnits(x.currencyReceipt, 2),
