@@ -23,7 +23,7 @@ const Navigation = ({path}: NavigationType) => {
   const {scan} = useCamera();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
-  const {getBusinessInfoById} = useMonteqContract();
+  const {getBusinessInfoById, updateUserBalance} = useMonteqContract();
 
   function handleDisconnectPress() {
     provider?.disconnect();
@@ -50,6 +50,7 @@ const Navigation = ({path}: NavigationType) => {
       const url = await scan();
       const parsedReceipt = parseReceipt(url);
       const businessInfo = await getBusinessInfoById(parsedReceipt.businessId);
+      await updateUserBalance();
       navigation.navigate('TxScreen', {parsedReceipt, businessInfo});
     } catch (e) {
       console.error(e);

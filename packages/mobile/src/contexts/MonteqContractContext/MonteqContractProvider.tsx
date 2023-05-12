@@ -129,26 +129,33 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
     }
   }, [writeEip1193]);
 
+  const updateUserBalance = useCallback(async () => {
+    if (contract) {
+      try {
+        const _balance = await contract.signer.getBalance();
+        setBalance(formatEther(_balance));
+      } catch (e) {
+        console.error(e);
+        setBalance(contextDefaultValues.balance);
+      }
+    } else {
+      setBalance(contextDefaultValues.balance);
+    }
+  }, [contract]);
+
+  // GET BALANCE
   useEffect(() => {
     (async () => {
       setIsBalanceLoading(true);
-
-      if (contract) {
-        try {
-          // ToDo: refresh balance !!!!!
-          const _balance = await contract.signer.getBalance();
-          setBalance(formatEther(_balance));
-        } catch (e) {
-          console.error(e);
-          setBalance(contextDefaultValues.balance);
-        }
-      } else {
-        setBalance(contextDefaultValues.balance);
-      }
-
+      await updateUserBalance();
       setIsBalanceLoading(false);
     })();
-  }, [contract]);
+  }, [updateUserBalance]);
+
+  // REFRESH BALANCE
+  useEffect(() => {
+    (async () => updateUserBalance())();
+  }, [updateUserBalance, paymentTxStatus]);
 
   const loadMoreOutHistory = useCallback(async () => {
     if (!contract) {
@@ -411,6 +418,7 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
   const state: MonteqContractContextState = {
     balance,
     isBalanceLoading,
+    updateUserBalance,
     rate,
     isRateLoading,
     spentTotalCryptoAmount,

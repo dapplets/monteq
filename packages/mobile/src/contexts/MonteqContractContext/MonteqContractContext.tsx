@@ -31,6 +31,7 @@ export type MonteqContractContextState = {
   // common data
   balance: ParsedUint;
   isBalanceLoading: boolean;
+  updateUserBalance: () => Promise<void>;
 
   rate: ParsedUint;
   isRateLoading: boolean;
@@ -85,6 +86,7 @@ export const defaultBusinessInfo: BusinessInfo = {
 export const contextDefaultValues: MonteqContractContextState = {
   balance: '0',
   isBalanceLoading: false,
+  updateUserBalance: () => Promise.resolve(undefined),
 
   rate: '0',
   isRateLoading: false,
