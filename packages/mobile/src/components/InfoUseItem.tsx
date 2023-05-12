@@ -15,15 +15,16 @@ export type InfoUseItemType = {
   title: string;
   description: string;
   img: ImageSourcePropType;
+  isLast?: boolean;
 };
 
-const InfoUseItem = ({title, description, img}: InfoUseItemType) => {
+const InfoUseItem = ({title, description, img, isLast}: InfoUseItemType) => {
   const [isOpen, setOpen] = useState(false);
   const openFAQ = () => {
     setOpen(!isOpen);
   };
   return (
-    <View style={styles.item}>
+    <View style={isLast ? styles.itemLast : styles.item}>
       <Pressable onPress={openFAQ} style={styles.itemTitle}>
         <Text style={styles.title}>{title}</Text>
 
@@ -61,6 +62,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     padding: 10,
     marginTop: 10,
+  },
+  itemLast: {
+    display: 'flex',
+    flexDirection: 'column',
+    width: '100%',
+    // height: 'auto',
+    borderRadius: 20,
+    backgroundColor: '#fff',
+    padding: 10,
+    marginBottom: 30,
   },
   itemTitle: {
     display: 'flex',

@@ -134,7 +134,14 @@ const MyBusiness = () => {
           {inHistory.length === 0 ? (
             <View style={styles.InfoScreenWrapper}>
               <Title label="Owner’s View" />
-              <Text>ToDo: add empty history picture !!!!!</Text>
+              <Image
+                resizeMode="contain"
+                style={styles.BusinessImg}
+                source={require('../assets/Lines.png')}
+              />
+              <Text style={styles.DescriptionText}>
+                No history is associated with this wallet right now.
+              </Text>
             </View>
           ) : (
             <View style={styles.InfoScreenWrapper}>

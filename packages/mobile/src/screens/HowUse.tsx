@@ -1,5 +1,11 @@
 import * as React from 'react';
-import {Text, StyleSheet, ScrollView, TouchableHighlight} from 'react-native';
+import {
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableHighlight,
+  View,
+} from 'react-native';
 import Navigation from '../components/Navigation';
 import Title from '../components/TitlePage';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
@@ -59,6 +65,7 @@ const HowUse = ({}: HowUseProps) => {
           return (
             <InfoUseItem
               key={i}
+              isLast={i === info.length - 1}
               title={x.title}
               description={x.description}
               img={x.img}
@@ -82,13 +89,21 @@ const HowUse = ({}: HowUseProps) => {
 };
 
 const styles = StyleSheet.create({
+  wrapperBlock: {
+    height: '100%',
+    width: '100%',
+  },
+
   InfoScreenWrapper: {
     display: 'flex',
     width: '100%',
-    height: '100%',
+    height: '150%',
+    // minHeight: '100%',
+    maxHeight: '150%',
     padding: 10,
     overflow: 'scroll',
     marginBottom: 60,
+    flexGrow: 1,
   },
   mainBg: {
     marginLeft: 'auto',
