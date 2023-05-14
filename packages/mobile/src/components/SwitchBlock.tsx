@@ -5,7 +5,7 @@ import {FontFamily} from '../GlobalStyles';
 
 export type SwitchBlockType = {
   parameters: string;
-  onPress: any;
+  onPress: (x: boolean) => void;
   isPress: boolean;
 };
 

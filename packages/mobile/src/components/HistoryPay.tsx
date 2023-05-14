@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'stretch',
-    // padding: 10,
+
     borderRadius: 4,
     borderStyle: 'solid',
     borderWidth: 1,
@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
   HistoryPayBlock: {
     display: 'flex',
     flexDirection: 'column',
-    // justifyContent: 'space-between',
+
     height: '100%',
     marginTop: 'auto',
     marginBottom: 'auto',

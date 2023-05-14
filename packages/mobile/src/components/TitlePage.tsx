@@ -24,7 +24,6 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 60,
     paddingLeft: 0,
-    // marginBottom: 'auto',
   },
   TextWrapperCenter: {
     display: 'flex',

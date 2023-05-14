@@ -287,7 +287,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '700',
     lineHeight: 16,
-    // textAlign: 'center',
+
     color: '#ffffff',
     fontFamily: FontFamily.robotoBold,
   },
@@ -305,7 +305,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '700',
     lineHeight: 16,
-    // textAlign: 'center',
+
     color: '#222222',
     textDecorationLine: 'underline',
     fontFamily: FontFamily.robotoBold,

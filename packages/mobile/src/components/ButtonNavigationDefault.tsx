@@ -1,4 +1,4 @@
-import React, {memo} from 'react';
+import React, {ReactNode, memo} from 'react';
 import {
   StyleSheet,
   View,
@@ -9,7 +9,7 @@ import {
 type ButtonNavigationDefaultType = {
   image?: ImageSourcePropType;
   onPress?: () => void;
-  children: any;
+  children: ReactNode;
 };
 
 const ButtonNavigationDefault = memo(

@@ -9,7 +9,6 @@ import {
 } from 'react-native';
 import {FontFamily} from '../GlobalStyles';
 import {useState} from 'react';
-import SvgComponentHowBgMain from '../icons/SVGHowBgMain';
 
 export type InfoUseItemType = {
   title: string;
@@ -57,7 +56,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     width: '100%',
-    // height: 'auto',
+
     borderRadius: 20,
     backgroundColor: '#fff',
     padding: 10,
@@ -67,7 +66,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     width: '100%',
-    // height: 'auto',
+
     marginTop: 10,
     borderRadius: 20,
     backgroundColor: '#fff',
