@@ -68,6 +68,7 @@ const Navigation = ({path}: NavigationType) => {
     <View style={styles.NavigationWrapper}>
       <ButtonNavigationDefault
         onPress={navigationMyBusiness}
+        isActive={path === 'home' ? true : false}
         children={
           path === 'home' ? (
             <SvgComponentHomeActive />
@@ -78,6 +79,7 @@ const Navigation = ({path}: NavigationType) => {
       />
       <ButtonNavigationDefault
         onPress={navigationHowUse}
+        isActive={path === 'help' ? true : false}
         children={
           path === 'help' ? (
             <SvgComponentHowActive />
@@ -95,6 +97,7 @@ const Navigation = ({path}: NavigationType) => {
       </TouchableHighlight>
       <ButtonNavigationDefault
         onPress={navigationUserHistory}
+        isActive={path === 'user' ? true : false}
         children={
           path === 'user' ? (
             <SvgComponentUserActive />
