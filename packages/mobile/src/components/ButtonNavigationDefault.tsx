@@ -1,21 +1,17 @@
 import React, {ReactNode, memo} from 'react';
-import {
-  StyleSheet,
-  View,
-  TouchableHighlight,
-  ImageSourcePropType,
-} from 'react-native';
+import {StyleSheet, View, TouchableHighlight} from 'react-native';
 
 type ButtonNavigationDefaultType = {
-  image?: ImageSourcePropType;
+  isActive?: boolean;
   onPress?: () => void;
   children: ReactNode;
 };
 
 const ButtonNavigationDefault = memo(
-  ({onPress, children}: ButtonNavigationDefaultType) => {
+  ({onPress, children, isActive}: ButtonNavigationDefaultType) => {
     return (
-      <View style={styles.buttonWrapper}>
+      <View
+        style={isActive ? styles.buttonWrapperActive : styles.buttonWrapper}>
         <TouchableHighlight
           underlayColor={'#14C58B'}
           activeOpacity={0.5}
@@ -43,6 +39,21 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  buttonWrapperActive: {
+    borderRadius: 6,
+    borderColor: '#1da4ac',
+    flexDirection: 'row',
+    backgroundColor: '#FFF',
+    shadowColor: '#000',
+    borderWidth: 1,
+    borderStyle: 'solid',
+    width: 44,
+    height: 44,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
   clockIcon: {
     overflow: 'hidden',
   },
