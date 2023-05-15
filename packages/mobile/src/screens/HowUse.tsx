@@ -1,11 +1,5 @@
 import * as React from 'react';
-import {
-  Text,
-  StyleSheet,
-  ScrollView,
-  TouchableHighlight,
-  View,
-} from 'react-native';
+import {Text, StyleSheet, ScrollView, TouchableHighlight} from 'react-native';
 import Navigation from '../components/Navigation';
 import Title from '../components/TitlePage';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
@@ -98,7 +92,6 @@ const styles = StyleSheet.create({
     display: 'flex',
     width: '100%',
     height: '150%',
-    // minHeight: '100%',
     maxHeight: '150%',
     padding: 10,
     overflow: 'scroll',
@@ -132,7 +125,6 @@ const styles = StyleSheet.create({
     lineHeight: 16,
     color: '#fff',
   },
-  logOutWrapper: {},
 });
 
 export default HowUse;

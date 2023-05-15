@@ -2,7 +2,7 @@ import {StyleSheet, Image, View, Pressable} from 'react-native';
 import React from 'react';
 
 export type CheckboxType = {
-  onPress: any;
+  onPress: () => void;
   isChecked: boolean;
 };
 

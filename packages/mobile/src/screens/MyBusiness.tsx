@@ -292,7 +292,6 @@ const styles = StyleSheet.create({
   list: {
     display: 'flex',
     flexDirection: 'column',
-    // justifyContent: 'flex-start',
     width: '100%',
     height: '100%',
     paddingLeft: 10,
@@ -317,7 +316,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '700',
     lineHeight: 16,
-    // textAlign: 'center',
     color: '#ffffff',
     fontFamily: FontFamily.robotoBold,
   },

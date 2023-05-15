@@ -59,14 +59,14 @@ const styles = StyleSheet.create({
     width: '100%',
     display: 'flex',
     flexDirection: 'row',
-    // alignItems: 'flex-end',
+
     justifyContent: 'center',
-    // padding: 10,
+
     marginBottom: 5,
   },
   priceTitle: {
     fontSize: 32,
-    // lineHeight: 34,
+
     color: '#14C58B',
     fontWeight: '700',
     marginRight: 10,
@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
   },
   priceSubtitle: {
     fontSize: 10,
-    // lineHeight: 14,
+
     color: '#14C58B',
     fontWeight: '700',
     textTransform: 'uppercase',
@@ -86,19 +86,19 @@ const styles = StyleSheet.create({
     width: '100%',
     display: 'flex',
     flexDirection: 'row',
-    // alignItems: 'flex-end',
+
     justifyContent: 'center',
   },
   convertEUR: {
     fontSize: 10,
-    // lineHeight: 14,
+
     color: '#14C58B',
     textTransform: 'uppercase',
     fontFamily: FontFamily.robotoRegular,
   },
   convertCurrensy: {
     fontSize: 10,
-    // lineHeight: 14,
+
     color: '#14C58B',
     textTransform: 'uppercase',
     marginLeft: 5,

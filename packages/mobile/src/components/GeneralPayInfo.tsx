@@ -48,10 +48,9 @@ const styles = StyleSheet.create({
   GeneralPay: {
     display: 'flex',
     flexDirection: 'column',
-    // alignItems: 'center',
-    // justifyContent: 'space-between',
+
     width: '100%',
-    // height: 60,
+
     borderRadius: 4,
     borderStyle: 'solid',
     borderWidth: 1,

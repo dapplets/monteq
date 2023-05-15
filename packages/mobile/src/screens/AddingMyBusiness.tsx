@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '700',
     lineHeight: 16,
-    // textAlign: 'center',
+
     color: '#ffffff',
     fontFamily: FontFamily.robotoBold,
   },
