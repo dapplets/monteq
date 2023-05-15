@@ -211,7 +211,9 @@ const TxScreen: React.FC<Props> = memo(({route}) => {
               <Text style={styles.AvailableCurrency}>
                 {BASE_CRYPTO_CURRENCY}
               </Text>
+
               {/* <Image
+              // ToDo: implement hide balance
                 style={styles.AvailableImg}
                 source={require('../assets/eye.png')}
               /> */}

@@ -23,7 +23,7 @@ import {enableScreens} from 'react-native-screens';
 import {CameraProvider} from './contexts/CameraContext';
 import SplashScreen from 'react-native-splash-screen';
 import {useNetInfo} from '@react-native-community/netinfo';
-import {Text, View} from 'react-native';
+import {View} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {BusinessInfo} from './contexts/MonteqContractContext/MonteqContractContext';
 import TxModal from './components/TxModal';

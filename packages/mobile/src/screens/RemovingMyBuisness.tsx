@@ -3,7 +3,6 @@ import {Text, StyleSheet, View, TouchableHighlight} from 'react-native';
 import Navigation from '../components/Navigation';
 import Title from '../components/TitlePage';
 import {useMonteqContract} from '../contexts/MonteqContractContext';
-import LinearGradient from 'react-native-linear-gradient';
 import {
   NavigationProp,
   useIsFocused,

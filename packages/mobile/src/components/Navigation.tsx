@@ -1,7 +1,7 @@
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {useWeb3Modal} from '@web3modal/react-native';
 import * as React from 'react';
-import {View, Alert, StyleSheet, TouchableHighlight, Image} from 'react-native';
+import {View, Alert, StyleSheet, TouchableHighlight} from 'react-native';
 import {type RootStackParamList} from '../App';
 import ButtonNavigationDefault from './ButtonNavigationDefault';
 import {parseReceipt} from '../common/parseReceipt';
@@ -91,11 +91,7 @@ const Navigation = ({path}: NavigationType) => {
         underlayColor={'transparent'}
         activeOpacity={0.5}
         onPress={handleGmsScanPress}>
-        <SvgComponentScan
-          style={styles.scanButtonImg}
-          // resizeMode="contain"
-          // source={require('../assets/scan.png')}
-        />
+        <SvgComponentScan style={styles.scanButtonImg} />
       </TouchableHighlight>
       <ButtonNavigationDefault
         onPress={navigationUserHistory}
@@ -130,7 +126,7 @@ const styles = StyleSheet.create({
     borderTopStartRadius: 10,
     paddingStart: 11,
     paddingEnd: 21,
-    // paddingBottom: 20,
+
     bottom: 0,
     left: 0,
     shadowColor: '#000',
@@ -144,29 +140,19 @@ const styles = StyleSheet.create({
     zIndex: 100,
   },
   scanButton: {
-    // position: 'absolute',
     width: 70,
     height: 70,
     backgroundColor: '#F6F7F8',
     display: 'flex',
-    // justifyContent: 'center',
-    // alignItems: 'center',
+
     marginBottom: 50,
     borderRadius: 45,
   },
   scanButtonImg: {
-    // marginTop: 20,
-    // marginBottom: 'auto',
     marginTop: '5%',
-    // width: 70,
-    // height: 70,
-    // marginLeft: 'auto',
-    // marginRight: 'auto',
+
     alignSelf: 'center',
   },
-  clockIcon: {},
-  iconLayout: {},
-  logOutWrapper: {},
 });
 
 export default Navigation;
