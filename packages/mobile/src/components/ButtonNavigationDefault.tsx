@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
   },
   buttonWrapperActive: {
     borderRadius: 6,
-    borderColor: '#1da4ac',
+    borderColor: '#14C58B',
     flexDirection: 'row',
     backgroundColor: '#FFF',
     shadowColor: '#000',
