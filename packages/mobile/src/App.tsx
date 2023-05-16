@@ -23,7 +23,7 @@ import {enableScreens} from 'react-native-screens';
 import {CameraProvider} from './contexts/CameraContext';
 import SplashScreen from 'react-native-splash-screen';
 import {useNetInfo} from '@react-native-community/netinfo';
-import {View} from 'react-native';
+import {SafeAreaView, StyleSheet, View} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {BusinessInfo} from './contexts/MonteqContractContext/MonteqContractContext';
 import TxModal from './components/TxModal';
@@ -84,7 +84,7 @@ function App(): JSX.Element {
   }
 
   return (
-    <>
+    <SafeAreaView style={styles.container}>
       <Web3Modal
         projectId={WC_PROJECT_ID}
         relayUrl={WC_RELAY_URL}
@@ -134,8 +134,12 @@ function App(): JSX.Element {
           )}
         </>
       ) : null}
-    </>
+    </SafeAreaView>
   );
 }
-
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+});
 export default App;

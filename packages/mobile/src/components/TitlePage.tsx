@@ -22,9 +22,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-start',
     width: '100%',
-    height: 100,
+    height: 50,
     paddingLeft: 0,
-    paddingTop: Platform.OS === 'ios' ? 50 : 0,
+    paddingTop: 0,
   },
   TextWrapperCenter: {
     display: 'flex',
