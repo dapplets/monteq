@@ -63,8 +63,7 @@ const styles = StyleSheet.create({
     fontSize: 11,
     lineHeight: 13,
     color: '#777777',
-    fontFamily:
-      Platform.OS === 'ios' ? 'roboto_regular.ttf' : FontFamily.robotoRegular,
+    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoRegular,
   },
   AmountBlock: {
     width: '100%',
@@ -79,8 +78,7 @@ const styles = StyleSheet.create({
     fontSize: 28,
     lineHeight: 33,
     color: '#222222',
-    fontFamily:
-      Platform.OS === 'ios' ? 'roboto_bold.ttf' : FontFamily.robotoBold,
+    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
   GeneralPayAmountSubtitle: {
     fontWeight: '700',
@@ -90,8 +88,7 @@ const styles = StyleSheet.create({
     marginTop: 'auto',
     marginLeft: 5,
     marginBottom: 4,
-    fontFamily:
-      Platform.OS === 'ios' ? 'roboto_bold.ttf' : FontFamily.robotoBold,
+    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
   TipsBlock: {
     display: 'flex',
@@ -103,8 +100,7 @@ const styles = StyleSheet.create({
     fontSize: 11,
     lineHeight: 13,
     color: '#777777',
-    fontFamily:
-      Platform.OS === 'ios' ? 'roboto_regular.ttf' : FontFamily.robotoRegular,
+    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoRegular,
   },
   TipsAmount: {
     fontWeight: '700',
@@ -113,8 +109,7 @@ const styles = StyleSheet.create({
     color: '#222222',
     marginLeft: 3,
     marginRight: 3,
-    fontFamily:
-      Platform.OS === 'ios' ? 'roboto_bold.ttf' : FontFamily.robotoBold,
+    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
 });
 

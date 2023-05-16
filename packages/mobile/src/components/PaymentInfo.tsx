@@ -53,8 +53,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     lineHeight: 14,
     marginBottom: 10,
-    fontFamily:
-      Platform.OS === 'ios' ? 'roboto_regular.ttf' : FontFamily.robotoRegular,
+    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoRegular,
   },
   PaymentPrice: {
     width: '100%',
@@ -71,8 +70,7 @@ const styles = StyleSheet.create({
     color: '#14C58B',
     fontWeight: '700',
     marginRight: 10,
-    fontFamily:
-      Platform.OS === 'ios' ? 'roboto_bold.ttf' : FontFamily.robotoBold,
+    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
   priceSubtitle: {
     fontSize: 10,
@@ -82,8 +80,7 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     marginTop: 'auto',
     marginBottom: 6,
-    fontFamily:
-      Platform.OS === 'ios' ? 'roboto_bold.ttf' : FontFamily.robotoBold,
+    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
   PaymentConvert: {
     width: '100%',
@@ -97,8 +94,7 @@ const styles = StyleSheet.create({
 
     color: '#14C58B',
     textTransform: 'uppercase',
-    fontFamily:
-      Platform.OS === 'ios' ? 'roboto_regular.ttf' : FontFamily.robotoRegular,
+    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoRegular,
   },
   convertCurrensy: {
     fontSize: 10,
@@ -106,8 +102,7 @@ const styles = StyleSheet.create({
     color: '#14C58B',
     textTransform: 'uppercase',
     marginLeft: 5,
-    fontFamily:
-      Platform.OS === 'ios' ? 'roboto_regular.ttf' : FontFamily.robotoRegular,
+    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoRegular,
   },
   PaymentDescription: {
     marginTop: 10,
@@ -118,8 +113,7 @@ const styles = StyleSheet.create({
     lineHeight: 14,
     color: '#919191',
     textAlign: 'center',
-    fontFamily:
-      Platform.OS === 'ios' ? 'roboto_regular.ttf' : FontFamily.robotoRegular,
+    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoRegular,
   },
 });
 

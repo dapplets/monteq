@@ -36,8 +36,7 @@ const styles = StyleSheet.create({
     paddingLeft: 0,
   },
   TitleText: {
-    fontFamily:
-      Platform.OS === 'ios' ? 'roboto_bold.ttf' : FontFamily.robotoBold,
+    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
     color: '#222222',
     fontWeight: '600',
     fontSize: FontSize.size_9xl,

@@ -64,8 +64,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 17,
     color: '#919191',
-    fontFamily:
-      Platform.OS === 'ios' ? 'roboto_regular.ttf' : FontFamily.robotoRegular,
+    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoRegular,
   },
   timeActiveImg: {
     backgroundColor: '#14C58B',
@@ -78,8 +77,7 @@ const styles = StyleSheet.create({
     lineHeight: 17,
     color: '#14C58B',
     fontWeight: '700',
-    fontFamily:
-      Platform.OS === 'ios' ? 'roboto_bold.ttf' : FontFamily.robotoBold,
+    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
 });
 

@@ -73,8 +73,7 @@ const styles = StyleSheet.create({
   startWithWalletconnect: {
     fontSize: FontSize.semibold_size,
     fontWeight: '700',
-    fontFamily:
-      Platform.OS === 'ios' ? 'roboto_bold.ttf' : FontFamily.robotoBold,
+    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
     color: Color.white,
     textAlign: 'left',
     marginLeft: 10,

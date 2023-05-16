@@ -70,16 +70,14 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 16,
     color: '#222222',
-    fontFamily:
-      Platform.OS === 'ios' ? 'roboto_bold.ttf' : FontFamily.robotoBold,
+    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
   company: {
     fontWeight: '400',
     fontSize: 10,
     lineHeight: 12,
     color: '#919191',
-    fontFamily:
-      Platform.OS === 'ios' ? 'roboto_regular.ttf' : FontFamily.robotoRegular,
+    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoRegular,
   },
   time: {
     fontWeight: '400',
@@ -89,8 +87,7 @@ const styles = StyleSheet.create({
     marginLeft: 'auto',
     paddingTop: 5,
     paddingBottom: 5,
-    fontFamily:
-      Platform.OS === 'ios' ? 'roboto_regular.ttf' : FontFamily.robotoRegular,
+    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoRegular,
   },
 });
 export default HistoryPay;

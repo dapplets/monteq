@@ -60,8 +60,7 @@ const styles = StyleSheet.create({
   },
   howItWorksTypo: {
     textAlign: 'left',
-    fontFamily:
-      Platform.OS === 'ios' ? 'roboto_bold.ttf' : FontFamily.robotoBold,
+    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
     fontWeight: '700',
     fontSize: FontSize.semibold_size,
   },

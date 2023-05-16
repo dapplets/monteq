@@ -318,8 +318,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     lineHeight: 16,
     color: '#ffffff',
-    fontFamily:
-      Platform.OS === 'ios' ? 'roboto_bold.ttf' : FontFamily.robotoBold,
+    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
   buttonSend: {
     backgroundColor: 'transparent',
@@ -349,8 +348,7 @@ const styles = StyleSheet.create({
     textDecorationColor: '#fff',
     textDecorationStyle: 'solid',
     color: '#fff',
-    fontFamily:
-      Platform.OS === 'ios' ? 'roboto_bold.ttf' : FontFamily.robotoBold,
+    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
   BusinessImg: {
     width: 174,
@@ -368,8 +366,7 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     paddingRight: 20,
     marginBottom: 20,
-    fontFamily:
-      Platform.OS === 'ios' ? 'roboto_regular.ttf' : FontFamily.robotoRegular,
+    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoRegular,
   },
 });
 

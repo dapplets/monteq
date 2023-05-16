@@ -84,8 +84,7 @@ const styles = StyleSheet.create({
   },
   title: {
     width: '80%',
-    fontFamily:
-      Platform.OS === 'ios' ? 'roboto_bold.ttf' : FontFamily.robotoBold,
+    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
     fontSize: 18,
     lineHeight: 21,
     color: '#222222',
@@ -104,8 +103,7 @@ const styles = StyleSheet.create({
   },
   descripton: {
     width: '100%',
-    fontFamily:
-      Platform.OS === 'ios' ? 'roboto_regular.ttf' : FontFamily.robotoRegular,
+    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoRegular,
     fontSize: 14,
     lineHeight: 16,
     color: '#222222',

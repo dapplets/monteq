@@ -46,16 +46,14 @@ const styles = StyleSheet.create({
     lineHeight: 17,
     fontWeight: '400',
     color: '#222222',
-    fontFamily:
-      Platform.OS === 'ios' ? 'roboto_regular.ttf' : FontFamily.robotoRegular,
+    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoRegular,
   },
   Value: {
     fontSize: 14,
     lineHeight: 17,
     fontWeight: '600',
     color: '#222222',
-    fontFamily:
-      Platform.OS === 'ios' ? 'roboto_bold.ttf' : FontFamily.robotoBold,
+    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
 });
 

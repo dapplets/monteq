@@ -193,8 +193,7 @@ const styles = StyleSheet.create({
     textDecorationColor: '#fff',
     textDecorationStyle: 'solid',
     color: '#fff',
-    fontFamily:
-      Platform.OS === 'ios' ? 'roboto_bold.ttf' : FontFamily.robotoBold,
+    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
   PayInfo: {
     display: 'flex',

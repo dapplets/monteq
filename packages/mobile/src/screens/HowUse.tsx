@@ -126,8 +126,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   backText: {
-    fontFamily:
-      Platform.OS === 'ios' ? 'roboto_bold.ttf' : FontFamily.robotoBold,
+    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
     fontSize: 14,
     lineHeight: 16,
     color: '#fff',
