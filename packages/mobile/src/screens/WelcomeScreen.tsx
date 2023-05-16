@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Image, StyleSheet, View} from 'react-native';
+import {Image, Platform, StyleSheet, View} from 'react-native';
 import MainButton from '../components/MainButton';
 import HollowButton from '../components/HollowButton';
 import {Padding, Border, FontFamily, FontSize, Color} from '../GlobalStyles';
@@ -60,7 +60,8 @@ const styles = StyleSheet.create({
   },
   howItWorksTypo: {
     textAlign: 'left',
-    fontFamily: FontFamily.robotoBold,
+    fontFamily:
+      Platform.OS === 'ios' ? 'roboto_bold.ttf' : FontFamily.robotoBold,
     fontWeight: '700',
     fontSize: FontSize.semibold_size,
   },

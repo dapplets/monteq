@@ -5,6 +5,7 @@ import {
   Text,
   TouchableHighlight,
   ImageSourcePropType,
+  Platform,
 } from 'react-native';
 import {FontSize, FontFamily, Color, Border, Padding} from '../GlobalStyles';
 
@@ -72,7 +73,8 @@ const styles = StyleSheet.create({
   startWithWalletconnect: {
     fontSize: FontSize.semibold_size,
     fontWeight: '700',
-    fontFamily: FontFamily.robotoBold,
+    fontFamily:
+      Platform.OS === 'ios' ? 'roboto_bold.ttf' : FontFamily.robotoBold,
     color: Color.white,
     textAlign: 'left',
     marginLeft: 10,
