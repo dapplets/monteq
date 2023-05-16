@@ -1,4 +1,4 @@
-package com.monteq;
+package de.cryrem.monteq;
 
 import android.app.Application;
 import com.facebook.react.PackageList;
