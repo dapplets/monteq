@@ -1,4 +1,4 @@
-import {StyleSheet, Text, TextInput, View} from 'react-native';
+import {Platform, StyleSheet, Text, TextInput, View} from 'react-native';
 import React, {Dispatch, SetStateAction} from 'react';
 import {FontFamily} from '../GlobalStyles';
 
@@ -60,7 +60,8 @@ const styles = StyleSheet.create({
     lineHeight: 17,
     fontWeight: '400',
     color: '#222222',
-    fontFamily: FontFamily.robotoRegular,
+    fontFamily:
+      Platform.OS === 'ios' ? 'roboto_regular.ttf' : FontFamily.robotoRegular,
   },
   Value: {
     fontSize: 14,
@@ -72,7 +73,8 @@ const styles = StyleSheet.create({
     margin: 0,
     textAlign: 'right',
     width: 100,
-    fontFamily: FontFamily.robotoBold,
+    fontFamily:
+      Platform.OS === 'ios' ? 'roboto_bold.ttf' : FontFamily.robotoBold,
   },
 });
 

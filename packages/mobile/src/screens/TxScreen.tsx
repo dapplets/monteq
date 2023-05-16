@@ -6,7 +6,13 @@ import {
 } from '@react-navigation/native';
 import {useWeb3Modal} from '@web3modal/react-native';
 import React, {memo, useEffect, useState} from 'react';
-import {StyleSheet, Text, TouchableHighlight, View} from 'react-native';
+import {
+  Platform,
+  StyleSheet,
+  Text,
+  TouchableHighlight,
+  View,
+} from 'react-native';
 import Navigation from '../components/Navigation';
 import Title from '../components/TitlePage';
 import PaymentInfo from '../components/PaymentInfo';
@@ -391,7 +397,8 @@ const styles = StyleSheet.create({
     lineHeight: 17,
     width: '60%',
     fontWeight: '400',
-    fontFamily: FontFamily.robotoRegular,
+    fontFamily:
+      Platform.OS === 'ios' ? 'roboto_regular.ttf' : FontFamily.robotoRegular,
   },
   AvailableBlock: {
     display: 'flex',
@@ -406,7 +413,8 @@ const styles = StyleSheet.create({
     lineHeight: 17,
     fontWeight: '600',
     marginRight: 5,
-    fontFamily: FontFamily.robotoBold,
+    fontFamily:
+      Platform.OS === 'ios' ? 'roboto_bold.ttf' : FontFamily.robotoBold,
   },
   AvailableCurrency: {
     color: '#222222',
@@ -414,7 +422,8 @@ const styles = StyleSheet.create({
     lineHeight: 17,
     fontWeight: '600',
     marginRight: 10,
-    fontFamily: FontFamily.robotoBold,
+    fontFamily:
+      Platform.OS === 'ios' ? 'roboto_bold.ttf' : FontFamily.robotoBold,
   },
   AvailableImg: {
     width: 20,
@@ -443,7 +452,8 @@ const styles = StyleSheet.create({
     color: '#222222',
     fontSize: 14,
     lineHeight: 16,
-    fontFamily: FontFamily.robotoRegular,
+    fontFamily:
+      Platform.OS === 'ios' ? 'roboto_regular.ttf' : FontFamily.robotoRegular,
   },
   // ToDo: code duplicated in TxModal.tsx
   linearGradient: {
@@ -468,7 +478,8 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     lineHeight: 16,
     color: '#ffffff',
-    fontFamily: FontFamily.robotoBold,
+    fontFamily:
+      Platform.OS === 'ios' ? 'roboto_bold.ttf' : FontFamily.robotoBold,
   },
   buttonInsufficient: {
     backgroundColor: '#FF3E3E',
@@ -488,7 +499,8 @@ const styles = StyleSheet.create({
     textDecorationColor: '#fff',
     textDecorationStyle: 'solid',
     color: '#fff',
-    fontFamily: FontFamily.robotoBold,
+    fontFamily:
+      Platform.OS === 'ios' ? 'roboto_bold.ttf' : FontFamily.robotoBold,
   },
 });
 

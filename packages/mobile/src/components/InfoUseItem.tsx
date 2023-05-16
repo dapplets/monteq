@@ -6,6 +6,7 @@ import {
   Image,
   Pressable,
   ImageSourcePropType,
+  Platform,
 } from 'react-native';
 import {FontFamily} from '../GlobalStyles';
 import {useState} from 'react';
@@ -83,7 +84,8 @@ const styles = StyleSheet.create({
   },
   title: {
     width: '80%',
-    fontFamily: FontFamily.robotoBold,
+    fontFamily:
+      Platform.OS === 'ios' ? 'roboto_bold.ttf' : FontFamily.robotoBold,
     fontSize: 18,
     lineHeight: 21,
     color: '#222222',
@@ -102,7 +104,8 @@ const styles = StyleSheet.create({
   },
   descripton: {
     width: '100%',
-    fontFamily: FontFamily.robotoRegular,
+    fontFamily:
+      Platform.OS === 'ios' ? 'roboto_regular.ttf' : FontFamily.robotoRegular,
     fontSize: 14,
     lineHeight: 16,
     color: '#222222',
