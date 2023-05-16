@@ -70,7 +70,7 @@ function App(): JSX.Element {
     })();
   }, []);
 
-  if (!isInternetConnected) {
+  if (!isInternetConnected && initialRouteName) {
     return (
       <View>
         <TxModal

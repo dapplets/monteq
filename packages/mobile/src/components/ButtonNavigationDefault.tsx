@@ -53,7 +53,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-
   clockIcon: {
     overflow: 'hidden',
   },
