@@ -1,4 +1,5 @@
 import {
+  Platform,
   Pressable,
   StyleSheet,
   Text,
@@ -63,7 +64,8 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 17,
     color: '#919191',
-    fontFamily: FontFamily.robotoRegular,
+    fontFamily:
+      Platform.OS === 'ios' ? 'roboto_regular.ttf' : FontFamily.robotoRegular,
   },
   timeActiveImg: {
     backgroundColor: '#14C58B',
@@ -76,7 +78,8 @@ const styles = StyleSheet.create({
     lineHeight: 17,
     color: '#14C58B',
     fontWeight: '700',
-    fontFamily: FontFamily.robotoBold,
+    fontFamily:
+      Platform.OS === 'ios' ? 'roboto_bold.ttf' : FontFamily.robotoBold,
   },
 });
 

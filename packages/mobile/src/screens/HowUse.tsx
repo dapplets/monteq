@@ -1,5 +1,11 @@
 import * as React from 'react';
-import {Text, StyleSheet, ScrollView, TouchableHighlight} from 'react-native';
+import {
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableHighlight,
+  Platform,
+} from 'react-native';
 import Navigation from '../components/Navigation';
 import Title from '../components/TitlePage';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
@@ -120,7 +126,8 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   backText: {
-    fontFamily: FontFamily.robotoBold,
+    fontFamily:
+      Platform.OS === 'ios' ? 'roboto_bold.ttf' : FontFamily.robotoBold,
     fontSize: 14,
     lineHeight: 16,
     color: '#fff',

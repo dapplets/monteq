@@ -1,5 +1,11 @@
 import * as React from 'react';
-import {Text, StyleSheet, View, TouchableHighlight} from 'react-native';
+import {
+  Text,
+  StyleSheet,
+  View,
+  TouchableHighlight,
+  Platform,
+} from 'react-native';
 import Navigation from '../components/Navigation';
 import Title from '../components/TitlePage';
 import {useMonteqContract} from '../contexts/MonteqContractContext';
@@ -187,7 +193,8 @@ const styles = StyleSheet.create({
     textDecorationColor: '#fff',
     textDecorationStyle: 'solid',
     color: '#fff',
-    fontFamily: FontFamily.robotoBold,
+    fontFamily:
+      Platform.OS === 'ios' ? 'roboto_bold.ttf' : FontFamily.robotoBold,
   },
   PayInfo: {
     display: 'flex',
