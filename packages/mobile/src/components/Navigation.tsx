@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     marginTop: 'auto',
-    height: Platform.OS === 'ios' ? 80 : 60,
+    height: 60,
     position: 'absolute',
     backgroundColor: '#fff',
     borderTopEndRadius: 10,
