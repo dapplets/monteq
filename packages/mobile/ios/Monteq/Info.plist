@@ -36,7 +36,7 @@
 		</dict>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string/>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>
@@ -53,5 +53,19 @@
 	<false/>
 	<key>NSCameraUsageDescription</key>
 	<string>$(PRODUCT_NAME) needs access to your Camera.</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>roboto_black.ttf</string>
+		<string>roboto_black_italic.ttf</string>
+		<string>roboto_bold.ttf</string>
+		<string>roboto_bold_italic.ttf</string>
+		<string>roboto_italic.ttf</string>
+		<string>roboto_light.ttf</string>
+		<string>roboto_medium.ttf</string>
+		<string>roboto_medium_italic.ttf</string>
+		<string>roboto_regular.ttf</string>
+		<string>roboto_thin.ttf</string>
+		<string>roboto_thin_italic.ttf</string>
+	</array>
 </dict>
 </plist>
