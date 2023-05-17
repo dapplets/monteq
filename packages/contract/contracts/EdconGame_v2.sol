@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: GPL-3.0
 /**
  * EdCon MonteQ game . 
  * just for start. 
@@ -34,11 +35,23 @@ contract EdconGame {
     TokenInfo[] public tokenInfos;
     address[] accounts;
 
-    function mint(uint8 tokenId, uint120 amount, address to) 
+    function mint(uint8 tokenId, uint120 amount) 
+    public 
+    ambassadorOnly(tokenId) {
+        box[msg.sender][tokenId] += amount;
+    }
+    
+    function mintTo(uint8 tokenId, uint120 amount, address to) 
     public 
     ambassadorOnly(tokenId) {
         box[to][tokenId] += amount;
-        storeAccount(to,AMBASSADOR_ZERO+tokenId);    // 0 - NOT_EXIST, 1 - REGULAR_USER, 2+ - AMBASSADOR for tokenId (starts from '0')
+        storeAccount(to,AMBASSADOR_ZERO + tokenId);    // 0 - NOT_EXIST, 1 - REGULAR_USER, 2+ - AMBASSADOR for tokenId (starts from '0')
+    }
+
+    function setAccountType(uint8 tokenId, address addr, bool setAmbassador) 
+    public 
+    ambassadorOnly(tokenId) {
+        storeAccount(addr,setAmbassador ? AMBASSADOR_ZERO + tokenId : REGULAR_USER);    // 0 - NOT_EXIST, 1 - REGULAR_USER, 2+ - AMBASSADOR for tokenId (starts from '0')
     }
 
     function transferBatch(uint8[] calldata tokenIds, uint120[] calldata amounts, address to) public {
