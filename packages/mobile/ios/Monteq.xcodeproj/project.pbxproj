@@ -553,7 +553,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = de.cryrem.monteq;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.navigationEverest;
 				PRODUCT_NAME = Monteq;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
