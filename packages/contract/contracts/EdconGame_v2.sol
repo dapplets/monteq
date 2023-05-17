@@ -47,6 +47,13 @@ contract EdconGame {
         storeAccount(to,REGULAR_USER); // 0 - NOT_EXIST, 1 - REGULAR_USER, 2+ - AMBASSADOR for tokenId (starts from '0')
         log(tokenId, msg.sender);
     }
+    
+    function transferBatch(uint8[] calldata tokenIds, uint120[] calldata amounts, address to) public {
+        require(tokenIds.length == amounts.length, "Length mismatch");
+        for(uint n=0;n<tokenIds.length;++n) {
+            transfer(tokenIds[n], amounts[n], to);
+        }
+    }
 
     function giveAway(uint8 tokenId, uint120 amount, address to) public {
         require(accountType[msg.sender]==tokenId+2); //2 is a type index offset.
