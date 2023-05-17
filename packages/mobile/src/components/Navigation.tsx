@@ -1,7 +1,13 @@
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {useWeb3Modal} from '@web3modal/react-native';
 import * as React from 'react';
-import {View, Alert, StyleSheet, TouchableHighlight} from 'react-native';
+import {
+  View,
+  Alert,
+  StyleSheet,
+  TouchableHighlight,
+  Platform,
+} from 'react-native';
 import {type RootStackParamList} from '../App';
 import ButtonNavigationDefault from './ButtonNavigationDefault';
 import {parseReceipt} from '../common/parseReceipt';
@@ -127,15 +133,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderTopEndRadius: 10,
     borderTopStartRadius: 10,
-    paddingStart: 11,
+    paddingStart: Platform.OS === 'ios' ? 21 : 11,
     paddingEnd: 21,
-
+    // paddingBottom: Platform.OS === 'ios' ? 10 : 0,
     bottom: 0,
     left: 0,
     shadowColor: '#000',
     shadowOffset: {
-      width: -20,
-      height: -20,
+      width: Platform.OS === 'ios' ? 2 : -20,
+      height: Platform.OS === 'ios' ? 2 : -20,
     },
     shadowOpacity: 1,
     shadowRadius: 3.84,

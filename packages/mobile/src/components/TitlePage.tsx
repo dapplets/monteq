@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {View, StyleSheet, Text} from 'react-native';
+import {View, StyleSheet, Text, Platform} from 'react-native';
 import {FontFamily, FontSize} from '../GlobalStyles';
 
 export type TitleType = {
@@ -22,8 +22,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-start',
     width: '100%',
-    height: 60,
+    height: 50,
     paddingLeft: 0,
+    paddingTop: 0,
   },
   TextWrapperCenter: {
     display: 'flex',
@@ -35,7 +36,7 @@ const styles = StyleSheet.create({
     paddingLeft: 0,
   },
   TitleText: {
-    fontFamily: FontFamily.robotoBold,
+    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
     color: '#222222',
     fontWeight: '600',
     fontSize: FontSize.size_9xl,

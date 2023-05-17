@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {View, StyleSheet, Text} from 'react-native';
+import {View, StyleSheet, Text, Platform} from 'react-native';
 import {BASE_CRYPTO_CURRENCY} from '../common/constants';
 import {FontFamily} from '../GlobalStyles';
 
@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     lineHeight: 14,
     marginBottom: 10,
-    fontFamily: FontFamily.robotoRegular,
+    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoRegular,
   },
   PaymentPrice: {
     width: '100%',
@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     color: '#14C58B',
     fontWeight: '700',
     marginRight: 10,
-    fontFamily: FontFamily.robotoBold,
+    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
   priceSubtitle: {
     fontSize: 10,
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     marginTop: 'auto',
     marginBottom: 6,
-    fontFamily: FontFamily.robotoBold,
+    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
   PaymentConvert: {
     width: '100%',
@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
 
     color: '#14C58B',
     textTransform: 'uppercase',
-    fontFamily: FontFamily.robotoRegular,
+    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoRegular,
   },
   convertCurrensy: {
     fontSize: 10,
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     color: '#14C58B',
     textTransform: 'uppercase',
     marginLeft: 5,
-    fontFamily: FontFamily.robotoRegular,
+    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoRegular,
   },
   PaymentDescription: {
     marginTop: 10,
@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
     lineHeight: 14,
     color: '#919191',
     textAlign: 'center',
-    fontFamily: FontFamily.robotoRegular,
+    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoRegular,
   },
 });
 

@@ -2,20 +2,11 @@ import React from 'react';
 
 import LinearGradient from 'react-native-linear-gradient';
 
-import {
-  StyleSheet,
-  Text,
-  TouchableHighlight,
-  View,
-  Modal,
-  PermissionsAndroid,
-  Platform,
-} from 'react-native';
+import {StyleSheet, Text, TouchableHighlight, View, Modal} from 'react-native';
 import MaskedView from '@react-native-masked-view/masked-view';
 import {FontFamily} from '../GlobalStyles';
-import RNFetchBlob from 'rn-fetch-blob';
 import QRCode from 'react-native-qrcode-svg';
-import Share from 'react-native-share';
+import Clipboard from '@react-native-clipboard/clipboard';
 type Props = {
   isVisible: boolean;
   name: string;
@@ -28,39 +19,11 @@ const ShareModal: React.FC<Props> = ({
   onRequestClose,
   ...props
 }) => {
-  const [QRvalue, setQRValue] = React.useState('');
+  const [QRvalue, setQRValue] = React.useState('https://dapplets.org/');
   const [QRLogo, setQRLogo] = React.useState('');
   const [QRImage, setQRImage] = React.useState('');
   const ref = React.useRef();
-  const handleSave = async () => {
-    if (Platform.OS === 'android') {
-      let isReadGranted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-      );
-      if (isReadGranted === PermissionsAndroid.RESULTS.GRANTED) {
-        const dirs = RNFetchBlob.fs.dirs;
-        var qrcode_data = QRImage.split('data:image/png;base64,');
-        const filePath =
-          dirs.DownloadDir + '/' + 'QRCode' + new Date().getSeconds() + '.png';
-        RNFetchBlob.fs
-          .writeFile(filePath, qrcode_data[1], 'base64')
-          .then(() => console.log('Saved successfully'))
-          .catch(errorMessage => console.log(errorMessage));
-      }
-    }
 
-    if (Platform.OS === 'ios') {
-      const options = {
-        title: 'Share is your QRcode',
-        url: QRImage,
-      };
-      try {
-        await Share.open(options);
-      } catch (err) {
-        console.log(err);
-      }
-    }
-  };
   return (
     <Modal
       animationType="slide"
@@ -72,15 +35,11 @@ const ShareModal: React.FC<Props> = ({
           <TouchableHighlight
             underlayColor={'transparent'}
             activeOpacity={0.5}
-            onPress={() => handleSave()}
+            onPress={() => Clipboard.setString(QRvalue)}
             style={styles.Title}>
             <Text>Tap to copy</Text>
           </TouchableHighlight>
-          <QRCode
-            getRef={ref as any}
-            size={200}
-            value="https://dapplets.org/"
-          />
+          <QRCode getRef={ref as any} size={200} value={QRvalue} />
           <MaskedView
             style={styles.maskStyle}
             maskElement={<Text {...props}>{name}</Text>}>

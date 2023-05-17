@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {Platform, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import CustomSwitch from './Switch';
 import {FontFamily} from '../GlobalStyles';
@@ -46,14 +46,14 @@ const styles = StyleSheet.create({
     lineHeight: 17,
     fontWeight: '400',
     color: '#222222',
-    fontFamily: FontFamily.robotoRegular,
+    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoRegular,
   },
   Value: {
     fontSize: 14,
     lineHeight: 17,
     fontWeight: '600',
     color: '#222222',
-    fontFamily: FontFamily.robotoBold,
+    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
 });
 
