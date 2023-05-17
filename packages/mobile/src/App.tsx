@@ -27,6 +27,7 @@ import {SafeAreaView, StyleSheet, View} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {BusinessInfo} from './contexts/MonteqContractContext/MonteqContractContext';
 import TxModal from './components/TxModal';
+import SendTokenScreen from './screens/SendTokenScreen';
 
 enableScreens();
 
@@ -40,6 +41,7 @@ export type RootStackParamList = {
   AddingMyBusiness: {parsedReceipt: ParsedReceipt};
   HowUse: undefined;
   RemovingMyBusiness: undefined;
+  SendTokenScreen: {parsedReceipt: ParsedReceipt};
 };
 
 const Tab = createBottomTabNavigator();
@@ -127,6 +129,10 @@ function App(): JSX.Element {
                       component={RemovingMyBusiness}
                     />
                     <Tab.Screen name="HowUse" component={HowUse} />
+                    <Tab.Screen
+                      name="SendTokenScreen"
+                      component={SendTokenScreen}
+                    />
                   </Tab.Navigator>
                 </NavigationContainer>
               </CameraProvider>
