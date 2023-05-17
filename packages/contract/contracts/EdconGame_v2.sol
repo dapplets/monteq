@@ -68,7 +68,7 @@ contract EdconGame {
     }
 
     function transfer(uint8 tokenId, uint120 amount, address to) public {
-        if (ambassadorRank[msg.sender][tokenId] > 0) {
+        if (ambassadorRank[msg.sender][tokenId] == 0) {
             require(box[msg.sender][tokenId] >= amount, "unsufficient funds");
             require(
                 getTimeToUnlock(to, tokenId) == 0,
