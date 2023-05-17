@@ -53,11 +53,14 @@ contract EdconGame {
             require(getTimeToUnlock(to, tokenId) == 0,"destination is still locked for this transfer");
             //save timestamp for transfer to lock token transfers for  1hrs.
             accountLocks[ txKey(to, tokenId) ] = block.timestamp;  // locks "to" account for incoming transactions with tokenId.
+            karma[msg.sender][tokenId]+=1;
         }
         box[msg.sender][tokenId] -= amount;
         box[to][tokenId] += amount;
         storeAccount(to,REGULAR_USER); // 0 - NOT_EXIST, 1 - REGULAR_USER, 2+ - AMBASSADOR for tokenId (starts from '0')
-        log(tokenId, msg.sender);
+      
+        //store log entry
+        logs[msg.sender].push(LogEntry(tokenId,to,block.timestamp));
     }
 
     //ToDo: prevent spam, implement approvals? 
@@ -81,14 +84,6 @@ contract EdconGame {
 
     function txKey(address to, uint tokenId) private pure returns(bytes32) {
         return sha256(abi.encodePacked(to, tokenId));  // calculate key 
-    }
- 
-    function log(uint8 tokenId, address to) private {
-        //store karma data
-        karma[msg.sender][tokenId]+=1;
-        
-        //store log entry
-        logs[msg.sender].push(LogEntry(tokenId,to,block.timestamp));
     }
 
     function storeAccount(address a, uint typ) private {
