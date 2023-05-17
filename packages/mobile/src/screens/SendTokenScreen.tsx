@@ -22,7 +22,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import PaymentParameters from '../components/PaymentParameters';
 import Checkbox from '../components/Checkbox';
 import {type RootStackParamList} from '../App';
-import {ParsedReceipt} from '../common/parseReceipt';
+import {ParsedEDCON2023Code} from '../common/parseReceipt';
 import {useMonteqContract} from '../contexts/MonteqContractContext';
 import {
   BASE_CRYPTO_CURRENCY,
@@ -40,89 +40,61 @@ import {FontFamily} from '../GlobalStyles';
 import GeneralPayInfo from '../components/GeneralPayInfo';
 
 type Props = {
-  route: RouteProp<
-    {params: {parsedReceipt: ParsedReceipt; businessInfo: BusinessInfo}},
-    'params'
-  >;
+  route: RouteProp<{params: {parsedQrCode: ParsedEDCON2023Code}}, 'params'>;
 };
 
-enum PaymentType {
-  TIPS_ONLY,
-  BILL_ONLY,
-  BILL_AND_TIPS,
-}
 const testTokens = [{}];
 
 const SendTokenScreen: React.FC<Props> = memo(({route}) => {
-  const parsedReceipt = route.params.parsedReceipt;
-  const businessInfo = route.params.businessInfo;
+  const parsedQrCode = route.params.parsedQrCode;
 
   const {provider} = useWeb3Modal();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-  const isFocused = useIsFocused();
+  // const isFocused = useIsFocused();
 
-  const [paymentType, setPaymentType] = useState<PaymentType>(
-    PaymentType.TIPS_ONLY,
-  );
   const [modalVisible, setModalVisible] = useState(false);
 
-  const {
-    balance,
-    isBalanceLoading,
-    payReceipt,
-    paymentTxStatus,
-    rate,
-    resetPaymentTxStatus,
-  } = useMonteqContract();
+  // const {
+  //   balance,
+  //   isBalanceLoading,
+  //   payReceipt,
+  //   paymentTxStatus,
+  //   rate,
+  //   resetPaymentTxStatus,
+  // } = useMonteqContract();
 
-  useEffect(() => {
-    resetPaymentTxStatus();
-  }, [isFocused, resetPaymentTxStatus]);
+  // useEffect(() => {
+  //   resetPaymentTxStatus();
+  // }, [isFocused, resetPaymentTxStatus]);
 
-  if (!parsedReceipt) {
+  if (!parsedQrCode) {
     // ToDo: invalid receipt
     return null;
   }
 
-  async function handleCloseButtonPress() {
-    navigation.navigate('InfoScreen');
-  }
+  // async function handleCloseButtonPress() {
+  //   navigation.navigate('InfoScreen');
+  // }
 
-  // ToDo: move the calculations into business logic hook
-  const billAmountInCrypto =
-    paymentType === PaymentType.BILL_ONLY ||
-    paymentType === PaymentType.BILL_AND_TIPS
-      ? mulStr(parsedReceipt.currencyReceipt, rate)
-      : '0';
+  // async function handleSendPress() {
+  //   if (!provider || !parsedQrCode) {
+  //     return;
+  //   }
 
-  const tipsAmountInCrypto =
-    paymentType === PaymentType.TIPS_ONLY ||
-    paymentType === PaymentType.BILL_AND_TIPS
-      ? mulStr(mulStr(parsedReceipt.currencyReceipt, '0.1'), rate) // ToDo: 10% tips hardcoded
-      : '0';
+  //   setModalVisible(true);
 
-  const amountInCrypto = addStr(billAmountInCrypto, tipsAmountInCrypto);
-  const isEnoughTokens = gteStr(balance, amountInCrypto);
-
-  async function handleSendPress() {
-    if (!provider || !parsedReceipt) {
-      return;
-    }
-
-    setModalVisible(true);
-
-    payReceipt(
-      parsedReceipt.businessId,
-      parsedReceipt.currencyReceipt,
-      billAmountInCrypto,
-      tipsAmountInCrypto,
-    );
-  }
+  //   // payReceipt(
+  //   //   parsedQrCode.businessId,
+  //   //   parsedQrCode.currencyReceipt,
+  //   //   billAmountInCrypto,
+  //   //   tipsAmountInCrypto,
+  //   // );
+  // }
 
   return (
     <>
       <ScrollView>
-        <Title label="Sending tokens" />
+        <Title label={`ToDo: send to ${parsedQrCode.to}`} />
         <GeneralPayInfo
           generalPayAmount={'12'}
           title={'Your are sending'}
@@ -147,17 +119,17 @@ const SendTokenScreen: React.FC<Props> = memo(({route}) => {
 
       {!modalVisible ? <Navigation path="Payment" /> : null}
 
-      {paymentTxStatus === TxStatus.Sending ? (
+      {/* {paymentTxStatus === TxStatus.Sending ? (
         <TxModal
           isVisible={modalVisible}
           title="Transaction signing"
           status={'Signing'}
           type={TxStatusType.Yellow}
           image={require('../assets/inProgress.png')}
-          recipientId={parsedReceipt.businessId}
+          recipientId={parsedQrCode.businessId}
           recipientName={businessInfo.name}
-          date={new Date(parsedReceipt.createdAt).toLocaleString()}
-          fiatAmount={parsedReceipt.currencyReceipt}
+          date={new Date(parsedQrCode.createdAt).toLocaleString()}
+          fiatAmount={parsedQrCode.currencyReceipt}
           cryptoAmount={amountInCrypto}
           onRequestClose={() => setModalVisible(!modalVisible)}
         />
@@ -170,10 +142,10 @@ const SendTokenScreen: React.FC<Props> = memo(({route}) => {
           status={'Mining'}
           type={TxStatusType.Yellow}
           image={require('../assets/inProgress.png')}
-          recipientId={parsedReceipt.businessId}
+          recipientId={parsedQrCode.businessId}
           recipientName={businessInfo.name}
-          date={new Date(parsedReceipt.createdAt).toLocaleString()}
-          fiatAmount={parsedReceipt.currencyReceipt}
+          date={new Date(parsedQrCode.createdAt).toLocaleString()}
+          fiatAmount={parsedQrCode.currencyReceipt}
           cryptoAmount={amountInCrypto}
           onRequestClose={() => setModalVisible(!modalVisible)}
         />
@@ -186,10 +158,10 @@ const SendTokenScreen: React.FC<Props> = memo(({route}) => {
           status={'Confirmed'}
           type={TxStatusType.Green}
           image={require('../assets/confirmed.png')}
-          recipientId={parsedReceipt.businessId}
+          recipientId={parsedQrCode.businessId}
           recipientName={businessInfo.name}
-          date={new Date(parsedReceipt.createdAt).toLocaleString()}
-          fiatAmount={parsedReceipt.currencyReceipt}
+          date={new Date(parsedQrCode.createdAt).toLocaleString()}
+          fiatAmount={parsedQrCode.currencyReceipt}
           cryptoAmount={amountInCrypto}
           onRequestClose={() => setModalVisible(!modalVisible)}
           primaryButton="Close"
@@ -210,7 +182,7 @@ const SendTokenScreen: React.FC<Props> = memo(({route}) => {
           secondaryButton="Close"
           onSecondaryButtonPress={handleCloseButtonPress}
         />
-      ) : null}
+      ) : null} */}
     </>
   );
 });

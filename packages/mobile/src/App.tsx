@@ -18,7 +18,7 @@ import MyBusiness from './screens/MyBusiness';
 import AddingMyBusiness from './screens/AddingMyBusiness';
 import HowUse from './screens/HowUse';
 import RemovingMyBusiness from './screens/RemovingMyBuisness';
-import {ParsedReceipt} from './common/parseReceipt';
+import {ParsedReceipt, ParsedEDCON2023Code} from './common/parseReceipt';
 import {enableScreens} from 'react-native-screens';
 import {CameraProvider} from './contexts/CameraContext';
 import SplashScreen from 'react-native-splash-screen';
@@ -41,7 +41,7 @@ export type RootStackParamList = {
   AddingMyBusiness: {parsedReceipt: ParsedReceipt};
   HowUse: undefined;
   RemovingMyBusiness: undefined;
-  SendTokenScreen: {parsedReceipt: ParsedReceipt};
+  SendTokenScreen: {parsedQrCode: ParsedEDCON2023Code};
 };
 
 const Tab = createBottomTabNavigator();
