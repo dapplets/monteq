@@ -6,6 +6,7 @@ import {
   Text,
   ActivityIndicator,
   Image,
+  TouchableHighlight,
   Platform,
 } from 'react-native';
 import Navigation from '../components/Navigation';
@@ -20,6 +21,8 @@ import {
 import {truncate} from '../common/helpers';
 import {useIsFocused} from '@react-navigation/native';
 import {FontFamily} from '../GlobalStyles';
+import {useState} from 'react';
+import ShareModal from '../components/ShareModal';
 
 const InfoScreen = () => {
   const isFocused = useIsFocused();
@@ -30,13 +33,15 @@ const InfoScreen = () => {
     loadMoreOutHistory,
     isOutHistoryLoading,
   } = useMonteqContract();
-
+  const [modalShareVisible, setModalShareVisible] = useState(false);
   React.useEffect(() => {
     if (isFocused) {
       loadMoreOutHistory();
     }
   }, [isFocused, loadMoreOutHistory]);
-
+  const openShareModal = () => {
+    setModalShareVisible(true);
+  };
   if (isOutHistoryLoading && outHistory.length === 0) {
     return (
       <>
@@ -67,7 +72,20 @@ const InfoScreen = () => {
 
         {outHistory.length > 0 ? (
           <>
-            <Title label="Payment history" />
+            <View style={styles.wrapperTitle}>
+              <Title label="Payment history" />
+              <TouchableHighlight
+                underlayColor={'transparent'}
+                onPress={openShareModal}
+                activeOpacity={0.5}
+                style={styles.share}>
+                <Image
+                  style={styles.shareImg}
+                  resizeMode="contain"
+                  source={require('../assets/share.png')}
+                />
+              </TouchableHighlight>
+            </View>
             <GeneralPayInfo
               generalPayAmount={truncate(
                 spentTotalCryptoAmount,
@@ -108,6 +126,11 @@ const InfoScreen = () => {
         ) : null}
       </View>
       <Navigation path="user" />
+      <ShareModal
+        name="SomeUsername"
+        isVisible={modalShareVisible}
+        onRequestClose={() => setModalShareVisible(!modalShareVisible)}
+      />
     </>
   );
 };
@@ -222,6 +245,23 @@ const styles = StyleSheet.create({
     paddingRight: 20,
     marginBottom: 20,
     fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoRegular,
+  },
+  wrapperTitle: {
+    display: 'flex',
+    width: '100%',
+    paddingRight: 25,
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  share: {
+    backgroundColor: 'transparent',
+    width: 24,
+    height: 24,
+  },
+  shareImg: {
+    width: 24,
+    height: 24,
   },
 });
 
