@@ -4,7 +4,7 @@ import { expect } from 'chai'
 import { ethers } from 'hardhat'
 import { BigNumber } from 'ethers'
 
-describe('MonteQ', function () {
+describe('EdconGame_v2', function () {
     // We define a fixture to reuse the same setup in every test.
     // We use loadFixture to run this setup once, snapshot that state,
     // and reset Hardhat Network to that snapshot in every test.
@@ -53,5 +53,72 @@ describe('MonteQ', function () {
         }
     }
 
-    describe('Accounts management', function () {})
+    describe('Minting', function () {
+        it('Should add an ambassador and mint tokens', async () => {
+            const { edconGame, owner, businessId001, emptyBusinessInfo } = await loadFixture(
+                deployOneYearLockFixture
+            )
+            expect(false).to.eql(true)
+        })
+
+        it('Should not mint tokens by user', async () => {
+            const { edconGame, owner, businessId001, emptyBusinessInfo } = await loadFixture(
+                deployOneYearLockFixture
+            )
+            expect(true).to.be.revertedWith("You aren't the ambassador")
+        })
+    })
+
+    describe('Transfers', function () {
+        it('Should transfer same tokens from ambassador to user', async () => {
+            const { edconGame, owner, businessId001, emptyBusinessInfo } = await loadFixture(
+                deployOneYearLockFixture
+            )
+            expect(false).to.eql(true)
+        })
+
+        it('Should transfer same tokens from user to user', async () => {
+            const { edconGame, owner, businessId001, emptyBusinessInfo } = await loadFixture(
+                deployOneYearLockFixture
+            )
+            expect(false).to.eql(true)
+        })
+
+        it('Should transfer different tokens from user to user', async () => {
+            const { edconGame, owner, businessId001, emptyBusinessInfo } = await loadFixture(
+                deployOneYearLockFixture
+            )
+            expect(false).to.eql(true)
+        })
+
+        it('Should not transfer different tokens from ambassador to user', async () => {
+            const { edconGame, owner, businessId001, emptyBusinessInfo } = await loadFixture(
+                deployOneYearLockFixture
+            )
+            expect(true).to.be.revertedWith('You are the ambassador!')
+        })
+    })
+
+    describe('Locktime', function () {
+        it('Should transfer tokens of different types from user to user during recipients locktime', async () => {
+            const { edconGame, owner, businessId001, emptyBusinessInfo } = await loadFixture(
+                deployOneYearLockFixture
+            )
+            expect(false).to.eql(true)
+        })
+
+        it('Should transfer tokens of one type from ambassador to user during recipients locktime', async () => {
+            const { edconGame, owner, businessId001, emptyBusinessInfo } = await loadFixture(
+                deployOneYearLockFixture
+            )
+            expect(false).to.eql(true)
+        })
+
+        it('Should not transfer tokens of one type from user to user during recipients locktime', async () => {
+            const { edconGame, owner, businessId001, emptyBusinessInfo } = await loadFixture(
+                deployOneYearLockFixture
+            )
+            expect(true).to.be.revertedWith("You aren't the ambassador")
+        })
+    })
 })
