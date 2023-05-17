@@ -10,6 +10,7 @@ contract EdconGame {
 
     uint constant USER_NOT_EXIST = 0;
     uint constant REGULAR_USER = 1;
+    uint constant AMBASSADOR_ZERO = 2;
 
     struct TokenInfo {
         string ticker;
@@ -37,17 +38,9 @@ contract EdconGame {
     public 
     ambassadorOnly(tokenId) {
         box[to][tokenId] += amount;
-        storeAccount(to,tokenId + 2);    // 0 - NOT_EXIST, 1 - REGULAR_USER, 2+ - AMBASSADOR for tokenId (starts from '0')
+        storeAccount(to,AMBASSADOR_ZERO+tokenId);    // 0 - NOT_EXIST, 1 - REGULAR_USER, 2+ - AMBASSADOR for tokenId (starts from '0')
     }
 
-    function transfer(uint8 tokenId, uint120 amount, address to) public {
-        assertUnlocked(to, tokenId);
-        box[msg.sender][tokenId] -= amount;
-        box[to][tokenId] += amount;
-        storeAccount(to,REGULAR_USER); // 0 - NOT_EXIST, 1 - REGULAR_USER, 2+ - AMBASSADOR for tokenId (starts from '0')
-        log(tokenId, msg.sender);
-    }
-    
     function transferBatch(uint8[] calldata tokenIds, uint120[] calldata amounts, address to) public {
         require(tokenIds.length == amounts.length, "Length mismatch");
         for(uint n=0;n<tokenIds.length;++n) {
@@ -55,18 +48,16 @@ contract EdconGame {
         }
     }
 
-    function giveAway(uint8 tokenId, uint120 amount, address to) public {
-        require(accountType[msg.sender]==tokenId+2); //2 is a type index offset.
+    function transfer(uint8 tokenId, uint120 amount, address to) public {
+        if (!isAmbassador(to,tokenId)) {
+            require(getTimeToUnlock(to, tokenId) == 0,"destination is still locked for this transfer");
+            //save timestamp for transfer to lock token transfers for  1hrs.
+            fromToTimestamps[ txKey(to, tokenId) ] = block.timestamp;  // locks "to" account for incoming transactions with tokenId.
+        }
         box[msg.sender][tokenId] -= amount;
         box[to][tokenId] += amount;
         storeAccount(to,REGULAR_USER); // 0 - NOT_EXIST, 1 - REGULAR_USER, 2+ - AMBASSADOR for tokenId (starts from '0')
         log(tokenId, msg.sender);
-    }
-
-    function assertUnlocked(address to, uint tokenId) private {
-        require(getTimeToUnlock(to, tokenId) == 0,"destination is still locked for this transfer");
-        //save timestamp for transfer to lock token transfers for  1hrs.
-        fromToTimestamps[ txKey(to, tokenId) ] = block.timestamp;  // locks "to" account for incoming transactions with tokenId.
     }
 
     //ToDo: prevent spam, implement approvals? 
@@ -108,9 +99,13 @@ contract EdconGame {
     }
 
     modifier ambassadorOnly(uint tokenId) {
-        require(   accountType[msg.sender]==tokenId+2
-                || msg.sender == tokenInfos[tokenId].creator   // creator is a "seed" ambassador, that works always.
-                ,  "only Project Ambassador is eligible to mint tokens" );
+        require( isAmbassador(msg.sender, tokenId),  "only Project Ambassador is eligible to mint tokens" );
         _;
     }
+
+    function isAmbassador(address a, uint tokenId) private view returns (bool) {
+        return accountType[a]==AMBASSADOR_ZERO + tokenId
+              || a == tokenInfos[tokenId].creator;   // creator is a "seed" ambassador, that works always.
+    }
+
 }
