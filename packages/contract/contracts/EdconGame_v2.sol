@@ -26,7 +26,7 @@ contract EdconGame {
     }
 
     mapping(address=>mapping(uint=>uint)) public box; // who owns what
-    mapping(address=>mapping(uint=>uint)) public performance; // user's giveaway performance
+    mapping(address=>mapping(uint=>uint)) public karma; // user's giveaway karma
     mapping(address=>uint) public accountType; 
     mapping(bytes32=>uint) public fromToTimestamps; // mapping(hash(addrTo,addrTo)=>lastDatetime)   - stores the last transaction time for the pair (from,to)
     mapping(address=>LogEntry[]) public logs; // transfer log.
@@ -84,8 +84,8 @@ contract EdconGame {
     }
  
     function log(uint8 tokenId, address to) private {
-        //store performance data
-        performance[msg.sender][tokenId]+=1;
+        //store karma data
+        karma[msg.sender][tokenId]+=1;
         
         //store log entry
         logs[msg.sender].push(LogEntry(tokenId,to,block.timestamp));
