@@ -9,9 +9,9 @@ contract EdconGame {
 
     uint constant LOCKTIME = 1 hours; 
 
-    uint constant USER_NOT_EXIST = 0;
-    uint constant REGULAR_USER = 1;
-    uint constant AMBASSADOR_ZERO = 2;
+    uint constant KARMA_TRANSFER = 10;
+    uint constant KARMA_KICKBACK = 1;
+    uint constant KARMA_NEW_USER = 50;
 
     struct TokenInfo {
         string ticker;
@@ -29,10 +29,12 @@ contract EdconGame {
     mapping(address=>mapping(uint=>uint)) public box; // who owns what
     mapping(address=>mapping(uint=>uint)) public karma; // user's giveaway karma
     mapping(address=>mapping(uint=>uint)) public accountLocks; // mapping(hash(addrTo,addrTo)=>lastDatetime)   - stores the last transaction time for the pair (from,to)
-    mapping(address=>uint) public accountType; 
+    //mapping(address=>mapping(uint=>uint)) public karmaKicks; // user's giveaway karma kickbacks
+    mapping(address=>mapping(uint=>bool)) public isAmbassador; 
     mapping(address=>LogEntry[]) public logs; // transfer log.
     
     TokenInfo[] public tokenInfos;
+    mapping(address=>bool) public userExists;
     address[] accounts;
 
     function mint(uint8 tokenId, uint120 amount) 
@@ -45,13 +47,14 @@ contract EdconGame {
     public 
     ambassadorOnly(tokenId) {
         box[to][tokenId] += amount;
-        storeAccount(to,AMBASSADOR_ZERO + tokenId);    // 0 - NOT_EXIST, 1 - REGULAR_USER, 2+ - AMBASSADOR for tokenId (starts from '0')
+        isAmbassador[to][tokenId] = true;
+        storeNewAccount(to);
     }
 
-    function setAccountType(uint8 tokenId, address addr, bool setAmbassador) 
+    function setAmbassador(address addr, uint8 tokenId, bool _isAmbassador) 
     public 
     ambassadorOnly(tokenId) {
-        storeAccount(addr,setAmbassador ? AMBASSADOR_ZERO + tokenId : REGULAR_USER);    // 0 - NOT_EXIST, 1 - REGULAR_USER, 2+ - AMBASSADOR for tokenId (starts from '0')
+        isAmbassador[addr][tokenId] = _isAmbassador;
     }
 
     function transferBatch(uint8[] calldata tokenIds, uint120[] calldata amounts, address to) public {
@@ -62,16 +65,15 @@ contract EdconGame {
     }
 
     function transfer(uint8 tokenId, uint120 amount, address to) public {
-        if (!isAmbassador(to,tokenId)) {
+        if (!isAmbassador[msg.sender][tokenId]) {
             require(getTimeToUnlock(to, tokenId) == 0,"destination is still locked for this transfer");
-            //save timestamp for transfer to lock token transfers for  1hrs.
+            //save timestamp for transfer to lock token transfers for 1hrs.
             accountLocks[to][tokenId] = block.timestamp;  // locks "to" account for incoming transactions with tokenId.
-            karma[msg.sender][tokenId]+=1;
+            karma[msg.sender][tokenId] += userExists[to] ? KARMA_TRANSFER : KARMA_NEW_USER;
         }
         box[msg.sender][tokenId] -= amount;
         box[to][tokenId] += amount;
-        storeAccount(to,REGULAR_USER); // 0 - NOT_EXIST, 1 - REGULAR_USER, 2+ - AMBASSADOR for tokenId (starts from '0')
-      
+        storeNewAccount(to);
         //store log entry
         logs[msg.sender].push(LogEntry(tokenId,to,block.timestamp));
     }
@@ -94,25 +96,17 @@ contract EdconGame {
         return timeDiff > LOCKTIME ? 0 : timeDiff;
     }
 
-    function txKey(address to, uint tokenId) private pure returns(bytes32) {
-        return sha256(abi.encodePacked(to, tokenId));  // calculate key 
-    }
-
-    function storeAccount(address a, uint typ) private {
-        if (accountType[a]==USER_NOT_EXIST) {
-            accountType[a] = typ;
-            accounts.push(a); 
+    function storeNewAccount(address a) private {
+        if (!userExists[a]) {
+            accounts.push(a);
+            userExists[a]=true; 
         }
     }
 
     modifier ambassadorOnly(uint tokenId) {
-        require( isAmbassador(msg.sender, tokenId),  "only Project Ambassador is eligible to mint tokens" );
+        require( isAmbassador[msg.sender][tokenId] || msg.sender == tokenInfos[tokenId].creator   // creator is a "seed" ambassador, that works always.  
+                 ,"only Project Ambassador is eligible to mint tokens" );
         _;
-    }
-
-    function isAmbassador(address a, uint tokenId) private view returns (bool) {
-        return accountType[a]==AMBASSADOR_ZERO + tokenId
-              || a == tokenInfos[tokenId].creator;   // creator is a "seed" ambassador, that works always.
     }
 
 }
