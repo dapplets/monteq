@@ -18,7 +18,7 @@
     "@react-native-community/netinfo": "^9.3.10",
     "@react-navigation/bottom-tabs": "^6.5.7",
     "@react-navigation/native": "^6.1.6",
-    "@web3modal/react-native": "^1.0.0-alpha.3",
+    "@web3modal/react-native": "github:WalletConnect/web3modal-react-native#a665bebfffaf3518a7c9b4ccfc6f87eeb1b58538",
     "ethers": "5.7.2",
     "link": "^1.5.1",
     "react": "18.2.0",
@@ -35,7 +35,7 @@
     "react-native-svg": "^13.9.0",
     "react-native-url-polyfill": "^1.3.0",
     "react-native-vision-camera": "^2.15.4",
-    "vision-camera-code-scanner": "https://github.com/jorgebrunetto/vision-camera-code-scanner.git"
+    "vision-camera-code-scanner": "github:jorgebrunetto/vision-camera-code-scanner#d1e10efb18e60c46e0aeb07fdc7aaa414e4b81f1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
