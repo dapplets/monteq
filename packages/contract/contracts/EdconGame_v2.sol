@@ -30,17 +30,24 @@ contract EdconGame {
     mapping(address=>mapping(uint=>uint)) public karma; // user's giveaway karma
     mapping(address=>mapping(uint=>uint)) public accountLocks; // mapping(hash(addrTo,addrTo)=>lastDatetime)   - stores the last transaction time for the pair (from,to)
     //mapping(address=>mapping(uint=>uint)) public karmaKicks; // user's giveaway karma kickbacks
-    mapping(address=>mapping(uint=>bool)) public isAmbassador; 
+    mapping(address=>mapping(uint=>uint8)) public ambassadorRank; // if 0 - regular user 
     mapping(address=>LogEntry[]) public logs; // transfer log.
     
     TokenInfo[] public tokenInfos;
     mapping(address=>bool) public userExists;
     address[] accounts;
 
-    function setAmbassador(address addr, uint8 tokenId, bool _isAmbassador) 
+    function setAmbassador(address addr, uint8 tokenId) 
     public 
     ambassadorOnly(tokenId) {
-        isAmbassador[addr][tokenId] = _isAmbassador;
+        ambassadorRank[addr][tokenId] = ambassadorRank[msg.sender][tokenId]-1; // if set to 0 means REGULAR_USER,
+    }
+
+    function setAmbassador(address addr, uint8 tokenId, uint _ambassadorRank) 
+    public 
+    ambassadorOnly(tokenId) {
+        require(ambassadorRank[msg.sender][tokenId] > ambassadorRank, "can't increase ambassador rank");
+        ambassadorRank[addr][tokenId] = _ambassadorRank; // if set to 0 means REGULAR_USER,
     }
 
     function transferBatch(uint8[] calldata tokenIds, uint120[] calldata amounts, address to) public {
@@ -51,7 +58,7 @@ contract EdconGame {
     }
 
     function transfer(uint8 tokenId, uint120 amount, address to) public {
-        if (!isAmbassador[msg.sender][tokenId]) {
+        if (ambassadorRank[msg.sender][tokenId]>0) {
             require(box[msg.sender][tokenId]>=amount, "unsufficient funds");
             require(getTimeToUnlock(to, tokenId) == 0,"destination is still locked for this transfer");
 
