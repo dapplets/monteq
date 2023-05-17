@@ -28,8 +28,8 @@ contract EdconGame {
 
     mapping(address=>mapping(uint=>uint)) public box; // who owns what
     mapping(address=>mapping(uint=>uint)) public karma; // user's giveaway karma
+    mapping(address=>mapping(uint=>uint)) public accountLocks; // mapping(hash(addrTo,addrTo)=>lastDatetime)   - stores the last transaction time for the pair (from,to)
     mapping(address=>uint) public accountType; 
-    mapping(bytes32=>uint) public accountLocks; // mapping(hash(addrTo,addrTo)=>lastDatetime)   - stores the last transaction time for the pair (from,to)
     mapping(address=>LogEntry[]) public logs; // transfer log.
     
     TokenInfo[] public tokenInfos;
@@ -65,7 +65,7 @@ contract EdconGame {
         if (!isAmbassador(to,tokenId)) {
             require(getTimeToUnlock(to, tokenId) == 0,"destination is still locked for this transfer");
             //save timestamp for transfer to lock token transfers for  1hrs.
-            accountLocks[ txKey(to, tokenId) ] = block.timestamp;  // locks "to" account for incoming transactions with tokenId.
+            accountLocks[to][tokenId] = block.timestamp;  // locks "to" account for incoming transactions with tokenId.
             karma[msg.sender][tokenId]+=1;
         }
         box[msg.sender][tokenId] -= amount;
@@ -90,8 +90,7 @@ contract EdconGame {
     }
 
     function getTimeToUnlock(address to, uint tokenId) public view returns (uint timestampDiff){
-        bytes32 key = txKey(to, tokenId);  // calculate key 
-        uint timeDiff = block.timestamp - accountLocks[key];
+        uint timeDiff = block.timestamp - accountLocks[to][tokenId];
         return timeDiff > LOCKTIME ? 0 : timeDiff;
     }
 
