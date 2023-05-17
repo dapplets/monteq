@@ -15,7 +15,7 @@ contract EdconGame {
     struct TokenInfo {
         string ticker;
         string tokenName;
-        bytes32 ipfsIconURI;
+        string iconUrl;
         address creator;
     }
 
@@ -92,9 +92,9 @@ contract EdconGame {
     function addToken(
         string calldata ticker,
         string calldata tokenName,
-        bytes32 ipfsIconURI
+        string calldata iconUrl
     ) public {
-        tokenInfos.push(TokenInfo(ticker, tokenName, ipfsIconURI, msg.sender));
+        tokenInfos.push(TokenInfo(ticker, tokenName, iconUrl, msg.sender));
     }
 
     function readToken() public view returns (TokenInfo[] memory ti) {
