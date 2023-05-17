@@ -6,7 +6,7 @@ import {FontFamily} from '../GlobalStyles';
 export type PaymentInfoType = {
   price: string;
   title: string;
-  convert: {
+  convert?: {
     convertEUR: string;
     convertCurrency: string;
   };
@@ -20,16 +20,22 @@ const PaymentInfo = ({price, title, convert}: PaymentInfoType) => {
         <Text style={styles.priceTitle}>{price}</Text>
         <Text style={styles.priceSubtitle}>{BASE_CRYPTO_CURRENCY}</Text>
       </View>
-      <View style={styles.PaymentConvert}>
-        <Text style={styles.convertEUR}>{convert.convertEUR}</Text>
-        <Text style={styles.convertCurrensy}>=</Text>
-        <Text style={styles.convertCurrensy}>{convert.convertCurrency}</Text>
-      </View>
-      <View style={styles.PaymentDescription}>
-        <Text style={styles.DescriptionText}>
-          Always get consent from the recepient before you pay in crypto.
-        </Text>
-      </View>
+      {convert ? (
+        <>
+          <View style={styles.PaymentConvert}>
+            <Text style={styles.convertEUR}>{convert.convertEUR}</Text>
+            <Text style={styles.convertCurrensy}>=</Text>
+            <Text style={styles.convertCurrensy}>
+              {convert.convertCurrency}
+            </Text>
+          </View>
+          <View style={styles.PaymentDescription}>
+            <Text style={styles.DescriptionText}>
+              Always get consent from the recepient before you pay in crypto.
+            </Text>
+          </View>
+        </>
+      ) : null}
     </View>
   );
 };

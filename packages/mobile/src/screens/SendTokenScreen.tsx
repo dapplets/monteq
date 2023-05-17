@@ -9,6 +9,7 @@ import React, {memo, useEffect, useState} from 'react';
 import {
   Button,
   FlatList,
+  Image,
   Platform,
   ScrollView,
   StyleSheet,
@@ -44,6 +45,8 @@ import {
   ParsedUint,
   TokenId,
 } from '../contexts/EdconContractContext/EdconContractContext';
+import CompanyParameters from '../components/CompanyParameters';
+import TokenBlock from '../components/TokenBlock';
 
 type Props = {
   route: RouteProp<{params: {parsedQrCode: ParsedEDCON2023Code}}, 'params'>;
@@ -68,7 +71,7 @@ const SendTokenScreen: React.FC<Props> = memo(({route}) => {
   const isFocused = useIsFocused();
 
   const [modalVisible, setModalVisible] = useState(false);
-
+  const [userName, setUserName] = useState('');
   const [tokenAmountsMap, setTokenAmountsMap] = useState<{
     [tokenId: TokenId]: ParsedUint;
   }>({});
@@ -131,12 +134,14 @@ const SendTokenScreen: React.FC<Props> = memo(({route}) => {
 
   return (
     <>
-      <ScrollView>
-        <Title label={`ToDo: send to ${parsedQrCode.to}`} />
+      <ScrollView style={styles.InfoScreenWrapper}>
+        <Title label={`Sending tokens`} />
+        <Text>{`ToDo: send to ${parsedQrCode.to}`}</Text>
         <View>{areMyTokensLoading ? <Text>Loading</Text> : null}</View>
-        <View>
+
+        <View style={styles.tokensBlock}>
           {myTokens.map(token => (
-            <Button
+            <TokenBlock
               key={token.tokenId}
               title={`${token.ticker}: ${
                 tokenAmountsMap[token.tokenId] ?? 0
@@ -145,21 +150,15 @@ const SendTokenScreen: React.FC<Props> = memo(({route}) => {
             />
           ))}
 
-          <Button
-            title={'Send tokens'}
-            onPress={handleSendTokensPress}
-            disabled={transferOrMintTxStatus !== TxStatus.Idle}
-          />
-
           <Text>TxStatus: {transferOrMintTxStatus}</Text>
         </View>
-        <GeneralPayInfo
-          generalPayAmount={'12'}
-          title={'Your are sending'}
-          generalPayAmountSubtitle={'ABC'}
-        />
-        <View>
-          <PaymentParameters parameters={'User'} value={'@SomeUsername'} />
+        <PaymentInfo price={'12'} title={'Your are sending'} />
+        <View style={styles.PayInfo}>
+          <CompanyParameters
+            parameters={'User'}
+            value={userName}
+            onChangeValue={setUserName}
+          />
         </View>
         <LinearGradient
           start={{x: 0, y: 0}}
@@ -169,10 +168,27 @@ const SendTokenScreen: React.FC<Props> = memo(({route}) => {
           <TouchableHighlight
             underlayColor={'#1da4ac'}
             activeOpacity={0.5}
+            onPress={handleSendTokensPress}
+            disabled={transferOrMintTxStatus !== TxStatus.Idle}
             style={styles.buttonSend}>
-            <Text style={styles.buttonText}>Send tokens</Text>
+            <>
+              <Image
+                style={styles.imgBtnSend}
+                resizeMode="contain"
+                source={require('../assets/ok.png')}
+              />
+              <Text style={styles.buttonText}>Send tokens</Text>
+            </>
           </TouchableHighlight>
         </LinearGradient>
+        <TouchableHighlight
+          underlayColor={'transparent'}
+          activeOpacity={0.5}
+          style={styles.buttonSendAmbassador}>
+          <Text style={styles.buttonTextAmbassador}>
+            Set an ambassador rank
+          </Text>
+        </TouchableHighlight>
       </ScrollView>
 
       {!modalVisible ? <Navigation path="Payment" /> : null}
@@ -255,50 +271,7 @@ const styles = StyleSheet.create({
     paddingRight: 10,
     zIndex: 2,
   },
-  AvailableWrapper: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: '#F6F7F8',
-    borderRadius: 6,
-    padding: 10,
-  },
-  AvailableTitle: {
-    color: '#222222',
-    fontSize: 14,
-    lineHeight: 17,
-    width: '60%',
-    fontWeight: '400',
-    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoRegular,
-  },
-  AvailableBlock: {
-    display: 'flex',
-    width: '40%',
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-  },
-  AvailableAmount: {
-    color: '#222222',
-    fontSize: 14,
-    lineHeight: 17,
-    fontWeight: '600',
-    marginRight: 5,
-    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
-  },
-  AvailableCurrency: {
-    color: '#222222',
-    fontSize: 14,
-    lineHeight: 17,
-    fontWeight: '600',
-    marginRight: 10,
-    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
-  },
-  AvailableImg: {
-    width: 20,
-    height: 20,
-  },
+
   PayInfo: {
     display: 'flex',
     flexDirection: 'column',
@@ -307,23 +280,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#F6F7F8',
     borderRadius: 10,
     marginTop: 10,
-  },
-  PayInfoTitle: {
-    display: 'flex',
-    flexDirection: 'row',
-
-    padding: 10,
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    width: '100%',
     marginBottom: 10,
   },
-  PayInfoTitleText: {
-    color: '#222222',
-    fontSize: 14,
-    lineHeight: 16,
-    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoRegular,
-  },
+
   // ToDo: code duplicated in TxModal.tsx
   linearGradient: {
     display: 'flex',
@@ -349,25 +308,36 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
-  buttonInsufficient: {
-    backgroundColor: '#FF3E3E',
-    width: '100%',
-    height: 48,
+
+  imgBtnSend: {
+    marginRight: 5,
+  },
+  buttonSendAmbassador: {
     display: 'flex',
+    borderRadius: 50,
+    width: '100%',
+    backgroundColor: 'transparent',
+    height: 48,
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'center',
-    borderRadius: 50,
+    borderStyle: 'solid',
+    borderWidth: 1,
+    borderColor: '#14C58B',
+    marginTop: 10,
   },
-  buttonInsufficientText: {
+  buttonTextAmbassador: {
     fontSize: 14,
     fontWeight: '700',
     lineHeight: 16,
-    textDecorationLine: 'underline',
-    textDecorationColor: '#fff',
-    textDecorationStyle: 'solid',
-    color: '#fff',
+    color: '#14C58B',
     fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
+  },
+  tokensBlock: {
+    width: '100%',
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
   },
 });
 

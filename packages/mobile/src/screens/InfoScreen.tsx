@@ -8,6 +8,7 @@ import {
   Image,
   TouchableHighlight,
   Platform,
+  TextInput,
 } from 'react-native';
 import Navigation from '../components/Navigation';
 import Title from '../components/TitlePage';
@@ -34,6 +35,7 @@ const InfoScreen = () => {
     isOutHistoryLoading,
   } = useMonteqContract();
   const [modalShareVisible, setModalShareVisible] = useState(false);
+  const [nameUser, setNameUser] = useState('@SomeUsername');
   React.useEffect(() => {
     if (isFocused) {
       loadMoreOutHistory();
@@ -85,6 +87,22 @@ const InfoScreen = () => {
                   source={require('../assets/share.png')}
                 />
               </TouchableHighlight>
+            </View>
+            <View style={styles.nameParameters}>
+              <TextInput
+                // autoFocus={true}
+                // numberOfLines={1}
+                // placeholder="Enter Name"
+                value={nameUser}
+                maxLength={20}
+                onChangeText={setNameUser}
+                style={styles.Value}
+              />
+              <Image
+                style={styles.shareImg}
+                resizeMode="contain"
+                source={require('../assets/edit.png')}
+              />
             </View>
             <GeneralPayInfo
               generalPayAmount={truncate(
@@ -262,6 +280,28 @@ const styles = StyleSheet.create({
   shareImg: {
     width: 24,
     height: 24,
+  },
+  nameParameters: {
+    display: 'flex',
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    backgroundColor: '#fff',
+    borderRadius: 4,
+    padding: 10,
+    marginBottom: 10,
+  },
+  Value: {
+    fontSize: 14,
+    lineHeight: 16,
+    fontWeight: '400',
+    color: '#222222',
+    backgroundColor: '#fff',
+    padding: 0,
+    margin: 0,
+    textAlign: 'left',
+    width: '80%',
+    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoRegular,
   },
 });
 
