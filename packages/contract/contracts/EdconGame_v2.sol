@@ -37,20 +37,6 @@ contract EdconGame {
     mapping(address=>bool) public userExists;
     address[] accounts;
 
-    function mint(uint8 tokenId, uint120 amount) 
-    public 
-    ambassadorOnly(tokenId) {
-        box[msg.sender][tokenId] += amount;
-    }
-    
-    function mintTo(uint8 tokenId, uint120 amount, address to) 
-    public 
-    ambassadorOnly(tokenId) {
-        box[to][tokenId] += amount;
-        isAmbassador[to][tokenId] = true;
-        storeNewAccount(to);
-    }
-
     function setAmbassador(address addr, uint8 tokenId, bool _isAmbassador) 
     public 
     ambassadorOnly(tokenId) {
