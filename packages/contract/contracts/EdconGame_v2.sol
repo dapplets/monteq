@@ -120,6 +120,13 @@ contract EdconGame {
         }
     }
 
+    function balanceOf(
+        address a,
+        uint tokenId
+    ) public view returns (uint amount) {
+        return box[a][tokenId];
+    }
+
     modifier ambassadorOnly(uint tokenId) {
         require(
             ambassadorRank[msg.sender][tokenId] != 0 ||
