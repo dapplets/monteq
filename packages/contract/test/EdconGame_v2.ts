@@ -30,7 +30,7 @@ describe('EdconGame_v2', function () {
         const businessInfo001 = [businessId001, owner.address, businessName001]
         const businessInfo002 = [businessId002, otherAccount.address, businessName002]
 
-        const EdconGame = await ethers.getContractFactory('EdconGame_v2')
+        const EdconGame = await ethers.getContractFactory('contracts/EdconGame_v2.sol:EdconGame')
         const edconGame = await EdconGame.deploy()
 
         return {
@@ -65,7 +65,7 @@ describe('EdconGame_v2', function () {
             const { edconGame, owner, businessId001, emptyBusinessInfo } = await loadFixture(
                 deployOneYearLockFixture
             )
-            expect(true).to.be.revertedWith("You aren't the ambassador")
+            expect(true).to.throw('You are not an ambassador')
         })
     })
 
@@ -95,7 +95,7 @@ describe('EdconGame_v2', function () {
             const { edconGame, owner, businessId001, emptyBusinessInfo } = await loadFixture(
                 deployOneYearLockFixture
             )
-            expect(true).to.be.revertedWith('You are the ambassador!')
+            expect(true).to.throw('You are the ambassador!')
         })
     })
 
@@ -118,7 +118,7 @@ describe('EdconGame_v2', function () {
             const { edconGame, owner, businessId001, emptyBusinessInfo } = await loadFixture(
                 deployOneYearLockFixture
             )
-            expect(true).to.be.revertedWith("You aren't the ambassador")
+            expect(true).to.throw("You aren't the ambassador")
         })
     })
 })
