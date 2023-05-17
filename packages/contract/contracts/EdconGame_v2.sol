@@ -46,7 +46,8 @@ contract EdconGame {
     function setAmbassador(address addr, uint8 tokenId, uint _ambassadorRank) 
     public 
     ambassadorOnly(tokenId) {
-        require(ambassadorRank[msg.sender][tokenId] > ambassadorRank, "can't increase ambassador rank");
+        require( msg.sender == tokenInfos[tokenId].creator 
+                 || ambassadorRank[msg.sender][tokenId] > ambassadorRank, "only creator can increase ambassador rank");
         ambassadorRank[addr][tokenId] = _ambassadorRank; // if set to 0 means REGULAR_USER,
     }
 
