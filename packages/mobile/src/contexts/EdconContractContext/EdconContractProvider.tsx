@@ -81,20 +81,20 @@ const EdconContractProvider: FC<Props> = ({children}) => {
       const address = await contract.signer.getAddress();
       const allTokenInfos = await contract.readToken();
       const allTokenInfoBalances = await Promise.all(
-        allTokenInfos.map((token: any) =>
+        allTokenInfos.map((token: any, tokenId: number) =>
           contract
-            .balanceOf(address, token.tokenId)
-            .then((balance: any) => ({token, balance})),
+            .balanceOf(address, tokenId)
+            .then((balance: any) => ({tokenId, token, balance})),
         ),
       );
-
       const myTokensWithBalance: MyTokenInfo[] = allTokenInfoBalances
         .filter((x: any) => !x.balance.eq(ethers.BigNumber.from(0)))
         .map((x: any) => ({
-          ticker: x.ticker,
-          tokenName: x.tokenName,
-          iconUrl: x.iconUrl,
-          creator: x.creator,
+          tokenId: x.tokenId,
+          ticker: x.token.ticker,
+          tokenName: x.token.tokenName,
+          iconUrl: x.token.iconUrl,
+          creator: x.token.creator,
           balance: x.balance.toString(),
         }));
 

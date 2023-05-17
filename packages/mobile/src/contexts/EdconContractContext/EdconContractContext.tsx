@@ -16,6 +16,7 @@ export type Address = string;
 export type TokenId = number;
 
 export type MyTokenInfo = {
+  tokenId: TokenId;
   ticker: string;
   tokenName: string;
   iconUrl: string;
