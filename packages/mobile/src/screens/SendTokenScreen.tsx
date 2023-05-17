@@ -7,6 +7,7 @@ import {
 import {useWeb3Modal} from '@web3modal/react-native';
 import React, {memo, useEffect, useState} from 'react';
 import {
+  Button,
   FlatList,
   Platform,
   ScrollView,
@@ -38,6 +39,11 @@ import {
 } from '../contexts/MonteqContractContext/MonteqContractContext';
 import {FontFamily} from '../GlobalStyles';
 import GeneralPayInfo from '../components/GeneralPayInfo';
+import {useEdconContract} from '../contexts/EdconContractContext';
+import {
+  ParsedUint,
+  TokenId,
+} from '../contexts/EdconContractContext/EdconContractContext';
 
 type Props = {
   route: RouteProp<{params: {parsedQrCode: ParsedEDCON2023Code}}, 'params'>;
@@ -48,11 +54,24 @@ const testTokens = [{}];
 const SendTokenScreen: React.FC<Props> = memo(({route}) => {
   const parsedQrCode = route.params.parsedQrCode;
 
+  const {
+    myTokens,
+    areMyTokensLoading,
+    loadMyTokens,
+    transferOrMint,
+    transferOrMintTxStatus,
+    resetTransferOrMintTxStatus,
+  } = useEdconContract();
+
   const {provider} = useWeb3Modal();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-  // const isFocused = useIsFocused();
+  const isFocused = useIsFocused();
 
   const [modalVisible, setModalVisible] = useState(false);
+
+  const [tokenAmountsMap, setTokenAmountsMap] = useState<{
+    [tokenId: TokenId]: ParsedUint;
+  }>({});
 
   // const {
   //   balance,
@@ -63,13 +82,32 @@ const SendTokenScreen: React.FC<Props> = memo(({route}) => {
   //   resetPaymentTxStatus,
   // } = useMonteqContract();
 
-  // useEffect(() => {
-  //   resetPaymentTxStatus();
-  // }, [isFocused, resetPaymentTxStatus]);
+  useEffect(() => {
+    resetTransferOrMintTxStatus();
+    loadMyTokens();
+  }, [isFocused, loadMyTokens, resetTransferOrMintTxStatus]);
 
   if (!parsedQrCode) {
     // ToDo: invalid receipt
     return null;
+  }
+
+  function handleIncrementTokenPress(tokenId: TokenId) {
+    setTokenAmountsMap(amount => ({
+      ...amount,
+      [tokenId]: (amount[tokenId] ?? 0) + 1,
+    }));
+  }
+
+  function handleSendTokensPress() {
+    const tokensToTransfer = Object.entries(tokenAmountsMap).map(
+      ([tokenId, amount]) => ({
+        tokenId: Number(tokenId),
+        amount,
+      }),
+    );
+
+    transferOrMint(tokensToTransfer, parsedQrCode.to);
   }
 
   // async function handleCloseButtonPress() {
@@ -95,6 +133,26 @@ const SendTokenScreen: React.FC<Props> = memo(({route}) => {
     <>
       <ScrollView>
         <Title label={`ToDo: send to ${parsedQrCode.to}`} />
+        <View>{areMyTokensLoading ? <Text>Loading</Text> : null}</View>
+        <View>
+          {myTokens.map(token => (
+            <Button
+              key={token.tokenId}
+              title={`${token.ticker}: ${
+                tokenAmountsMap[token.tokenId] ?? 0
+              } / ${token.balance}`}
+              onPress={() => handleIncrementTokenPress(token.tokenId)}
+            />
+          ))}
+
+          <Button
+            title={'Send tokens'}
+            onPress={handleSendTokensPress}
+            disabled={transferOrMintTxStatus !== TxStatus.Idle}
+          />
+
+          <Text>TxStatus: {transferOrMintTxStatus}</Text>
+        </View>
         <GeneralPayInfo
           generalPayAmount={'12'}
           title={'Your are sending'}
