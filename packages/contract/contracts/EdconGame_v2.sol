@@ -7,6 +7,13 @@ pragma solidity >=0.8.19 <0.9.0;
  * ver 0.2
  **/
 contract EdconGame {
+    constructor (address[] memory _gameMasters) {
+        for(uint n=0; n<_gameMasters.length; ++n) {
+            gameMasters.push(_gameMasters[n]);    
+        }
+        gameMasters.push(msg.sender);
+    }
+
     uint constant LOCKTIME = 1 hours;
 
     uint constant KARMA_TRANSFER = 10;
@@ -48,8 +55,9 @@ contract EdconGame {
     TokenInfo[] public tokenInfos;
     mapping(string => bool) public tokenExists; //mapping(ticker=>bool)
     mapping(address => bool) public userExists;
-    
+        
     address[] accounts;
+    address[] public gameMasters;
 
     function setAmbassador(
         address addr,
@@ -112,7 +120,7 @@ contract EdconGame {
         string calldata tokenName,
         string calldata iconUrl,
         uint8           initialRank
-    ) public {
+    ) public gameMastersOnly {
         require(!tokenExists[ticker],"token exists already");
         tokenExists[ticker] = true;
         tokenInfos.push(TokenInfo(ticker, tokenName, iconUrl, msg.sender));
@@ -189,6 +197,15 @@ contract EdconGame {
                 msg.sender == tokenInfos[tokenId].creator, // creator is a "seed" ambassador, that works always.
             "only Project Ambassador is eligible to mint tokens"
         );
+        _;
+    }
+
+    modifier gameMastersOnly(){
+        uint n=0;
+        for(;n<gameMasters.length;++n) {
+            if (msg.sender == gameMasters[n]) break;
+        }
+        require(n<gameMasters.length, "only gameMaster can do it");
         _;
     }
 }
