@@ -342,7 +342,10 @@ describe('EdconGame_v2', function () {
                 .addToken(TICKER_02, TOKEN_NAME_01, TOKEN_ICON_01, 2)
 
             await edconGame.connect(businessOwner).transfer(0, 7, anotherAccount2.address)
-            await edconGame.connect(anotherAccount).transfer(0, 15, anotherAccount2.address)
+            await edconGame.connect(anotherAccount).transfer(1, 15, anotherAccount2.address)
+            expect(await edconGame.box(anotherAccount2.address, 0)).to.equal(7)
+            expect(await edconGame.box(anotherAccount2.address, 1)).to.equal(15)
+
             await edconGame
                 .connect(anotherAccount2)
                 .transferBatch([0, 1], [7, 10], anotherAccount3.address)
