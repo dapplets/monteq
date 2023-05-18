@@ -171,6 +171,7 @@ const styles = StyleSheet.create({
 
     marginBottom: 50,
     borderRadius: 45,
+    zIndex: 101,
   },
   scanButtonImg: {
     marginTop: '5%',
