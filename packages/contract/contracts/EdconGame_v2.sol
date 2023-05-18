@@ -47,7 +47,9 @@ contract EdconGame {
     mapping(address => LogEntry[]) public logs; // transfer log.
 
     TokenInfo[] public tokenInfos;
+    mapping(string => bool) public tokenExists; //mapping(ticker=>bool)
     mapping(address => bool) public userExists;
+    
     address[] accounts;
 
     function setAmbassador(
@@ -111,6 +113,8 @@ contract EdconGame {
         string calldata iconUrl,
         uint8           initialRank
     ) public {
+        require(!tokenExists[ticker],"token exists already");
+        tokenExists[ticker] = true;
         tokenInfos.push(TokenInfo(ticker, tokenName, iconUrl, msg.sender));
         ambassadorRank[msg.sender][tokenInfos.length-1] = initialRank > 0 
             ? initialRank 
