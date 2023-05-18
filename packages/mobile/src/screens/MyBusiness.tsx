@@ -13,7 +13,7 @@ import {
 import Navigation from '../components/Navigation';
 import Title from '../components/TitlePage';
 import {useMonteqContract} from '../contexts/MonteqContractContext';
-import LinearGradient from 'react-native-linear-gradient';
+import { LinearGradient } from 'expo-linear-gradient';
 import SwitchBlock from '../components/SwitchBlock';
 import {useWeb3Modal} from '@web3modal/react-native';
 import {

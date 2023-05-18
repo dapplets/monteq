@@ -1,7 +1,7 @@
 import React from 'react';
-import Title from '../components/TitlePage';
-import PaymentParameters from '../components/PaymentParameters';
-import LinearGradient from 'react-native-linear-gradient';
+import Title from './TitlePage';
+import PaymentParameters from './PaymentParameters';
+import { LinearGradient } from 'expo-linear-gradient';
 import {
   Image,
   StyleSheet,

@@ -1,10 +1,10 @@
 import React from 'react';
-import LinearGradient from 'react-native-linear-gradient';
+import { LinearGradient } from 'expo-linear-gradient';
 import {StyleSheet, Text, TouchableHighlight, View, Modal} from 'react-native';
 import MaskedView from '@react-native-masked-view/masked-view';
 import {FontFamily} from '../GlobalStyles';
 import QRCode from 'react-native-qrcode-svg';
-import Clipboard from '@react-native-clipboard/clipboard';
+import * as Clipboard from 'expo-clipboard';
 
 // ToDo: move to business logic?
 function makeShareUrl(to: string, user: string): string {
@@ -34,6 +34,10 @@ const ShareModal: React.FC<Props> = ({
   const qrCodeUrl = makeShareUrl(account, username);
   const ref = React.useRef();
 
+  const copyToClipboard = async () => {
+    await Clipboard.setStringAsync(qrCodeUrl);
+  };
+
   return (
     <Modal
       animationType="slide"
@@ -45,7 +49,7 @@ const ShareModal: React.FC<Props> = ({
           <TouchableHighlight
             underlayColor={'transparent'}
             activeOpacity={0.5}
-            onPress={() => Clipboard.setString(qrCodeUrl)}
+            onPress={copyToClipboard}
             style={styles.Title}>
             <Text>Tap to copy</Text>
           </TouchableHighlight>
