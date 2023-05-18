@@ -34,16 +34,14 @@ import {
 import SwitchBlock from '../components/SwitchBlock';
 import {addStr, gteStr, mulStr, truncate} from '../common/helpers';
 import TxModal, {TxStatusType} from '../components/TxModal';
-import {
-  BusinessInfo,
-  TxStatus,
-} from '../contexts/MonteqContractContext/MonteqContractContext';
+
 import {FontFamily} from '../GlobalStyles';
 import GeneralPayInfo from '../components/GeneralPayInfo';
 import {useEdconContract} from '../contexts/EdconContractContext';
 import {
   ParsedUint,
   TokenId,
+  TxStatus,
 } from '../contexts/EdconContractContext/EdconContractContext';
 import CompanyParameters from '../components/CompanyParameters';
 import TokenBlock from '../components/TokenBlock';
@@ -65,6 +63,7 @@ const SendTokenScreen: React.FC<Props> = memo(({route}) => {
     transferOrMint,
     transferOrMintTxStatus,
     resetTransferOrMintTxStatus,
+    setAmbassadorTxStatus,
   } = useEdconContract();
   const {userName, changeUserName} = useUserName();
   const {provider} = useWeb3Modal();
@@ -76,22 +75,12 @@ const SendTokenScreen: React.FC<Props> = memo(({route}) => {
     [tokenId: TokenId]: ParsedUint;
   }>({});
 
-  // const {
-  //   balance,
-  //   isBalanceLoading,
-  //   payReceipt,
-  //   paymentTxStatus,
-  //   rate,
-  //   resetPaymentTxStatus,
-  // } = useMonteqContract();
-
   useEffect(() => {
-    resetTransferOrMintTxStatus();
     loadMyTokens();
     parsedQrCode.user && userName.length === 0
       ? changeUserName(parsedQrCode.user)
       : changeUserName(userName);
-  }, [isFocused, loadMyTokens, resetTransferOrMintTxStatus,transferOrMintTxStatus]);
+  }, [isFocused, loadMyTokens, transferOrMintTxStatus, setAmbassadorTxStatus]);
 
   if (!parsedQrCode) {
     // ToDo: invalid receipt
@@ -106,6 +95,7 @@ const SendTokenScreen: React.FC<Props> = memo(({route}) => {
   }
 
   function handleSendTokensPress() {
+    setModalVisible(true);
     const tokensToTransfer = Object.entries(tokenAmountsMap).map(
       ([tokenId, amount]) => ({
         tokenId: Number(tokenId),
@@ -116,25 +106,17 @@ const SendTokenScreen: React.FC<Props> = memo(({route}) => {
     transferOrMint(tokensToTransfer, parsedQrCode.to);
   }
 
-  // async function handleCloseButtonPress() {
-  //   navigation.navigate('InfoScreen');
-  // }
+  async function handleCloseButtonPress() {
+    resetTransferOrMintTxStatus();
+    navigation.navigate('InfoScreen');
+  }
 
-  // async function handleSendPress() {
-  //   if (!provider || !parsedQrCode) {
-  //     return;
-  //   }
+  async function handleCloseError() {
+    resetTransferOrMintTxStatus();
 
-  //   setModalVisible(true);
-
-  //   // payReceipt(
-  //   //   parsedQrCode.businessId,
-  //   //   parsedQrCode.currencyReceipt,
-  //   //   billAmountInCrypto,
-  //   //   tipsAmountInCrypto,
-  //   // );
-  // }
-  console.log(tokenAmountsMap);
+    setModalVisible(false);
+  }
+  console.log(myTokens);
   return (
     <>
       <ScrollView style={styles.InfoScreenWrapper}>
@@ -144,32 +126,30 @@ const SendTokenScreen: React.FC<Props> = memo(({route}) => {
 
         <View style={styles.tokensBlock}>
           {myTokens.map(token => (
-            <>
-              <TokenBlock
-                key={token.tokenId}
-                //${token.ticker}: ${
-                //   tokenAmountsMap[token.tokenId] ?? 0
-                // }
-                children={
-                  <View style={styles.imgTokenWrapper}>
-                    <Image
-                      style={styles.img}
-                      resizeMode="contain"
-                      source={{uri: `${token.iconUrl}`}}
-                    />
-                    {tokenAmountsMap && tokenAmountsMap[`${token.tokenId}`] ? (
-                      <View style={styles.counter}>
-                        <Text style={styles.textCounter}>
-                          {tokenAmountsMap[`${token.tokenId}`]}
-                        </Text>
-                      </View>
-                    ) : null}
-                  </View>
-                }
-                title={`${token.balance}`}
-                onPress={() => handleIncrementTokenPress(token.tokenId)}
-              />
-            </>
+            <TokenBlock
+              key={token.tokenId}
+              //${token.ticker}: ${
+              //   tokenAmountsMap[token.tokenId] ?? 0
+              // }
+              children={
+                <View style={styles.imgTokenWrapper}>
+                  <Image
+                    style={styles.img}
+                    resizeMode="contain"
+                    source={{uri: `${token.iconUrl}`}}
+                  />
+                  {tokenAmountsMap && tokenAmountsMap[`${token.tokenId}`] ? (
+                    <View style={styles.counter}>
+                      <Text style={styles.textCounter}>
+                        {tokenAmountsMap[`${token.tokenId}`]}
+                      </Text>
+                    </View>
+                  ) : null}
+                </View>
+              }
+              title={`${token.balance}`}
+              onPress={() => handleIncrementTokenPress(token.tokenId)}
+            />
           ))}
 
           <Text>TxStatus: {transferOrMintTxStatus}</Text>
@@ -203,14 +183,17 @@ const SendTokenScreen: React.FC<Props> = memo(({route}) => {
             </>
           </TouchableHighlight>
         </LinearGradient>
-        <TouchableHighlight
-          underlayColor={'transparent'}
-          activeOpacity={0.5}
-          style={styles.buttonSendAmbassador}>
-          <Text style={styles.buttonTextAmbassador}>
-            Set an ambassador rank
-          </Text>
-        </TouchableHighlight>
+
+        {setAmbassadorTxStatus !== TxStatus.Idle && (
+          <TouchableHighlight
+            underlayColor={'transparent'}
+            activeOpacity={0.5}
+            style={styles.buttonSendAmbassador}>
+            <Text style={styles.buttonTextAmbassador}>
+              Set an ambassador rank
+            </Text>
+          </TouchableHighlight>
+        )}
       </ScrollView>
 
       {!modalVisible ? <Navigation path="Payment" /> : null}
@@ -222,11 +205,9 @@ const SendTokenScreen: React.FC<Props> = memo(({route}) => {
           status={'Signing'}
           type={TxStatusType.Yellow}
           image={require('../assets/inProgress.png')}
-          recipientId={parsedQrCode.to}
-          // recipientName={parsedQrCode.user}
+          recipientId={parsedQrCode.user}
           date={new Date(parsedQrCode.createdAt).toLocaleString()}
           fiatAmount={parsedQrCode.currencyReceipt}
-          // cryptoAmount={amountInCrypto}
           onRequestClose={() => setModalVisible(!modalVisible)}
         />
       ) : null}
@@ -238,11 +219,9 @@ const SendTokenScreen: React.FC<Props> = memo(({route}) => {
           status={'Mining'}
           type={TxStatusType.Yellow}
           image={require('../assets/inProgress.png')}
-          recipientId={parsedQrCode.to}
-          // recipientName={businessInfo.name}
+          recipientId={parsedQrCode.user}
           date={new Date(parsedQrCode.createdAt).toLocaleString()}
           fiatAmount={parsedQrCode.currencyReceipt}
-          // cryptoAmount={amountInCrypto}
           onRequestClose={() => setModalVisible(!modalVisible)}
         />
       ) : null}
@@ -254,14 +233,12 @@ const SendTokenScreen: React.FC<Props> = memo(({route}) => {
           status={'Confirmed'}
           type={TxStatusType.Green}
           image={require('../assets/confirmed.png')}
-          recipientId={parsedQrCode.to}
-          // recipientName={businessInfo.name}
+          recipientId={parsedQrCode.user}
           date={new Date(parsedQrCode.createdAt).toLocaleString()}
           fiatAmount={parsedQrCode.currencyReceipt}
-          // cryptoAmount={amountInCrypto}
           onRequestClose={() => setModalVisible(!modalVisible)}
           primaryButton="Close"
-          onPrimaryButtonPress={() => setModalVisible(!modalVisible)}
+          onPrimaryButtonPress={() => handleCloseButtonPress()}
         />
       ) : null}
 
@@ -273,10 +250,8 @@ const SendTokenScreen: React.FC<Props> = memo(({route}) => {
           description="You have rejected the transaction in the wallet"
           image={require('../assets/errorOccured.png')}
           onRequestClose={() => setModalVisible(!modalVisible)}
-          // primaryButton="Retry"
-          // onPrimaryButtonPress={handleSendPress}
           secondaryButton="Close"
-          onSecondaryButtonPress={() => setModalVisible(!modalVisible)}
+          onSecondaryButtonPress={() => handleCloseError()}
         />
       ) : null}
     </>

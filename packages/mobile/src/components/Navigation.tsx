@@ -155,8 +155,8 @@ const styles = StyleSheet.create({
     left: 0,
     shadowColor: '#000',
     shadowOffset: {
-      width: Platform.OS === 'ios' ? 2 : -20,
-      height: Platform.OS === 'ios' ? 2 : -20,
+      width: 2,
+      height: 2,
     },
     shadowOpacity: 1,
     shadowRadius: 3.84,
@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
   },
   scanButtonImg: {
     marginTop: '5%',
-
+    zIndex: 20,
     alignSelf: 'center',
   },
 });
