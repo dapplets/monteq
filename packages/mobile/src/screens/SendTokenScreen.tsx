@@ -91,7 +91,7 @@ const SendTokenScreen: React.FC<Props> = memo(({route}) => {
     parsedQrCode.user && userName.length === 0
       ? changeUserName(parsedQrCode.user)
       : changeUserName(userName);
-  }, [isFocused, loadMyTokens, resetTransferOrMintTxStatus]);
+  }, [isFocused, loadMyTokens, resetTransferOrMintTxStatus,transferOrMintTxStatus]);
 
   if (!parsedQrCode) {
     // ToDo: invalid receipt
@@ -215,70 +215,70 @@ const SendTokenScreen: React.FC<Props> = memo(({route}) => {
 
       {!modalVisible ? <Navigation path="Payment" /> : null}
 
-      {/* {paymentTxStatus === TxStatus.Sending ? (
+      {transferOrMintTxStatus === TxStatus.Sending ? (
         <TxModal
           isVisible={modalVisible}
           title="Transaction signing"
           status={'Signing'}
           type={TxStatusType.Yellow}
           image={require('../assets/inProgress.png')}
-          recipientId={parsedQrCode.businessId}
-          recipientName={businessInfo.name}
+          recipientId={parsedQrCode.to}
+          // recipientName={parsedQrCode.user}
           date={new Date(parsedQrCode.createdAt).toLocaleString()}
           fiatAmount={parsedQrCode.currencyReceipt}
-          cryptoAmount={amountInCrypto}
+          // cryptoAmount={amountInCrypto}
           onRequestClose={() => setModalVisible(!modalVisible)}
         />
       ) : null}
 
-      {paymentTxStatus === TxStatus.Mining ? (
+      {transferOrMintTxStatus === TxStatus.Mining ? (
         <TxModal
           isVisible={modalVisible}
           title="Transaction sent"
           status={'Mining'}
           type={TxStatusType.Yellow}
           image={require('../assets/inProgress.png')}
-          recipientId={parsedQrCode.businessId}
-          recipientName={businessInfo.name}
+          recipientId={parsedQrCode.to}
+          // recipientName={businessInfo.name}
           date={new Date(parsedQrCode.createdAt).toLocaleString()}
           fiatAmount={parsedQrCode.currencyReceipt}
-          cryptoAmount={amountInCrypto}
+          // cryptoAmount={amountInCrypto}
           onRequestClose={() => setModalVisible(!modalVisible)}
         />
       ) : null}
 
-      {paymentTxStatus === TxStatus.Done ? (
+      {transferOrMintTxStatus === TxStatus.Done ? (
         <TxModal
           isVisible={modalVisible}
           title="Transaction sent"
           status={'Confirmed'}
           type={TxStatusType.Green}
           image={require('../assets/confirmed.png')}
-          recipientId={parsedQrCode.businessId}
-          recipientName={businessInfo.name}
+          recipientId={parsedQrCode.to}
+          // recipientName={businessInfo.name}
           date={new Date(parsedQrCode.createdAt).toLocaleString()}
           fiatAmount={parsedQrCode.currencyReceipt}
-          cryptoAmount={amountInCrypto}
+          // cryptoAmount={amountInCrypto}
           onRequestClose={() => setModalVisible(!modalVisible)}
           primaryButton="Close"
-          onPrimaryButtonPress={handleCloseButtonPress}
+          onPrimaryButtonPress={() => setModalVisible(!modalVisible)}
         />
       ) : null}
 
-      {paymentTxStatus === TxStatus.Rejected ||
-      paymentTxStatus === TxStatus.Failed ? (
+      {transferOrMintTxStatus === TxStatus.Rejected ||
+      transferOrMintTxStatus === TxStatus.Failed ? (
         <TxModal
           isVisible={modalVisible}
           title="Transaction rejected"
           description="You have rejected the transaction in the wallet"
           image={require('../assets/errorOccured.png')}
           onRequestClose={() => setModalVisible(!modalVisible)}
-          primaryButton="Retry"
-          onPrimaryButtonPress={handleSendPress}
+          // primaryButton="Retry"
+          // onPrimaryButtonPress={handleSendPress}
           secondaryButton="Close"
-          onSecondaryButtonPress={handleCloseButtonPress}
+          onSecondaryButtonPress={() => setModalVisible(!modalVisible)}
         />
-      ) : null} */}
+      ) : null}
     </>
   );
 });
