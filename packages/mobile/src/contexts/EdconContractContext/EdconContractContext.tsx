@@ -1,4 +1,5 @@
-import {createContext} from 'react';
+import { createContext } from "react";
+import { number } from "yargs";
 
 // ToDo: duplicated code
 export enum TxStatus {
@@ -30,17 +31,18 @@ export type EdconContractContextState = {
   loadMyTokens: () => Promise<void>;
 
   setAmbassadorTxStatus: TxStatus;
+  ambassadorRank: (address: Address, tokenId: TokenId) => Promise<number | undefined>;
   setAmbassador: (
     address: Address,
     tokenId: TokenId,
-    ambassadorRank: number,
+    ambassadorRank: number
   ) => void;
   resetSetAmbassadorTxStatus: () => void;
 
   transferOrMintTxStatus: TxStatus;
   transferOrMint: (
-    tokens: {tokenId: TokenId; amount: ParsedUint}[],
-    to: Address,
+    tokens: { tokenId: TokenId; amount: ParsedUint }[],
+    to: Address
   ) => void;
   resetTransferOrMintTxStatus: () => void;
 };
@@ -53,6 +55,7 @@ export const contextDefaultValues: EdconContractContextState = {
   setAmbassadorTxStatus: TxStatus.Idle,
   setAmbassador: () => undefined,
   resetSetAmbassadorTxStatus: () => undefined,
+  ambassadorRank:async () => 0,
 
   transferOrMintTxStatus: TxStatus.Idle,
   transferOrMint: () => undefined,

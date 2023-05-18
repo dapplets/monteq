@@ -1,4 +1,10 @@
-import React, {FC, ReactElement, useCallback, useEffect, useState} from 'react';
+import React, {
+  FC,
+  ReactElement,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import {
   EdconContractContext,
   EdconContractContextState,
@@ -8,23 +14,23 @@ import {
   MyTokenInfo,
   Address,
   TokenId,
-} from './EdconContractContext';
-import {ethers} from 'ethers';
-import {useWeb3Modal} from '@web3modal/react-native';
+} from "./EdconContractContext";
+import { ethers } from "ethers";
+import { useWeb3Modal } from "@web3modal/react-native";
 import {
   CHAIN_ID,
   JSON_RPC_URL,
   EDCON_GAME_CONTRACT_ADDRESS,
   WC_SESSION_PARAMS,
-} from '../../common/constants';
-import EDCON_GAME_ABI from '../../abis/EdconGame.json';
+} from "../../common/constants";
+import EDCON_GAME_ABI from "../../abis/EdconGame.json";
 
 type Props = {
   children: ReactElement;
 };
 
-const EdconContractProvider: FC<Props> = ({children}) => {
-  const {provider: writeEip1193} = useWeb3Modal();
+const EdconContractProvider: FC<Props> = ({ children }) => {
+  const { provider: writeEip1193 } = useWeb3Modal();
 
   const [contract, setContract] = useState<ethers.Contract | null>(null);
 
@@ -32,8 +38,9 @@ const EdconContractProvider: FC<Props> = ({children}) => {
   const [areMyTokensLoading, setAreMyTokensLoading] = useState<boolean>(false);
 
   const [setAmbassadorTxStatus, setSetAmbassadorTxStatus] = useState<TxStatus>(
-    TxStatus.Idle,
+    TxStatus.Idle
   );
+  const [ambassadorRunk, setSetAmbassadorRunk] = useState<number>(0);
 
   const [transferOrMintTxStatus, setTransferOrMintTxStatus] =
     useState<TxStatus>(TxStatus.Idle);
@@ -42,16 +49,16 @@ const EdconContractProvider: FC<Props> = ({children}) => {
     if (writeEip1193) {
       const readProvider = new ethers.providers.JsonRpcProvider(
         JSON_RPC_URL,
-        CHAIN_ID,
+        CHAIN_ID
       );
 
       // The `eth_estimateGas` and `eth_call` calls are not resolved by WC-provider
       // So we split read and write calls by separate providers
       const provider = new ethers.providers.Web3Provider({
-        request: ({method, params}) => {
+        request: ({ method, params }) => {
           const writeMethods = WC_SESSION_PARAMS.namespaces.eip155.methods;
           return writeMethods.includes(method)
-            ? writeEip1193.request({method, params})
+            ? writeEip1193.request({ method, params })
             : readProvider.send(method, params ?? []);
         },
       });
@@ -59,7 +66,7 @@ const EdconContractProvider: FC<Props> = ({children}) => {
       const _contract = new ethers.Contract(
         EDCON_GAME_CONTRACT_ADDRESS,
         EDCON_GAME_ABI,
-        provider.getSigner(),
+        provider.getSigner()
       );
 
       setContract(_contract);
@@ -83,8 +90,8 @@ const EdconContractProvider: FC<Props> = ({children}) => {
         allTokenInfos.map((token: any, tokenId: number) =>
           contract
             .balanceOf(address, tokenId)
-            .then((balance: any) => ({tokenId, token, balance})),
-        ),
+            .then((balance: any) => ({ tokenId, token, balance }))
+        )
       );
       const myTokensWithBalance: MyTokenInfo[] = allTokenInfoBalances // ToDo: .filter((x: any) => !x.balance.eq(ethers.BigNumber.from(0)))
         .map((x: any) => ({
@@ -106,11 +113,22 @@ const EdconContractProvider: FC<Props> = ({children}) => {
   }, [contract]);
 
   // ToDo: wrap all functions to useCallback
+  async function ambassadorRank(
+    address: Address,
+    tokenId: TokenId
+  ){
+    if (!contract) {
+      return;
+    }
 
+    const txPromise = await contract.ambassadorRank(address, tokenId);
+
+    return txPromise as number;
+  }
   async function setAmbassador(
     address: Address,
     tokenId: TokenId,
-    ambassadorRank?: number,
+    ambassadorRank?: number
   ) {
     if (!contract) {
       return;
@@ -119,7 +137,8 @@ const EdconContractProvider: FC<Props> = ({children}) => {
     const txPromise =
       ambassadorRank === undefined
         ? contract.setAmbassador(address, tokenId)
-        : contract.setAmbassador(address, tokenId, ambassadorRank);
+        :
+         contract.setAmbassador(address, tokenId, ambassadorRank);
 
     processTransaction(txPromise, setSetAmbassadorTxStatus);
   }
@@ -129,24 +148,24 @@ const EdconContractProvider: FC<Props> = ({children}) => {
   }, []);
 
   async function transferOrMint(
-    tokens: {tokenId: TokenId; amount: ParsedUint}[],
-    to: Address,
+    tokens: { tokenId: TokenId; amount: ParsedUint }[],
+    to: Address
   ) {
     if (!contract) {
       return;
     }
 
     if (tokens.length === 0) {
-      throw new Error('Tokens array is empty');
+      throw new Error("Tokens array is empty");
     }
 
     const txPromise =
       tokens.length === 1
         ? contract.transfer(tokens[0].tokenId, tokens[0].amount, to)
         : contract.transferBatch(
-            tokens.map(x => x.tokenId),
-            tokens.map(x => x.amount),
-            to,
+            tokens.map((x) => x.tokenId),
+            tokens.map((x) => x.amount),
+            to
           );
 
     processTransaction(txPromise, setTransferOrMintTxStatus);
@@ -173,6 +192,7 @@ const EdconContractProvider: FC<Props> = ({children}) => {
     setAmbassadorTxStatus,
     setAmbassador,
     resetSetAmbassadorTxStatus,
+    ambassadorRank,
 
     transferOrMintTxStatus,
     transferOrMint,
@@ -189,7 +209,7 @@ const EdconContractProvider: FC<Props> = ({children}) => {
 // ToDo: duplicated code
 async function processTransaction(
   promise: Promise<any>,
-  setTxStatus: (status: TxStatus) => void,
+  setTxStatus: (status: TxStatus) => void
 ) {
   setTxStatus(TxStatus.Sending);
 
@@ -216,4 +236,4 @@ async function processTransaction(
   return true;
 }
 
-export {EdconContractProvider};
+export { EdconContractProvider };

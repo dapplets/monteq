@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
   HistoryPayBlock: {
     display: 'flex',
     flexDirection: 'column',
-
+width:'auto',
     height: '100%',
     marginTop: 'auto',
     marginBottom: 'auto',
