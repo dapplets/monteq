@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity >=0.8.19 <0.9.0;
+
 /**
  * EdCon MonteQ game .
  * just for start.
@@ -37,7 +38,7 @@ contract EdconGame {
 
     struct KarmaKick {
         address addrTo;
-        uint    points;
+        uint points;
     }
 
     struct KarmaKicks {
@@ -100,13 +101,12 @@ contract EdconGame {
             );
 
             box[msg.sender][tokenId] -= amount; //reduce amount for REGULAR_USER, ambassador has unlimited supply.
-            
+
             karma[msg.sender][tokenId] += userExists[to]
                 ? KARMA_TRANSFER
                 : KARMA_NEW_USER;
 
             processKarmaKicks(msg.sender, to, tokenId, amount);
-
         }
         box[to][tokenId] += amount;
         accountLocks[to][tokenId] = block.timestamp; // locks "to" account for incoming transactions with tokenId.
@@ -164,25 +164,32 @@ contract EdconGame {
     ) public view returns (uint amount) {
         return box[a][tokenId];
     }
- 
-    function processKarmaKicks(address from, address to, uint tokenId, uint amount) private {
-        if (ambassadorRank[from][tokenId] == 0) {   // only REGULAR_USER will get kickbacks
+
+    function processKarmaKicks(
+        address from,
+        address to,
+        uint tokenId,
+        uint amount
+    ) private {
+        if (ambassadorRank[from][tokenId] == 0) {
+            // only REGULAR_USER will get kickbacks
             KarmaKick[] storage kicks = karmaKicks[to][tokenId].kicks;
-            if (kicks.length <= 100) {  //spam protection. prevents kicks array from growing indefinitely.
-                kicks.push(KarmaKick(from,amount)); //karma kickback will be fired later, when "to" will spend tokens
+            if (kicks.length <= 100) {
+                //spam protection. prevents kicks array from growing indefinitely.
+                kicks.push(KarmaKick(from, amount)); //karma kickback will be fired later, when "to" will spend tokens
             }
         }
         KarmaKicks storage kkFrom = karmaKicks[from][tokenId];
-        for(uint a = amount; a>0 ;) {
+        for (uint a = amount; a > 0; ) {
             KarmaKick storage kk = kkFrom.kicks[kkFrom.head];
             if (kk.addrTo == address(0)) break;
-            uint p = min(a,kk.points);
-            a-=p;
-            kk.points-=p;
-            karma[kk.addrTo][tokenId]+=KARMA_KICKBACK;
-            if (kk.points==0) {
+            uint p = min(a, kk.points);
+            a -= p;
+            kk.points -= p;
+            karma[kk.addrTo][tokenId] += KARMA_KICKBACK;
+            if (kk.points == 0) {
                 kk.addrTo = address(0); //clean the storage slot
-                if (++kkFrom.head >= kkFrom.kicks.length)  {
+                if (++kkFrom.head >= kkFrom.kicks.length) {
                     kkFrom.head = 0;
                 }
             }
