@@ -86,8 +86,7 @@ const EdconContractProvider: FC<Props> = ({children}) => {
             .then((balance: any) => ({tokenId, token, balance})),
         ),
       );
-      const myTokensWithBalance: MyTokenInfo[] = allTokenInfoBalances
-        .filter((x: any) => !x.balance.eq(ethers.BigNumber.from(0)))
+      const myTokensWithBalance: MyTokenInfo[] = allTokenInfoBalances // ToDo: .filter((x: any) => !x.balance.eq(ethers.BigNumber.from(0)))
         .map((x: any) => ({
           tokenId: x.tokenId,
           ticker: x.token.ticker,
