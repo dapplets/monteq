@@ -41,7 +41,7 @@ describe('EdconGame_v2', function () {
         creator: result.creator,
     })
 
-    describe('Add tokens and set ambassadors', function () {
+    describe('Tokens', function () {
         it('Should add a new token', async () => {
             const {
                 edconGame,
@@ -146,7 +146,9 @@ describe('EdconGame_v2', function () {
                     .addToken(TICKER_02, TOKEN_NAME_01, TOKEN_ICON_01, 2)
             ).to.revertedWith('only pre-approved creators can create token')
         })
+    })
 
+    describe('Ambassadors', function () {
         it('Should add an ambassador by another ambassador without rank', async () => {
             const {
                 edconGame,
