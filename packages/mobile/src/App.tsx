@@ -71,16 +71,7 @@ function App() {
     "roboto_thin": require("./assets/fonts/roboto_thin.ttf")
   });
 
-  const onLayoutRootView = useCallback(async () => {
-    if (fontsLoaded) {
-      await SplashScreen.hideAsync();
-    }
-  }, [fontsLoaded]);
-
   useEffect(() => {
-    // ToDo: implement after migration to expo
-    // SplashScreen.hide();
-
     // ToDo: move to separate hook?
     (async () => {
       try {
@@ -94,6 +85,8 @@ function App() {
       } catch (e) {
         console.error(e);
         setInitialRouteName("InfoScreen");
+      } finally {
+        await SplashScreen.hideAsync();
       }
     })();
   }, []);
@@ -104,7 +97,7 @@ function App() {
 
   if (!isInternetConnected && initialRouteName) {
     return (
-      <View onLayout={onLayoutRootView}>
+      <View>
         <TxModal
           isVisible={true}
           title="Check your connection"
@@ -116,7 +109,7 @@ function App() {
   }
 
   return (
-    <SafeAreaView style={styles.container} onLayout={onLayoutRootView}>
+    <SafeAreaView style={styles.container}>
       <Web3Modal
         projectId={WC_PROJECT_ID}
         relayUrl={WC_RELAY_URL}
