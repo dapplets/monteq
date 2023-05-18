@@ -55,7 +55,7 @@ type Props = {
 const testTokens = [{}];
 
 const SendTokenScreen: React.FC<Props> = memo(({route}) => {
-  const parsedQrCode = route.params.parsedQrCode;
+  const {parsedQrCode} = route.params;
 
   const {
     myTokens,
@@ -71,7 +71,6 @@ const SendTokenScreen: React.FC<Props> = memo(({route}) => {
   const isFocused = useIsFocused();
 
   const [modalVisible, setModalVisible] = useState(false);
-  const [userName, setUserName] = useState('');
   const [tokenAmountsMap, setTokenAmountsMap] = useState<{
     [tokenId: TokenId]: ParsedUint;
   }>({});
@@ -153,13 +152,13 @@ const SendTokenScreen: React.FC<Props> = memo(({route}) => {
           <Text>TxStatus: {transferOrMintTxStatus}</Text>
         </View>
         <PaymentInfo price={'12'} title={'Your are sending'} />
-        <View style={styles.PayInfo}>
-          <CompanyParameters
-            parameters={'User'}
-            value={userName}
-            onChangeValue={setUserName}
-          />
-        </View>
+
+        {parsedQrCode.user ? (
+          <View style={styles.PayInfo}>
+            <PaymentParameters parameters={'User'} value={parsedQrCode.user} />
+          </View>
+        ) : null}
+
         <LinearGradient
           start={{x: 0, y: 0}}
           end={{x: 1, y: 0}}

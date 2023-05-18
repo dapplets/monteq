@@ -24,26 +24,32 @@ import {useIsFocused} from '@react-navigation/native';
 import {FontFamily} from '../GlobalStyles';
 import {useState} from 'react';
 import ShareModal from '../components/ShareModal';
+import {useUserName} from '../hooks/useUserName';
 
 const InfoScreen = () => {
   const isFocused = useIsFocused();
   const {
+    account,
     outHistory,
     spentTotalCryptoAmount,
     spentTipsCryptoAmount,
     loadMoreOutHistory,
     isOutHistoryLoading,
   } = useMonteqContract();
-  const [modalShareVisible, setModalShareVisible] = useState(false);
-  const [nameUser, setNameUser] = useState('@SomeUsername');
+  const {userName, changeUserName} = useUserName();
+
+  const [isModalShareVisible, setIsModalShareVisible] = useState(false);
+
   React.useEffect(() => {
     if (isFocused) {
       loadMoreOutHistory();
     }
   }, [isFocused, loadMoreOutHistory]);
+
   const openShareModal = () => {
-    setModalShareVisible(true);
+    setIsModalShareVisible(true);
   };
+
   if (isOutHistoryLoading && outHistory.length === 0) {
     return (
       <>
@@ -91,11 +97,11 @@ const InfoScreen = () => {
             <View style={styles.nameParameters}>
               <TextInput
                 // autoFocus={true}
-                // numberOfLines={1}
-                // placeholder="Enter Name"
-                value={nameUser}
+                numberOfLines={1}
+                placeholder="Enter your name"
+                value={userName}
                 maxLength={20}
-                onChangeText={setNameUser}
+                onChangeText={changeUserName}
                 style={styles.Value}
               />
               <Image
@@ -145,9 +151,10 @@ const InfoScreen = () => {
       </View>
       <Navigation path="user" />
       <ShareModal
-        name="SomeUsername"
-        isVisible={modalShareVisible}
-        onRequestClose={() => setModalShareVisible(!modalShareVisible)}
+        account={account}
+        username={userName}
+        isVisible={isModalShareVisible}
+        onRequestClose={() => setIsModalShareVisible(!isModalShareVisible)}
       />
     </>
   );

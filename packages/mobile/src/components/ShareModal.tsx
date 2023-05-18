@@ -1,27 +1,37 @@
 import React from 'react';
-
 import LinearGradient from 'react-native-linear-gradient';
-
 import {StyleSheet, Text, TouchableHighlight, View, Modal} from 'react-native';
 import MaskedView from '@react-native-masked-view/masked-view';
 import {FontFamily} from '../GlobalStyles';
 import QRCode from 'react-native-qrcode-svg';
 import Clipboard from '@react-native-clipboard/clipboard';
+
+// ToDo: move to business logic?
+function makeShareUrl(to: string, user: string): string {
+  let url = `https://monteq.dapplets.org/edcon2023/#/receive?to=${to}`;
+
+  if (user) {
+    url += `&user=${user}`;
+  }
+
+  return url;
+}
+
 type Props = {
   isVisible: boolean;
-  name: string;
+  account: string;
+  username: string;
   onRequestClose?: () => void;
 };
 
 const ShareModal: React.FC<Props> = ({
   isVisible,
-  name,
+  account,
+  username,
   onRequestClose,
   ...props
 }) => {
-  const [QRvalue, setQRValue] = React.useState('https://dapplets.org/');
-  const [QRLogo, setQRLogo] = React.useState('');
-  const [QRImage, setQRImage] = React.useState('');
+  const qrCodeUrl = makeShareUrl(account, username);
   const ref = React.useRef();
 
   return (
@@ -35,24 +45,27 @@ const ShareModal: React.FC<Props> = ({
           <TouchableHighlight
             underlayColor={'transparent'}
             activeOpacity={0.5}
-            onPress={() => Clipboard.setString(QRvalue)}
+            onPress={() => Clipboard.setString(qrCodeUrl)}
             style={styles.Title}>
             <Text>Tap to copy</Text>
           </TouchableHighlight>
-          <QRCode getRef={ref as any} size={200} value={QRvalue} />
-          <MaskedView
-            style={styles.maskStyle}
-            maskElement={<Text {...props}>{name}</Text>}>
-            <LinearGradient
-              style={styles.linearGradientText}
-              colors={['#0dd977', '#1da4ac', '#14c48c']}
-              start={{x: 0, y: 0}}
-              end={{x: 1, y: 0}}>
-              <Text {...props} style={[styles.name, {opacity: 0}]}>
-                {name}
-              </Text>
-            </LinearGradient>
-          </MaskedView>
+          <QRCode getRef={ref as any} size={200} value={qrCodeUrl} />
+
+          {username ? (
+            <MaskedView
+              style={styles.maskStyle}
+              maskElement={<Text {...props}>{username}</Text>}>
+              <LinearGradient
+                style={styles.linearGradientText}
+                colors={['#0dd977', '#1da4ac', '#14c48c']}
+                start={{x: 0, y: 0}}
+                end={{x: 1, y: 0}}>
+                <Text {...props} style={[styles.name, {opacity: 0}]}>
+                  {username}
+                </Text>
+              </LinearGradient>
+            </MaskedView>
+          ) : null}
 
           <LinearGradient
             start={{x: 0, y: 0}}

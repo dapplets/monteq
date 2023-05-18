@@ -22,6 +22,7 @@ export type ScanningResult =
 export type ParsedEDCON2023Code = {
   action: 'receive';
   to: string;
+  user: string | null;
 };
 
 export function parseQrCodeData(qrdata: string): ScanningResult {
@@ -83,6 +84,7 @@ export function parseEdcon2023Code(qrdata: string): ParsedEDCON2023Code {
 
   const params = {
     to: url.searchParams.get('to'),
+    user: url.searchParams.get('user'),
   };
 
   if (!params.to) {
@@ -94,6 +96,7 @@ export function parseEdcon2023Code(qrdata: string): ParsedEDCON2023Code {
   const payload: ParsedEDCON2023Code = {
     action: 'receive',
     to: params.to,
+    user: params.user,
   };
 
   return payload;

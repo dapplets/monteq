@@ -37,6 +37,7 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
   const [balance, setBalance] = useState<ParsedUint>(
     contextDefaultValues.balance,
   );
+  const [account, setAccount] = useState<string>(contextDefaultValues.account);
   const [isBalanceLoading, setIsBalanceLoading] = useState(false);
   const [rate, setRate] = useState<ParsedUint>(contextDefaultValues.rate);
   const [isRateLoading, setIsRateLoading] = useState(false);
@@ -128,6 +129,17 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
       setContract(null);
     }
   }, [writeEip1193]);
+
+
+  // GET BALANCE
+  useEffect(() => {
+    (async () => {
+      if (contract) {
+        const address = await contract.signer.getAddress();
+        setAccount(address);
+      }
+    })();
+  }, [contract]);
 
   const updateUserBalance = useCallback(async () => {
     if (contract) {
@@ -418,6 +430,7 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
   }
 
   const state: MonteqContractContextState = {
+    account,
     balance,
     isBalanceLoading,
     updateUserBalance,
