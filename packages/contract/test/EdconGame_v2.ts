@@ -408,5 +408,68 @@ describe('EdconGame_v2', function () {
             expect(await edconGame.box(businessOwner.address, 0)).to.equal(0)
             expect(await edconGame.box(anotherAccount.address, 0)).to.equal(25)
         })
+
+        it('Should get time to unlock', async () => {
+            const {
+                edconGame,
+                gameMaster,
+                businessOwner,
+                anotherAccount,
+                anotherAccount2,
+                TICKER_01,
+                TOKEN_NAME_01,
+                TOKEN_ICON_01,
+            } = await loadFixture(deployContractFixture)
+            await edconGame.connect(gameMaster).approveCreator(businessOwner.address, TICKER_01)
+            await edconGame
+                .connect(businessOwner)
+                .addToken(TICKER_01, TOKEN_NAME_01, TOKEN_ICON_01, 2)
+
+            await time.increase(1000)
+            await edconGame.connect(businessOwner).transfer(0, 9, anotherAccount.address)
+            await edconGame.connect(anotherAccount).transfer(0, 6, anotherAccount2.address)
+            await time.increase(2000)
+
+            const time1 = await edconGame.getTimeToUnlock(anotherAccount.address, 0)
+            const time2 = await edconGame.getTimeToUnlock(anotherAccount2.address, 0)
+
+            expect(ethers.BigNumber.from(time1).toString()).to.equal('2001') // ToDo: it is mot time to unlock but after the lock
+            expect(ethers.BigNumber.from(time2).toString()).to.equal('2000') // ToDo: it is mot time to unlock but after the lock
+
+            await time.increase(1600)
+
+            const time3 = await edconGame.getTimeToUnlock(anotherAccount.address, 0)
+            const time4 = await edconGame.getTimeToUnlock(anotherAccount2.address, 0)
+
+            expect(ethers.BigNumber.from(time3).toString()).to.equal('0')
+            expect(ethers.BigNumber.from(time4).toString()).to.equal('3600') // ToDo: it is mot time to unlock but after the lock + the one hour already ended!
+        })
+
+        it('Should transfer tokens from user to user after recipients locktime', async () => {
+            const {
+                edconGame,
+                gameMaster,
+                businessOwner,
+                anotherAccount,
+                anotherAccount2,
+                TICKER_01,
+                TOKEN_NAME_01,
+                TOKEN_ICON_01,
+            } = await loadFixture(deployContractFixture)
+            await edconGame.connect(gameMaster).approveCreator(businessOwner.address, TICKER_01)
+            await edconGame
+                .connect(businessOwner)
+                .addToken(TICKER_01, TOKEN_NAME_01, TOKEN_ICON_01, 2)
+
+            await edconGame.connect(businessOwner).transfer(0, 9, anotherAccount.address)
+            await edconGame.connect(anotherAccount).transfer(0, 6, anotherAccount2.address)
+
+            await time.increase(4000)
+
+            await edconGame.connect(anotherAccount).transfer(0, 3, anotherAccount2.address)
+            expect(await edconGame.box(anotherAccount2.address, 0)).to.equal(9)
+        })
     })
+
+    // describe('Others', function () {})
 })
