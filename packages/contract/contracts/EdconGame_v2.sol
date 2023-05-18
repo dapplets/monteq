@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity >=0.8.19 <0.9.0;
+
 /**
  * EdCon MonteQ game .
  * just for start.
@@ -7,9 +8,9 @@ pragma solidity >=0.8.19 <0.9.0;
  * ver 0.2
  **/
 contract EdconGame {
-    constructor (address[] memory _gameMasters) {
-        for(uint n=0; n<_gameMasters.length; ++n) {
-            gameMasters.push(_gameMasters[n]);    
+    constructor(address[] memory _gameMasters) {
+        for (uint n = 0; n < _gameMasters.length; ++n) {
+            gameMasters.push(_gameMasters[n]);
         }
         gameMasters.push(msg.sender);
     }
@@ -19,7 +20,7 @@ contract EdconGame {
     uint constant KARMA_TRANSFER = 10;
     uint constant KARMA_KICKBACK = 1;
     uint constant KARMA_NEW_USER = 50;
-    
+
     uint8 constant DEFAULT_INITIAL_RANK = 2;
 
     struct TokenInfo {
@@ -37,7 +38,7 @@ contract EdconGame {
 
     struct KarmaKick {
         address addrTo;
-        uint    points;
+        uint points;
     }
 
     struct KarmaKicks {
@@ -51,13 +52,13 @@ contract EdconGame {
     mapping(address => mapping(uint => KarmaKicks)) public karmaKicks; // user's giveaway karma kickbacks
     mapping(address => mapping(uint => uint8)) public ambassadorRank; // if 0 - regular user
     mapping(address => LogEntry[]) public logs; // transfer log.
-    
+
     TokenInfo[] public tokenInfos;
     mapping(string => bool) public tokenExists; //mapping(ticker=>bool)
     mapping(address => bool) public userExists;
-    mapping(address => mapping(string=>bool)) public approvedCreators; //mapping(address,ticker) => true if approved
-        
-    address[] accounts;
+    mapping(address => mapping(string => bool)) public approvedCreators; //mapping(address,ticker) => true if approved
+
+    address[] public accounts;
     address[] public gameMasters;
 
     function setAmbassador(
@@ -100,13 +101,12 @@ contract EdconGame {
             );
 
             box[msg.sender][tokenId] -= amount; //reduce amount for REGULAR_USER, ambassador has unlimited supply.
-            
+
             karma[msg.sender][tokenId] += userExists[to]
                 ? KARMA_TRANSFER
                 : KARMA_NEW_USER;
 
             processKarmaKicks(msg.sender, to, tokenId, amount);
-
         }
         box[to][tokenId] += amount;
         accountLocks[to][tokenId] = block.timestamp; // locks "to" account for incoming transactions with tokenId.
@@ -115,9 +115,12 @@ contract EdconGame {
         logs[msg.sender].push(LogEntry(tokenId, to, block.timestamp));
     }
 
-    function approveCreator(address creator, string calldata ticker) public gameMastersOnly {
-        require(!tokenExists[ticker],"token exists already");
-        approvedCreators[creator][ticker] =true;
+    function approveCreator(
+        address creator,
+        string calldata ticker
+    ) public gameMastersOnly {
+        require(!tokenExists[ticker], "token exists already");
+        approvedCreators[creator][ticker] = true;
     }
 
     //ToDo: prevent spam, implement approvals?
@@ -125,13 +128,13 @@ contract EdconGame {
         string calldata ticker,
         string calldata tokenName,
         string calldata iconUrl,
-        uint8           initialRank
+        uint8 initialRank
     ) public approvedCreatorsOnly(ticker) {
-        require(!tokenExists[ticker],"token exists already");
+        require(!tokenExists[ticker], "token exists already");
         tokenExists[ticker] = true;
         tokenInfos.push(TokenInfo(ticker, tokenName, iconUrl, msg.sender));
-        ambassadorRank[msg.sender][tokenInfos.length-1] = initialRank > 0 
-            ? initialRank 
+        ambassadorRank[msg.sender][tokenInfos.length - 1] = initialRank > 0
+            ? initialRank
             : DEFAULT_INITIAL_RANK;
     }
 
@@ -164,25 +167,32 @@ contract EdconGame {
     ) public view returns (uint amount) {
         return box[a][tokenId];
     }
- 
-    function processKarmaKicks(address from, address to, uint tokenId, uint amount) private {
-        if (ambassadorRank[from][tokenId] == 0) {   // only REGULAR_USER will get kickbacks
+
+    function processKarmaKicks(
+        address from,
+        address to,
+        uint tokenId,
+        uint amount
+    ) private {
+        if (ambassadorRank[from][tokenId] == 0) {
+            // only REGULAR_USER will get kickbacks
             KarmaKick[] storage kicks = karmaKicks[to][tokenId].kicks;
-            if (kicks.length <= 100) {  //spam protection. prevents kicks array from growing indefinitely.
-                kicks.push(KarmaKick(from,amount)); //karma kickback will be fired later, when "to" will spend tokens
+            if (kicks.length <= 100) {
+                //spam protection. prevents kicks array from growing indefinitely.
+                kicks.push(KarmaKick(from, amount)); //karma kickback will be fired later, when "to" will spend tokens
             }
         }
         KarmaKicks storage kkFrom = karmaKicks[from][tokenId];
-        for(uint a = amount; a>0 ;) {
+        for (uint a = amount; a > 0; ) {
             KarmaKick storage kk = kkFrom.kicks[kkFrom.head];
             if (kk.addrTo == address(0)) break;
-            uint p = min(a,kk.points);
-            a-=p;
-            kk.points-=p;
-            karma[kk.addrTo][tokenId]+=KARMA_KICKBACK;
-            if (kk.points==0) {
+            uint p = min(a, kk.points);
+            a -= p;
+            kk.points -= p;
+            karma[kk.addrTo][tokenId] += KARMA_KICKBACK;
+            if (kk.points == 0) {
                 kk.addrTo = address(0); //clean the storage slot
-                if (++kkFrom.head >= kkFrom.kicks.length)  {
+                if (++kkFrom.head >= kkFrom.kicks.length) {
                     kkFrom.head = 0;
                 }
             }
@@ -206,18 +216,20 @@ contract EdconGame {
         _;
     }
 
-    modifier gameMastersOnly(){
-        uint n=0;
-        for(;n<gameMasters.length;++n) {
+    modifier gameMastersOnly() {
+        uint n = 0;
+        for (; n < gameMasters.length; ++n) {
             if (msg.sender == gameMasters[n]) break;
         }
-        require(n<gameMasters.length, "only gameMaster can do it");
+        require(n < gameMasters.length, "only gameMaster can do it");
         _;
     }
 
     modifier approvedCreatorsOnly(string memory ticker) {
-        require(approvedCreators[msg.sender][ticker], "only pre-approved creators can create token");
+        require(
+            approvedCreators[msg.sender][ticker],
+            "only pre-approved creators can create token"
+        );
         _;
     }
-
 }
