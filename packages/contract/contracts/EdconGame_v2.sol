@@ -184,6 +184,9 @@ contract EdconGame {
         }
         KarmaKicks storage kkFrom = karmaKicks[from][tokenId];
         for (uint a = amount; a > 0; ) {
+            if (kkFrom.kicks.length == 0) {
+                kkFrom.kicks.push(KarmaKick(address(0), 0)); // ToDo: check if it works right and don't break Karma Kicks workflow
+            }
             KarmaKick storage kk = kkFrom.kicks[kkFrom.head];
             if (kk.addrTo == address(0)) break;
             uint p = min(a, kk.points);
