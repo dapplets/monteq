@@ -31,7 +31,7 @@ import {
   BASE_FIAT_MAX_DIGITS,
   IS_OWNER_VIEW_PREFERRED_KEY,
 } from '../common/constants';
-import {parseReceipt} from '../common/parseReceipt';
+import {DomainType, parseQrCodeData} from '../common/parseReceipt';
 import {mulStr, truncate} from '../common/helpers';
 import {FontFamily} from '../GlobalStyles';
 import {useCamera} from '../contexts/CameraContext';
@@ -93,8 +93,15 @@ const MyBusiness = () => {
 
     try {
       const url = await scan();
-      const parsedReceipt = parseReceipt(url);
-      navigation.navigate('AddingMyBusiness', {parsedReceipt});
+      const parsedReceipt = parseQrCodeData(url);
+
+      if (parsedReceipt.domain === DomainType.MontenegroFiscalCheck) {
+        navigation.navigate('AddingMyBusiness', {
+          parsedReceipt: parsedReceipt.payload,
+        });
+      } else {
+        throw new Error('Incompatible receipt');
+      }
     } catch (e) {
       console.error(e);
 

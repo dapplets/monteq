@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import {type RootStackParamList} from '../App';
 import ButtonNavigationDefault from './ButtonNavigationDefault';
-import {parseReceipt} from '../common/parseReceipt';
+import {DomainType, parseQrCodeData} from '../common/parseReceipt';
 import {useCamera} from '../contexts/CameraContext';
 import SvgComponentUserActive from '../icons/SVGUserActive';
 import SvgComponentUserDefault from '../icons/SVGUserDefault';
@@ -21,6 +21,7 @@ import SvgComponentHowActive from '../icons/SVGHowActive';
 import SvgComponentHowDefault from '../icons/SVGHowDefault';
 import {useMonteqContract} from '../contexts/MonteqContractContext';
 import SvgComponentScan from '../icons/SVGScanBtn';
+
 export type NavigationType = {
   path: string;
 };
@@ -55,10 +56,24 @@ const Navigation = ({path}: NavigationType) => {
 
     try {
       const url = await scan();
-      const parsedReceipt = parseReceipt(url);
-      const businessInfo = await getBusinessInfoById(parsedReceipt.businessId);
-      await updateUserBalance();
-      navigation.navigate('TxScreen', {parsedReceipt, businessInfo});
+      const parsedQrCode = parseQrCodeData(url);
+
+      if (parsedQrCode.domain === DomainType.MontenegroFiscalCheck) {
+        const businessInfo = await getBusinessInfoById(
+          parsedQrCode.payload.businessId,
+        );
+        await updateUserBalance();
+        navigation.navigate('TxScreen', {
+          parsedReceipt: parsedQrCode.payload,
+          businessInfo,
+        });
+      } else if (parsedQrCode.domain === DomainType.EDCON2023) {
+        navigation.navigate('SendTokenScreen', {
+          parsedQrCode: parsedQrCode.payload,
+        });
+      } else {
+        throw new Error('Not implemented domain');
+      }
     } catch (e) {
       console.error(e);
 

@@ -18,7 +18,7 @@ import MyBusiness from './screens/MyBusiness';
 import AddingMyBusiness from './screens/AddingMyBusiness';
 import HowUse from './screens/HowUse';
 import RemovingMyBusiness from './screens/RemovingMyBuisness';
-import {ParsedReceipt} from './common/parseReceipt';
+import {ParsedReceipt, ParsedEDCON2023Code} from './common/parseReceipt';
 import {enableScreens} from 'react-native-screens';
 import {CameraProvider} from './contexts/CameraContext';
 import SplashScreen from 'react-native-splash-screen';
@@ -28,6 +28,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {BusinessInfo} from './contexts/MonteqContractContext/MonteqContractContext';
 import TxModal from './components/TxModal';
 import SendTokenScreen from './screens/SendTokenScreen';
+import {EdconContractProvider} from './contexts/EdconContractContext';
 
 enableScreens();
 
@@ -41,7 +42,7 @@ export type RootStackParamList = {
   AddingMyBusiness: {parsedReceipt: ParsedReceipt};
   HowUse: undefined;
   RemovingMyBusiness: undefined;
-  SendTokenScreen: {parsedReceipt: ParsedReceipt};
+  SendTokenScreen: {parsedQrCode: ParsedEDCON2023Code};
 };
 
 const Tab = createBottomTabNavigator();
@@ -109,33 +110,38 @@ function App(): JSX.Element {
             </NavigationContainer>
           ) : (
             <MonteqContractProvider>
-              <CameraProvider>
-                <NavigationContainer>
-                  <Tab.Navigator
-                    screenOptions={{headerShown: false}}
-                    tabBar={() => null}
-                    detachInactiveScreens
-                    initialRouteName={initialRouteName}>
-                    <Tab.Screen name="InfoScreen" component={InfoScreen} />
-                    <Tab.Screen name="MyBusiness" component={MyBusiness} />
-                    <Tab.Screen name="CameraScreen" component={CameraScreen} />
-                    <Tab.Screen name="TxScreen" component={TxScreen} />
-                    <Tab.Screen
-                      name="AddingMyBusiness"
-                      component={AddingMyBusiness}
-                    />
-                    <Tab.Screen
-                      name="RemovingMyBusiness"
-                      component={RemovingMyBusiness}
-                    />
-                    <Tab.Screen name="HowUse" component={HowUse} />
-                    <Tab.Screen
-                      name="SendTokenScreen"
-                      component={SendTokenScreen}
-                    />
-                  </Tab.Navigator>
-                </NavigationContainer>
-              </CameraProvider>
+              <EdconContractProvider>
+                <CameraProvider>
+                  <NavigationContainer>
+                    <Tab.Navigator
+                      screenOptions={{headerShown: false}}
+                      tabBar={() => null}
+                      detachInactiveScreens
+                      initialRouteName={initialRouteName}>
+                      <Tab.Screen name="InfoScreen" component={InfoScreen} />
+                      <Tab.Screen name="MyBusiness" component={MyBusiness} />
+                      <Tab.Screen
+                        name="CameraScreen"
+                        component={CameraScreen}
+                      />
+                      <Tab.Screen name="TxScreen" component={TxScreen} />
+                      <Tab.Screen
+                        name="AddingMyBusiness"
+                        component={AddingMyBusiness}
+                      />
+                      <Tab.Screen
+                        name="RemovingMyBusiness"
+                        component={RemovingMyBusiness}
+                      />
+                      <Tab.Screen name="HowUse" component={HowUse} />
+                      <Tab.Screen
+                        name="SendTokenScreen"
+                        component={SendTokenScreen}
+                      />
+                    </Tab.Navigator>
+                  </NavigationContainer>
+                </CameraProvider>
+              </EdconContractProvider>
             </MonteqContractProvider>
           )}
         </>

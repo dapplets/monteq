@@ -4,14 +4,49 @@ export type ParsedReceipt = {
   createdAt: string;
 };
 
-export function parseReceipt(qrdata: string): ParsedReceipt {
-  const url = new URL(qrdata.replace('/#', ''));
+export enum DomainType {
+  MontenegroFiscalCheck,
+  EDCON2023,
+}
 
-  if (url.hostname !== 'mapr.tax.gov.me') {
-    throw new Error(
-      'Only receipts registered on mapr.tax.gov.me are supported',
-    );
+export type ScanningResult =
+  | {
+      domain: DomainType.MontenegroFiscalCheck;
+      payload: ParsedReceipt;
+    }
+  | {
+      domain: DomainType.EDCON2023;
+      payload: ParsedEDCON2023Code;
+    };
+
+export type ParsedEDCON2023Code = {
+  action: 'receive';
+  to: string;
+};
+
+export function parseQrCodeData(qrdata: string): ScanningResult {
+  const url = new URL(qrdata);
+
+  switch (url.hostname) {
+    case 'mapr.tax.gov.me':
+      return {
+        domain: DomainType.MontenegroFiscalCheck,
+        payload: parseMontenegroReceipt(qrdata),
+      };
+
+    case 'monteq.dapplets.org':
+      return {
+        domain: DomainType.EDCON2023,
+        payload: parseEdcon2023Code(qrdata),
+      };
+
+    default:
+      throw new Error('Incompatible QR-code');
   }
+}
+
+export function parseMontenegroReceipt(qrdata: string): ParsedReceipt {
+  const url = new URL(qrdata.replace('/#', ''));
 
   const params = {
     crtd: url.searchParams.get('crtd'),
@@ -26,13 +61,40 @@ export function parseReceipt(qrdata: string): ParsedReceipt {
 
   if (!params.bu || !params.prc || !params.crtd) {
     throw new Error(
-      "Encoded URL doesn't contain required parameters: bu, prc, crtd.",
+      "Encoded URL doesn't contain required parameters: bu, prc, crtd",
     );
   }
 
-  return {
+  const payload = {
     businessId: params.bu,
     currencyReceipt: params.prc,
     createdAt: new Date(params.crtd.replace(' ', '+')).toISOString(),
   };
+
+  return payload;
+}
+
+export function parseEdcon2023Code(qrdata: string): ParsedEDCON2023Code {
+  const url = new URL(qrdata.replace('/#', ''));
+
+  if (url.pathname !== '/edcon2023/receive') {
+    throw new Error('EDCON2023: Unsupported pathname');
+  }
+
+  const params = {
+    to: url.searchParams.get('to'),
+  };
+
+  if (!params.to) {
+    throw new Error(
+      "EDCON2023: Encoded URL doesn't contain required parameters: to",
+    );
+  }
+
+  const payload: ParsedEDCON2023Code = {
+    action: 'receive',
+    to: params.to,
+  };
+
+  return payload;
 }

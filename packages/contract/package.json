@@ -9,7 +9,8 @@
   "scripts": {
     "build": "hardhat compile",
     "test": "REPORT_GAS=true npx hardhat test",
-    "deploy": "hardhat run scripts/deploy.ts"
+    "deploy:monteq": "hardhat run scripts/deploy.ts",
+    "deploy:edcon": "hardhat run scripts/deployEdconGame_v2.ts"
   },
   "devDependencies": {
     "@ethersproject/abi": "^5.4.7",

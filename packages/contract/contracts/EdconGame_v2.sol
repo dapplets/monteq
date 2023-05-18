@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity ^0.8.9;
+pragma solidity >=0.8.19 <0.9.0;
 
 /**
  * EdCon MonteQ game .
@@ -17,7 +17,7 @@ contract EdconGame {
     struct TokenInfo {
         string ticker;
         string tokenName;
-        string ipfsIconURI;
+        string iconUrl;
         address creator;
     }
 
@@ -27,10 +27,20 @@ contract EdconGame {
         uint256 datetime;
     }
 
+    struct KarmaKick {
+        address addrTo;
+        uint points;
+    }
+
+    struct KarmaKicks {
+        KarmaKick[] kicks;
+        uint8 head;
+    }
+
     mapping(address => mapping(uint => uint)) public box; // who owns what
     mapping(address => mapping(uint => uint)) public karma; // user's giveaway karma
     mapping(address => mapping(uint => uint)) public accountLocks; // mapping(hash(addrTo,addrTo)=>lastDatetime)   - stores the last transaction time for the pair (from,to)
-    //mapping(address=>mapping(uint=>uint)) public karmaKicks; // user's giveaway karma kickbacks
+    mapping(address => mapping(uint => KarmaKicks)) public karmaKicks; // user's giveaway karma kickbacks
     mapping(address => mapping(uint => uint8)) public ambassadorRank; // if 0 - regular user
     mapping(address => LogEntry[]) public logs; // transfer log.
 
@@ -77,14 +87,16 @@ contract EdconGame {
                 "destination is still locked for this transfer"
             );
 
-            box[msg.sender][tokenId] -= amount; //reduce amount for regular sender, but ambassador has unlimited supply.
-            //save timestamp for transfer to lock token transfers for 1hrs.
-            accountLocks[to][tokenId] = block.timestamp; // locks "to" account for incoming transactions with tokenId.
+            box[msg.sender][tokenId] -= amount; //reduce amount for REGULAR_USER, ambassador has unlimited supply.
+
             karma[msg.sender][tokenId] += userExists[to]
                 ? KARMA_TRANSFER
                 : KARMA_NEW_USER;
+
+            processKarmaKicks(msg.sender, to, tokenId, amount);
         }
         box[to][tokenId] += amount;
+        accountLocks[to][tokenId] = block.timestamp; // locks "to" account for incoming transactions with tokenId.
         storeNewAccount(to);
         //store log entry
         logs[msg.sender].push(LogEntry(tokenId, to, block.timestamp));
@@ -94,9 +106,9 @@ contract EdconGame {
     function addToken(
         string calldata ticker,
         string calldata tokenName,
-        string calldata ipfsIconURI
+        string calldata iconUrl
     ) public {
-        tokenInfos.push(TokenInfo(ticker, tokenName, ipfsIconURI, msg.sender));
+        tokenInfos.push(TokenInfo(ticker, tokenName, iconUrl, msg.sender));
     }
 
     function readToken() public view returns (TokenInfo[] memory ti) {
@@ -120,6 +132,52 @@ contract EdconGame {
             accounts.push(a);
             userExists[a] = true;
         }
+    }
+
+    function balanceOf(
+        address a,
+        uint tokenId
+    ) public view returns (uint amount) {
+        return box[a][tokenId];
+    }
+
+    function processKarmaKicks(
+        address from,
+        address to,
+        uint tokenId,
+        uint amount
+    ) private {
+        if (ambassadorRank[from][tokenId] == 0) {
+            // only REGULAR_USER will get kickbacks
+            KarmaKick[] storage kicks = karmaKicks[to][tokenId].kicks;
+            if (kicks.length <= 100) {
+                //spam protection. prevents kicks array from growing indefinitely.
+                kicks.push(KarmaKick(from, amount)); //karma kickback will be fired later, when "to" will spend tokens
+            }
+        }
+        KarmaKicks storage kkFrom = karmaKicks[from][tokenId];
+        for (uint a = amount; a > 0; ) {
+            KarmaKick storage kk = kkFrom.kicks[kkFrom.head];
+            if (kk.addrTo == address(0)) break;
+            uint p = min(a, kk.points);
+            a -= p;
+            kk.points -= p;
+            karma[kk.addrTo][tokenId] += KARMA_KICKBACK;
+            if (kk.points == 0) {
+                kk.addrTo = address(0); //clean the storage slot
+                if (++kkFrom.head >= kkFrom.kicks.length) {
+                    kkFrom.head = 0;
+                }
+            }
+        }
+    }
+
+    function max(uint256 a, uint256 b) private pure returns (uint256) {
+        return a >= b ? a : b;
+    }
+
+    function min(uint256 a, uint256 b) private pure returns (uint256) {
+        return a <= b ? a : b;
     }
 
     modifier ambassadorOnly(uint tokenId) {
