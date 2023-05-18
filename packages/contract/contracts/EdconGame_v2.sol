@@ -109,7 +109,7 @@ contract EdconGame {
         string calldata ticker,
         string calldata tokenName,
         string calldata iconUrl,
-        uint8  calldata initialRank
+        uint8           initialRank
     ) public {
         tokenInfos.push(TokenInfo(ticker, tokenName, iconUrl, msg.sender));
         ambassadorRank[msg.sender][tokenInfos.length-1] = initialRank > 0 
