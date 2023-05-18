@@ -47,6 +47,7 @@ import {
 } from '../contexts/EdconContractContext/EdconContractContext';
 import CompanyParameters from '../components/CompanyParameters';
 import TokenBlock from '../components/TokenBlock';
+import {useUserName} from '../hooks/useUserName';
 
 type Props = {
   route: RouteProp<{params: {parsedQrCode: ParsedEDCON2023Code}}, 'params'>;
@@ -65,7 +66,7 @@ const SendTokenScreen: React.FC<Props> = memo(({route}) => {
     transferOrMintTxStatus,
     resetTransferOrMintTxStatus,
   } = useEdconContract();
-
+  const {userName, changeUserName} = useUserName();
   const {provider} = useWeb3Modal();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const isFocused = useIsFocused();
@@ -87,7 +88,10 @@ const SendTokenScreen: React.FC<Props> = memo(({route}) => {
   useEffect(() => {
     resetTransferOrMintTxStatus();
     loadMyTokens();
-  }, [isFocused, loadMyTokens, resetTransferOrMintTxStatus]);
+    parsedQrCode.user && userName.length === 0
+      ? changeUserName(parsedQrCode.user)
+      : changeUserName(userName);
+  }, [isFocused, loadMyTokens, resetTransferOrMintTxStatus,transferOrMintTxStatus]);
 
   if (!parsedQrCode) {
     // ToDo: invalid receipt
@@ -130,7 +134,7 @@ const SendTokenScreen: React.FC<Props> = memo(({route}) => {
   //   //   tipsAmountInCrypto,
   //   // );
   // }
-
+  console.log(tokenAmountsMap);
   return (
     <>
       <ScrollView style={styles.InfoScreenWrapper}>
@@ -140,13 +144,32 @@ const SendTokenScreen: React.FC<Props> = memo(({route}) => {
 
         <View style={styles.tokensBlock}>
           {myTokens.map(token => (
-            <TokenBlock
-              key={token.tokenId}
-              title={`${token.ticker}: ${
-                tokenAmountsMap[token.tokenId] ?? 0
-              } / ${token.balance}`}
-              onPress={() => handleIncrementTokenPress(token.tokenId)}
-            />
+            <>
+              <TokenBlock
+                key={token.tokenId}
+                //${token.ticker}: ${
+                //   tokenAmountsMap[token.tokenId] ?? 0
+                // }
+                children={
+                  <View style={styles.imgTokenWrapper}>
+                    <Image
+                      style={styles.img}
+                      resizeMode="contain"
+                      source={{uri: `${token.iconUrl}`}}
+                    />
+                    {tokenAmountsMap && tokenAmountsMap[`${token.tokenId}`] ? (
+                      <View style={styles.counter}>
+                        <Text style={styles.textCounter}>
+                          {tokenAmountsMap[`${token.tokenId}`]}
+                        </Text>
+                      </View>
+                    ) : null}
+                  </View>
+                }
+                title={`${token.balance}`}
+                onPress={() => handleIncrementTokenPress(token.tokenId)}
+              />
+            </>
           ))}
 
           <Text>TxStatus: {transferOrMintTxStatus}</Text>
@@ -155,7 +178,7 @@ const SendTokenScreen: React.FC<Props> = memo(({route}) => {
 
         {parsedQrCode.user ? (
           <View style={styles.PayInfo}>
-            <PaymentParameters parameters={'User'} value={parsedQrCode.user} />
+            <PaymentParameters parameters={'User'} value={userName} />
           </View>
         ) : null}
 
@@ -192,70 +215,70 @@ const SendTokenScreen: React.FC<Props> = memo(({route}) => {
 
       {!modalVisible ? <Navigation path="Payment" /> : null}
 
-      {/* {paymentTxStatus === TxStatus.Sending ? (
+      {transferOrMintTxStatus === TxStatus.Sending ? (
         <TxModal
           isVisible={modalVisible}
           title="Transaction signing"
           status={'Signing'}
           type={TxStatusType.Yellow}
           image={require('../assets/inProgress.png')}
-          recipientId={parsedQrCode.businessId}
-          recipientName={businessInfo.name}
+          recipientId={parsedQrCode.to}
+          // recipientName={parsedQrCode.user}
           date={new Date(parsedQrCode.createdAt).toLocaleString()}
           fiatAmount={parsedQrCode.currencyReceipt}
-          cryptoAmount={amountInCrypto}
+          // cryptoAmount={amountInCrypto}
           onRequestClose={() => setModalVisible(!modalVisible)}
         />
       ) : null}
 
-      {paymentTxStatus === TxStatus.Mining ? (
+      {transferOrMintTxStatus === TxStatus.Mining ? (
         <TxModal
           isVisible={modalVisible}
           title="Transaction sent"
           status={'Mining'}
           type={TxStatusType.Yellow}
           image={require('../assets/inProgress.png')}
-          recipientId={parsedQrCode.businessId}
-          recipientName={businessInfo.name}
+          recipientId={parsedQrCode.to}
+          // recipientName={businessInfo.name}
           date={new Date(parsedQrCode.createdAt).toLocaleString()}
           fiatAmount={parsedQrCode.currencyReceipt}
-          cryptoAmount={amountInCrypto}
+          // cryptoAmount={amountInCrypto}
           onRequestClose={() => setModalVisible(!modalVisible)}
         />
       ) : null}
 
-      {paymentTxStatus === TxStatus.Done ? (
+      {transferOrMintTxStatus === TxStatus.Done ? (
         <TxModal
           isVisible={modalVisible}
           title="Transaction sent"
           status={'Confirmed'}
           type={TxStatusType.Green}
           image={require('../assets/confirmed.png')}
-          recipientId={parsedQrCode.businessId}
-          recipientName={businessInfo.name}
+          recipientId={parsedQrCode.to}
+          // recipientName={businessInfo.name}
           date={new Date(parsedQrCode.createdAt).toLocaleString()}
           fiatAmount={parsedQrCode.currencyReceipt}
-          cryptoAmount={amountInCrypto}
+          // cryptoAmount={amountInCrypto}
           onRequestClose={() => setModalVisible(!modalVisible)}
           primaryButton="Close"
-          onPrimaryButtonPress={handleCloseButtonPress}
+          onPrimaryButtonPress={() => setModalVisible(!modalVisible)}
         />
       ) : null}
 
-      {paymentTxStatus === TxStatus.Rejected ||
-      paymentTxStatus === TxStatus.Failed ? (
+      {transferOrMintTxStatus === TxStatus.Rejected ||
+      transferOrMintTxStatus === TxStatus.Failed ? (
         <TxModal
           isVisible={modalVisible}
           title="Transaction rejected"
           description="You have rejected the transaction in the wallet"
           image={require('../assets/errorOccured.png')}
           onRequestClose={() => setModalVisible(!modalVisible)}
-          primaryButton="Retry"
-          onPrimaryButtonPress={handleSendPress}
+          // primaryButton="Retry"
+          // onPrimaryButtonPress={handleSendPress}
           secondaryButton="Close"
-          onSecondaryButtonPress={handleCloseButtonPress}
+          onSecondaryButtonPress={() => setModalVisible(!modalVisible)}
         />
-      ) : null} */}
+      ) : null}
     </>
   );
 });
@@ -335,8 +358,41 @@ const styles = StyleSheet.create({
   tokensBlock: {
     width: '100%',
     display: 'flex',
+    flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
+  },
+  imgTokenWrapper: {
+    display: 'flex',
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    position: 'relative',
+  },
+  img: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+  },
+  counter: {
+    position: 'absolute',
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    backgroundColor: '#fff',
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    top: 0,
+    right: 0,
+  },
+  textCounter: {
+    fontSize: 12,
+    fontWeight: '700',
+    lineHeight: 14,
+    color: '#14C58B',
+    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
 });
 

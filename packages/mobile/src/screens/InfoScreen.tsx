@@ -44,7 +44,7 @@ const InfoScreen = () => {
     if (isFocused) {
       loadMoreOutHistory();
     }
-  }, [isFocused, loadMoreOutHistory]);
+  }, [isFocused, loadMoreOutHistory, userName]);
 
   const openShareModal = () => {
     setIsModalShareVisible(true);

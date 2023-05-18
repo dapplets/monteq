@@ -1,4 +1,4 @@
-import React, {ReactNode, memo} from 'react';
+import React, {ReactNode, memo, useState} from 'react';
 import {
   StyleSheet,
   View,
@@ -10,53 +10,57 @@ import { LinearGradient } from 'expo-linear-gradient';
 import {FontFamily} from '../GlobalStyles';
 
 type TokenBlockType = {
-  isActive?: boolean;
   onPress?: () => void;
   children: ReactNode;
   title: string;
 };
 
-const TokenBlock = memo(
-  ({onPress, children, isActive, title}: TokenBlockType) => {
-    return (
-      <LinearGradient
-        start={{x: 0, y: 0}}
-        end={{x: 1, y: 0}}
-        style={styles.buttonWrapper}
-        colors={
-          isActive
-            ? ['#0dd977', '#1da4ac', '#14c48c']
-            : ['#F6F7F8', '#F6F7F8', '#F6F7F8']
-        }>
-        <TouchableHighlight
-          underlayColor={'#14C58B'}
-          activeOpacity={0.5}
-          style={styles.logOutWrapper}
-          onPress={onPress}>
-          <>
-            {children}
-            <Text style={isActive ? styles.titleActive : styles.titleDefault}>
-              {title}
-            </Text>
-          </>
-        </TouchableHighlight>
-      </LinearGradient>
-    );
-  },
-);
+const TokenBlock = memo(({onPress, children, title}: TokenBlockType) => {
+  const [isActive, setIsActive] = useState(false);
+  const [counter, setCounter] = useState(null);
+  return (
+    <LinearGradient
+      start={{x: 0, y: 0}}
+      end={{x: 1, y: 0}}
+      style={styles.buttonWrapper}
+      colors={
+        isActive
+          ? ['#0dd977', '#1da4ac', '#14c48c']
+          : ['#F6F7F8', '#F6F7F8', '#F6F7F8']
+      }>
+      <TouchableHighlight
+        underlayColor={'#14C58B'}
+        activeOpacity={0.5}
+        style={styles.logOutWrapper}
+        onPress={() => {
+          setIsActive(true), onPress();
+        }}>
+        <>
+          {children}
+          <View style={styles.counter}></View>
+          <Text style={isActive ? styles.titleActive : styles.titleDefault}>
+            {title}
+          </Text>
+        </>
+      </TouchableHighlight>
+    </LinearGradient>
+  );
+});
 
 const styles = StyleSheet.create({
   buttonWrapper: {
     display: 'flex',
     flexDirection: 'column',
     padding: 5,
-    width: 40,
-    height: 40,
+    width: 62,
+    height: 66,
+    borderRadius: 4,
   },
 
   logOutWrapper: {
     display: 'flex',
     flexDirection: 'column',
+    alignItems: 'center',
     width: '100%',
     height: '100%',
   },
