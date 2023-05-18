@@ -27,7 +27,9 @@
       "lang": "en",
       "orientation": "portrait",
       "short_name": "MonteQ",
-      "splash": "./assets/splash.png"
+      "splash": "./assets/splash.png",
+      "themeColor": "#ffffff",
+      "barStyle": "white"
     },
     "plugins": [
       [
