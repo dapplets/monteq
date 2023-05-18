@@ -10,8 +10,14 @@ describe('EdconGame_v2', function () {
     // and reset Hardhat Network to that snapshot in every test.
     const deployContractFixture = async () => {
         // Contracts are deployed using the first signer/account by default
-        const [contractOwner, gameMaster, businessOwner, anotherAccount, anotherAccount2] =
-            await ethers.getSigners()
+        const [
+            contractOwner,
+            gameMaster,
+            businessOwner,
+            anotherAccount,
+            anotherAccount2,
+            anotherAccount3,
+        ] = await ethers.getSigners()
 
         const EdconGame = await ethers.getContractFactory('contracts/EdconGame_v2.sol:EdconGame')
         const edconGame = await EdconGame.deploy([gameMaster.address])
@@ -29,6 +35,7 @@ describe('EdconGame_v2', function () {
             businessOwner,
             anotherAccount,
             anotherAccount2,
+            anotherAccount3,
             TICKER_01,
             TOKEN_NAME_01,
             TOKEN_ICON_01,
@@ -242,13 +249,14 @@ describe('EdconGame_v2', function () {
                 TOKEN_NAME_01,
                 TOKEN_ICON_01,
             } = await loadFixture(deployContractFixture)
-            const a = await edconGame.ambassadorRank(businessOwner.address, 0)
-            expect(a).to.equal(0)
             await edconGame.connect(gameMaster).approveCreator(businessOwner.address, TICKER_01)
             await edconGame
                 .connect(businessOwner)
                 .addToken(TICKER_01, TOKEN_NAME_01, TOKEN_ICON_01, 2)
+
             await edconGame.connect(businessOwner).transfer(0, 9, anotherAccount.address)
+
+            expect(await edconGame.box(businessOwner.address, 0)).to.equal(0)
             expect(await edconGame.box(anotherAccount.address, 0)).to.equal(9)
         })
 
@@ -263,27 +271,92 @@ describe('EdconGame_v2', function () {
                 TOKEN_NAME_01,
                 TOKEN_ICON_01,
             } = await loadFixture(deployContractFixture)
-            const a = await edconGame.ambassadorRank(businessOwner.address, 0)
-            expect(a).to.equal(0)
             await edconGame.connect(gameMaster).approveCreator(businessOwner.address, TICKER_01)
             await edconGame
                 .connect(businessOwner)
                 .addToken(TICKER_01, TOKEN_NAME_01, TOKEN_ICON_01, 2)
+
             await edconGame.connect(businessOwner).transfer(0, 9, anotherAccount.address)
             await edconGame.connect(anotherAccount).transfer(0, 6, anotherAccount2.address)
+
+            expect(await edconGame.box(businessOwner.address, 0)).to.equal(0)
             expect(await edconGame.box(anotherAccount.address, 0)).to.equal(3)
             expect(await edconGame.box(anotherAccount2.address, 0)).to.equal(6)
         })
 
-        // it('Should transfer different tokens from user to user', async () => {
-        //     const { edconGame } = await loadFixture(deployContractFixture)
-        //     expect(false).to.eql(true)
-        // })
+        it('Should transfer different tokens from ambassador to user', async () => {
+            const {
+                edconGame,
+                gameMaster,
+                businessOwner,
+                anotherAccount,
+                anotherAccount2,
+                TICKER_01,
+                TOKEN_NAME_01,
+                TOKEN_ICON_01,
+                TICKER_02,
+            } = await loadFixture(deployContractFixture)
+            await edconGame.connect(gameMaster).approveCreator(businessOwner.address, TICKER_01)
+            await edconGame
+                .connect(businessOwner)
+                .addToken(TICKER_01, TOKEN_NAME_01, TOKEN_ICON_01, 2)
+            await edconGame.connect(gameMaster).approveCreator(anotherAccount.address, TICKER_02)
+            await edconGame
+                .connect(anotherAccount)
+                .addToken(TICKER_02, TOKEN_NAME_01, TOKEN_ICON_01, 2)
 
-        // it('Should not transfer different tokens from ambassador to user', async () => {
-        //     const { edconGame } = await loadFixture(deployContractFixture)
-        //     expect(true).to.throw('You are the ambassador!')
-        // })
+            await edconGame.connect(businessOwner).transfer(0, 9, anotherAccount.address)
+            await edconGame
+                .connect(anotherAccount)
+                .transferBatch([0, 1], [6, 10], anotherAccount2.address)
+
+            expect(await edconGame.box(businessOwner.address, 0)).to.equal(0)
+            expect(await edconGame.box(anotherAccount.address, 0)).to.equal(3)
+            expect(await edconGame.box(anotherAccount2.address, 0)).to.equal(6)
+
+            expect(await edconGame.box(businessOwner.address, 1)).to.equal(0)
+            expect(await edconGame.box(anotherAccount.address, 1)).to.equal(0)
+            expect(await edconGame.box(anotherAccount2.address, 1)).to.equal(10)
+        })
+
+        it('Should transfer different tokens from user to user', async () => {
+            const {
+                edconGame,
+                gameMaster,
+                businessOwner,
+                anotherAccount,
+                anotherAccount2,
+                anotherAccount3,
+                TICKER_01,
+                TOKEN_NAME_01,
+                TOKEN_ICON_01,
+                TICKER_02,
+            } = await loadFixture(deployContractFixture)
+            await edconGame.connect(gameMaster).approveCreator(businessOwner.address, TICKER_01)
+            await edconGame
+                .connect(businessOwner)
+                .addToken(TICKER_01, TOKEN_NAME_01, TOKEN_ICON_01, 2)
+            await edconGame.connect(gameMaster).approveCreator(anotherAccount.address, TICKER_02)
+            await edconGame
+                .connect(anotherAccount)
+                .addToken(TICKER_02, TOKEN_NAME_01, TOKEN_ICON_01, 2)
+
+            await edconGame.connect(businessOwner).transfer(0, 7, anotherAccount2.address)
+            await edconGame.connect(anotherAccount).transfer(0, 15, anotherAccount2.address)
+            await edconGame
+                .connect(anotherAccount2)
+                .transferBatch([0, 1], [7, 10], anotherAccount3.address)
+
+            expect(await edconGame.box(businessOwner.address, 0)).to.equal(0)
+            expect(await edconGame.box(anotherAccount.address, 0)).to.equal(0)
+            expect(await edconGame.box(anotherAccount2.address, 0)).to.equal(0)
+            expect(await edconGame.box(anotherAccount3.address, 0)).to.equal(7)
+
+            expect(await edconGame.box(businessOwner.address, 1)).to.equal(0)
+            expect(await edconGame.box(anotherAccount.address, 1)).to.equal(0)
+            expect(await edconGame.box(anotherAccount2.address, 1)).to.equal(5)
+            expect(await edconGame.box(anotherAccount3.address, 1)).to.equal(10)
+        })
     })
 
     // describe('Locktime', function () {
