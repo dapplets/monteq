@@ -22,20 +22,19 @@ const CameraComponent: FC<Props> = ({ onQrCodeFound, onCanceled, onError }) => {
   }, [onCanceled]);
 
   const checkCameraPermission = useCallback(async () => {
-    // let { status } = await Camera.getCameraPermissionsAsync();
+    // Use Permissions instead of Camera to workaround the issue
+    // https://github.com/expo/expo/issues/7501
+    let { status } = await Permissions.getAsync(Permissions.CAMERA); // Camera.getCameraPermissionsAsync();
 
-    // if (status === "undetermined") {
-    //   const result = await Camera.requestCameraPermissionsAsync();
-    //   status = result.status;
+    if (status === "undetermined") {
+      const result = await Permissions.askAsync(Permissions.CAMERA); // Camera.requestCameraPermissionsAsync();
+      status = result.status;
 
-    //   if (Platform.OS === "web") {
-    //     // Workaround for https://github.com/expo/expo/issues/13431
-    //     location.reload();
-    //   }
-    // }
-
-    // Workaround for https://github.com/expo/expo/issues/7501
-    const { status } = await Permissions.askAsync(Permissions.CAMERA);
+      // if (Platform.OS === "web") {
+      //   // Workaround for https://github.com/expo/expo/issues/13431
+      //   location.reload();
+      // }
+    }
 
     if (status !== "granted") {
       onError(new Error("Camera Permission Denied"));
