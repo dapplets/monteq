@@ -7,11 +7,20 @@ pragma solidity >=0.8.19 <0.9.0;
  * ver 0.2
  **/
 contract EdconGame {
+    constructor (address[] memory _gameMasters) {
+        for(uint n=0; n<_gameMasters.length; ++n) {
+            gameMasters.push(_gameMasters[n]);    
+        }
+        gameMasters.push(msg.sender);
+    }
+
     uint constant LOCKTIME = 1 hours;
 
     uint constant KARMA_TRANSFER = 10;
     uint constant KARMA_KICKBACK = 1;
     uint constant KARMA_NEW_USER = 50;
+    
+    uint8 constant DEFAULT_INITIAL_RANK = 2;
 
     struct TokenInfo {
         string ticker;
@@ -42,10 +51,14 @@ contract EdconGame {
     mapping(address => mapping(uint => KarmaKicks)) public karmaKicks; // user's giveaway karma kickbacks
     mapping(address => mapping(uint => uint8)) public ambassadorRank; // if 0 - regular user
     mapping(address => LogEntry[]) public logs; // transfer log.
-
+    
     TokenInfo[] public tokenInfos;
+    mapping(string => bool) public tokenExists; //mapping(ticker=>bool)
     mapping(address => bool) public userExists;
+    mapping(address => mapping(string=>bool)) public approvedCreators; //mapping(address,ticker) => true if approved
+        
     address[] accounts;
+    address[] public gameMasters;
 
     function setAmbassador(
         address addr,
@@ -102,13 +115,24 @@ contract EdconGame {
         logs[msg.sender].push(LogEntry(tokenId, to, block.timestamp));
     }
 
+    function approveCreator(address creator, string calldata ticker) public gameMastersOnly {
+        require(!tokenExists[ticker],"token exists already");
+        approvedCreators[creator][ticker] =true;
+    }
+
     //ToDo: prevent spam, implement approvals?
     function addToken(
         string calldata ticker,
         string calldata tokenName,
-        string calldata iconUrl
-    ) public {
+        string calldata iconUrl,
+        uint8           initialRank
+    ) public approvedCreatorsOnly(ticker) {
+        require(!tokenExists[ticker],"token exists already");
+        tokenExists[ticker] = true;
         tokenInfos.push(TokenInfo(ticker, tokenName, iconUrl, msg.sender));
+        ambassadorRank[msg.sender][tokenInfos.length-1] = initialRank > 0 
+            ? initialRank 
+            : DEFAULT_INITIAL_RANK;
     }
 
     function readToken() public view returns (TokenInfo[] memory ti) {
@@ -181,4 +205,19 @@ contract EdconGame {
         );
         _;
     }
+
+    modifier gameMastersOnly(){
+        uint n=0;
+        for(;n<gameMasters.length;++n) {
+            if (msg.sender == gameMasters[n]) break;
+        }
+        require(n<gameMasters.length, "only gameMaster can do it");
+        _;
+    }
+
+    modifier approvedCreatorsOnly(string memory ticker) {
+        require(approvedCreators[msg.sender][ticker], "only pre-approved creators can create token");
+        _;
+    }
+
 }
