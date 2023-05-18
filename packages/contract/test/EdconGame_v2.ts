@@ -8,9 +8,10 @@ describe('EdconGame_v2', function () {
     // We define a fixture to reuse the same setup in every test.
     // We use loadFixture to run this setup once, snapshot that state,
     // and reset Hardhat Network to that snapshot in every test.
-    async function deployOneYearLockFixture() {
+    const deployContractFixture = async () => {
         // Contracts are deployed using the first signer/account by default
-        const [contractOwner, gameMaster, businessOwner, anotherAccount] = await ethers.getSigners()
+        const [contractOwner, gameMaster, businessOwner, anotherAccount, anotherAccount2] =
+            await ethers.getSigners()
 
         const EdconGame = await ethers.getContractFactory('contracts/EdconGame_v2.sol:EdconGame')
         const edconGame = await EdconGame.deploy([gameMaster.address])
@@ -27,6 +28,7 @@ describe('EdconGame_v2', function () {
             gameMaster,
             businessOwner,
             anotherAccount,
+            anotherAccount2,
             TICKER_01,
             TOKEN_NAME_01,
             TOKEN_ICON_01,
@@ -50,7 +52,7 @@ describe('EdconGame_v2', function () {
                 TICKER_01,
                 TOKEN_NAME_01,
                 TOKEN_ICON_01,
-            } = await loadFixture(deployOneYearLockFixture)
+            } = await loadFixture(deployContractFixture)
             await edconGame.connect(gameMaster).approveCreator(businessOwner.address, TICKER_01)
             await edconGame
                 .connect(businessOwner)
@@ -74,7 +76,7 @@ describe('EdconGame_v2', function () {
                 TICKER_01,
                 TOKEN_NAME_01,
                 TOKEN_ICON_01,
-            } = await loadFixture(deployOneYearLockFixture)
+            } = await loadFixture(deployContractFixture)
             await edconGame.connect(gameMaster).approveCreator(businessOwner.address, TICKER_01)
             await edconGame
                 .connect(businessOwner)
@@ -95,7 +97,7 @@ describe('EdconGame_v2', function () {
                 TICKER_01,
                 TOKEN_NAME_01,
                 TOKEN_ICON_01,
-            } = await loadFixture(deployOneYearLockFixture)
+            } = await loadFixture(deployContractFixture)
             await edconGame.connect(gameMaster).approveCreator(businessOwner.address, TICKER_01)
             await edconGame
                 .connect(businessOwner)
@@ -116,7 +118,7 @@ describe('EdconGame_v2', function () {
                 TICKER_01,
                 TOKEN_NAME_01,
                 TOKEN_ICON_01,
-            } = await loadFixture(deployOneYearLockFixture)
+            } = await loadFixture(deployContractFixture)
             await edconGame.connect(gameMaster).approveCreator(businessOwner.address, TICKER_01)
             await edconGame
                 .connect(businessOwner)
@@ -135,7 +137,7 @@ describe('EdconGame_v2', function () {
                 TOKEN_NAME_01,
                 TOKEN_ICON_01,
                 TICKER_02,
-            } = await loadFixture(deployOneYearLockFixture)
+            } = await loadFixture(deployContractFixture)
             await edconGame.connect(gameMaster).approveCreator(businessOwner.address, TICKER_01)
             await edconGame
                 .connect(businessOwner)
@@ -158,7 +160,7 @@ describe('EdconGame_v2', function () {
                 TICKER_01,
                 TOKEN_NAME_01,
                 TOKEN_ICON_01,
-            } = await loadFixture(deployOneYearLockFixture)
+            } = await loadFixture(deployContractFixture)
             const a = await edconGame.ambassadorRank(businessOwner.address, 0)
             expect(a).to.equal(0)
             await edconGame.connect(gameMaster).approveCreator(businessOwner.address, TICKER_01)
@@ -185,7 +187,7 @@ describe('EdconGame_v2', function () {
                 TICKER_01,
                 TOKEN_NAME_01,
                 TOKEN_ICON_01,
-            } = await loadFixture(deployOneYearLockFixture)
+            } = await loadFixture(deployContractFixture)
             const a = await edconGame.ambassadorRank(businessOwner.address, 0)
             expect(a).to.equal(0)
             await edconGame.connect(gameMaster).approveCreator(businessOwner.address, TICKER_01)
@@ -212,7 +214,7 @@ describe('EdconGame_v2', function () {
                 TICKER_01,
                 TOKEN_NAME_01,
                 TOKEN_ICON_01,
-            } = await loadFixture(deployOneYearLockFixture)
+            } = await loadFixture(deployContractFixture)
             const a = await edconGame.ambassadorRank(businessOwner.address, 0)
             expect(a).to.equal(0)
             await edconGame.connect(gameMaster).approveCreator(businessOwner.address, TICKER_01)
@@ -229,41 +231,74 @@ describe('EdconGame_v2', function () {
         })
     })
 
-    // describe('Transfers', function () {
-    //     it('Should transfer same tokens from ambassador to user', async () => {
-    //         const { edconGame, owner } = await loadFixture(deployOneYearLockFixture)
-    //         expect(false).to.eql(true)
-    //     })
+    describe('Transfers', function () {
+        it('Should transfer one type tokens from ambassador to user', async () => {
+            const {
+                edconGame,
+                gameMaster,
+                businessOwner,
+                anotherAccount,
+                TICKER_01,
+                TOKEN_NAME_01,
+                TOKEN_ICON_01,
+            } = await loadFixture(deployContractFixture)
+            const a = await edconGame.ambassadorRank(businessOwner.address, 0)
+            expect(a).to.equal(0)
+            await edconGame.connect(gameMaster).approveCreator(businessOwner.address, TICKER_01)
+            await edconGame
+                .connect(businessOwner)
+                .addToken(TICKER_01, TOKEN_NAME_01, TOKEN_ICON_01, 2)
+            await edconGame.connect(businessOwner).transfer(0, 9, anotherAccount.address)
+            expect(await edconGame.box(anotherAccount.address, 0)).to.equal(9)
+        })
 
-    //     it('Should transfer same tokens from user to user', async () => {
-    //         const { edconGame, owner } = await loadFixture(deployOneYearLockFixture)
-    //         expect(false).to.eql(true)
-    //     })
+        it('Should transfer one type tokens from user to user', async () => {
+            const {
+                edconGame,
+                gameMaster,
+                businessOwner,
+                anotherAccount,
+                anotherAccount2,
+                TICKER_01,
+                TOKEN_NAME_01,
+                TOKEN_ICON_01,
+            } = await loadFixture(deployContractFixture)
+            const a = await edconGame.ambassadorRank(businessOwner.address, 0)
+            expect(a).to.equal(0)
+            await edconGame.connect(gameMaster).approveCreator(businessOwner.address, TICKER_01)
+            await edconGame
+                .connect(businessOwner)
+                .addToken(TICKER_01, TOKEN_NAME_01, TOKEN_ICON_01, 2)
+            await edconGame.connect(businessOwner).transfer(0, 9, anotherAccount.address)
+            await edconGame.connect(anotherAccount).transfer(0, 6, anotherAccount2.address)
+            expect(await edconGame.box(anotherAccount.address, 0)).to.equal(3)
+            expect(await edconGame.box(anotherAccount2.address, 0)).to.equal(6)
+        })
 
-    //     it('Should transfer different tokens from user to user', async () => {
-    //         const { edconGame, owner } = await loadFixture(deployOneYearLockFixture)
-    //         expect(false).to.eql(true)
-    //     })
+        // it('Should transfer different tokens from user to user', async () => {
+        //     const { edconGame } = await loadFixture(deployContractFixture)
+        //     expect(false).to.eql(true)
+        // })
 
-    //     it('Should not transfer different tokens from ambassador to user', async () => {
-    //         const { edconGame, owner } = await loadFixture(deployOneYearLockFixture)
-    //         expect(true).to.throw('You are the ambassador!')
-    //     })
-    // })
+        // it('Should not transfer different tokens from ambassador to user', async () => {
+        //     const { edconGame } = await loadFixture(deployContractFixture)
+        //     expect(true).to.throw('You are the ambassador!')
+        // })
+    })
 
     // describe('Locktime', function () {
     //     it('Should transfer tokens of different types from user to user during recipients locktime', async () => {
-    //         const { edconGame, owner } = await loadFixture(deployOneYearLockFixture)
+    //         const { edconGame } = await loadFixture(deployOneYearLockFixture)
     //         expect(false).to.eql(true)
     //     })
 
     //     it('Should transfer tokens of one type from ambassador to user during recipients locktime', async () => {
-    //         const { edconGame, owner } = await loadFixture(deployOneYearLockFixture)
+    //         const { edconGame } = await loadFixture(deployOneYearLockFixture)
     //         expect(false).to.eql(true)
     //     })
 
     //     it('Should not transfer tokens of one type from user to user during recipients locktime', async () => {
-    //         const { edconGame, owner } = await loadFixture(deployOneYearLockFixture)
+    //         const { edconGame } = await loadFixture(deployOneYearLockFixture)
     //         expect(true).to.throw("You aren't the ambassador")
     //     })
     // })
