@@ -22,7 +22,7 @@
       }
     },
     "web": {
-      "bundler": "metro",
+      "bundler": "webpack",
       "favicon": "./assets/favicon.png",
       "description": "MonteQ lets you create and join social games using QR codes",
       "name": "MonteQ",
