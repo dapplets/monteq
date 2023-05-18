@@ -13,7 +13,7 @@ export const WC_METADATA: Metadata = {
   ],
 };
 
-export const JSON_RPC_URL = 'https://gnosis-mainnet.public.blastapi.io';
+export const JSON_RPC_URL = 'https://rpc.ankr.com/gnosis';
 
 export const CHAIN_ID = 100;
 

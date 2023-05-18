@@ -67,7 +67,6 @@ const EdconContractProvider: FC<Props> = ({children}) => {
       setContract(null);
     }
   }, [writeEip1193]);
-
   const loadMyTokens = useCallback(async () => {
     if (!contract) {
       return;
@@ -152,6 +151,7 @@ const EdconContractProvider: FC<Props> = ({children}) => {
           );
 
     processTransaction(txPromise, setTransferOrMintTxStatus);
+    resetTransferOrMintTxStatus();
   }
 
   const resetTransferOrMintTxStatus = useCallback(() => {
