@@ -12,6 +12,8 @@ contract EdconGame {
     uint constant KARMA_TRANSFER = 10;
     uint constant KARMA_KICKBACK = 1;
     uint constant KARMA_NEW_USER = 50;
+    
+    uint constant DEFAULT_INITIAL_RANK = 2;
 
     struct TokenInfo {
         string ticker;
@@ -106,9 +108,13 @@ contract EdconGame {
     function addToken(
         string calldata ticker,
         string calldata tokenName,
-        string calldata iconUrl
+        string calldata iconUrl,
+        uint8  calldata initialRank
     ) public {
         tokenInfos.push(TokenInfo(ticker, tokenName, iconUrl, msg.sender));
+        ambassadorRank[msg.sender][tokenInfos.length-1] = initialRank > 0 
+            ? initialRank 
+            : DEFAULT_INITIAL_RANK;
     }
 
     function readToken() public view returns (TokenInfo[] memory ti) {
