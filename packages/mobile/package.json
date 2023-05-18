@@ -20,7 +20,7 @@
     "@react-native-masked-view/masked-view": "^0.2.9",
     "@react-navigation/bottom-tabs": "^6.5.7",
     "@react-navigation/native": "^6.1.6",
-    "@web3modal/react-native": "github:WalletConnect/web3modal-react-native#a665bebfffaf3518a7c9b4ccfc6f87eeb1b58538",
+    "@web3modal/react-native": "1.0.0-alpha.3",
     "ethers": "5.7.2",
     "link": "^1.5.1",
     "react": "18.2.0",
