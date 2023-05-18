@@ -7,8 +7,10 @@ async function main() {
 
     console.log('Account balance:', (await deployer.getBalance()).toString())
 
+    if (!process.env.GAME_MASTERS) throw new Error("GAME_MASTERS env variable is empty");
+
     const Contract = await ethers.getContractFactory('EdconGame')
-    const contract = await Contract.deploy()
+    const contract = await Contract.deploy(JSON.parse(process.env.GAME_MASTERS))
 
     console.log('EdconGame address:', contract.address)
 }
