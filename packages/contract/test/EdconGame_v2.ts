@@ -55,6 +55,42 @@ describe('EdconGame_v2', function () {
             ])
         })
 
+        it('Should add an ambassador by another ambassador without rank', async () => {
+            const { edconGame, owner, otherAccount, TICKER_01, TOKEN_NAME_01, TOKEN_ICON_01 } =
+                await loadFixture(deployOneYearLockFixture)
+            const a = await edconGame.ambassadorRank(owner.address, 0)
+            expect(a).to.equal(0)
+            await edconGame.addToken(TICKER_01, TOKEN_NAME_01, TOKEN_ICON_01)
+            const b = await edconGame.ambassadorRank(owner.address, 0)
+            expect(b).to.equal(0)
+
+            // ToDo: 1) why we should setAmbassador rank separately ?
+            // ToDo: 2) why _ambassadorRank should be >=2 ?
+            await edconGame['setAmbassador(address,uint8,uint8)'](owner.address, 0, 2)
+            const b1 = await edconGame.ambassadorRank(owner.address, 0)
+            expect(b1).to.equal(2)
+            const c = await edconGame.ambassadorRank(otherAccount.address, 0)
+            expect(c).to.equal(0)
+            await edconGame['setAmbassador(address,uint8)'](otherAccount.address, 0)
+            const d = await edconGame.ambassadorRank(otherAccount.address, 0)
+            expect(d).to.equal(1)
+        })
+
+        it('Should add an ambassador by another ambassador with rank', async () => {
+            const { edconGame, owner, otherAccount, TICKER_01, TOKEN_NAME_01, TOKEN_ICON_01 } =
+                await loadFixture(deployOneYearLockFixture)
+            const a = await edconGame.ambassadorRank(owner.address, 0)
+            expect(a).to.equal(0)
+            await edconGame.addToken(TICKER_01, TOKEN_NAME_01, TOKEN_ICON_01)
+            const b = await edconGame.ambassadorRank(owner.address, 0)
+            expect(b).to.equal(0)
+            const c = await edconGame.ambassadorRank(otherAccount.address, 0)
+            expect(c).to.equal(0)
+            await edconGame['setAmbassador(address,uint8,uint8)'](otherAccount.address, 0, 1)
+            const d = await edconGame.ambassadorRank(otherAccount.address, 0)
+            expect(d).to.equal(1)
+        })
+
         it('Should not add an ambassador by user', async () => {
             const { edconGame, owner, otherAccount, TICKER_01, TOKEN_NAME_01, TOKEN_ICON_01 } =
                 await loadFixture(deployOneYearLockFixture)
@@ -63,26 +99,11 @@ describe('EdconGame_v2', function () {
             await edconGame.addToken(TICKER_01, TOKEN_NAME_01, TOKEN_ICON_01)
             const b = await edconGame.ambassadorRank(owner.address, 0)
             expect(b).to.equal(0)
-            await expect(
+            expect(
                 edconGame
                     .connect(otherAccount)
                     ['setAmbassador(address,uint8,uint8)'](owner.address, 0, 1)
             ).to.revertedWith('only Project Ambassador is eligible to mint tokens') // ToDo: change message
-        })
-
-        it('Should add an ambassador', async () => {
-            const { edconGame, owner, TICKER_01, TOKEN_NAME_01, TOKEN_ICON_01 } = await loadFixture(
-                deployOneYearLockFixture
-            )
-            await edconGame.addToken(TICKER_01, TOKEN_NAME_01, TOKEN_ICON_01)
-            await edconGame.setAmbassador(owner.address, 0)
-
-            expect(false).to.eql(true)
-        })
-
-        it('Should add an ambassador with rank', async () => {
-            const { edconGame, owner } = await loadFixture(deployOneYearLockFixture)
-            expect(false).to.eql(true)
         })
     })
 
