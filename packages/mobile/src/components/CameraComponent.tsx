@@ -1,9 +1,8 @@
-import React, {FC, useCallback, useState} from 'react';
-import {BackHandler, StyleSheet, Text, View} from 'react-native';
-import {useCameraDevices, Camera} from 'react-native-vision-camera';
-import {useScanBarcodes, BarcodeFormat} from 'vision-camera-code-scanner';
-import {RNHoleView} from 'react-native-hole-view';
-import {heightToDP, widthToDP} from 'react-native-responsive-screens';
+import React, { FC, useState, useCallback } from "react";
+import { BackHandler, View, StyleSheet, Platform } from "react-native";
+import { BarCodeScannedCallback, BarCodeScanner } from "expo-barcode-scanner";
+import { Camera } from "expo-camera";
+import * as Permissions from "expo-permissions";
 
 type Props = {
   onQrCodeFound: (data: string) => void;
@@ -11,14 +10,9 @@ type Props = {
   onError: (error: Error) => void;
 };
 
-const CameraComponent: FC<Props> = ({onQrCodeFound, onCanceled, onError}) => {
-  const devices = useCameraDevices();
-  const device = devices.back;
-
-  const [frameProcessor, barcodes] = useScanBarcodes([BarcodeFormat.QR_CODE]);
-
-  const [hasPermission, setHasPermission] = React.useState(false);
-  const [result, setResult] = React.useState<string | null>(null);
+const CameraComponent: FC<Props> = ({ onQrCodeFound, onCanceled, onError }) => {
+  const [hasPermission, setHasPermission] = useState(false);
+  const [scanned, setScanned] = useState(false);
   const [isActive, setIsActive] = useState(false);
 
   const handleBackButtonPress = useCallback(() => {
@@ -28,97 +22,74 @@ const CameraComponent: FC<Props> = ({onQrCodeFound, onCanceled, onError}) => {
   }, [onCanceled]);
 
   const checkCameraPermission = useCallback(async () => {
-    // const status = await Camera.getCameraPermissionStatus();
-    const status = await Camera.requestCameraPermission();
+    // Use Permissions instead of Camera to workaround the issue
+    // https://github.com/expo/expo/issues/7501
+    let { status } = await Permissions.getAsync(Permissions.CAMERA); // Camera.getCameraPermissionsAsync();
 
-    if (status !== 'authorized') {
-      onError(new Error('Camera Permission Denied'));
+    if (status === "undetermined") {
+      const result = await Permissions.askAsync(Permissions.CAMERA); // Camera.requestCameraPermissionsAsync();
+      status = result.status;
+
+      // if (Platform.OS === "web") {
+      //   // Workaround for https://github.com/expo/expo/issues/13431
+      //   location.reload();
+      // }
+    }
+
+    if (status !== "granted") {
+      onError(new Error("Camera Permission Denied"));
     } else {
       setIsActive(true);
     }
 
-    setHasPermission(status === 'authorized');
+    setHasPermission(status === "granted");
   }, [onError]);
 
   React.useEffect(() => {
     checkCameraPermission();
 
     const backHandler = BackHandler.addEventListener(
-      'hardwareBackPress',
-      handleBackButtonPress,
+      "hardwareBackPress",
+      handleBackButtonPress
     );
 
     return () => backHandler.remove();
   }, [handleBackButtonPress, checkCameraPermission]);
 
-  React.useEffect(() => {
-    if (barcodes && barcodes.length > 0 && result === null) {
-      if (!barcodes[0].rawValue) {
-        return;
-      }
+  const handleBarCodeScanned: BarCodeScannedCallback = ({ data }) => {
+    setScanned(true);
+    onQrCodeFound(data);
+  };
 
-      setResult(barcodes[0].rawValue);
-    }
-  }, [barcodes, result]);
-
-  React.useEffect(() => {
-    if (result) {
-      setIsActive(false);
-      setTimeout(() => onQrCodeFound(result), 1000);
-    }
-  }, [onQrCodeFound, result]);
-
-  if (!hasPermission) {
+  if (hasPermission === null) {
     return null;
   }
 
-  if (device == null) {
+  if (hasPermission === false) {
     return null;
   }
-
-  // ToDo: add close scanning button !!!!!
 
   return (
-    <>
+    <View style={styles.container}>
       <Camera
         style={styles.container}
-        device={device}
-        isActive={isActive}
-        frameProcessor={frameProcessor}
-        frameProcessorFps={5}
-        audio={false}
-        onError={onError}
+        onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+        barCodeScannerSettings={{
+          barCodeTypes: [BarCodeScanner.Constants.BarCodeType.qr],
+        }}
       />
-      <RNHoleView
-        holes={[
-          {
-            x: widthToDP('10%'),
-            y: heightToDP('30%'),
-            width: widthToDP('80%'),
-            height: heightToDP('40%'),
-            borderRadius: 10,
-          },
-        ]}
-        style={styles.rnholeView}
-      />
-    </>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  rnholeView: {
-    position: 'absolute',
-    width: '100%',
-    height: '100%',
-    alignSelf: 'center',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',
-  },
   container: {
-    height: '100%',
+    // flex: 1,
+    // flexDirection: 'column',
+    // justifyContent: 'center',
+    height: "100%",
     aspectRatio: 1,
-    alignSelf: 'center',
+    alignSelf: "center",
   },
 });
 

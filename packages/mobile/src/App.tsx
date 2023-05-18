@@ -1,77 +1,99 @@
-import {NavigationContainer} from '@react-navigation/native';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import React, {useEffect, useState} from 'react';
-import WelcomeScreen from './screens/WelcomeScreen';
-import {Web3Modal, useWeb3Modal} from '@web3modal/react-native';
+import { NavigationContainer } from "@react-navigation/native";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import React, { useCallback, useEffect, useState } from "react";
+import WelcomeScreen from "./screens/WelcomeScreen";
+import { Web3Modal, useWeb3Modal } from "@web3modal/react-native";
 import {
   IS_OWNER_VIEW_PREFERRED_KEY,
   WC_METADATA,
   WC_PROJECT_ID,
   WC_RELAY_URL,
   WC_SESSION_PARAMS,
-} from './common/constants';
-import InfoScreen from './screens/InfoScreen';
-import CameraScreen from './components/CameraComponent';
-import TxScreen from './screens/TxScreen';
-import {MonteqContractProvider} from './contexts/MonteqContractContext';
-import MyBusiness from './screens/MyBusiness';
-import AddingMyBusiness from './screens/AddingMyBusiness';
-import HowUse from './screens/HowUse';
-import RemovingMyBusiness from './screens/RemovingMyBuisness';
-import {ParsedReceipt, ParsedEDCON2023Code} from './common/parseReceipt';
-import {enableScreens} from 'react-native-screens';
-import {CameraProvider} from './contexts/CameraContext';
-import SplashScreen from 'react-native-splash-screen';
-import {useNetInfo} from '@react-native-community/netinfo';
-import {SafeAreaView, StyleSheet, View} from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {BusinessInfo} from './contexts/MonteqContractContext/MonteqContractContext';
-import TxModal from './components/TxModal';
-import SendTokenScreen from './screens/SendTokenScreen';
-import {EdconContractProvider} from './contexts/EdconContractContext';
+} from "./common/constants";
+import InfoScreen from "./screens/InfoScreen";
+import CameraScreen from "./components/CameraComponent";
+import TxScreen from "./screens/TxScreen";
+import { MonteqContractProvider } from "./contexts/MonteqContractContext";
+import MyBusiness from "./screens/MyBusiness";
+import AddingMyBusiness from "./screens/AddingMyBusiness";
+import HowUse from "./screens/HowUse";
+import RemovingMyBusiness from "./screens/RemovingMyBuisness";
+import { ParsedReceipt, ParsedEDCON2023Code } from "./common/parseReceipt";
+import { enableScreens } from "react-native-screens";
+import { CameraProvider } from "./contexts/CameraContext";
+// import SplashScreen from 'react-native-splash-screen';
+import { useNetInfo } from "@react-native-community/netinfo";
+import { SafeAreaView, StyleSheet, View } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { BusinessInfo } from "./contexts/MonteqContractContext/MonteqContractContext";
+import TxModal from "./components/TxModal";
+import SendTokenScreen from "./screens/SendTokenScreen";
+import { EdconContractProvider } from "./contexts/EdconContractContext";
+import { useFonts } from "expo-font";
+import * as SplashScreen from "expo-splash-screen";
+
+SplashScreen.preventAutoHideAsync();
 
 enableScreens();
 
 export type RootStackParamList = {
   InfoScreen: undefined;
   CameraScreen: undefined;
-  TxScreen: {parsedReceipt: ParsedReceipt; businessInfo: BusinessInfo};
+  TxScreen: { parsedReceipt: ParsedReceipt; businessInfo: BusinessInfo };
   WelcomeScreen: undefined;
   CodeScanned: undefined;
   MyBusiness: undefined;
-  AddingMyBusiness: {parsedReceipt: ParsedReceipt};
+  AddingMyBusiness: { parsedReceipt: ParsedReceipt };
   HowUse: undefined;
   RemovingMyBusiness: undefined;
-  SendTokenScreen: {parsedQrCode: ParsedEDCON2023Code};
+  SendTokenScreen: { parsedQrCode: ParsedEDCON2023Code };
 };
 
 const Tab = createBottomTabNavigator();
 
-function App(): JSX.Element {
-  const {isConnected: isInternetConnected} = useNetInfo();
-  const {isConnected: isWalletConnected, provider} = useWeb3Modal();
+function App() {
+  const { isConnected: isInternetConnected } = useNetInfo();
+  const { isConnected: isWalletConnected, provider } = useWeb3Modal();
 
   const [initialRouteName, setInitialRouteName] = useState<string | null>(null);
 
-  useEffect(() => {
-    SplashScreen.hide();
+  const [fontsLoaded, error] = useFonts({
+    "roboto_black_italic": require("./assets/fonts/roboto_black_italic.ttf"),
+    "roboto_black": require("./assets/fonts/roboto_black.ttf"),
+    "roboto_bold_italic": require("./assets/fonts/roboto_bold_italic.ttf"),
+    "roboto_bold": require("./assets/fonts/roboto_bold.ttf"),
+    "roboto_italic": require("./assets/fonts/roboto_italic.ttf"),
+    "roboto_light": require("./assets/fonts/roboto_light.ttf"),
+    "roboto_medium_italic": require("./assets/fonts/roboto_medium_italic.ttf"),
+    "roboto_medium": require("./assets/fonts/roboto_medium.ttf"),
+    "roboto_regular": require("./assets/fonts/roboto_regular.ttf"),
+    "roboto_thin_italic": require("./assets/fonts/roboto_thin_italic.ttf"),
+    "roboto_thin": require("./assets/fonts/roboto_thin.ttf")
+  });
 
+  useEffect(() => {
     // ToDo: move to separate hook?
     (async () => {
       try {
         const isOwnerViewPreferred = await AsyncStorage.getItem(
-          IS_OWNER_VIEW_PREFERRED_KEY,
+          IS_OWNER_VIEW_PREFERRED_KEY
         );
 
         setInitialRouteName(
-          isOwnerViewPreferred === 'true' ? 'MyBusiness' : 'InfoScreen',
+          isOwnerViewPreferred === "true" ? "MyBusiness" : "InfoScreen"
         );
       } catch (e) {
         console.error(e);
-        setInitialRouteName('InfoScreen');
+        setInitialRouteName("InfoScreen");
+      } finally {
+        await SplashScreen.hideAsync();
       }
     })();
   }, []);
+
+  // if (!fontsLoaded) {
+  //   return null;
+  // }
 
   if (!isInternetConnected && initialRouteName) {
     return (
@@ -80,7 +102,7 @@ function App(): JSX.Element {
           isVisible={true}
           title="Check your connection"
           description="Try turning on your Wi-Fi or Mobile Data for using the app."
-          image={require('./assets/noConnection.png')}
+          image={require("./assets/noConnection.png")}
         />
       </View>
     );
@@ -100,10 +122,11 @@ function App(): JSX.Element {
           {!isWalletConnected ? (
             <NavigationContainer>
               <Tab.Navigator
-                screenOptions={{headerShown: false}}
+                screenOptions={{ headerShown: false }}
                 tabBar={() => null}
                 detachInactiveScreens
-                initialRouteName="WelcomeScreen">
+                initialRouteName="WelcomeScreen"
+              >
                 <Tab.Screen name="WelcomeScreen" component={WelcomeScreen} />
                 <Tab.Screen name="HowUse" component={HowUse} />
               </Tab.Navigator>
@@ -114,10 +137,11 @@ function App(): JSX.Element {
                 <CameraProvider>
                   <NavigationContainer>
                     <Tab.Navigator
-                      screenOptions={{headerShown: false}}
+                      screenOptions={{ headerShown: false }}
                       tabBar={() => null}
                       detachInactiveScreens
-                      initialRouteName={initialRouteName}>
+                      initialRouteName={initialRouteName}
+                    >
                       <Tab.Screen name="InfoScreen" component={InfoScreen} />
                       <Tab.Screen name="MyBusiness" component={MyBusiness} />
                       <Tab.Screen

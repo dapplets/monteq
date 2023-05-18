@@ -16,7 +16,7 @@ import {
 import Navigation from '../components/Navigation';
 import Title from '../components/TitlePage';
 import PaymentInfo from '../components/PaymentInfo';
-import LinearGradient from 'react-native-linear-gradient';
+import { LinearGradient } from 'expo-linear-gradient';
 import PaymentParameters from '../components/PaymentParameters';
 import Checkbox from '../components/Checkbox';
 import {type RootStackParamList} from '../App';

@@ -13,7 +13,7 @@ import {
 import Navigation from '../components/Navigation';
 import Title from '../components/TitlePage';
 import {useMonteqContract} from '../contexts/MonteqContractContext';
-import LinearGradient from 'react-native-linear-gradient';
+import { LinearGradient } from 'expo-linear-gradient';
 import SwitchBlock from '../components/SwitchBlock';
 import {useWeb3Modal} from '@web3modal/react-native';
 import {
@@ -107,8 +107,13 @@ const MyBusiness = () => {
 
       // @ts-ignore
       if (e.message !== 'User canceled scanning') {
-        // @ts-ignore
-        Alert.alert('Error', e.message);
+        if (Platform.OS === 'web') {
+          // @ts-ignore
+          alert(e.message);
+        } else {
+          // @ts-ignore
+          Alert.alert('Error', e.message);
+        }
       }
     }
   }

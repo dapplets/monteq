@@ -7,6 +7,7 @@ import {
   StyleSheet,
   TouchableHighlight,
   Platform,
+  Image
 } from 'react-native';
 import {type RootStackParamList} from '../App';
 import ButtonNavigationDefault from './ButtonNavigationDefault';
@@ -79,8 +80,13 @@ const Navigation = ({path}: NavigationType) => {
 
       // @ts-ignore
       if (e.message !== 'User canceled scanning') {
-        // @ts-ignore
-        Alert.alert('Error', e.message);
+        if (Platform.OS === 'web') {
+          // @ts-ignore
+          alert(e.message);
+        } else {
+          // @ts-ignore
+          Alert.alert('Error', e.message);
+        }
       }
     }
   }
@@ -114,7 +120,8 @@ const Navigation = ({path}: NavigationType) => {
         underlayColor={'transparent'}
         activeOpacity={0.5}
         onPress={handleGmsScanPress}>
-        <SvgComponentScan style={styles.scanButtonImg} />
+        {/* <SvgComponentScan style={styles.scanButtonImg} /> */}
+        <Image style={styles.scanButtonImg} source={require('../assets/CircularButton.png')}/>
       </TouchableHighlight>
       <ButtonNavigationDefault
         onPress={navigationUserHistory}
@@ -148,9 +155,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderTopEndRadius: 10,
     borderTopStartRadius: 10,
-    paddingStart: Platform.OS === 'ios' ? 21 : 11,
+    paddingStart: Platform.OS === 'ios' || Platform.OS === 'web' ? 21 : 11,
     paddingEnd: 21,
-    // paddingBottom: Platform.OS === 'ios' ? 10 : 0,
+    // paddingBottom: Platform.OS === 'ios' || Platform.OS === 'web' ? 10 : 0,
     bottom: 0,
     left: 0,
     shadowColor: '#000',
@@ -171,11 +178,17 @@ const styles = StyleSheet.create({
 
     marginBottom: 50,
     borderRadius: 45,
+    zIndex: 101,
+    padding:5
   },
   scanButtonImg: {
     marginTop: '5%',
     zIndex: 20,
     alignSelf: 'center',
+    // marginLeft:'auto',
+    // marginRight:'auto',
+    width:70,
+    height:70
   },
 });
 

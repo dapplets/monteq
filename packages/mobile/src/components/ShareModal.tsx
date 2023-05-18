@@ -1,10 +1,15 @@
-import React from 'react';
-import LinearGradient from 'react-native-linear-gradient';
-import {StyleSheet, Text, TouchableHighlight, View, Modal} from 'react-native';
-import MaskedView from '@react-native-masked-view/masked-view';
-import {FontFamily} from '../GlobalStyles';
-import QRCode from 'react-native-qrcode-svg';
-import Clipboard from '@react-native-clipboard/clipboard';
+import React from "react";
+import { LinearGradient } from "expo-linear-gradient";
+import {
+  StyleSheet,
+  Text,
+  TouchableHighlight,
+  View,
+  Modal,
+} from "react-native";
+import { FontFamily } from "../GlobalStyles";
+import QRCode from "react-native-qrcode-svg";
+import * as Clipboard from "expo-clipboard";
 
 // ToDo: move to business logic?
 function makeShareUrl(to: string, user: string): string {
@@ -34,49 +39,54 @@ const ShareModal: React.FC<Props> = ({
   const qrCodeUrl = makeShareUrl(account, username);
   const ref = React.useRef();
 
+  const copyToClipboard = async () => {
+    await Clipboard.setStringAsync(qrCodeUrl);
+  };
+
   return (
     <Modal
       animationType="slide"
       transparent={true}
       visible={isVisible}
-      onRequestClose={onRequestClose}>
+      onRequestClose={onRequestClose}
+    >
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
           <TouchableHighlight
-            underlayColor={'transparent'}
+            underlayColor={"transparent"}
             activeOpacity={0.5}
-            onPress={() => Clipboard.setString(qrCodeUrl)}
-            style={styles.Title}>
+            onPress={copyToClipboard}
+            style={styles.Title}
+          >
             <Text>Tap to copy</Text>
           </TouchableHighlight>
           <QRCode getRef={ref as any} size={200} value={qrCodeUrl} />
 
           {username ? (
-            <MaskedView
-              style={styles.maskStyle}
-              maskElement={<Text {...props}>{username}</Text>}>
-              <LinearGradient
-                style={styles.linearGradientText}
-                colors={['#0dd977', '#1da4ac', '#14c48c']}
-                start={{x: 0, y: 0}}
-                end={{x: 1, y: 0}}>
-                <Text {...props} style={[styles.name, {opacity: 0}]}>
-                  {username}
-                </Text>
-              </LinearGradient>
-            </MaskedView>
+            <LinearGradient
+              style={styles.linearGradientText}
+              colors={["#0dd977", "#1da4ac", "#14c48c"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+            >
+              <Text {...props} style={[styles.name, { opacity: 0 }]}>
+                {username}
+              </Text>
+            </LinearGradient>
           ) : null}
 
           <LinearGradient
-            start={{x: 0, y: 0}}
-            end={{x: 1, y: 0}}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
             style={styles.linearGradient}
-            colors={['#0dd977', '#1da4ac', '#14c48c']}>
+            colors={["#0dd977", "#1da4ac", "#14c48c"]}
+          >
             <TouchableHighlight
-              underlayColor={'#1da4ac'}
+              underlayColor={"#1da4ac"}
               activeOpacity={0.5}
               style={styles.primaryButton}
-              onPress={onRequestClose}>
+              onPress={onRequestClose}
+            >
               <Text style={styles.primaryButtonText}>Close</Text>
             </TouchableHighlight>
           </LinearGradient>
@@ -89,18 +99,18 @@ const ShareModal: React.FC<Props> = ({
 const styles = StyleSheet.create({
   centeredView: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     marginTop: 22,
   },
   modalView: {
     width: 240,
     margin: 0,
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderRadius: 20,
     padding: 20,
-    alignItems: 'center',
-    shadowColor: '#000',
+    alignItems: "center",
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -111,53 +121,53 @@ const styles = StyleSheet.create({
   },
   Title: {
     fontFamily: FontFamily.robotoRegular,
-    color: '#999999',
+    color: "#999999",
     marginBottom: 20,
     fontSize: 14,
-    backgroundColor: 'transparent',
+    backgroundColor: "transparent",
   },
   linearGradient: {
-    display: 'flex',
+    display: "flex",
     borderRadius: 50,
     width: 200,
     marginTop: 10,
   },
   primaryButton: {
-    backgroundColor: 'transparent',
+    backgroundColor: "transparent",
     width: 200,
     height: 48,
-    display: 'flex',
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'center',
+    display: "flex",
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "center",
     borderRadius: 50,
   },
   primaryButtonText: {
     fontSize: 14,
-    fontWeight: '700',
+    fontWeight: "700",
     lineHeight: 16,
 
-    color: '#ffffff',
+    color: "#ffffff",
     fontFamily: FontFamily.robotoBold,
   },
   name: {
     fontFamily: FontFamily.robotoBold,
     fontSize: 20,
     lineHeight: 23,
-    textAlign: 'center',
+    textAlign: "center",
   },
   linearGradientText: {
-    display: 'flex',
+    display: "flex",
 
-    justifyContent: 'center',
-    flexDirection: 'row',
+    justifyContent: "center",
+    flexDirection: "row",
   },
   maskStyle: {
     marginTop: 10,
-    display: 'flex',
-    justifyContent: 'center',
-    flexDirection: 'row',
-    marginLeft: 'auto',
+    display: "flex",
+    justifyContent: "center",
+    flexDirection: "row",
+    marginLeft: "auto",
     marginRight: 10,
   },
 });
