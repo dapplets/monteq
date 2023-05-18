@@ -362,20 +362,51 @@ describe('EdconGame_v2', function () {
         })
     })
 
-    // describe('Locktime', function () {
-    //     it('Should transfer tokens of different types from user to user during recipients locktime', async () => {
-    //         const { edconGame } = await loadFixture(deployOneYearLockFixture)
-    //         expect(false).to.eql(true)
-    //     })
+    describe('Locktime', function () {
+        it('Should not transfer tokens from user to user during recipients locktime', async () => {
+            const {
+                edconGame,
+                gameMaster,
+                businessOwner,
+                anotherAccount,
+                anotherAccount2,
+                TICKER_01,
+                TOKEN_NAME_01,
+                TOKEN_ICON_01,
+            } = await loadFixture(deployContractFixture)
+            await edconGame.connect(gameMaster).approveCreator(businessOwner.address, TICKER_01)
+            await edconGame
+                .connect(businessOwner)
+                .addToken(TICKER_01, TOKEN_NAME_01, TOKEN_ICON_01, 2)
 
-    //     it('Should transfer tokens of one type from ambassador to user during recipients locktime', async () => {
-    //         const { edconGame } = await loadFixture(deployOneYearLockFixture)
-    //         expect(false).to.eql(true)
-    //     })
+            await edconGame.connect(businessOwner).transfer(0, 9, anotherAccount.address)
+            await edconGame.connect(anotherAccount).transfer(0, 6, anotherAccount2.address)
 
-    //     it('Should not transfer tokens of one type from user to user during recipients locktime', async () => {
-    //         const { edconGame } = await loadFixture(deployOneYearLockFixture)
-    //         expect(true).to.throw("You aren't the ambassador")
-    //     })
-    // })
+            await expect(
+                edconGame.connect(anotherAccount).transfer(0, 3, anotherAccount2.address)
+            ).to.revertedWith('destination is still locked for this transfer')
+        })
+
+        it('Should transfer tokens from ambassador to user during recipients locktime', async () => {
+            const {
+                edconGame,
+                gameMaster,
+                businessOwner,
+                anotherAccount,
+                TICKER_01,
+                TOKEN_NAME_01,
+                TOKEN_ICON_01,
+            } = await loadFixture(deployContractFixture)
+            await edconGame.connect(gameMaster).approveCreator(businessOwner.address, TICKER_01)
+            await edconGame
+                .connect(businessOwner)
+                .addToken(TICKER_01, TOKEN_NAME_01, TOKEN_ICON_01, 2)
+
+            await edconGame.connect(businessOwner).transfer(0, 13, anotherAccount.address)
+            await edconGame.connect(businessOwner).transfer(0, 12, anotherAccount.address)
+
+            expect(await edconGame.box(businessOwner.address, 0)).to.equal(0)
+            expect(await edconGame.box(anotherAccount.address, 0)).to.equal(25)
+        })
+    })
 })
