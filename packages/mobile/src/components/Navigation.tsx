@@ -7,6 +7,7 @@ import {
   StyleSheet,
   TouchableHighlight,
   Platform,
+  Image
 } from 'react-native';
 import {type RootStackParamList} from '../App';
 import ButtonNavigationDefault from './ButtonNavigationDefault';
@@ -119,7 +120,8 @@ const Navigation = ({path}: NavigationType) => {
         underlayColor={'transparent'}
         activeOpacity={0.5}
         onPress={handleGmsScanPress}>
-        <SvgComponentScan style={styles.scanButtonImg} />
+        {/* <SvgComponentScan style={styles.scanButtonImg} /> */}
+        <Image style={styles.scanButtonImg} source={require('../assets/CircularButton.png')}/>
       </TouchableHighlight>
       <ButtonNavigationDefault
         onPress={navigationUserHistory}
@@ -177,11 +179,16 @@ const styles = StyleSheet.create({
     marginBottom: 50,
     borderRadius: 45,
     zIndex: 101,
+    padding:5
   },
   scanButtonImg: {
     marginTop: '5%',
     zIndex: 20,
     alignSelf: 'center',
+    // marginLeft:'auto',
+    // marginRight:'auto',
+    width:70,
+    height:70
   },
 });
 
