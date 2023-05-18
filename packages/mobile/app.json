@@ -29,7 +29,7 @@
       "short_name": "MonteQ",
       "splash": "./assets/splash.png",
       "themeColor": "#ffffff",
-      "barStyle": "white"
+      "barStyle": "default"
     },
     "plugins": [
       [
