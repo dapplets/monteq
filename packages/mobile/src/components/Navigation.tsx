@@ -79,8 +79,13 @@ const Navigation = ({path}: NavigationType) => {
 
       // @ts-ignore
       if (e.message !== 'User canceled scanning') {
-        // @ts-ignore
-        Alert.alert('Error', e.message);
+        if (Platform.OS === 'web') {
+          // @ts-ignore
+          alert(e.message);
+        } else {
+          // @ts-ignore
+          Alert.alert('Error', e.message);
+        }
       }
     }
   }
