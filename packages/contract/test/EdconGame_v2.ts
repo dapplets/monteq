@@ -10,24 +10,27 @@ describe('EdconGame_v2', function () {
     // and reset Hardhat Network to that snapshot in every test.
     async function deployOneYearLockFixture() {
         // Contracts are deployed using the first signer/account by default
-        const [owner, otherAccount] = await ethers.getSigners()
+        const [contractOwner, gameMaster, businessOwner, anotherAccount] = await ethers.getSigners()
 
         const EdconGame = await ethers.getContractFactory('contracts/EdconGame_v2.sol:EdconGame')
-        const edconGame = await EdconGame.deploy()
+        const edconGame = await EdconGame.deploy([gameMaster.address])
 
         // TOKEN 1
         const TICKER_01 = 'TO1'
         const TOKEN_NAME_01 = 'Token 01'
         const TOKEN_ICON_01 =
             'https://bafybeigdyrzt5sfp7udm7hu76uh7y26nf3efuylqabf3oclgtqy55fbzdi.ipfs.dweb.link/'
+        const TICKER_02 = 'TO2'
 
         return {
             edconGame,
-            owner,
-            otherAccount,
+            gameMaster,
+            businessOwner,
+            anotherAccount,
             TICKER_01,
             TOKEN_NAME_01,
             TOKEN_ICON_01,
+            TICKER_02,
         }
     }
 
@@ -40,72 +43,186 @@ describe('EdconGame_v2', function () {
 
     describe('Add tokens and set ambassadors', function () {
         it('Should add a new token', async () => {
-            const { edconGame, owner, TICKER_01, TOKEN_NAME_01, TOKEN_ICON_01 } = await loadFixture(
-                deployOneYearLockFixture
-            )
-            await edconGame.addToken(TICKER_01, TOKEN_NAME_01, TOKEN_ICON_01, 2)
+            const {
+                edconGame,
+                gameMaster,
+                businessOwner,
+                TICKER_01,
+                TOKEN_NAME_01,
+                TOKEN_ICON_01,
+            } = await loadFixture(deployOneYearLockFixture)
+            await edconGame.connect(gameMaster).approveCreator(businessOwner.address, TICKER_01)
+            await edconGame
+                .connect(businessOwner)
+                .addToken(TICKER_01, TOKEN_NAME_01, TOKEN_ICON_01, 2)
             const token = await edconGame.readToken()
             expect(token.map(parseReadTokenResponse)).to.eql([
                 {
                     ticker: TICKER_01,
                     tokenName: TOKEN_NAME_01,
                     iconUrl: TOKEN_ICON_01,
-                    creator: owner.address,
+                    creator: businessOwner.address,
                 },
             ])
         })
 
-        it('Should not add the existed token', async () => {
-            const { edconGame, owner, otherAccount, TICKER_01, TOKEN_NAME_01, TOKEN_ICON_01 } =
-                await loadFixture(deployOneYearLockFixture)
-            await edconGame.addToken(TICKER_01, TOKEN_NAME_01, TOKEN_ICON_01, 2)
+        it('Should not add the existed token by the same account', async () => {
+            const {
+                edconGame,
+                gameMaster,
+                businessOwner,
+                TICKER_01,
+                TOKEN_NAME_01,
+                TOKEN_ICON_01,
+            } = await loadFixture(deployOneYearLockFixture)
+            await edconGame.connect(gameMaster).approveCreator(businessOwner.address, TICKER_01)
+            await edconGame
+                .connect(businessOwner)
+                .addToken(TICKER_01, TOKEN_NAME_01, TOKEN_ICON_01, 2)
             await expect(
-                edconGame.addToken(TICKER_01, TOKEN_NAME_01, TOKEN_ICON_01, 2)
+                edconGame
+                    .connect(businessOwner)
+                    .addToken(TICKER_01, TOKEN_NAME_01, TOKEN_ICON_01, 2)
             ).to.revertedWith('token exists already')
         })
 
+        it('Should not add the existed token by another account without approve', async () => {
+            const {
+                edconGame,
+                gameMaster,
+                businessOwner,
+                anotherAccount,
+                TICKER_01,
+                TOKEN_NAME_01,
+                TOKEN_ICON_01,
+            } = await loadFixture(deployOneYearLockFixture)
+            await edconGame.connect(gameMaster).approveCreator(businessOwner.address, TICKER_01)
+            await edconGame
+                .connect(businessOwner)
+                .addToken(TICKER_01, TOKEN_NAME_01, TOKEN_ICON_01, 2)
+            await expect(
+                edconGame
+                    .connect(anotherAccount)
+                    .addToken(TICKER_01, TOKEN_NAME_01, TOKEN_ICON_01, 2)
+            ).to.revertedWith('only pre-approved creators can create token')
+        })
+
+        it('Should not add the existed token by another account with approve', async () => {
+            const {
+                edconGame,
+                gameMaster,
+                businessOwner,
+                anotherAccount,
+                TICKER_01,
+                TOKEN_NAME_01,
+                TOKEN_ICON_01,
+            } = await loadFixture(deployOneYearLockFixture)
+            await edconGame.connect(gameMaster).approveCreator(businessOwner.address, TICKER_01)
+            await edconGame
+                .connect(businessOwner)
+                .addToken(TICKER_01, TOKEN_NAME_01, TOKEN_ICON_01, 2)
+            await expect(
+                edconGame.connect(gameMaster).approveCreator(anotherAccount.address, TICKER_01)
+            ).to.revertedWith('token exists already')
+        })
+
+        it('Should not add a new token by approved account for another token', async () => {
+            const {
+                edconGame,
+                gameMaster,
+                businessOwner,
+                TICKER_01,
+                TOKEN_NAME_01,
+                TOKEN_ICON_01,
+                TICKER_02,
+            } = await loadFixture(deployOneYearLockFixture)
+            await edconGame.connect(gameMaster).approveCreator(businessOwner.address, TICKER_01)
+            await edconGame
+                .connect(businessOwner)
+                .addToken(TICKER_01, TOKEN_NAME_01, TOKEN_ICON_01, 2)
+            await expect(
+                edconGame
+                    .connect(businessOwner)
+                    .addToken(TICKER_02, TOKEN_NAME_01, TOKEN_ICON_01, 2)
+            ).to.revertedWith('only pre-approved creators can create token')
+        })
+
         it('Should add an ambassador by another ambassador without rank', async () => {
-            const { edconGame, owner, otherAccount, TICKER_01, TOKEN_NAME_01, TOKEN_ICON_01 } =
-                await loadFixture(deployOneYearLockFixture)
-            const a = await edconGame.ambassadorRank(owner.address, 0)
+            const {
+                edconGame,
+                gameMaster,
+                businessOwner,
+                anotherAccount,
+                TICKER_01,
+                TOKEN_NAME_01,
+                TOKEN_ICON_01,
+            } = await loadFixture(deployOneYearLockFixture)
+            const a = await edconGame.ambassadorRank(businessOwner.address, 0)
             expect(a).to.equal(0)
-            await edconGame.addToken(TICKER_01, TOKEN_NAME_01, TOKEN_ICON_01, 2)
-            const b = await edconGame.ambassadorRank(owner.address, 0)
+            await edconGame.connect(gameMaster).approveCreator(businessOwner.address, TICKER_01)
+            await edconGame
+                .connect(businessOwner)
+                .addToken(TICKER_01, TOKEN_NAME_01, TOKEN_ICON_01, 2)
+            const b = await edconGame.ambassadorRank(businessOwner.address, 0)
             expect(b).to.equal(2)
-            const c = await edconGame.ambassadorRank(otherAccount.address, 0)
+            const c = await edconGame.ambassadorRank(anotherAccount.address, 0)
             expect(c).to.equal(0)
-            await edconGame['setAmbassador(address,uint8)'](otherAccount.address, 0)
-            const d = await edconGame.ambassadorRank(otherAccount.address, 0)
+            await edconGame
+                .connect(businessOwner)
+                ['setAmbassador(address,uint8)'](anotherAccount.address, 0)
+            const d = await edconGame.ambassadorRank(anotherAccount.address, 0)
             expect(d).to.equal(1)
         })
 
         it('Should add an ambassador by another ambassador with rank', async () => {
-            const { edconGame, owner, otherAccount, TICKER_01, TOKEN_NAME_01, TOKEN_ICON_01 } =
-                await loadFixture(deployOneYearLockFixture)
-            const a = await edconGame.ambassadorRank(owner.address, 0)
+            const {
+                edconGame,
+                gameMaster,
+                businessOwner,
+                anotherAccount,
+                TICKER_01,
+                TOKEN_NAME_01,
+                TOKEN_ICON_01,
+            } = await loadFixture(deployOneYearLockFixture)
+            const a = await edconGame.ambassadorRank(businessOwner.address, 0)
             expect(a).to.equal(0)
-            await edconGame.addToken(TICKER_01, TOKEN_NAME_01, TOKEN_ICON_01, 2)
-            const b = await edconGame.ambassadorRank(owner.address, 0)
+            await edconGame.connect(gameMaster).approveCreator(businessOwner.address, TICKER_01)
+            await edconGame
+                .connect(businessOwner)
+                .addToken(TICKER_01, TOKEN_NAME_01, TOKEN_ICON_01, 2)
+            const b = await edconGame.ambassadorRank(businessOwner.address, 0)
             expect(b).to.equal(2)
-            const c = await edconGame.ambassadorRank(otherAccount.address, 0)
+            const c = await edconGame.ambassadorRank(anotherAccount.address, 0)
             expect(c).to.equal(0)
-            await edconGame['setAmbassador(address,uint8,uint8)'](otherAccount.address, 0, 1)
-            const d = await edconGame.ambassadorRank(otherAccount.address, 0)
+            await edconGame
+                .connect(businessOwner)
+                ['setAmbassador(address,uint8,uint8)'](anotherAccount.address, 0, 1)
+            const d = await edconGame.ambassadorRank(anotherAccount.address, 0)
             expect(d).to.equal(1)
         })
 
         it('Should not add an ambassador by user', async () => {
-            const { edconGame, owner, otherAccount, TICKER_01, TOKEN_NAME_01, TOKEN_ICON_01 } =
-                await loadFixture(deployOneYearLockFixture)
-            const a = await edconGame.ambassadorRank(owner.address, 0)
+            const {
+                edconGame,
+                gameMaster,
+                businessOwner,
+                anotherAccount,
+                TICKER_01,
+                TOKEN_NAME_01,
+                TOKEN_ICON_01,
+            } = await loadFixture(deployOneYearLockFixture)
+            const a = await edconGame.ambassadorRank(businessOwner.address, 0)
             expect(a).to.equal(0)
-            await edconGame.addToken(TICKER_01, TOKEN_NAME_01, TOKEN_ICON_01, 2)
-            const b = await edconGame.ambassadorRank(owner.address, 0)
+            await edconGame.connect(gameMaster).approveCreator(businessOwner.address, TICKER_01)
+            await edconGame
+                .connect(businessOwner)
+                .addToken(TICKER_01, TOKEN_NAME_01, TOKEN_ICON_01, 2)
+            const b = await edconGame.ambassadorRank(businessOwner.address, 0)
             expect(b).to.equal(2)
             await expect(
                 edconGame
-                    .connect(otherAccount)
-                    ['setAmbassador(address,uint8,uint8)'](owner.address, 0, 1)
+                    .connect(anotherAccount)
+                    ['setAmbassador(address,uint8,uint8)'](businessOwner.address, 0, 1)
             ).to.revertedWith('only Project Ambassador is eligible to mint tokens') // ToDo: change message
         })
     })
