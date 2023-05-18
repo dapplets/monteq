@@ -154,7 +154,10 @@ const SendTokenScreen: React.FC<Props> = memo(({route}) => {
 
           <Text>TxStatus: {transferOrMintTxStatus}</Text>
         </View>
-        <PaymentInfo price={'12'} title={'Your are sending'} />
+        <PaymentInfo
+          price={myTokens.reduce((s, i) => (s = s + +i.balance), 0)}
+          title={'Your are sending'}
+        />
 
         {parsedQrCode.user ? (
           <View style={styles.PayInfo}>
@@ -184,16 +187,14 @@ const SendTokenScreen: React.FC<Props> = memo(({route}) => {
           </TouchableHighlight>
         </LinearGradient>
 
-        {setAmbassadorTxStatus !== TxStatus.Idle && (
-          <TouchableHighlight
-            underlayColor={'transparent'}
-            activeOpacity={0.5}
-            style={styles.buttonSendAmbassador}>
-            <Text style={styles.buttonTextAmbassador}>
-              Set an ambassador rank
-            </Text>
-          </TouchableHighlight>
-        )}
+        <TouchableHighlight
+          underlayColor={'transparent'}
+          activeOpacity={0.5}
+          style={styles.buttonSendAmbassador}>
+          <Text style={styles.buttonTextAmbassador}>
+            Set an ambassador rank
+          </Text>
+        </TouchableHighlight>
       </ScrollView>
 
       {!modalVisible ? <Navigation path="Payment" /> : null}
