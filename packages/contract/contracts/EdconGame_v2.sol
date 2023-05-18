@@ -51,10 +51,11 @@ contract EdconGame {
     mapping(address => mapping(uint => KarmaKicks)) public karmaKicks; // user's giveaway karma kickbacks
     mapping(address => mapping(uint => uint8)) public ambassadorRank; // if 0 - regular user
     mapping(address => LogEntry[]) public logs; // transfer log.
-
+    
     TokenInfo[] public tokenInfos;
     mapping(string => bool) public tokenExists; //mapping(ticker=>bool)
     mapping(address => bool) public userExists;
+    mapping(address => mapping(string=>bool)) public approvedCreators; //mapping(address,ticker) => true if approved
         
     address[] accounts;
     address[] public gameMasters;
@@ -114,13 +115,18 @@ contract EdconGame {
         logs[msg.sender].push(LogEntry(tokenId, to, block.timestamp));
     }
 
+    function approveCreator(address creator, string calldata ticker) public gameMastersOnly {
+        require(!tokenExists[ticker],"token exists already");
+        approvedCreators[creator][ticker] =true;
+    }
+
     //ToDo: prevent spam, implement approvals?
     function addToken(
         string calldata ticker,
         string calldata tokenName,
         string calldata iconUrl,
         uint8           initialRank
-    ) public gameMastersOnly {
+    ) public approvedCreatorsOnly(ticker) {
         require(!tokenExists[ticker],"token exists already");
         tokenExists[ticker] = true;
         tokenInfos.push(TokenInfo(ticker, tokenName, iconUrl, msg.sender));
@@ -208,4 +214,10 @@ contract EdconGame {
         require(n<gameMasters.length, "only gameMaster can do it");
         _;
     }
+
+    modifier approvedCreatorsOnly(string memory ticker) {
+        require(approvedCreators[msg.sender][ticker], "only pre-approved creators can create token");
+        _;
+    }
+
 }
