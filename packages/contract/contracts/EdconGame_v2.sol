@@ -14,7 +14,7 @@ contract EdconGame {
     uint constant KARMA_KICKBACK = 1;
     uint constant KARMA_NEW_USER = 50;
     
-    uint constant DEFAULT_INITIAL_RANK = 2;
+    uint8 constant DEFAULT_INITIAL_RANK = 2;
 
     struct TokenInfo {
         string ticker;
