@@ -57,7 +57,7 @@ function App() {
 
   const [initialRouteName, setInitialRouteName] = useState<string | null>(null);
 
-  const [fontsLoaded] = useFonts({
+  const [fontsLoaded, error] = useFonts({
     "roboto_black_italic": require("./assets/fonts/roboto_black_italic.ttf"),
     "roboto_black": require("./assets/fonts/roboto_black.ttf"),
     "roboto_bold_italic": require("./assets/fonts/roboto_bold_italic.ttf"),
@@ -98,9 +98,9 @@ function App() {
     })();
   }, []);
 
-  if (!fontsLoaded) {
-    return null;
-  }
+  // if (!fontsLoaded) {
+  //   return null;
+  // }
 
   if (!isInternetConnected && initialRouteName) {
     return (

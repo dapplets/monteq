@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     backgroundColor: Color.dodgerblue,
   },
   howItWorks: {
-    textDecoration: 'underline',
+    textDecorationLine: 'underline',
     color: Color.gray_300,
   },
   mainbutton1: {
