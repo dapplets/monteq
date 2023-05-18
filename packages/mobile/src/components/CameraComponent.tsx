@@ -2,6 +2,7 @@ import React, { FC, useState, useCallback } from "react";
 import { BackHandler, View, StyleSheet, Platform } from "react-native";
 import { BarCodeScannedCallback, BarCodeScanner } from "expo-barcode-scanner";
 import { Camera } from "expo-camera";
+import * as Permissions from "expo-permissions";
 
 type Props = {
   onQrCodeFound: (data: string) => void;
@@ -21,17 +22,19 @@ const CameraComponent: FC<Props> = ({ onQrCodeFound, onCanceled, onError }) => {
   }, [onCanceled]);
 
   const checkCameraPermission = useCallback(async () => {
-    let { status } = await Camera.getCameraPermissionsAsync();
+    // let { status } = await Camera.getCameraPermissionsAsync();
 
-    if (status === "undetermined") {
-      const result = await Camera.requestCameraPermissionsAsync();
-      status = result.status;
+    // if (status === "undetermined") {
+    //   const result = await Camera.requestCameraPermissionsAsync();
+    //   status = result.status;
 
-      if (Platform.OS === "web") {
-        // Workaround for https://github.com/expo/expo/issues/13431
-        location.reload();
-      }
-    }
+    //   if (Platform.OS === "web") {
+    //     // Workaround for https://github.com/expo/expo/issues/13431
+    //     location.reload();
+    //   }
+    // }
+
+    const { status } = await Permissions.askAsync(Permissions.CAMERA);
 
     if (status !== "granted") {
       onError(new Error("Camera Permission Denied"));
