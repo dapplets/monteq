@@ -160,7 +160,7 @@ const InfoScreen = () => {
             />
 
             <FlatList
-              style={styles.list}
+              style={styles.listHistory}
               refreshing={isOutHistoryLoading}
               onRefresh={loadMoreOutHistory}
               progressViewOffset={-90}
@@ -274,7 +274,7 @@ const styles = StyleSheet.create({
     marginRight: 3,
     fontFamily: Platform.OS === "ios" ? undefined : FontFamily.robotoBold,
   },
-  list: {
+  listHistory: {
     display: "flex",
     flexDirection: "column",
     width: "100%",
@@ -286,6 +286,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#E3E3E3",
     marginBottom: 70,
+    marginTop:10
   },
   BusinessImg: {
     width: 174,
