@@ -1,4 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0
+pragma solidity ^0.8.9;
+
 /**
  * EdCon MonteQ game .
  * just for start.
@@ -15,7 +17,7 @@ contract EdconGame {
     struct TokenInfo {
         string ticker;
         string tokenName;
-        bytes32 ipfsIconURI;
+        string ipfsIconURI;
         address creator;
     }
 
@@ -92,7 +94,7 @@ contract EdconGame {
     function addToken(
         string calldata ticker,
         string calldata tokenName,
-        bytes32 ipfsIconURI
+        string calldata ipfsIconURI
     ) public {
         tokenInfos.push(TokenInfo(ticker, tokenName, ipfsIconURI, msg.sender));
     }
