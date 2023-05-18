@@ -34,6 +34,7 @@ const CameraComponent: FC<Props> = ({ onQrCodeFound, onCanceled, onError }) => {
     //   }
     // }
 
+    // Workaround for https://github.com/expo/expo/issues/7501
     const { status } = await Permissions.askAsync(Permissions.CAMERA);
 
     if (status !== "granted") {
