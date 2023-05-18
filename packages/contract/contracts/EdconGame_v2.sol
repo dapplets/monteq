@@ -86,10 +86,8 @@ contract EdconGame {
                 "destination is still locked for this transfer"
             );
 
-            box[msg.sender][tokenId] -= amount; //reduce amount for regular sender, ambassador has unlimited supply.
+            box[msg.sender][tokenId] -= amount; //reduce amount for REGULAR_USER, ambassador has unlimited supply.
             
-            //save timestamp for transfer to lock token transfers for 1hrs.
-            accountLocks[to][tokenId] = block.timestamp; // locks "to" account for incoming transactions with tokenId.
             karma[msg.sender][tokenId] += userExists[to]
                 ? KARMA_TRANSFER
                 : KARMA_NEW_USER;
@@ -98,6 +96,7 @@ contract EdconGame {
 
         }
         box[to][tokenId] += amount;
+        accountLocks[to][tokenId] = block.timestamp; // locks "to" account for incoming transactions with tokenId.
         storeNewAccount(to);
         //store log entry
         logs[msg.sender].push(LogEntry(tokenId, to, block.timestamp));
