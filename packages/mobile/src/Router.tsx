@@ -18,6 +18,7 @@ import SendTokenScreen from "./screens/SendTokenScreen";
 import { EdconContractProvider } from "./contexts/EdconContractContext";
 import * as SplashScreen from "expo-splash-screen";
 import { useWallet } from "./contexts/WalletContext";
+import { PAGE_TITLE } from "./common/constants";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -54,8 +55,16 @@ const Router: FC<Props> = ({ initialRouteName }) => {
           detachInactiveScreens
           initialRouteName="WelcomeScreen"
         >
-          <Tab.Screen name="WelcomeScreen" component={WelcomeScreen} />
-          <Tab.Screen name="HowUse" component={HowUse} />
+          <Tab.Screen
+            name="WelcomeScreen"
+            component={WelcomeScreen}
+            options={{ title: PAGE_TITLE }}
+          />
+          <Tab.Screen
+            name="HowUse"
+            component={HowUse}
+            options={{ title: PAGE_TITLE }}
+          />
         </Tab.Navigator>
       </NavigationContainer>
     );
@@ -72,20 +81,46 @@ const Router: FC<Props> = ({ initialRouteName }) => {
               detachInactiveScreens
               initialRouteName={initialRouteName}
             >
-              <Tab.Screen name="InfoScreen" component={InfoScreen} />
-              <Tab.Screen name="MyBusiness" component={MyBusiness} />
-              <Tab.Screen name="CameraScreen" component={CameraScreen} />
-              <Tab.Screen name="TxScreen" component={TxScreen} />
+              <Tab.Screen
+                name="InfoScreen"
+                component={InfoScreen}
+                options={{ title: PAGE_TITLE }}
+              />
+              <Tab.Screen
+                name="MyBusiness"
+                component={MyBusiness}
+                options={{ title: PAGE_TITLE }}
+              />
+              <Tab.Screen
+                name="CameraScreen"
+                component={CameraScreen}
+                options={{ title: PAGE_TITLE }}
+              />
+              <Tab.Screen
+                name="TxScreen"
+                component={TxScreen}
+                options={{ title: PAGE_TITLE }}
+              />
               <Tab.Screen
                 name="AddingMyBusiness"
                 component={AddingMyBusiness}
+                options={{ title: PAGE_TITLE }}
               />
               <Tab.Screen
                 name="RemovingMyBusiness"
                 component={RemovingMyBusiness}
+                options={{ title: PAGE_TITLE }}
               />
-              <Tab.Screen name="HowUse" component={HowUse} />
-              <Tab.Screen name="SendTokenScreen" component={SendTokenScreen} />
+              <Tab.Screen
+                name="HowUse"
+                component={HowUse}
+                options={{ title: PAGE_TITLE }}
+              />
+              <Tab.Screen
+                name="SendTokenScreen"
+                component={SendTokenScreen}
+                options={{ title: PAGE_TITLE }}
+              />
             </Tab.Navigator>
           </NavigationContainer>
         </CameraProvider>

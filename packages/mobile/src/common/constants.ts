@@ -80,3 +80,5 @@ export const IS_OWNER_VIEW_PREFERRED_KEY = 'IS_OWNER_VIEW_PREFERRED';
 export const USERNAME_KEY = 'USERNAME_KEY';
 
 export const DEFAULT_CHAIN = gnosis;
+
+export const PAGE_TITLE = 'MonteQ';
