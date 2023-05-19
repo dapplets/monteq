@@ -20,12 +20,11 @@ export const CHAIN_ID = 100;
 export const WC_SESSION_PARAMS: ConnectParams = {
   namespaces: {
     eip155: {
-      chains: ['eip155:100'],
+      chains: [`eip155:${CHAIN_ID}`],
       methods: [
         'eth_sendTransaction',
         'eth_signTransaction',
         'eth_sign',
-        'get_balance',
         'personal_sign',
         'eth_accounts',
       ],

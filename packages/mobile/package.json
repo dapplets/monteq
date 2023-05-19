@@ -15,7 +15,10 @@
     "@react-native-masked-view/masked-view": "0.2.8",
     "@react-navigation/bottom-tabs": "^6.5.7",
     "@react-navigation/native": "^6.1.6",
+    "@walletconnect/sign-client": "^2.7.5",
+    "@walletconnect/universal-provider": "^2.7.5",
     "@web3modal/react-native": "^1.0.0-alpha.3",
+    "@web3modal/standalone": "^2.4.1",
     "ethers": "5.7.2",
     "expo": "~48.0.15",
     "expo-barcode-scanner": "~12.3.2",
@@ -41,6 +44,7 @@
   "devDependencies": {
     "@babel/core": "^7.20.0",
     "@types/react": "~18.0.14",
+    "@walletconnect/types": "^2.7.5",
     "babel-plugin-module-resolver": "^5.0.0",
     "typescript": "^4.9.4"
   },
