@@ -34,21 +34,21 @@ const ShareModal: React.FC<Props> = ({
   const qrCodeUrl = makeShareUrl(account, username);
   const ref = React.useRef();
 
-  const copyToClipboard = async () => {
-    await Clipboard.setStringAsync(qrCodeUrl);
-  };
+  // const copyToClipboard = async () => {
+  //   await Clipboard.setStringAsync(qrCodeUrl);
+  // };
 
   return (
     <Modal animationType="slide" transparent visible={isVisible} onRequestClose={onRequestClose}>
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
-          <TouchableHighlight
+          {/* <TouchableHighlight
             underlayColor="transparent"
             activeOpacity={0.5}
             onPress={copyToClipboard}
             style={styles.Title}>
             <Text>Tap to copy</Text>
-          </TouchableHighlight>
+          </TouchableHighlight> */}
           <QRCode getRef={ref as any} size={200} value={qrCodeUrl} />
 
           {username ? (
