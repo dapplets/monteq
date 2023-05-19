@@ -1,4 +1,5 @@
 import type {Metadata, ConnectParams} from '@walletconnect/universal-provider';
+import { gnosis } from "wagmi/chains";
 
 export const WC_PROJECT_ID = '19682c1014c476ffa7f0cfb529e5b17a';
 
@@ -56,3 +57,5 @@ export const COINGECKO_PRICE_URL = `https://api.coingecko.com/api/v3/simple/pric
 
 export const IS_OWNER_VIEW_PREFERRED_KEY = 'IS_OWNER_VIEW_PREFERRED';
 export const USERNAME_KEY = 'USERNAME_KEY';
+
+export const DEFAULT_CHAIN = gnosis;
