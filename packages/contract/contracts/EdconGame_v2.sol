@@ -18,8 +18,8 @@ contract EdconGame {
     uint constant LOCKTIME = 1 hours;
 
     uint constant KARMA_TRANSFER = 10;
-    uint constant KARMA_KICKBACK = 1;
-    uint constant KARMA_NEW_USER = 50;
+    uint constant KARMA_KICKBACK = 3;
+    uint constant KARMA_NEW_USER = 30;
 
     uint8 constant DEFAULT_INITIAL_RANK = 2;
 
@@ -44,6 +44,14 @@ contract EdconGame {
     struct KarmaKicks {
         KarmaKick[] kicks;
         uint8 head;
+    }
+
+    struct AccountStatOut {
+        address account;
+        uint256 karma;
+        uint256 box;
+        uint256 lockedAt;
+        uint8 ambassadorRank;
     }
 
     mapping(address => mapping(uint => uint)) public box; // who owns what
@@ -146,6 +154,34 @@ contract EdconGame {
         return ti;
     }
 
+    function getAccounts(
+        uint256 tokenId,
+        uint256 offset,
+        uint256 limit,
+        bool reverse
+    ) public view returns (AccountStatOut[] memory out, uint256 total) {
+        total = accounts.length;
+
+        if (limit > total - offset) {
+            limit = total - offset;
+        }
+
+        out = new AccountStatOut[](limit);
+
+        for (uint256 i = 0; i < limit; ++i) {
+            uint256 idx = (reverse) ? (total - offset - 1 - i) : (offset + i);
+            address acc = accounts[idx];
+
+            out[i] = AccountStatOut(
+                acc,
+                karma[acc][tokenId],
+                box[acc][tokenId],
+                accountLocks[acc][tokenId],
+                ambassadorRank[acc][tokenId]
+            );
+        }
+    }
+
     function getTimeToUnlock(
         address to,
         uint tokenId
@@ -166,6 +202,11 @@ contract EdconGame {
         uint tokenId
     ) public view returns (uint amount) {
         return box[a][tokenId];
+    }
+
+    function isAmbassador(address a, uint tokenId) public view returns (bool) {
+        return
+            ambassadorRank[a][tokenId] != 0 || a == tokenInfos[tokenId].creator;
     }
 
     function processKarmaKicks(
