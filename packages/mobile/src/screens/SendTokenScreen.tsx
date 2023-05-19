@@ -97,35 +97,37 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
   }
 
   function handleIncrementTokenPress(tokenId: TokenId) {
-    if(isVisibleAmbassadorBtn){
-      if (isAmbassadorStatus && isAmbassadorStatus.length > 0) {
-     if(!isAmbassadorStatus[tokenId].isAmbassador) {
-      setVisibleAmbassadorBtn(false)
-     }  
-       
-      } 
-    }else{
-      if (isAmbassadorStatus && isAmbassadorStatus.length > 0) {
-        isAmbassadorStatus.map(
-          (x, i) =>
-          {if(x.tokenId === tokenId )
-            if(x.isAmbassador)
-            {
-              setVisibleAmbassadorBtn(true)
-             
-              
-            }else{
-              setVisibleAmbassadorBtn(false)
+    if (isVisibleAmbassadorBtn) {
+      if (Object.keys(tokenAmountsMap).length === 1) {
+        isAmbassadorStatus.map((x, i) => {
+          if (x.tokenId === tokenId) {
+            if (x.isAmbassador) {
+              setVisibleAmbassadorBtn(true);
+            } else {
+              setVisibleAmbassadorBtn(false);
             }
-           }
-        );
-       
-      } 
+          }
+        });
+      } else {
+        setVisibleAmbassadorBtn(false);
+      }
+    } else {
+      if (
+        isAmbassadorStatus &&
+        isAmbassadorStatus.length > 0 &&
+        Object.keys(tokenAmountsMap).length === 0
+      ) {
+        isAmbassadorStatus.map((x, i) => {
+          if (x.tokenId === tokenId)
+            if (x.isAmbassador) {
+              setVisibleAmbassadorBtn(true);
+            } else {
+              setVisibleAmbassadorBtn(false);
+            }
+        });
+      }
     }
-     
-    
-   
-    
+
     setTokenAmountsMap((amount) => ({
       ...amount,
       [tokenId]: (amount[tokenId] ?? 0) + 1,
@@ -156,10 +158,20 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
   }
   function handleSetAnAmbassadorRank() {
     setModalVisible(true);
+    const tokensToTransfer = Object.entries(tokenAmountsMap).map(
+      ([tokenId, amount]) => ({
+        tokenId: Number(tokenId),
+        amount,
+      })
+    );
 
     // todo: hardcode _ambassadorRunk
     // todo: hardcode tokenID
-    setAmbassador(parsedQrCode.to, 0, 2);
+    setAmbassador(
+      parsedQrCode.to,
+      tokensToTransfer[0].tokenId,
+      +tokensToTransfer[0].amount
+    );
   }
 
   //   console.log(isAmbassadorStatus);
@@ -248,18 +260,18 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
             </>
           </TouchableHighlight>
         </LinearGradient>
-{isVisibleAmbassadorBtn&&
-  <TouchableHighlight
-          underlayColor={"transparent"}
-          activeOpacity={0.5}
-          style={styles.buttonSendAmbassador}
-          onPress={handleSetAnAmbassadorRank}
-        >
-          <Text style={styles.buttonTextAmbassador}>
-            Set an ambassador rank
-          </Text>
-        </TouchableHighlight>}
-        
+        {isVisibleAmbassadorBtn && (
+          <TouchableHighlight
+            underlayColor={"transparent"}
+            activeOpacity={0.5}
+            style={styles.buttonSendAmbassador}
+            onPress={handleSetAnAmbassadorRank}
+          >
+            <Text style={styles.buttonTextAmbassador}>
+              Set an ambassador rank
+            </Text>
+          </TouchableHighlight>
+        )}
       </ScrollView>
 
       {!modalVisible ? <Navigation path="Payment" /> : null}
