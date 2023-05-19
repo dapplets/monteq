@@ -1,5 +1,5 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import React, { ReactNode, memo, useState } from 'react';
+import React, { ReactNode, memo, useEffect, useState } from 'react';
 import { StyleSheet, View, TouchableHighlight, Text, Platform } from 'react-native';
 
 import { FontFamily } from '../GlobalStyles';
@@ -9,11 +9,14 @@ type TokenBlockType = {
   children: ReactNode;
   title: string;
   onLongPress?: () => void;
+  status?: boolean;
 };
 
-const TokenBlock = memo(({ onPress, children, title, onLongPress }: TokenBlockType) => {
+const TokenBlock = memo(({ onPress, children, title, onLongPress, status }: TokenBlockType) => {
   const [isActive, setIsActive] = useState(false);
-  const [counter, setCounter] = useState(null);
+  useEffect(() => {
+    status && setIsActive(false);
+  }, [isActive,status]);
   return (
     <LinearGradient
       start={{ x: 0, y: 0 }}
