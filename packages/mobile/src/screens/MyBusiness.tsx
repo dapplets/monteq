@@ -194,7 +194,7 @@ const MyBusiness = () => {
                         time={new Date(item.timestamp * 1000).toISOString()}
                         company={item.payer}
                         amount={
-                          '-' +
+                          '+' +
                           truncate(item.totalCryptoAmount, BASE_CRYPTO_MAX_DIGITS) +
                           ' ' +
                           BASE_CRYPTO_CURRENCY
