@@ -1,4 +1,5 @@
 import type {Metadata, ConnectParams} from '@walletconnect/universal-provider';
+import { gnosis } from "wagmi/chains";
 
 export const WC_PROJECT_ID = '19682c1014c476ffa7f0cfb529e5b17a';
 
@@ -20,14 +21,34 @@ export const CHAIN_ID = 100;
 export const WC_SESSION_PARAMS: ConnectParams = {
   namespaces: {
     eip155: {
-      chains: ['eip155:100'],
+      chains: [`eip155:${CHAIN_ID}`],
       methods: [
         'eth_sendTransaction',
         'eth_signTransaction',
         'eth_sign',
-        'get_balance',
         'personal_sign',
         'eth_accounts',
+        // "eth_requestAccounts",
+        // "eth_chainId",
+        // "wallet_addEthereumChain",
+        // "wallet_switchEthereumChain",
+        // "wallet_getPermissions",
+        // "wallet_requestPermissions",
+        // "wallet_registerOnboarding",
+        // "wallet_watchAsset",
+        // "wallet_scanQRCode",
+        // "eth_sendTransaction",
+        // "eth_signTransaction",
+        // "eth_sign",
+        // "eth_signTypedData",
+        // "eth_signTypedData_v1",
+        // "eth_signTypedData_v2",
+        // "eth_signTypedData_v3",
+        // "eth_signTypedData_v4",
+        // "personal_sign",
+        // "eth_accounts", 
+        // "eth_chainId", 
+        // "net_version"
       ],
       events: ['accountsChanged', 'chainChanged'],
       rpcMap: {
@@ -57,3 +78,7 @@ export const COINGECKO_PRICE_URL = `https://api.coingecko.com/api/v3/simple/pric
 
 export const IS_OWNER_VIEW_PREFERRED_KEY = 'IS_OWNER_VIEW_PREFERRED';
 export const USERNAME_KEY = 'USERNAME_KEY';
+
+export const DEFAULT_CHAIN = gnosis;
+
+export const PAGE_TITLE = 'MonteQ';
