@@ -14,6 +14,7 @@ import {
 import { RootStackParamList } from '../Router';
 import InfoScreen from '../screens/InfoScreen';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import SvgComponentExit from '../icons/SVGExitCamera';
 
 type Props = {
   onQrCodeFound: (data: string) => void;
@@ -97,7 +98,7 @@ const CameraComponent: FC<Props> = ({ onQrCodeFound, onCanceled, onError }) => {
       <View style={styles.cameraScreenBtn}>
         <ButtonNavigationDefault
           onPress={navigationUserHistory}
-          children={<SvgComponentUserDefault />}
+          children={<SvgComponentExit />}
         />
       </View>
     </>
