@@ -61,9 +61,7 @@ export function parseMontenegroReceipt(qrdata: string): ParsedReceipt {
   };
 
   if (!params.bu || !params.prc || !params.crtd) {
-    throw new Error(
-      "Encoded URL doesn't contain required parameters: bu, prc, crtd",
-    );
+    throw new Error("Encoded URL doesn't contain required parameters: bu, prc, crtd");
   }
 
   const payload = {
@@ -88,9 +86,7 @@ export function parseEdcon2023Code(qrdata: string): ParsedEDCON2023Code {
   };
 
   if (!params.to) {
-    throw new Error(
-      "EDCON2023: Encoded URL doesn't contain required parameters: to",
-    );
+    throw new Error("EDCON2023: Encoded URL doesn't contain required parameters: to");
   }
 
   const payload: ParsedEDCON2023Code = {

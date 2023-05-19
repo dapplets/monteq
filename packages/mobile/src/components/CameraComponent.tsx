@@ -1,8 +1,8 @@
-import React, { FC, useState, useCallback } from "react";
-import { BackHandler, View, StyleSheet, Platform } from "react-native";
-import { BarCodeScannedCallback, BarCodeScanner } from "expo-barcode-scanner";
-import { Camera } from "expo-camera";
-import * as Permissions from "expo-permissions";
+import { BarCodeScannedCallback, BarCodeScanner } from 'expo-barcode-scanner';
+import { Camera } from 'expo-camera';
+import * as Permissions from 'expo-permissions';
+import React, { FC, useState, useCallback } from 'react';
+import { BackHandler, View, StyleSheet, Platform } from 'react-native';
 
 type Props = {
   onQrCodeFound: (data: string) => void;
@@ -26,7 +26,7 @@ const CameraComponent: FC<Props> = ({ onQrCodeFound, onCanceled, onError }) => {
     // https://github.com/expo/expo/issues/7501
     let { status } = await Permissions.getAsync(Permissions.CAMERA); // Camera.getCameraPermissionsAsync();
 
-    if (status === "undetermined") {
+    if (status === 'undetermined') {
       const result = await Permissions.askAsync(Permissions.CAMERA); // Camera.requestCameraPermissionsAsync();
       status = result.status;
 
@@ -36,22 +36,19 @@ const CameraComponent: FC<Props> = ({ onQrCodeFound, onCanceled, onError }) => {
       // }
     }
 
-    if (status !== "granted") {
-      onError(new Error("Camera Permission Denied"));
+    if (status !== 'granted') {
+      onError(new Error('Camera Permission Denied'));
     } else {
       setIsActive(true);
     }
 
-    setHasPermission(status === "granted");
+    setHasPermission(status === 'granted');
   }, [onError]);
 
   React.useEffect(() => {
     checkCameraPermission();
 
-    const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      handleBackButtonPress
-    );
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', handleBackButtonPress);
 
     return () => backHandler.remove();
   }, [handleBackButtonPress, checkCameraPermission]);
@@ -87,9 +84,9 @@ const styles = StyleSheet.create({
     // flex: 1,
     // flexDirection: 'column',
     // justifyContent: 'center',
-    height: "100%",
+    height: '100%',
     aspectRatio: 1,
-    alignSelf: "center",
+    alignSelf: 'center',
   },
 });
 

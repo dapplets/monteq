@@ -1,4 +1,6 @@
-import React, {FC, ReactElement, useCallback, useEffect, useState} from 'react';
+import { ethers } from 'ethers';
+import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react';
+
 import {
   HistoryRecord,
   MonteqContractContext,
@@ -9,7 +11,7 @@ import {
   BusinessInfo,
   defaultBusinessInfo,
 } from './MonteqContractContext';
-import {ethers} from 'ethers';
+import MONTEQ_ABI from '../../abis/MonteQ.json';
 import {
   BASE_CRYPTO_MAX_DIGITS,
   CHAIN_ID,
@@ -20,58 +22,48 @@ import {
   MONTEQ_CONTRACT_ADDRESS,
   WC_SESSION_PARAMS,
 } from '../../common/constants';
-import MONTEQ_ABI from '../../abis/MonteQ.json';
-import {truncate} from '../../common/helpers';
+import { truncate } from '../../common/helpers';
 import { useWallet } from '../WalletContext';
 
-const {formatUnits, parseUnits, parseEther, formatEther} = ethers.utils;
+const { formatUnits, parseUnits, parseEther, formatEther } = ethers.utils;
 
 type Props = {
   children: ReactElement;
 };
 
-const MonteqContractProvider: FC<Props> = ({children}) => {
-  const {provider: writeEip1193} = useWallet();
+const MonteqContractProvider: FC<Props> = ({ children }) => {
+  const { provider: writeEip1193 } = useWallet();
 
   const [contract, setContract] = useState<ethers.Contract | null>(null);
-  const [balance, setBalance] = useState<ParsedUint>(
-    contextDefaultValues.balance,
-  );
+  const [balance, setBalance] = useState<ParsedUint>(contextDefaultValues.balance);
   const [account, setAccount] = useState<string>(contextDefaultValues.account);
   const [isBalanceLoading, setIsBalanceLoading] = useState(false);
   const [rate, setRate] = useState<ParsedUint>(contextDefaultValues.rate);
   const [isRateLoading, setIsRateLoading] = useState(false);
   const [spentTotalCryptoAmount, setSpentTotalCryptoAmount] = useState(
-    contextDefaultValues.spentTotalCryptoAmount,
+    contextDefaultValues.spentTotalCryptoAmount
   );
   const [spentTipsCryptoAmount, setSpentTipsCryptoAmount] = useState(
-    contextDefaultValues.spentTipsCryptoAmount,
+    contextDefaultValues.spentTipsCryptoAmount
   );
   const [earnedInvoicesCryptoAmount, setEarnedInvoicesCryptoAmount] = useState(
-    contextDefaultValues.earnedInvoicesCryptoAmount,
+    contextDefaultValues.earnedInvoicesCryptoAmount
   );
   const [earnedTipsCryptoAmount, setEarnedTipsCryptoAmount] = useState(
-    contextDefaultValues.earnedTipsCryptoAmount,
+    contextDefaultValues.earnedTipsCryptoAmount
   );
   const [earnedInvoicesFiatAmount, setEarnedInvoicesFiatAmount] = useState(
-    contextDefaultValues.earnedInvoicesFiatAmount,
+    contextDefaultValues.earnedInvoicesFiatAmount
   );
   const [outHistory, setOutHistory] = useState<HistoryRecord[]>([]);
-  const [isOutHistoryLoading, setIsOutHistoryLoading] =
-    useState<boolean>(false);
+  const [isOutHistoryLoading, setIsOutHistoryLoading] = useState<boolean>(false);
   const [inHistory, setInHistory] = useState<HistoryRecord[]>([]);
   const [isInHistoryLoading, setIsInHistoryLoading] = useState<boolean>(false);
   const [myBusiness, setMyBusiness] = useState<BusinessInfo | null>(null);
-  const [isMyBusinessLoading, setIsMyBusinessLoading] =
-    useState<boolean>(false);
-  const [paymentTxStatus, setPaymentTxStatus] = useState<TxStatus>(
-    TxStatus.Idle,
-  );
-  const [addBusinessTxStatus, setAddBusinessTxStatus] = useState<TxStatus>(
-    TxStatus.Idle,
-  );
-  const [removeBusinessTxStatus, setRemoveBusinessTxStatus] =
-    useState<TxStatus>(TxStatus.Idle);
+  const [isMyBusinessLoading, setIsMyBusinessLoading] = useState<boolean>(false);
+  const [paymentTxStatus, setPaymentTxStatus] = useState<TxStatus>(TxStatus.Idle);
+  const [addBusinessTxStatus, setAddBusinessTxStatus] = useState<TxStatus>(TxStatus.Idle);
+  const [removeBusinessTxStatus, setRemoveBusinessTxStatus] = useState<TxStatus>(TxStatus.Idle);
 
   // ToDo: move to separate hook?
   useEffect(() => {
@@ -81,8 +73,7 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
       try {
         const resp = await fetch(COINGECKO_PRICE_URL);
         const json = await resp.json();
-        const price =
-          json[COINGECKO_CRYPTO_CURRENCY_ID][COINGECKO_FIAT_CURRENCY_ID];
+        const price = json[COINGECKO_CRYPTO_CURRENCY_ID][COINGECKO_FIAT_CURRENCY_ID];
 
         if (isNaN(price)) {
           throw new Error('Invalid price from CoinGecko received');
@@ -102,18 +93,15 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
 
   useEffect(() => {
     if (writeEip1193) {
-      const readProvider = new ethers.providers.JsonRpcProvider(
-        JSON_RPC_URL,
-        CHAIN_ID,
-      );
+      const readProvider = new ethers.providers.JsonRpcProvider(JSON_RPC_URL, CHAIN_ID);
 
       // The `eth_estimateGas` and `eth_call` calls are not resolved by WC-provider
       // So we split read and write calls by separate providers
       const provider = new ethers.providers.Web3Provider({
-        request: ({method, params}) => {
+        request: ({ method, params }) => {
           const writeMethods = WC_SESSION_PARAMS.namespaces.eip155.methods;
           return writeMethods.includes(method)
-            ? writeEip1193.request({method, params})
+            ? writeEip1193.request({ method, params })
             : readProvider.send(method, params ?? []);
         },
       });
@@ -121,7 +109,7 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
       const _contract = new ethers.Contract(
         MONTEQ_CONTRACT_ADDRESS,
         MONTEQ_ABI,
-        provider.getSigner(),
+        provider.getSigner()
       );
 
       setContract(_contract);
@@ -129,7 +117,6 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
       setContract(null);
     }
   }, [writeEip1193]);
-
 
   // GET BALANCE
   useEffect(() => {
@@ -193,26 +180,25 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
           tipAmount: formatEther(x.tipAmount),
           totalCryptoAmount: formatEther(x.receiptAmount.add(x.tipAmount)),
           timestamp: x.timestamp.toNumber(),
-        })),
+        }))
       );
 
       setSpentTotalCryptoAmount(
         formatEther(
           data.history.reduce(
-            (acc: ethers.BigNumber, x: any) =>
-              acc.add(x.receiptAmount.add(x.tipAmount)),
-            ethers.BigNumber.from('0'),
-          ),
-        ),
+            (acc: ethers.BigNumber, x: any) => acc.add(x.receiptAmount.add(x.tipAmount)),
+            ethers.BigNumber.from('0')
+          )
+        )
       );
 
       setSpentTipsCryptoAmount(
         formatEther(
           data.history.reduce(
             (acc: ethers.BigNumber, x: any) => acc.add(x.tipAmount),
-            ethers.BigNumber.from('0'),
-          ),
-        ),
+            ethers.BigNumber.from('0')
+          )
+        )
       );
     } catch (e) {
       console.error(e);
@@ -224,9 +210,7 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
     setIsOutHistoryLoading(false);
   }, [contract]);
 
-  const getBusinessInfoById = async (
-    businessId: string,
-  ): Promise<BusinessInfo> => {
+  const getBusinessInfoById = async (businessId: string): Promise<BusinessInfo> => {
     let businessInfo = defaultBusinessInfo;
     if (contract) {
       try {
@@ -284,12 +268,7 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
     try {
       // ToDo: naive impl
       // ToDo: pagination
-      const data = await contract.getHistoryByBusiness(
-        myBusiness.id,
-        0,
-        100,
-        true,
-      );
+      const data = await contract.getHistoryByBusiness(myBusiness.id, 0, 100, true);
 
       setInHistory(
         data.history.map((x: any, index: number) => ({
@@ -301,25 +280,25 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
           tipAmount: formatEther(x.tipAmount),
           totalCryptoAmount: formatEther(x.receiptAmount.add(x.tipAmount)),
           timestamp: x.timestamp.toNumber(),
-        })),
+        }))
       );
 
       setEarnedInvoicesCryptoAmount(
         formatEther(
           data.history.reduce(
             (acc: ethers.BigNumber, x: any) => acc.add(x.receiptAmount),
-            ethers.BigNumber.from('0'),
-          ),
-        ),
+            ethers.BigNumber.from('0')
+          )
+        )
       );
 
       setEarnedTipsCryptoAmount(
         formatEther(
           data.history.reduce(
             (acc: ethers.BigNumber, x: any) => acc.add(x.tipAmount),
-            ethers.BigNumber.from('0'),
-          ),
-        ),
+            ethers.BigNumber.from('0')
+          )
+        )
       );
 
       // ToDo: unused value. remove?
@@ -327,17 +306,15 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
         formatUnits(
           data.history.reduce(
             (acc: ethers.BigNumber, x: any) => acc.add(x.currencyReceipt),
-            ethers.BigNumber.from('0'),
+            ethers.BigNumber.from('0')
           ),
-          2,
-        ),
+          2
+        )
       );
     } catch (e) {
       console.error(e);
       setInHistory(contextDefaultValues.inHistory);
-      setEarnedInvoicesCryptoAmount(
-        contextDefaultValues.earnedInvoicesCryptoAmount,
-      );
+      setEarnedInvoicesCryptoAmount(contextDefaultValues.earnedInvoicesCryptoAmount);
       setEarnedTipsCryptoAmount(contextDefaultValues.earnedTipsCryptoAmount);
     }
 
@@ -350,7 +327,7 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
     businessId: string,
     currencyReceipt: ParsedUint,
     amountReceipt: ParsedUint,
-    amountTips: ParsedUint,
+    amountTips: ParsedUint
   ) {
     if (!contract) {
       return;
@@ -361,12 +338,9 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
     const amountTipsBN = parseEther(amountTips);
     const totalAmountBN = amountReceiptBN.add(amountTipsBN);
 
-    const receiptPromise = contract.payReceipt(
-      businessId,
-      currencyReceiptBN,
-      amountReceiptBN,
-      {value: totalAmountBN},
-    );
+    const receiptPromise = contract.payReceipt(businessId, currencyReceiptBN, amountReceiptBN, {
+      value: totalAmountBN,
+    });
 
     processTransaction(receiptPromise, setPaymentTxStatus);
   }
@@ -382,15 +356,12 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
 
     const receiptPromise = contract.addBusiness(businessId, name);
 
-    const success = await processTransaction(
-      receiptPromise,
-      setAddBusinessTxStatus,
-    );
+    const success = await processTransaction(receiptPromise, setAddBusinessTxStatus);
 
     if (success) {
       setMyBusiness({
         id: businessId,
-        name: name,
+        name,
         owner: await contract.signer.getAddress(),
       });
     }
@@ -407,10 +378,7 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
 
     const receiptPromise = contract.removeBusiness(businessId);
 
-    const success = await processTransaction(
-      receiptPromise,
-      setRemoveBusinessTxStatus,
-    );
+    const success = await processTransaction(receiptPromise, setRemoveBusinessTxStatus);
 
     if (success) {
       setMyBusiness(null);
@@ -461,17 +429,10 @@ const MonteqContractProvider: FC<Props> = ({children}) => {
     resetRemoveBusinessTxStatus,
   };
 
-  return (
-    <MonteqContractContext.Provider value={state}>
-      {children}
-    </MonteqContractContext.Provider>
-  );
+  return <MonteqContractContext.Provider value={state}>{children}</MonteqContractContext.Provider>;
 };
 
-async function processTransaction(
-  promise: Promise<any>,
-  setTxStatus: (status: TxStatus) => void,
-) {
+async function processTransaction(promise: Promise<any>, setTxStatus: (status: TxStatus) => void) {
   setTxStatus(TxStatus.Sending);
 
   let receipt: any | null = null;
@@ -497,4 +458,4 @@ async function processTransaction(
   return true;
 }
 
-export {MonteqContractProvider};
+export { MonteqContractProvider };

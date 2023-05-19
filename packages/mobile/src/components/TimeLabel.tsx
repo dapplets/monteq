@@ -1,20 +1,14 @@
-import {
-  Platform,
-  Pressable,
-  StyleSheet,
-  Text,
-  TouchableHighlight,
-  View,
-} from 'react-native';
 import React from 'react';
-import {FontFamily} from '../GlobalStyles';
+import { Platform, Pressable, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
+
+import { FontFamily } from '../GlobalStyles';
 
 export type TimeLabelType = {
   time: string;
   isActive: boolean;
 };
 
-const TimeLabel = ({time, isActive}: TimeLabelType) => {
+const TimeLabel = ({ time, isActive }: TimeLabelType) => {
   return (
     <>
       {isActive ? (
@@ -24,7 +18,7 @@ const TimeLabel = ({time, isActive}: TimeLabelType) => {
         </Pressable>
       ) : (
         <TouchableHighlight
-          underlayColor={'transparent'}
+          underlayColor="transparent"
           activeOpacity={0.5}
           style={styles.timeDefault}>
           <Text style={styles.timeActiveDefault}>{time}</Text>

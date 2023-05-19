@@ -1,17 +1,15 @@
-import {StyleSheet, Image, View, Pressable} from 'react-native';
 import React from 'react';
+import { StyleSheet, Image, View, Pressable } from 'react-native';
 
 export type CheckboxType = {
   onPress: () => void;
   isChecked: boolean;
 };
 
-const Checkbox = ({onPress, isChecked}: CheckboxType) => {
+const Checkbox = ({ onPress, isChecked }: CheckboxType) => {
   return (
     <View style={styles.container}>
-      <Pressable
-        style={isChecked ? styles.label : styles.labelDefault}
-        onPress={onPress}>
+      <Pressable style={isChecked ? styles.label : styles.labelDefault} onPress={onPress}>
         {isChecked ? (
           <Image
             resizeMode="cover"

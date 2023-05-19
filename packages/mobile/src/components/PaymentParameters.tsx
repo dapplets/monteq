@@ -1,6 +1,7 @@
-import {Platform, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
-import {FontFamily} from '../GlobalStyles';
+import { Platform, StyleSheet, Text, View } from 'react-native';
+
+import { FontFamily } from '../GlobalStyles';
 
 export type PaymentParametersType = {
   parameters: string;
@@ -8,14 +9,9 @@ export type PaymentParametersType = {
   isGray?: boolean;
 };
 
-const PaymentParameters: React.FC<PaymentParametersType> = ({
-  parameters,
-  value,
-  isGray,
-}) => {
+const PaymentParameters: React.FC<PaymentParametersType> = ({ parameters, value, isGray }) => {
   return (
-    <View
-      style={isGray ? styles.PaymentParametersGray : styles.PaymentParameters}>
+    <View style={isGray ? styles.PaymentParametersGray : styles.PaymentParameters}>
       <Text style={styles.Parameters}>{parameters}</Text>
       <Text style={styles.Value}>{value}</Text>
     </View>

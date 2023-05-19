@@ -1,6 +1,7 @@
-import {Platform, StyleSheet, Text, TextInput, View} from 'react-native';
-import React, {Dispatch, SetStateAction} from 'react';
-import {FontFamily} from '../GlobalStyles';
+import React, { Dispatch, SetStateAction } from 'react';
+import { Platform, StyleSheet, Text, TextInput, View } from 'react-native';
+
+import { FontFamily } from '../GlobalStyles';
 
 export type CompanyParametersType = {
   parameters: string;
@@ -9,18 +10,12 @@ export type CompanyParametersType = {
   onChangeValue: Dispatch<SetStateAction<string>>;
 };
 
-const CompanyParameters = ({
-  parameters,
-  value,
-  isGray,
-  onChangeValue,
-}: CompanyParametersType) => {
+const CompanyParameters = ({ parameters, value, isGray, onChangeValue }: CompanyParametersType) => {
   return (
-    <View
-      style={isGray ? styles.PaymentParametersGray : styles.PaymentParameters}>
+    <View style={isGray ? styles.PaymentParametersGray : styles.PaymentParameters}>
       <Text style={styles.Parameters}>{parameters}</Text>
       <TextInput
-        autoFocus={true}
+        autoFocus
         numberOfLines={1}
         placeholder="Enter Name"
         value={value}

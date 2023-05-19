@@ -1,13 +1,14 @@
 import * as React from 'react';
-import {View, StyleSheet, Text, Platform} from 'react-native';
-import {FontFamily, FontSize} from '../GlobalStyles';
+import { View, StyleSheet, Text, Platform } from 'react-native';
+
+import { FontFamily, FontSize } from '../GlobalStyles';
 
 export type TitleType = {
   label: string;
   isCenter?: boolean;
 };
 
-const Title = ({label, isCenter}: TitleType) => {
+const Title = ({ label, isCenter }: TitleType) => {
   return (
     <View style={isCenter ? styles.TextWrapperCenter : styles.TextWrapper}>
       <Text style={styles.TitleText}>{label}</Text>

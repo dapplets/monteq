@@ -1,10 +1,6 @@
-import {
-  RouteProp,
-  NavigationProp,
-  useNavigation,
-  useIsFocused,
-} from "@react-navigation/native";
-import React, { memo, useEffect, useState } from "react";
+import { RouteProp, NavigationProp, useNavigation, useIsFocused } from '@react-navigation/native';
+import { LinearGradient } from 'expo-linear-gradient';
+import React, { memo, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Image,
@@ -14,25 +10,22 @@ import {
   Text,
   TouchableHighlight,
   View,
-} from "react-native";
-import Navigation from "../components/Navigation";
-import Title from "../components/TitlePage";
-import PaymentInfo from "../components/PaymentInfo";
-import { LinearGradient } from "expo-linear-gradient";
-import PaymentParameters from "../components/PaymentParameters";
-import { type RootStackParamList } from "../App";
-import { ParsedEDCON2023Code } from "../common/parseReceipt";
-import TxModal, { TxStatusType } from "../components/TxModal";
-import { FontFamily } from "../GlobalStyles";
-import { useEdconContract } from "../contexts/EdconContractContext";
-import {
-  TokenId,
-  TxStatus,
-} from "../contexts/EdconContractContext/EdconContractContext";
-import TokenBlock from "../components/TokenBlock";
+} from 'react-native';
+
+import { type RootStackParamList } from '../App';
+import { FontFamily } from '../GlobalStyles';
+import { ParsedEDCON2023Code } from '../common/parseReceipt';
+import Navigation from '../components/Navigation';
+import PaymentInfo from '../components/PaymentInfo';
+import PaymentParameters from '../components/PaymentParameters';
+import Title from '../components/TitlePage';
+import TokenBlock from '../components/TokenBlock';
+import TxModal, { TxStatusType } from '../components/TxModal';
+import { useEdconContract } from '../contexts/EdconContractContext';
+import { TokenId, TxStatus } from '../contexts/EdconContractContext/EdconContractContext';
 
 type Props = {
-  route: RouteProp<{ params: { parsedQrCode: ParsedEDCON2023Code } }, "params">;
+  route: RouteProp<{ params: { parsedQrCode: ParsedEDCON2023Code } }, 'params'>;
 };
 
 const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
@@ -59,12 +52,7 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
 
   useEffect(() => {
     loadMyTokens();
-  }, [
-    isFocused,
-    loadMyTokens,
-    transferOrMintTxStatus,
-    setAmbassadorTxStatus
-  ]);
+  }, [isFocused, loadMyTokens, transferOrMintTxStatus, setAmbassadorTxStatus]);
 
   if (!parsedQrCode) {
     // ToDo: invalid receipt
@@ -85,12 +73,10 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
   function handleSendTokensPress() {
     setModalVisible(true);
 
-    const tokensToTransfer = Object.entries(tokenAmountsMap).map(
-      ([tokenId, amount]) => ({
-        tokenId: Number(tokenId),
-        amount: Number(amount).toString(),
-      })
-    );
+    const tokensToTransfer = Object.entries(tokenAmountsMap).map(([tokenId, amount]) => ({
+      tokenId: Number(tokenId),
+      amount: Number(amount).toString(),
+    }));
 
     transferOrMint(tokensToTransfer, parsedQrCode.to);
   }
@@ -98,7 +84,7 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
   async function handleCloseButtonPress() {
     resetTransferOrMintTxStatus();
     setModalVisible(false);
-    navigation.navigate("InfoScreen");
+    navigation.navigate('InfoScreen');
   }
 
   async function handleCloseError() {
@@ -109,26 +95,20 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
 
   function handleSetAnAmbassadorRank() {
     setModalVisible(true);
-    const tokensToTransfer = Object.entries(tokenAmountsMap).map(
-      ([tokenId, amount]) => ({
-        tokenId: Number(tokenId),
-        amount,
-      })
-    );
-    setAmbassador(
-      parsedQrCode.to,
-      tokensToTransfer[0].tokenId,
-      +tokensToTransfer[0].amount
-    );
+    const tokensToTransfer = Object.entries(tokenAmountsMap).map(([tokenId, amount]) => ({
+      tokenId: Number(tokenId),
+      amount,
+    }));
+    setAmbassador(parsedQrCode.to, tokensToTransfer[0].tokenId, +tokensToTransfer[0].amount);
   }
 
   // ToDo: memorize
   const parseSending = () => {
     if (Object.keys(tokenAmountsMap).length === 0) {
-      return "0";
+      return '0';
     } else {
       let amount = 0;
-      for (let i of Object.values(tokenAmountsMap)) {
+      for (const i of Object.values(tokenAmountsMap)) {
         amount += +i;
       }
       return amount.toString();
@@ -138,27 +118,23 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
   // ToDo: memorize
   const isVisibleAmbassadorBtn = () => {
     let foundTokenId: string | null = null;
-    
-    for (let [tokenIdStr, amount] of Object.entries(tokenAmountsMap)) {
+
+    for (const [tokenIdStr, amount] of Object.entries(tokenAmountsMap)) {
       if (amount > 0) {
-        if (foundTokenId !== null) return false; 
+        if (foundTokenId !== null) return false;
         foundTokenId = tokenIdStr;
       }
     }
 
-    const token = myTokens.find(x => x.tokenId.toString() === foundTokenId);
+    const token = myTokens.find((x) => x.tokenId.toString() === foundTokenId);
     return token?.isAmbassador === true;
-  }
+  };
 
   return (
     <>
       <ScrollView style={styles.InfoScreenWrapperSendToken}>
-        <Title label={`Sending tokens`} />
-        <PaymentInfo
-          isTokens
-          price={parseSending()}
-          title={"You are sending"}
-        />
+        <Title label="Sending tokens" />
+        <PaymentInfo isTokens price={parseSending()} title="You are sending" />
 
         {areMyTokensLoading ? <ActivityIndicator size="large" color="#919191" /> : null}
 
@@ -172,7 +148,7 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
                     <Image
                       style={styles.imgStar}
                       resizeMode="contain"
-                      source={require("../assets/star.png")}
+                      source={require('../assets/star.png')}
                     />
                   ) : null}
                   <Image
@@ -182,9 +158,7 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
                   />
                   {tokenAmountsMap && tokenAmountsMap[`${token.tokenId}`] ? (
                     <View style={styles.counter}>
-                      <Text style={styles.textCounter}>
-                        {tokenAmountsMap[`${token.tokenId}`]}
-                      </Text>
+                      <Text style={styles.textCounter}>{tokenAmountsMap[`${token.tokenId}`]}</Text>
                     </View>
                   ) : null}
                 </View>
@@ -198,7 +172,7 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
 
         {parsedQrCode.user ? (
           <View style={styles.PayInfo}>
-            <PaymentParameters parameters={"Recipient"} value={parsedQrCode.user} />
+            <PaymentParameters parameters="Recipient" value={parsedQrCode.user} />
           </View>
         ) : null}
 
@@ -206,20 +180,18 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
           style={styles.linearGradient}
-          colors={["#0dd977", "#1da4ac", "#14c48c"]}
-        >
+          colors={['#0dd977', '#1da4ac', '#14c48c']}>
           <TouchableHighlight
-            underlayColor={"#1da4ac"}
+            underlayColor="#1da4ac"
             activeOpacity={0.5}
             onPress={handleSendTokensPress}
             disabled={transferOrMintTxStatus !== TxStatus.Idle}
-            style={styles.buttonSend}
-          >
+            style={styles.buttonSend}>
             <>
               <Image
                 style={styles.imgBtnSend}
                 resizeMode="contain"
-                source={require("../assets/ok.png")}
+                source={require('../assets/ok.png')}
               />
               <Text style={styles.buttonText}>Send tokens</Text>
             </>
@@ -227,28 +199,24 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
         </LinearGradient>
         {isVisibleAmbassadorBtn() && (
           <TouchableHighlight
-            underlayColor={"transparent"}
+            underlayColor="transparent"
             activeOpacity={0.5}
             style={styles.buttonSendAmbassador}
-            onPress={handleSetAnAmbassadorRank}
-          >
-            <Text style={styles.buttonTextAmbassador}>
-              Set an ambassador rank
-            </Text>
+            onPress={handleSetAnAmbassadorRank}>
+            <Text style={styles.buttonTextAmbassador}>Set an ambassador rank</Text>
           </TouchableHighlight>
         )}
       </ScrollView>
 
       {!modalVisible ? <Navigation path="Payment" /> : null}
 
-      {transferOrMintTxStatus === TxStatus.Sending ||
-      setAmbassadorTxStatus === TxStatus.Sending ? (
+      {transferOrMintTxStatus === TxStatus.Sending || setAmbassadorTxStatus === TxStatus.Sending ? (
         <TxModal
           isVisible={modalVisible}
           title="Transaction signing"
-          status={"Signing"}
+          status="Signing"
           type={TxStatusType.Yellow}
-          image={require("../assets/inProgress.png")}
+          image={require('../assets/inProgress.png')}
           recipientId={parsedQrCode.user!}
           // date={new Date(parsedQrCode.createdAt).toLocaleString()}
           // fiatAmount={parsedQrCode.currencyReceipt}
@@ -256,14 +224,13 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
         />
       ) : null}
 
-      {transferOrMintTxStatus === TxStatus.Mining ||
-      setAmbassadorTxStatus === TxStatus.Mining ? (
+      {transferOrMintTxStatus === TxStatus.Mining || setAmbassadorTxStatus === TxStatus.Mining ? (
         <TxModal
           isVisible={modalVisible}
           title="Transaction sent"
-          status={"Mining"}
+          status="Mining"
           type={TxStatusType.Yellow}
-          image={require("../assets/inProgress.png")}
+          image={require('../assets/inProgress.png')}
           recipientId={parsedQrCode.user!}
           // date={new Date(parsedQrCode.createdAt).toLocaleString()}
           // fiatAmount={parsedQrCode.currencyReceipt}
@@ -271,14 +238,13 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
         />
       ) : null}
 
-      {transferOrMintTxStatus === TxStatus.Done ||
-      setAmbassadorTxStatus === TxStatus.Done ? (
+      {transferOrMintTxStatus === TxStatus.Done || setAmbassadorTxStatus === TxStatus.Done ? (
         <TxModal
           isVisible={modalVisible}
           title="Transaction sent"
-          status={"Confirmed"}
+          status="Confirmed"
           type={TxStatusType.Green}
-          image={require("../assets/confirmed.png")}
+          image={require('../assets/confirmed.png')}
           recipientId={parsedQrCode.user!}
           // date={new Date(parsedQrCode.createdAt).toLocaleString()}
           // fiatAmount={parsedQrCode.currencyReceipt}
@@ -296,7 +262,7 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
           isVisible={modalVisible}
           title="Transaction rejected"
           description="You have rejected the transaction in the wallet"
-          image={require("../assets/errorOccured.png")}
+          image={require('../assets/errorOccured.png')}
           onRequestClose={() => setModalVisible(!modalVisible)}
           secondaryButton="Close"
           onSecondaryButtonPress={() => handleCloseError()}
@@ -308,21 +274,21 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
 
 const styles = StyleSheet.create({
   InfoScreenWrapperSendToken: {
-    display: "flex",
-    width: "100%",
-    height: "100%",
-    backgroundColor: "#fff",
+    display: 'flex',
+    width: '100%',
+    height: '100%',
+    backgroundColor: '#fff',
     paddingLeft: 10,
     paddingRight: 10,
     zIndex: 2,
   },
 
   PayInfo: {
-    display: "flex",
-    flexDirection: "column",
-    width: "100%",
+    display: 'flex',
+    flexDirection: 'column',
+    width: '100%',
     padding: 10,
-    backgroundColor: "#F6F7F8",
+    backgroundColor: '#F6F7F8',
     borderRadius: 10,
     marginTop: 10,
     marginBottom: 10,
@@ -330,68 +296,68 @@ const styles = StyleSheet.create({
 
   // ToDo: code duplicated in TxModal.tsx
   linearGradient: {
-    display: "flex",
+    display: 'flex',
     borderRadius: 50,
-    width: "100%",
+    width: '100%',
   },
   // ToDo: code duplicated in TxModal.tsx
   buttonSend: {
-    backgroundColor: "transparent",
-    width: "100%",
+    backgroundColor: 'transparent',
+    width: '100%',
     height: 48,
-    display: "flex",
-    alignItems: "center",
-    flexDirection: "row",
-    justifyContent: "center",
+    display: 'flex',
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
     borderRadius: 50,
   },
   // ToDo: code duplicated in TxModal.tsx
   buttonText: {
     fontSize: 14,
-    fontWeight: "700",
+    fontWeight: '700',
     lineHeight: 16,
-    color: "#ffffff",
-    fontFamily: Platform.OS === "ios" ? undefined : FontFamily.robotoBold,
+    color: '#ffffff',
+    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
 
   imgBtnSend: {
     marginRight: 5,
   },
   buttonSendAmbassador: {
-    display: "flex",
+    display: 'flex',
     borderRadius: 50,
-    width: "100%",
-    backgroundColor: "transparent",
+    width: '100%',
+    backgroundColor: 'transparent',
     height: 48,
-    alignItems: "center",
-    flexDirection: "row",
-    justifyContent: "center",
-    borderStyle: "solid",
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    borderStyle: 'solid',
     borderWidth: 1,
-    borderColor: "#14C58B",
+    borderColor: '#14C58B',
     marginTop: 10,
   },
   buttonTextAmbassador: {
     fontSize: 14,
-    fontWeight: "700",
+    fontWeight: '700',
     lineHeight: 16,
-    color: "#14C58B",
-    fontFamily: Platform.OS === "ios" ? undefined : FontFamily.robotoBold,
+    color: '#14C58B',
+    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
   tokensBlock: {
-    width: "100%",
-    display: "flex",
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
     marginBottom: 10,
   },
   imgTokenWrapper: {
-    display: "flex",
+    display: 'flex',
     width: 40,
     height: 40,
     borderRadius: 20,
-    position: "relative",
+    position: 'relative',
   },
   img: {
     width: 40,
@@ -399,34 +365,34 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   counter: {
-    position: "absolute",
+    position: 'absolute',
     width: 18,
     height: 18,
     borderRadius: 9,
-    backgroundColor: "#fff",
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
+    backgroundColor: '#fff',
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
     top: 0,
     right: 0,
   },
   textCounter: {
     fontSize: 12,
-    fontWeight: "700",
+    fontWeight: '700',
     lineHeight: 14,
-    color: "#14C58B",
-    fontFamily: Platform.OS === "ios" ? undefined : FontFamily.robotoBold,
+    color: '#14C58B',
+    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
   imgStar: {
-    position: "absolute",
+    position: 'absolute',
     width: 18,
     height: 18,
     borderRadius: 9,
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
     top: 0,
     left: -5,
     zIndex: 100,

@@ -1,7 +1,5 @@
-import React from 'react';
-import Title from './TitlePage';
-import PaymentParameters from './PaymentParameters';
 import { LinearGradient } from 'expo-linear-gradient';
+import React from 'react';
 import {
   Image,
   StyleSheet,
@@ -12,14 +10,17 @@ import {
   ImageSourcePropType,
   Platform,
 } from 'react-native';
+
+import PaymentParameters from './PaymentParameters';
+import Title from './TitlePage';
+import { FontFamily } from '../GlobalStyles';
 import {
   BASE_CRYPTO_CURRENCY,
   BASE_CRYPTO_MAX_DIGITS,
   BASE_FIAT_CURRENCY,
   BASE_FIAT_MAX_DIGITS,
 } from '../common/constants';
-import {truncate} from '../common/helpers';
-import {FontFamily} from '../GlobalStyles';
+import { truncate } from '../common/helpers';
 
 export enum TxStatusType {
   Green,
@@ -64,26 +65,16 @@ const TxModal: React.FC<Props> = ({
   onSecondaryButtonPress,
 }) => {
   return (
-    <Modal
-      animationType="slide"
-      transparent={true}
-      visible={isVisible}
-      onRequestClose={onRequestClose}>
+    <Modal animationType="slide" transparent visible={isVisible} onRequestClose={onRequestClose}>
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
           <Title isCenter label={title} />
 
           {image ? (
-            <Image
-              resizeMode="contain"
-              style={styles.TransactionImg}
-              source={image}
-            />
+            <Image resizeMode="contain" style={styles.TransactionImg} source={image} />
           ) : null}
 
-          {description ? (
-            <Text style={styles.DescriptionText}>{description}</Text>
-          ) : null}
+          {description ? <Text style={styles.DescriptionText}>{description}</Text> : null}
 
           {status !== undefined && type !== undefined ? (
             <View style={styles.StatusBlock}>
@@ -92,9 +83,7 @@ const TxModal: React.FC<Props> = ({
               <View style={styles.ValueStatus}>
                 <Text
                   style={
-                    type === TxStatusType.Green
-                      ? styles.ValueStatusTextOk
-                      : styles.ValueStatusText
+                    type === TxStatusType.Green ? styles.ValueStatusTextOk : styles.ValueStatusText
                   }>
                   {status}
                 </Text>
@@ -110,57 +99,39 @@ const TxModal: React.FC<Props> = ({
           ) : null}
 
           {recipientId !== undefined ? (
-            <PaymentParameters
-              isGray
-              parameters={'Recipient ID'}
-              value={recipientId}
-            />
+            <PaymentParameters isGray parameters="Recipient ID" value={recipientId} />
           ) : null}
 
           {recipientName !== undefined && recipientName !== '' ? (
-            <PaymentParameters
-              isGray
-              parameters={'Recipient Name'}
-              value={recipientName}
-            />
+            <PaymentParameters isGray parameters="Recipient Name" value={recipientName} />
           ) : null}
 
           {fiatAmount !== undefined ? (
             <PaymentParameters
               isGray
-              parameters={'Amount, fiat'}
-              value={
-                truncate(fiatAmount, BASE_FIAT_MAX_DIGITS) +
-                ' ' +
-                BASE_FIAT_CURRENCY
-              }
+              parameters="Amount, fiat"
+              value={truncate(fiatAmount, BASE_FIAT_MAX_DIGITS) + ' ' + BASE_FIAT_CURRENCY}
             />
           ) : null}
 
           {cryptoAmount !== undefined ? (
             <PaymentParameters
               isGray
-              parameters={'Amount, crypto'}
-              value={
-                truncate(cryptoAmount, BASE_CRYPTO_MAX_DIGITS) +
-                ' ' +
-                BASE_CRYPTO_CURRENCY
-              }
+              parameters="Amount, crypto"
+              value={truncate(cryptoAmount, BASE_CRYPTO_MAX_DIGITS) + ' ' + BASE_CRYPTO_CURRENCY}
             />
           ) : null}
 
-          {date !== undefined ? (
-            <PaymentParameters isGray parameters={'Date'} value={date} />
-          ) : null}
+          {date !== undefined ? <PaymentParameters isGray parameters="Date" value={date} /> : null}
 
           {onPrimaryButtonPress !== undefined && primaryButton !== undefined ? (
             <LinearGradient
-              start={{x: 0, y: 0}}
-              end={{x: 1, y: 0}}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
               style={styles.linearGradient}
               colors={['#0dd977', '#1da4ac', '#14c48c']}>
               <TouchableHighlight
-                underlayColor={'#1da4ac'}
+                underlayColor="#1da4ac"
                 activeOpacity={0.5}
                 style={styles.primaryButton}
                 onPress={onPrimaryButtonPress}>
@@ -169,10 +140,9 @@ const TxModal: React.FC<Props> = ({
             </LinearGradient>
           ) : null}
 
-          {onSecondaryButtonPress !== undefined &&
-          secondaryButton !== undefined ? (
+          {onSecondaryButtonPress !== undefined && secondaryButton !== undefined ? (
             <TouchableHighlight
-              underlayColor={'#F6F7F8'}
+              underlayColor="#F6F7F8"
               activeOpacity={0.5}
               style={styles.secondaryButton}
               onPress={onSecondaryButtonPress}>

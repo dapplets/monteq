@@ -1,4 +1,4 @@
-import { createContext } from "react";
+import { createContext } from 'react';
 
 // ToDo: duplicated code
 export enum TxStatus {
@@ -31,18 +31,11 @@ export type EdconContractContextState = {
   loadMyTokens: () => Promise<void>;
 
   setAmbassadorTxStatus: TxStatus;
-  setAmbassador: (
-    address: Address,
-    tokenId: TokenId,
-    ambassadorRank: number
-  ) => void;
+  setAmbassador: (address: Address, tokenId: TokenId, ambassadorRank: number) => void;
   resetSetAmbassadorTxStatus: () => void;
 
   transferOrMintTxStatus: TxStatus;
-  transferOrMint: (
-    tokens: { tokenId: TokenId; amount: ParsedUint }[],
-    to: Address
-  ) => void;
+  transferOrMint: (tokens: { tokenId: TokenId; amount: ParsedUint }[], to: Address) => void;
   resetTransferOrMintTxStatus: () => void;
 };
 
@@ -60,5 +53,4 @@ export const contextDefaultValues: EdconContractContextState = {
   resetTransferOrMintTxStatus: () => undefined,
 };
 
-export const EdconContractContext =
-  createContext<EdconContractContextState>(contextDefaultValues);
+export const EdconContractContext = createContext<EdconContractContextState>(contextDefaultValues);

@@ -1,43 +1,30 @@
-import {
-  RouteProp,
-  NavigationProp,
-  useNavigation,
-  useIsFocused,
-} from '@react-navigation/native';
-import React, {memo, useEffect, useState} from 'react';
-import {
-  Platform,
-  StyleSheet,
-  Text,
-  TouchableHighlight,
-  View,
-} from 'react-native';
-import Navigation from '../components/Navigation';
-import Title from '../components/TitlePage';
-import PaymentInfo from '../components/PaymentInfo';
+import { RouteProp, NavigationProp, useNavigation, useIsFocused } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
-import PaymentParameters from '../components/PaymentParameters';
-import Checkbox from '../components/Checkbox';
-import {type RootStackParamList} from '../App';
-import {ParsedReceipt} from '../common/parseReceipt';
-import {useMonteqContract} from '../contexts/MonteqContractContext';
+import React, { memo, useEffect, useState } from 'react';
+import { Platform, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
+
+import { type RootStackParamList } from '../App';
+import { FontFamily } from '../GlobalStyles';
 import {
   BASE_CRYPTO_CURRENCY,
   BASE_CRYPTO_MAX_DIGITS,
   BASE_FIAT_CURRENCY,
 } from '../common/constants';
+import { addStr, gteStr, mulStr, truncate } from '../common/helpers';
+import { ParsedReceipt } from '../common/parseReceipt';
+import Checkbox from '../components/Checkbox';
+import Navigation from '../components/Navigation';
+import PaymentInfo from '../components/PaymentInfo';
+import PaymentParameters from '../components/PaymentParameters';
 import SwitchBlock from '../components/SwitchBlock';
-import {addStr, gteStr, mulStr, truncate} from '../common/helpers';
-import TxModal, {TxStatusType} from '../components/TxModal';
-import {
-  BusinessInfo,
-  TxStatus,
-} from '../contexts/MonteqContractContext/MonteqContractContext';
-import {FontFamily} from '../GlobalStyles';
+import Title from '../components/TitlePage';
+import TxModal, { TxStatusType } from '../components/TxModal';
+import { useMonteqContract } from '../contexts/MonteqContractContext';
+import { BusinessInfo, TxStatus } from '../contexts/MonteqContractContext/MonteqContractContext';
 
 type Props = {
   route: RouteProp<
-    {params: {parsedReceipt: ParsedReceipt; businessInfo: BusinessInfo}},
+    { params: { parsedReceipt: ParsedReceipt; businessInfo: BusinessInfo } },
     'params'
   >;
 };
@@ -48,26 +35,18 @@ enum PaymentType {
   BILL_AND_TIPS,
 }
 
-const TxScreen: React.FC<Props> = memo(({route}) => {
+const TxScreen: React.FC<Props> = memo(({ route }) => {
   const parsedReceipt = route.params.parsedReceipt;
   const businessInfo = route.params.businessInfo;
 
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const isFocused = useIsFocused();
 
-  const [paymentType, setPaymentType] = useState<PaymentType>(
-    PaymentType.TIPS_ONLY,
-  );
+  const [paymentType, setPaymentType] = useState<PaymentType>(PaymentType.TIPS_ONLY);
   const [modalVisible, setModalVisible] = useState(false);
 
-  const {
-    balance,
-    isBalanceLoading,
-    payReceipt,
-    paymentTxStatus,
-    rate,
-    resetPaymentTxStatus,
-  } = useMonteqContract();
+  const { balance, isBalanceLoading, payReceipt, paymentTxStatus, rate, resetPaymentTxStatus } =
+    useMonteqContract();
 
   useEffect(() => {
     resetPaymentTxStatus();
@@ -84,14 +63,12 @@ const TxScreen: React.FC<Props> = memo(({route}) => {
 
   // ToDo: move the calculations into business logic hook
   const billAmountInCrypto =
-    paymentType === PaymentType.BILL_ONLY ||
-    paymentType === PaymentType.BILL_AND_TIPS
+    paymentType === PaymentType.BILL_ONLY || paymentType === PaymentType.BILL_AND_TIPS
       ? mulStr(parsedReceipt.currencyReceipt, rate)
       : '0';
 
   const tipsAmountInCrypto =
-    paymentType === PaymentType.TIPS_ONLY ||
-    paymentType === PaymentType.BILL_AND_TIPS
+    paymentType === PaymentType.TIPS_ONLY || paymentType === PaymentType.BILL_AND_TIPS
       ? mulStr(mulStr(parsedReceipt.currencyReceipt, '0.1'), rate) // ToDo: 10% tips hardcoded
       : '0';
 
@@ -109,7 +86,7 @@ const TxScreen: React.FC<Props> = memo(({route}) => {
       parsedReceipt.businessId,
       parsedReceipt.currencyReceipt,
       billAmountInCrypto,
-      tipsAmountInCrypto,
+      tipsAmountInCrypto
     );
   }
 
@@ -122,13 +99,9 @@ const TxScreen: React.FC<Props> = memo(({route}) => {
             <Text style={styles.AvailableTitle}>Available</Text>
             <View style={styles.AvailableBlock}>
               <Text style={styles.AvailableAmount}>
-                {isBalanceLoading
-                  ? '-'
-                  : truncate(balance, BASE_CRYPTO_MAX_DIGITS)}
+                {isBalanceLoading ? '-' : truncate(balance, BASE_CRYPTO_MAX_DIGITS)}
               </Text>
-              <Text style={styles.AvailableCurrency}>
-                {BASE_CRYPTO_CURRENCY}
-              </Text>
+              <Text style={styles.AvailableCurrency}>{BASE_CRYPTO_CURRENCY}</Text>
               {/* 
               // ToDo: implement hide balance
               <Image
@@ -139,24 +112,21 @@ const TxScreen: React.FC<Props> = memo(({route}) => {
           </View>
           <PaymentInfo
             price={truncate(amountInCrypto, BASE_CRYPTO_MAX_DIGITS)}
-            title={'You are paying tips'}
+            title="You are paying tips"
             convert={{
               convertEUR: '1 ' + BASE_FIAT_CURRENCY,
-              convertCurrency:
-                truncate(rate, BASE_CRYPTO_MAX_DIGITS) +
-                ' ' +
-                BASE_CRYPTO_CURRENCY,
+              convertCurrency: truncate(rate, BASE_CRYPTO_MAX_DIGITS) + ' ' + BASE_CRYPTO_CURRENCY,
             }}
           />
 
           {isEnoughTokens ? (
             <LinearGradient
-              start={{x: 0, y: 0}}
-              end={{x: 1, y: 0}}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
               style={styles.linearGradient}
               colors={['#7f0dd9', '#5951c0', '#7f0dd9']}>
               <TouchableHighlight
-                underlayColor={'#5951c0'}
+                underlayColor="#5951c0"
                 activeOpacity={0.5}
                 style={styles.buttonSend}
                 onPress={handleSendPress}>
@@ -165,38 +135,28 @@ const TxScreen: React.FC<Props> = memo(({route}) => {
             </LinearGradient>
           ) : (
             <TouchableHighlight disabled style={styles.buttonInsufficient}>
-              <Text style={styles.buttonInsufficientText}>
-                Insufficient funds
-              </Text>
+              <Text style={styles.buttonInsufficientText}>Insufficient funds</Text>
             </TouchableHighlight>
           )}
 
           <View style={styles.PayInfo}>
             <View style={styles.PayInfoTitle}>
-              <Text style={styles.PayInfoTitleText}>
-                I’ve got the consent to pay in crypto
-              </Text>
+              <Text style={styles.PayInfoTitleText}>I’ve got the consent to pay in crypto</Text>
               <Checkbox
                 isChecked={false}
                 onPress={() => setPaymentType(PaymentType.BILL_AND_TIPS)}
               />
             </View>
             <PaymentParameters
-              parameters={'Date'}
+              parameters="Date"
               value={new Date(parsedReceipt.createdAt).toLocaleString()}
             />
-            <PaymentParameters
-              parameters={'Recipient ID'}
-              value={parsedReceipt.businessId}
-            />
+            <PaymentParameters parameters="Recipient ID" value={parsedReceipt.businessId} />
             {businessInfo.name && (
-              <PaymentParameters
-                parameters={'Recipient Name'}
-                value={businessInfo.name}
-              />
+              <PaymentParameters parameters="Recipient Name" value={businessInfo.name} />
             )}
             <PaymentParameters
-              parameters={'Invoice total'}
+              parameters="Invoice total"
               value={`${parsedReceipt.currencyReceipt} ${BASE_FIAT_CURRENCY}`}
             />
           </View>
@@ -208,13 +168,9 @@ const TxScreen: React.FC<Props> = memo(({route}) => {
             <Text style={styles.AvailableTitle}>Available</Text>
             <View style={styles.AvailableBlock}>
               <Text style={styles.AvailableAmount}>
-                {isBalanceLoading
-                  ? '-'
-                  : truncate(balance, BASE_CRYPTO_MAX_DIGITS)}
+                {isBalanceLoading ? '-' : truncate(balance, BASE_CRYPTO_MAX_DIGITS)}
               </Text>
-              <Text style={styles.AvailableCurrency}>
-                {BASE_CRYPTO_CURRENCY}
-              </Text>
+              <Text style={styles.AvailableCurrency}>{BASE_CRYPTO_CURRENCY}</Text>
 
               {/* <Image
               // ToDo: implement hide balance
@@ -225,24 +181,21 @@ const TxScreen: React.FC<Props> = memo(({route}) => {
           </View>
           <PaymentInfo
             price={truncate(amountInCrypto, BASE_CRYPTO_MAX_DIGITS)}
-            title={'You are paying tips'}
+            title="You are paying tips"
             convert={{
               convertEUR: '1 ' + BASE_FIAT_CURRENCY,
-              convertCurrency:
-                truncate(rate, BASE_CRYPTO_MAX_DIGITS) +
-                ' ' +
-                BASE_CRYPTO_CURRENCY,
+              convertCurrency: truncate(rate, BASE_CRYPTO_MAX_DIGITS) + ' ' + BASE_CRYPTO_CURRENCY,
             }}
           />
 
           {isEnoughTokens ? (
             <LinearGradient
-              start={{x: 0, y: 0}}
-              end={{x: 1, y: 0}}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
               style={styles.linearGradient}
               colors={['#0dd977', '#1da4ac', '#14c48c']}>
               <TouchableHighlight
-                underlayColor={'#1da4ac'}
+                underlayColor="#1da4ac"
                 activeOpacity={0.5}
                 style={styles.buttonSend}
                 onPress={handleSendPress}>
@@ -251,49 +204,36 @@ const TxScreen: React.FC<Props> = memo(({route}) => {
             </LinearGradient>
           ) : (
             <TouchableHighlight disabled style={styles.buttonInsufficient}>
-              <Text style={styles.buttonInsufficientText}>
-                Insufficient funds
-              </Text>
+              <Text style={styles.buttonInsufficientText}>Insufficient funds</Text>
             </TouchableHighlight>
           )}
 
           <View style={styles.PayInfo}>
             <View style={styles.PayInfoTitle}>
-              <Text style={styles.PayInfoTitleText}>
-                I’ve got the consent to pay in crypto
-              </Text>
-              <Checkbox
-                isChecked={true}
-                onPress={() => setPaymentType(PaymentType.TIPS_ONLY)}
-              />
+              <Text style={styles.PayInfoTitleText}>I’ve got the consent to pay in crypto</Text>
+              <Checkbox isChecked onPress={() => setPaymentType(PaymentType.TIPS_ONLY)} />
             </View>
             <SwitchBlock
-              parameters={'Add 10% tips to this invoice'}
+              parameters="Add 10% tips to this invoice"
               onPress={() =>
                 setPaymentType(
                   paymentType === PaymentType.BILL_AND_TIPS
                     ? PaymentType.BILL_ONLY
-                    : PaymentType.BILL_AND_TIPS,
+                    : PaymentType.BILL_AND_TIPS
                 )
               }
               isPress={paymentType !== PaymentType.BILL_ONLY}
             />
             <PaymentParameters
-              parameters={'Date'}
+              parameters="Date"
               value={new Date(parsedReceipt.createdAt).toLocaleString()}
             />
-            <PaymentParameters
-              parameters={'Recipient ID'}
-              value={parsedReceipt.businessId}
-            />
+            <PaymentParameters parameters="Recipient ID" value={parsedReceipt.businessId} />
             {businessInfo.name && (
-              <PaymentParameters
-                parameters={'Recipient Name'}
-                value={businessInfo.name}
-              />
+              <PaymentParameters parameters="Recipient Name" value={businessInfo.name} />
             )}
             <PaymentParameters
-              parameters={'Invoice total'}
+              parameters="Invoice total"
               value={`${parsedReceipt.currencyReceipt} ${BASE_FIAT_CURRENCY}`}
             />
           </View>
@@ -306,7 +246,7 @@ const TxScreen: React.FC<Props> = memo(({route}) => {
         <TxModal
           isVisible={modalVisible}
           title="Transaction signing"
-          status={'Signing'}
+          status="Signing"
           type={TxStatusType.Yellow}
           image={require('../assets/inProgress.png')}
           recipientId={parsedReceipt.businessId}
@@ -322,7 +262,7 @@ const TxScreen: React.FC<Props> = memo(({route}) => {
         <TxModal
           isVisible={modalVisible}
           title="Transaction sent"
-          status={'Mining'}
+          status="Mining"
           type={TxStatusType.Yellow}
           image={require('../assets/inProgress.png')}
           recipientId={parsedReceipt.businessId}
@@ -338,7 +278,7 @@ const TxScreen: React.FC<Props> = memo(({route}) => {
         <TxModal
           isVisible={modalVisible}
           title="Transaction sent"
-          status={'Confirmed'}
+          status="Confirmed"
           type={TxStatusType.Green}
           image={require('../assets/confirmed.png')}
           recipientId={parsedReceipt.businessId}
@@ -352,8 +292,7 @@ const TxScreen: React.FC<Props> = memo(({route}) => {
         />
       ) : null}
 
-      {paymentTxStatus === TxStatus.Rejected ||
-      paymentTxStatus === TxStatus.Failed ? (
+      {paymentTxStatus === TxStatus.Rejected || paymentTxStatus === TxStatus.Failed ? (
         <TxModal
           isVisible={modalVisible}
           title="Transaction rejected"

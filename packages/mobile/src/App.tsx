@@ -1,17 +1,18 @@
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import React, { useEffect, useState } from "react";
-import { IS_OWNER_VIEW_PREFERRED_KEY } from "./common/constants";
-import { ParsedReceipt, ParsedEDCON2023Code } from "./common/parseReceipt";
-import { enableScreens } from "react-native-screens";
-import { useNetInfo } from "@react-native-community/netinfo";
-import { SafeAreaView, StyleSheet, View } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { BusinessInfo } from "./contexts/MonteqContractContext/MonteqContractContext";
-import TxModal from "./components/TxModal";
-import { useFonts } from "expo-font";
-import * as SplashScreen from "expo-splash-screen";
-import { WalletProvider } from "./contexts/WalletContext";
-import Router from "./Router";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNetInfo } from '@react-native-community/netinfo';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { useFonts } from 'expo-font';
+import * as SplashScreen from 'expo-splash-screen';
+import React, { useEffect, useState } from 'react';
+import { SafeAreaView, StyleSheet, View } from 'react-native';
+import { enableScreens } from 'react-native-screens';
+
+import Router from './Router';
+import { IS_OWNER_VIEW_PREFERRED_KEY } from './common/constants';
+import { ParsedReceipt, ParsedEDCON2023Code } from './common/parseReceipt';
+import TxModal from './components/TxModal';
+import { BusinessInfo } from './contexts/MonteqContractContext/MonteqContractContext';
+import { WalletProvider } from './contexts/WalletContext';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -36,33 +37,29 @@ function App() {
   const [initialRouteName, setInitialRouteName] = useState<string | null>(null);
 
   const [fontsLoaded, error] = useFonts({
-    roboto_black_italic: require("./assets/fonts/roboto_black_italic.ttf"),
-    roboto_black: require("./assets/fonts/roboto_black.ttf"),
-    roboto_bold_italic: require("./assets/fonts/roboto_bold_italic.ttf"),
-    roboto_bold: require("./assets/fonts/roboto_bold.ttf"),
-    roboto_italic: require("./assets/fonts/roboto_italic.ttf"),
-    roboto_light: require("./assets/fonts/roboto_light.ttf"),
-    roboto_medium_italic: require("./assets/fonts/roboto_medium_italic.ttf"),
-    roboto_medium: require("./assets/fonts/roboto_medium.ttf"),
-    roboto_regular: require("./assets/fonts/roboto_regular.ttf"),
-    roboto_thin_italic: require("./assets/fonts/roboto_thin_italic.ttf"),
-    roboto_thin: require("./assets/fonts/roboto_thin.ttf"),
+    roboto_black_italic: require('./assets/fonts/roboto_black_italic.ttf'),
+    roboto_black: require('./assets/fonts/roboto_black.ttf'),
+    roboto_bold_italic: require('./assets/fonts/roboto_bold_italic.ttf'),
+    roboto_bold: require('./assets/fonts/roboto_bold.ttf'),
+    roboto_italic: require('./assets/fonts/roboto_italic.ttf'),
+    roboto_light: require('./assets/fonts/roboto_light.ttf'),
+    roboto_medium_italic: require('./assets/fonts/roboto_medium_italic.ttf'),
+    roboto_medium: require('./assets/fonts/roboto_medium.ttf'),
+    roboto_regular: require('./assets/fonts/roboto_regular.ttf'),
+    roboto_thin_italic: require('./assets/fonts/roboto_thin_italic.ttf'),
+    roboto_thin: require('./assets/fonts/roboto_thin.ttf'),
   });
 
   useEffect(() => {
     // ToDo: move to separate hook?
     (async () => {
       try {
-        const isOwnerViewPreferred = await AsyncStorage.getItem(
-          IS_OWNER_VIEW_PREFERRED_KEY
-        );
+        const isOwnerViewPreferred = await AsyncStorage.getItem(IS_OWNER_VIEW_PREFERRED_KEY);
 
-        setInitialRouteName(
-          isOwnerViewPreferred === "true" ? "MyBusiness" : "InfoScreen"
-        );
+        setInitialRouteName(isOwnerViewPreferred === 'true' ? 'MyBusiness' : 'InfoScreen');
       } catch (e) {
         console.error(e);
-        setInitialRouteName("InfoScreen");
+        setInitialRouteName('InfoScreen');
       } finally {
         await SplashScreen.hideAsync();
       }
@@ -77,10 +74,10 @@ function App() {
     return (
       <View>
         <TxModal
-          isVisible={true}
+          isVisible
           title="Check your connection"
           description="Try turning on your Wi-Fi or Mobile Data for using the app."
-          image={require("./assets/noConnection.png")}
+          image={require('./assets/noConnection.png')}
         />
       </View>
     );

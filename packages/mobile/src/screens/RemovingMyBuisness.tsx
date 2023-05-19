@@ -1,44 +1,26 @@
+import { NavigationProp, useIsFocused, useNavigation } from '@react-navigation/native';
 import * as React from 'react';
-import {
-  Text,
-  StyleSheet,
-  View,
-  TouchableHighlight,
-  Platform,
-} from 'react-native';
+import { memo, useEffect, useState } from 'react';
+import { Text, StyleSheet, View, TouchableHighlight, Platform } from 'react-native';
+
+import { RootStackParamList } from '../App';
+import { FontFamily } from '../GlobalStyles';
 import Navigation from '../components/Navigation';
-import Title from '../components/TitlePage';
-import {useMonteqContract} from '../contexts/MonteqContractContext';
-import {
-  NavigationProp,
-  useIsFocused,
-  useNavigation,
-} from '@react-navigation/native';
-import {memo, useEffect, useState} from 'react';
-import {RootStackParamList} from '../App';
 import PaymentParameters from '../components/PaymentParameters';
-import {
-  BusinessInfo,
-  TxStatus,
-} from '../contexts/MonteqContractContext/MonteqContractContext';
-import TxModal, {TxStatusType} from '../components/TxModal';
-import {FontFamily} from '../GlobalStyles';
+import Title from '../components/TitlePage';
+import TxModal, { TxStatusType } from '../components/TxModal';
+import { useMonteqContract } from '../contexts/MonteqContractContext';
+import { BusinessInfo, TxStatus } from '../contexts/MonteqContractContext/MonteqContractContext';
 
 const RemovingMyBusiness: React.FC = memo(() => {
   const isFocused = useIsFocused();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-  const {
-    myBusiness,
-    removeBusiness,
-    removeBusinessTxStatus,
-    resetRemoveBusinessTxStatus,
-  } = useMonteqContract();
+  const { myBusiness, removeBusiness, removeBusinessTxStatus, resetRemoveBusinessTxStatus } =
+    useMonteqContract();
 
   const [modalVisible, setModalVisible] = useState(false);
 
-  const [savedMyBusiness, setSavedMyBusiness] = useState<BusinessInfo | null>(
-    null,
-  );
+  const [savedMyBusiness, setSavedMyBusiness] = useState<BusinessInfo | null>(null);
 
   useEffect(() => {
     if (myBusiness) {
@@ -77,18 +59,12 @@ const RemovingMyBusiness: React.FC = memo(() => {
         </View>
 
         <View style={styles.PayInfo}>
-          <PaymentParameters
-            parameters={'Business unit'}
-            value={savedMyBusiness.id}
-          />
-          <PaymentParameters
-            parameters={'Business name'}
-            value={savedMyBusiness.name}
-          />
+          <PaymentParameters parameters="Business unit" value={savedMyBusiness.id} />
+          <PaymentParameters parameters="Business name" value={savedMyBusiness.name} />
         </View>
 
         <TouchableHighlight
-          underlayColor={'#ca3131'}
+          underlayColor="#ca3131"
           activeOpacity={0.5}
           style={styles.buttonRemove}
           onPress={handleSendPress}>
@@ -102,7 +78,7 @@ const RemovingMyBusiness: React.FC = memo(() => {
         <TxModal
           isVisible={modalVisible}
           title="Transaction signing"
-          status={'Signing'}
+          status="Signing"
           type={TxStatusType.Yellow}
           image={require('../assets/inProgress.png')}
           recipientId={savedMyBusiness.id}
@@ -115,7 +91,7 @@ const RemovingMyBusiness: React.FC = memo(() => {
         <TxModal
           isVisible={modalVisible}
           title="Transaction sent"
-          status={'Mining'}
+          status="Mining"
           type={TxStatusType.Yellow}
           image={require('../assets/inProgress.png')}
           recipientId={savedMyBusiness.id}
@@ -128,7 +104,7 @@ const RemovingMyBusiness: React.FC = memo(() => {
         <TxModal
           isVisible={modalVisible}
           title="Transaction sent"
-          status={'Confirmed'}
+          status="Confirmed"
           type={TxStatusType.Green}
           image={require('../assets/confirmed.png')}
           recipientId={savedMyBusiness.id}

@@ -1,3 +1,6 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { NavigationProp, useIsFocused, useNavigation } from '@react-navigation/native';
+import { LinearGradient } from 'expo-linear-gradient';
 import * as React from 'react';
 import {
   Text,
@@ -10,19 +13,9 @@ import {
   ActivityIndicator,
   Platform,
 } from 'react-native';
-import Navigation from '../components/Navigation';
-import Title from '../components/TitlePage';
-import {useMonteqContract} from '../contexts/MonteqContractContext';
-import { LinearGradient } from 'expo-linear-gradient';
-import SwitchBlock from '../components/SwitchBlock';
-import {
-  NavigationProp,
-  useIsFocused,
-  useNavigation,
-} from '@react-navigation/native';
-import {RootStackParamList} from '../App';
-import HistoryPay from '../components/HistoryPay';
-import GeneralPayInfo from '../components/GeneralPayInfo';
+
+import { RootStackParamList } from '../App';
+import { FontFamily } from '../GlobalStyles';
 import {
   BASE_CRYPTO_CURRENCY,
   BASE_CRYPTO_MAX_DIGITS,
@@ -30,14 +23,18 @@ import {
   BASE_FIAT_MAX_DIGITS,
   IS_OWNER_VIEW_PREFERRED_KEY,
 } from '../common/constants';
-import {DomainType, parseQrCodeData} from '../common/parseReceipt';
-import {mulStr, truncate} from '../common/helpers';
-import {FontFamily} from '../GlobalStyles';
-import {useCamera} from '../contexts/CameraContext';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { mulStr, truncate } from '../common/helpers';
+import { DomainType, parseQrCodeData } from '../common/parseReceipt';
+import GeneralPayInfo from '../components/GeneralPayInfo';
+import HistoryPay from '../components/HistoryPay';
+import Navigation from '../components/Navigation';
+import SwitchBlock from '../components/SwitchBlock';
+import Title from '../components/TitlePage';
+import { useCamera } from '../contexts/CameraContext';
+import { useMonteqContract } from '../contexts/MonteqContractContext';
 
 const MyBusiness = () => {
-  const {scan} = useCamera();
+  const { scan } = useCamera();
   const isFocused = useIsFocused();
   const {
     isInHistoryLoading,
@@ -63,9 +60,7 @@ const MyBusiness = () => {
     (async () => {
       try {
         // ToDo: move to separate hook?
-        const isOwnerViewPreferred = await AsyncStorage.getItem(
-          IS_OWNER_VIEW_PREFERRED_KEY,
-        );
+        const isOwnerViewPreferred = await AsyncStorage.getItem(IS_OWNER_VIEW_PREFERRED_KEY);
         setIsRemember(isOwnerViewPreferred === 'true');
       } catch (e) {
         console.error(e);
@@ -143,8 +138,7 @@ const MyBusiness = () => {
                 source={require('../assets/Lines.png')}
               />
               <Text style={styles.DescriptionText}>
-                No history of incoming transactions associated to your business
-                right now.
+                No history of incoming transactions associated to your business right now.
               </Text>
             </View>
           ) : (
@@ -162,37 +156,29 @@ const MyBusiness = () => {
                     <GeneralPayInfo
                       generalPayAmount={truncate(
                         mulStr(earnedInvoicesCryptoAmount, rate),
-                        BASE_FIAT_MAX_DIGITS,
+                        BASE_FIAT_MAX_DIGITS
                       )}
-                      title={'Paid for invoices'}
+                      title="Paid for invoices"
                       generalPayAmountSubtitle={BASE_FIAT_CURRENCY}
-                      TipsAmount={truncate(
-                        earnedInvoicesCryptoAmount,
-                        BASE_CRYPTO_MAX_DIGITS,
-                      )}
+                      TipsAmount={truncate(earnedInvoicesCryptoAmount, BASE_CRYPTO_MAX_DIGITS)}
                       TipsSubtitleRight={BASE_CRYPTO_CURRENCY}
                     />
                     <GeneralPayInfo
-                      generalPayAmount={truncate(
-                        earnedTipsCryptoAmount,
-                        BASE_CRYPTO_MAX_DIGITS,
-                      )}
-                      title={'Tips'}
+                      generalPayAmount={truncate(earnedTipsCryptoAmount, BASE_CRYPTO_MAX_DIGITS)}
+                      title="Tips"
                       generalPayAmountSubtitle={BASE_CRYPTO_CURRENCY}
                     />
                     <SwitchBlock
-                      parameters={'Always start from this page'}
+                      parameters="Always start from this page"
                       onPress={handleRememberSwitch}
                       isPress={isRemember}
                     />
                     <TouchableHighlight
-                      underlayColor={'#ca3131'}
+                      underlayColor="#ca3131"
                       activeOpacity={0.5}
                       style={styles.buttonRemove}
                       onPress={handleGmsScanPressBusinessRemoving}>
-                      <Text style={styles.buttonRemoveText}>
-                        Remove my business
-                      </Text>
+                      <Text style={styles.buttonRemoveText}>Remove my business</Text>
                     </TouchableHighlight>
                   </>
                 }
@@ -202,23 +188,20 @@ const MyBusiness = () => {
                   <FlatList
                     style={styles.list}
                     data={inHistory}
-                    keyExtractor={item => item.id}
-                    renderItem={({item}) => (
+                    keyExtractor={(item) => item.id}
+                    renderItem={({ item }) => (
                       <HistoryPay
                         time={new Date(item.timestamp * 1000).toISOString()}
                         company={item.payer}
                         amount={
                           '-' +
-                          truncate(
-                            item.totalCryptoAmount,
-                            BASE_CRYPTO_MAX_DIGITS,
-                          ) +
+                          truncate(item.totalCryptoAmount, BASE_CRYPTO_MAX_DIGITS) +
                           ' ' +
                           BASE_CRYPTO_CURRENCY
                         }
                       />
                     )}
-                    ListFooterComponent={<View style={{height: 30}} />}
+                    ListFooterComponent={<View style={{ height: 30 }} />}
                   />
                 }
               />
@@ -231,7 +214,7 @@ const MyBusiness = () => {
           <View style={styles.InfoScreenWrapper}>
             <Title label="Owner’s View" />
             <SwitchBlock
-              parameters={'Always start from business page'}
+              parameters="Always start from business page"
               onPress={handleRememberSwitch}
               isPress={isRemember}
             />
@@ -242,17 +225,16 @@ const MyBusiness = () => {
                 source={require('../assets/Lines.png')}
               />
               <Text style={styles.DescriptionText}>
-                No business is associated with this wallet right now. Connect a
-                business to start getting paid in cryptocurrency or log in with
-                the right wallet.
+                No business is associated with this wallet right now. Connect a business to start
+                getting paid in cryptocurrency or log in with the right wallet.
               </Text>
               <LinearGradient
-                start={{x: 0, y: 0}}
-                end={{x: 1, y: 0}}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
                 style={styles.linearGradient}
                 colors={['#0dd977', '#1da4ac', '#14c48c']}>
                 <TouchableHighlight
-                  underlayColor={'#1da4ac'}
+                  underlayColor="#1da4ac"
                   activeOpacity={0.5}
                   style={styles.buttonSend}
                   onPress={handleGmsScanPressBusiness}>

@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {USERNAME_KEY} from '../common/constants';
-import React, {useState} from 'react';
+import React, { useState } from 'react';
+
+import { USERNAME_KEY } from '../common/constants';
 
 export function useUserName() {
   const [userName, setUserName] = useState('');
@@ -28,5 +29,5 @@ export function useUserName() {
     }
   }
 
-  return {userName, changeUserName};
+  return { userName, changeUserName };
 }

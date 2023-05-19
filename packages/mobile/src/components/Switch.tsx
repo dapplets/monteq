@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, TouchableOpacity} from 'react-native';
+import { View, TouchableOpacity } from 'react-native';
 
 // ToDo: rename props or types
 export type CustomSwitchProps = {
@@ -40,7 +40,8 @@ const CustomSwitch: React.FC<CustomSwitchProps> = ({
 
             backgroundColor: onSelectSwitch ? selectionColor : 'white',
             borderRadius: roundCorner ? 25 : 0,
-          }}></TouchableOpacity>
+          }}
+        />
         <TouchableOpacity
           onPress={updatedSwitchData}
           style={{
@@ -48,7 +49,8 @@ const CustomSwitch: React.FC<CustomSwitchProps> = ({
 
             backgroundColor: onSelectSwitch ? 'white' : selectionColor,
             borderRadius: roundCorner ? 25 : 0,
-          }}></TouchableOpacity>
+          }}
+        />
       </View>
     </View>
   );

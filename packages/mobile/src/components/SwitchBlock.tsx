@@ -1,7 +1,8 @@
-import {Platform, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
+import { Platform, StyleSheet, Text, View } from 'react-native';
+
 import CustomSwitch from './Switch';
-import {FontFamily} from '../GlobalStyles';
+import { FontFamily } from '../GlobalStyles';
 
 export type SwitchBlockType = {
   parameters: string;
@@ -9,20 +10,16 @@ export type SwitchBlockType = {
   isPress: boolean;
 };
 
-const SwitchBlock: React.FC<SwitchBlockType> = ({
-  parameters,
-  onPress,
-  isPress,
-}) => {
+const SwitchBlock: React.FC<SwitchBlockType> = ({ parameters, onPress, isPress }) => {
   return (
     <View style={styles.PaymentParameters}>
       <Text style={styles.Parameters}>{parameters}</Text>
       <View>
         <CustomSwitch
           selectionMode={onPress}
-          roundCorner={true}
+          roundCorner
           onSelectSwitch={isPress}
-          selectionColor={'#14C58B'}
+          selectionColor="#14C58B"
         />
       </View>
     </View>

@@ -1,38 +1,32 @@
-import {NavigationProp, useNavigation} from '@react-navigation/native';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import * as React from 'react';
-import {
-  View,
-  Alert,
-  StyleSheet,
-  TouchableHighlight,
-  Platform,
-  Image
-} from 'react-native';
-import {type RootStackParamList} from '../App';
+import { View, Alert, StyleSheet, TouchableHighlight, Platform, Image } from 'react-native';
+
 import ButtonNavigationDefault from './ButtonNavigationDefault';
-import {DomainType, parseQrCodeData} from '../common/parseReceipt';
-import {useCamera} from '../contexts/CameraContext';
-import SvgComponentUserActive from '../icons/SVGUserActive';
-import SvgComponentUserDefault from '../icons/SVGUserDefault';
+import { type RootStackParamList } from '../App';
+import { DomainType, parseQrCodeData } from '../common/parseReceipt';
+import { useCamera } from '../contexts/CameraContext';
+import { useMonteqContract } from '../contexts/MonteqContractContext';
+import { useWallet } from '../contexts/WalletContext';
 import SvgComponentExitDefault from '../icons/SVGExitDefault';
 import SvgComponentHomeActive from '../icons/SVGHomeActive';
 import SvgComponentHomeDefault from '../icons/SVGHomeDefault';
 import SvgComponentHowActive from '../icons/SVGHowActive';
 import SvgComponentHowDefault from '../icons/SVGHowDefault';
-import {useMonteqContract} from '../contexts/MonteqContractContext';
 import SvgComponentScan from '../icons/SVGScanBtn';
-import { useWallet } from '../contexts/WalletContext';
+import SvgComponentUserActive from '../icons/SVGUserActive';
+import SvgComponentUserDefault from '../icons/SVGUserDefault';
 
 export type NavigationType = {
   path: string;
 };
 
-const Navigation = ({path}: NavigationType) => {
-  const {disconnect} = useWallet();
-  const {scan} = useCamera();
+const Navigation = ({ path }: NavigationType) => {
+  const { disconnect } = useWallet();
+  const { scan } = useCamera();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
-  const {getBusinessInfoById, updateUserBalance} = useMonteqContract();
+  const { getBusinessInfoById, updateUserBalance } = useMonteqContract();
 
   function handleDisconnectPress() {
     disconnect();
@@ -56,9 +50,7 @@ const Navigation = ({path}: NavigationType) => {
       const parsedQrCode = parseQrCodeData(url);
 
       if (parsedQrCode.domain === DomainType.MontenegroFiscalCheck) {
-        const businessInfo = await getBusinessInfoById(
-          parsedQrCode.payload.businessId,
-        );
+        const businessInfo = await getBusinessInfoById(parsedQrCode.payload.businessId);
         await updateUserBalance();
         navigation.navigate('TxScreen', {
           parsedReceipt: parsedQrCode.payload,
@@ -91,44 +83,26 @@ const Navigation = ({path}: NavigationType) => {
     <View style={styles.NavigationWrapper}>
       <ButtonNavigationDefault
         onPress={navigationMyBusiness}
-        isActive={path === 'home' ? true : false}
-        children={
-          path === 'home' ? (
-            <SvgComponentHomeActive />
-          ) : (
-            <SvgComponentHomeDefault />
-          )
-        }
+        isActive={path === 'home'}
+        children={path === 'home' ? <SvgComponentHomeActive /> : <SvgComponentHomeDefault />}
       />
       <ButtonNavigationDefault
         onPress={navigationHowUse}
-        isActive={path === 'help' ? true : false}
-        children={
-          path === 'help' ? (
-            <SvgComponentHowActive />
-          ) : (
-            <SvgComponentHowDefault />
-          )
-        }
+        isActive={path === 'help'}
+        children={path === 'help' ? <SvgComponentHowActive /> : <SvgComponentHowDefault />}
       />
       <TouchableHighlight
         style={styles.scanButton}
-        underlayColor={'transparent'}
+        underlayColor="transparent"
         activeOpacity={0.5}
         onPress={handleGmsScanPress}>
         {/* <SvgComponentScan style={styles.scanButtonImg} /> */}
-        <Image style={styles.scanButtonImg} source={require('../assets/CircularButton.png')}/>
+        <Image style={styles.scanButtonImg} source={require('../assets/CircularButton.png')} />
       </TouchableHighlight>
       <ButtonNavigationDefault
         onPress={navigationUserHistory}
-        isActive={path === 'user' ? true : false}
-        children={
-          path === 'user' ? (
-            <SvgComponentUserActive />
-          ) : (
-            <SvgComponentUserDefault />
-          )
-        }
+        isActive={path === 'user'}
+        children={path === 'user' ? <SvgComponentUserActive /> : <SvgComponentUserDefault />}
       />
       <ButtonNavigationDefault
         onPress={handleDisconnectPress}
@@ -175,7 +149,7 @@ const styles = StyleSheet.create({
     marginBottom: 50,
     borderRadius: 45,
     zIndex: 101,
-    padding:5
+    padding: 5,
   },
   scanButtonImg: {
     marginTop: '5%',
@@ -183,8 +157,8 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     // marginLeft:'auto',
     // marginRight:'auto',
-    width:70,
-    height:70
+    width: 70,
+    height: 70,
   },
 });
 

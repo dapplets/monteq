@@ -1,4 +1,4 @@
-import React, {useMemo, memo} from 'react';
+import React, { useMemo, memo } from 'react';
 import {
   Image,
   StyleSheet,
@@ -7,7 +7,8 @@ import {
   ImageSourcePropType,
   Platform,
 } from 'react-native';
-import {FontSize, FontFamily, Color, Border, Padding} from '../GlobalStyles';
+
+import { FontSize, FontFamily, Color, Border, Padding } from '../GlobalStyles';
 
 type MainButtonType = {
   image: ImageSourcePropType;
@@ -26,7 +27,7 @@ const getStyleValue = (key: string, value: string | number | undefined) => {
     return;
   }
 
-  return {[key]: value === 'unset' ? undefined : value};
+  return { [key]: value === 'unset' ? undefined : value };
 };
 
 const MainButton = memo(
@@ -50,18 +51,12 @@ const MainButton = memo(
         underlayColor="#2261a5"
         onPress={onPress}>
         <>
-          <Image
-            style={styles.mainbuttonChild}
-            resizeMode="cover"
-            source={image}
-          />
-          <Text style={styles.startWithWalletconnect}>
-            {startWithWalletConnect}
-          </Text>
+          <Image style={styles.mainbuttonChild} resizeMode="cover" source={image} />
+          <Text style={styles.startWithWalletconnect}>{startWithWalletConnect}</Text>
         </>
       </TouchableHighlight>
     );
-  },
+  }
 );
 
 const styles = StyleSheet.create({

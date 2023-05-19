@@ -1,5 +1,5 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {Animated, StyleSheet} from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { Animated, StyleSheet } from 'react-native';
 
 // ToDo: remove?
 
@@ -25,7 +25,7 @@ const WAIT_FOR_APP_TO_BE_READY = 'Wait for app to be ready';
 const FADE_OUT = 'Fade out';
 const HIDDEN = 'Hidden';
 
-export const Splash = ({isAppReady}: {isAppReady: boolean}) => {
+export const Splash = ({ isAppReady }: { isAppReady: boolean }) => {
   const containerOpacity = useRef(new Animated.Value(1)).current;
   const imageOpacity = useRef(new Animated.Value(0)).current;
 
@@ -73,16 +73,14 @@ export const Splash = ({isAppReady}: {isAppReady: boolean}) => {
   if (state === HIDDEN) return null;
 
   return (
-    <Animated.View
-      collapsable={false}
-      style={[style.container, {opacity: containerOpacity}]}>
+    <Animated.View collapsable={false} style={[style.container, { opacity: containerOpacity }]}>
       <Animated.Image
         source={require('~/assets/splash.png')}
         fadeDuration={0}
         onLoad={() => {
           setState(FADE_IN_IMAGE);
         }}
-        style={[style.image, {opacity: imageOpacity}]}
+        style={[style.image, { opacity: imageOpacity }]}
         resizeMode="contain"
       />
     </Animated.View>

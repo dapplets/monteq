@@ -1,12 +1,7 @@
 import * as React from 'react';
-import Svg, {G, Path, Defs, ClipPath} from 'react-native-svg';
-const SvgComponentHowBgMain = props => (
-  <Svg
-    xmlns="http://www.w3.org/2000/svg"
-    width={300}
-    height={120}
-    fill="none"
-    {...props}>
+import Svg, { G, Path, Defs, ClipPath } from 'react-native-svg';
+const SvgComponentHowBgMain = (props) => (
+  <Svg xmlns="http://www.w3.org/2000/svg" width={300} height={120} fill="none" {...props}>
     <G clipPath="url(#a)">
       <Path
         fill="#222"
@@ -60,10 +55,7 @@ const SvgComponentHowBgMain = props => (
         fill="#222"
         d="m96.83 99.55.192-.124L160.796 62.6l.208-.07v-2.208l-.362-.208-.185.108L96.822 96.97 52.675 71.476v-9.291L96.83 87.678l.192-.123 63.982-36.933v-2.156l-.362-.208-.185.108-63.635 36.741-46.24-26.703-.362.192V72.607l.162.108 46.456 26.827-.008.007Zm63.473-37.473-63.48 36.656-45.903-26.51v-12.81l45.918 26.511.192-.123 63.273-36.533v.947L96.823 86.87 52.335 61.184l-.354.2v10.5l.177.1 44.687 25.803.192-.124 63.265-36.533v.947Z"
       />
-      <Path
-        fill="#fff"
-        d="m52.336 71.676 2.61-1.763V63.07l-2.61-1.47h-.007v10.076s0 .007.007 0Z"
-      />
+      <Path fill="#fff" d="m52.336 71.676 2.61-1.763V63.07l-2.61-1.47h-.007v10.076s0 .007.007 0Z" />
       <Path
         fill="#222"
         d="m52.329 72.084.208-.116 2.763-1.87V62.87l-.162-.108-2.801-1.578-.355.2v10.492l.355.208h-.008Zm2.27-2.356-1.916 1.301v-8.837l1.916 1.078v6.466-.008Z"

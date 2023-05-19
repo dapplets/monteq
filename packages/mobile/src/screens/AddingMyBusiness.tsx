@@ -1,38 +1,33 @@
-import * as React from 'react';
-import {Text, StyleSheet, View, TouchableHighlight} from 'react-native';
-import Navigation from '../components/Navigation';
-import Title from '../components/TitlePage';
-import {useMonteqContract} from '../contexts/MonteqContractContext';
+import { NavigationProp, RouteProp, useIsFocused, useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
-import {
-  NavigationProp,
-  RouteProp,
-  useIsFocused,
-  useNavigation,
-} from '@react-navigation/native';
-import {memo, useEffect, useState} from 'react';
-import {ParsedReceipt} from '../common/parseReceipt';
-import {RootStackParamList} from '../App';
-import PaymentParameters from '../components/PaymentParameters';
-import {BASE_FIAT_CURRENCY} from '../common/constants';
+import * as React from 'react';
+import { memo, useEffect, useState } from 'react';
+import { Text, StyleSheet, View, TouchableHighlight } from 'react-native';
+
+import { RootStackParamList } from '../App';
+import { FontFamily } from '../GlobalStyles';
+import { BASE_FIAT_CURRENCY } from '../common/constants';
+import { ParsedReceipt } from '../common/parseReceipt';
 import CompanyParameters from '../components/CompanyParameters';
-import {TxStatus} from '../contexts/MonteqContractContext/MonteqContractContext';
-import TxModal, {TxStatusType} from '../components/TxModal';
-import {FontFamily} from '../GlobalStyles';
+import Navigation from '../components/Navigation';
+import PaymentParameters from '../components/PaymentParameters';
+import Title from '../components/TitlePage';
+import TxModal, { TxStatusType } from '../components/TxModal';
+import { useMonteqContract } from '../contexts/MonteqContractContext';
+import { TxStatus } from '../contexts/MonteqContractContext/MonteqContractContext';
 
 type Props = {
-  route: RouteProp<{params: {parsedReceipt: ParsedReceipt}}, 'params'>;
+  route: RouteProp<{ params: { parsedReceipt: ParsedReceipt } }, 'params'>;
 };
 
-const AddingMyBusiness: React.FC<Props> = memo(({route}) => {
+const AddingMyBusiness: React.FC<Props> = memo(({ route }) => {
   const parsedReceipt = route.params.parsedReceipt;
 
   const isFocused = useIsFocused();
 
   const [nameCompany, setNameCompany] = useState('');
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-  const {addBusiness, resetAddBusinessTxStatus, addBusinessTxStatus} =
-    useMonteqContract();
+  const { addBusiness, resetAddBusinessTxStatus, addBusinessTxStatus } = useMonteqContract();
   const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
@@ -60,31 +55,28 @@ const AddingMyBusiness: React.FC<Props> = memo(({route}) => {
         <Title label="Adding my business" />
         <View style={styles.PayInfo}>
           <CompanyParameters
-            parameters={'Company'}
+            parameters="Company"
             value={nameCompany}
             onChangeValue={setNameCompany}
           />
+          <PaymentParameters parameters="Business unit" value={parsedReceipt.businessId} />
           <PaymentParameters
-            parameters={'Business unit'}
-            value={parsedReceipt.businessId}
-          />
-          <PaymentParameters
-            parameters={'Amount'}
+            parameters="Amount"
             value={`${parsedReceipt.currencyReceipt} ${BASE_FIAT_CURRENCY}`}
           />
           <PaymentParameters
-            parameters={'Date'}
+            parameters="Date"
             value={new Date(parsedReceipt.createdAt).toLocaleString()}
           />
         </View>
 
         <LinearGradient
-          start={{x: 0, y: 0}}
-          end={{x: 1, y: 0}}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
           style={styles.linearGradient}
           colors={['#0dd977', '#1da4ac', '#14c48c']}>
           <TouchableHighlight
-            underlayColor={'#1da4ac'}
+            underlayColor="#1da4ac"
             activeOpacity={0.5}
             disabled={nameCompany.length === 0}
             style={styles.buttonSend}
@@ -100,7 +92,7 @@ const AddingMyBusiness: React.FC<Props> = memo(({route}) => {
         <TxModal
           isVisible={modalVisible}
           title="Transaction signing"
-          status={'Signing'}
+          status="Signing"
           type={TxStatusType.Yellow}
           image={require('../assets/inProgress.png')}
           recipientId={parsedReceipt.businessId}
@@ -113,7 +105,7 @@ const AddingMyBusiness: React.FC<Props> = memo(({route}) => {
         <TxModal
           isVisible={modalVisible}
           title="Transaction sent"
-          status={'Mining'}
+          status="Mining"
           type={TxStatusType.Yellow}
           image={require('../assets/inProgress.png')}
           recipientId={parsedReceipt.businessId}
@@ -126,7 +118,7 @@ const AddingMyBusiness: React.FC<Props> = memo(({route}) => {
         <TxModal
           isVisible={modalVisible}
           title="Transaction sent"
-          status={'Confirmed'}
+          status="Confirmed"
           type={TxStatusType.Green}
           image={require('../assets/confirmed.png')}
           recipientId={parsedReceipt.businessId}
@@ -137,8 +129,7 @@ const AddingMyBusiness: React.FC<Props> = memo(({route}) => {
         />
       ) : null}
 
-      {addBusinessTxStatus === TxStatus.Rejected ||
-      addBusinessTxStatus === TxStatus.Failed ? (
+      {addBusinessTxStatus === TxStatus.Rejected || addBusinessTxStatus === TxStatus.Failed ? (
         <TxModal
           isVisible={modalVisible}
           title="Transaction rejected"

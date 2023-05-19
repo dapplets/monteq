@@ -1,24 +1,25 @@
-import { NavigationContainer } from "@react-navigation/native";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import React, { FC } from "react";
-import WelcomeScreen from "./screens/WelcomeScreen";
-import InfoScreen from "./screens/InfoScreen";
-import CameraScreen from "./components/CameraComponent";
-import TxScreen from "./screens/TxScreen";
-import { MonteqContractProvider } from "./contexts/MonteqContractContext";
-import MyBusiness from "./screens/MyBusiness";
-import AddingMyBusiness from "./screens/AddingMyBusiness";
-import HowUse from "./screens/HowUse";
-import RemovingMyBusiness from "./screens/RemovingMyBuisness";
-import { ParsedReceipt, ParsedEDCON2023Code } from "./common/parseReceipt";
-import { enableScreens } from "react-native-screens";
-import { CameraProvider } from "./contexts/CameraContext";
-import { BusinessInfo } from "./contexts/MonteqContractContext/MonteqContractContext";
-import SendTokenScreen from "./screens/SendTokenScreen";
-import { EdconContractProvider } from "./contexts/EdconContractContext";
-import * as SplashScreen from "expo-splash-screen";
-import { useWallet } from "./contexts/WalletContext";
-import { PAGE_TITLE } from "./common/constants";
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { NavigationContainer } from '@react-navigation/native';
+import * as SplashScreen from 'expo-splash-screen';
+import React, { FC } from 'react';
+import { enableScreens } from 'react-native-screens';
+
+import { PAGE_TITLE } from './common/constants';
+import { ParsedReceipt, ParsedEDCON2023Code } from './common/parseReceipt';
+import CameraScreen from './components/CameraComponent';
+import { CameraProvider } from './contexts/CameraContext';
+import { EdconContractProvider } from './contexts/EdconContractContext';
+import { MonteqContractProvider } from './contexts/MonteqContractContext';
+import { BusinessInfo } from './contexts/MonteqContractContext/MonteqContractContext';
+import { useWallet } from './contexts/WalletContext';
+import AddingMyBusiness from './screens/AddingMyBusiness';
+import HowUse from './screens/HowUse';
+import InfoScreen from './screens/InfoScreen';
+import MyBusiness from './screens/MyBusiness';
+import RemovingMyBusiness from './screens/RemovingMyBuisness';
+import SendTokenScreen from './screens/SendTokenScreen';
+import TxScreen from './screens/TxScreen';
+import WelcomeScreen from './screens/WelcomeScreen';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -53,18 +54,13 @@ const Router: FC<Props> = ({ initialRouteName }) => {
           screenOptions={{ headerShown: false }}
           tabBar={() => null}
           detachInactiveScreens
-          initialRouteName="WelcomeScreen"
-        >
+          initialRouteName="WelcomeScreen">
           <Tab.Screen
             name="WelcomeScreen"
             component={WelcomeScreen}
             options={{ title: PAGE_TITLE }}
           />
-          <Tab.Screen
-            name="HowUse"
-            component={HowUse}
-            options={{ title: PAGE_TITLE }}
-          />
+          <Tab.Screen name="HowUse" component={HowUse} options={{ title: PAGE_TITLE }} />
         </Tab.Navigator>
       </NavigationContainer>
     );
@@ -79,8 +75,7 @@ const Router: FC<Props> = ({ initialRouteName }) => {
               screenOptions={{ headerShown: false }}
               tabBar={() => null}
               detachInactiveScreens
-              initialRouteName={initialRouteName}
-            >
+              initialRouteName={initialRouteName}>
               <Tab.Screen
                 name="InfoScreen"
                 component={InfoScreen}
@@ -96,11 +91,7 @@ const Router: FC<Props> = ({ initialRouteName }) => {
                 component={CameraScreen}
                 options={{ title: PAGE_TITLE }}
               />
-              <Tab.Screen
-                name="TxScreen"
-                component={TxScreen}
-                options={{ title: PAGE_TITLE }}
-              />
+              <Tab.Screen name="TxScreen" component={TxScreen} options={{ title: PAGE_TITLE }} />
               <Tab.Screen
                 name="AddingMyBusiness"
                 component={AddingMyBusiness}
@@ -111,11 +102,7 @@ const Router: FC<Props> = ({ initialRouteName }) => {
                 component={RemovingMyBusiness}
                 options={{ title: PAGE_TITLE }}
               />
-              <Tab.Screen
-                name="HowUse"
-                component={HowUse}
-                options={{ title: PAGE_TITLE }}
-              />
+              <Tab.Screen name="HowUse" component={HowUse} options={{ title: PAGE_TITLE }} />
               <Tab.Screen
                 name="SendTokenScreen"
                 component={SendTokenScreen}

@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useState } from 'react';
 import {
   Text,
   StyleSheet,
@@ -8,8 +9,8 @@ import {
   ImageSourcePropType,
   Platform,
 } from 'react-native';
-import {FontFamily} from '../GlobalStyles';
-import {useState} from 'react';
+
+import { FontFamily } from '../GlobalStyles';
 
 export type InfoUseItemType = {
   title: string;
@@ -18,7 +19,7 @@ export type InfoUseItemType = {
   isLast?: boolean;
 };
 
-const InfoUseItem = ({title, description, img, isLast}: InfoUseItemType) => {
+const InfoUseItem = ({ title, description, img, isLast }: InfoUseItemType) => {
   const [isOpen, setOpen] = useState(false);
   const openFAQ = () => {
     setOpen(!isOpen);
@@ -31,20 +32,12 @@ const InfoUseItem = ({title, description, img, isLast}: InfoUseItemType) => {
         <Image
           resizeMode="contain"
           style={styles.arrow}
-          source={
-            isOpen
-              ? require('../assets/arrowGreen.png')
-              : require('../assets/arrowGray.png')
-          }
+          source={isOpen ? require('../assets/arrowGreen.png') : require('../assets/arrowGray.png')}
         />
       </Pressable>
       {isOpen ? (
         <View style={styles.descriptonBlock}>
-          <Image
-            resizeMode="contain"
-            style={styles.descriptonImg}
-            source={img}
-          />
+          <Image resizeMode="contain" style={styles.descriptonImg} source={img} />
           <Text style={styles.descripton}>{description}</Text>
         </View>
       ) : null}

@@ -1,23 +1,9 @@
-import * as React from "react";
-import Svg, {
-  G,
-  Rect,
-  Path,
-  Defs,
-  LinearGradient,
-  Stop,
-  SvgProps,
-} from "react-native-svg";
+import * as React from 'react';
+import Svg, { G, Rect, Path, Defs, LinearGradient, Stop, SvgProps } from 'react-native-svg';
 
 /* SVGR has dropped some elements not supported by react-native-svg: filter */
 const SvgComponentScan: React.FC<SvgProps> = (props) => (
-  <Svg
-    xmlns="http://www.w3.org/2000/svg"
-    width={82}
-    height={82}
-    fill="none"
-    {...props}
-  >
+  <Svg xmlns="http://www.w3.org/2000/svg" width={82} height={82} fill="none" {...props}>
     <G filter="url(#a)">
       <Rect width={60} height={60} x={11} y={2} fill="#fff" rx={30} />
       <Rect width={60} height={60} x={11} y={2} fill="url(#b)" rx={30} />
@@ -33,8 +19,7 @@ const SvgComponentScan: React.FC<SvgProps> = (props) => (
         x2={96.408}
         y1={-18.5}
         y2={40.187}
-        gradientUnits="userSpaceOnUse"
-      >
+        gradientUnits="userSpaceOnUse">
         <Stop stopColor="#0DD977" />
         <Stop offset={0.443} stopColor="#1DA4AC" />
         <Stop offset={1} stopColor="#0DD977" />

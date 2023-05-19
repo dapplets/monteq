@@ -1,4 +1,4 @@
-import {createContext} from 'react';
+import { createContext } from 'react';
 
 export enum TxStatus {
   Idle,
@@ -65,7 +65,7 @@ export type MonteqContractContextState = {
     businessId: string,
     currencyReceipt: ParsedUint,
     amountReceipt: ParsedUint,
-    amountTips: ParsedUint,
+    amountTips: ParsedUint
   ) => void;
   resetPaymentTxStatus: () => void;
 

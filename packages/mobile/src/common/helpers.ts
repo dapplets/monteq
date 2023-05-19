@@ -1,4 +1,4 @@
-import {ethers} from 'ethers';
+import { ethers } from 'ethers';
 
 export function truncate(str: string, maxDecimalDigits: number) {
   if (str.includes('.')) {

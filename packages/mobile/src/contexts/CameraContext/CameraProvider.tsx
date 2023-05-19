@@ -1,12 +1,13 @@
-import React, {FC, ReactElement, useState} from 'react';
-import {CameraContext, CameraContextState} from './CameraContext';
+import React, { FC, ReactElement, useState } from 'react';
+
+import { CameraContext, CameraContextState } from './CameraContext';
 import CameraComponent from '../../components/CameraComponent';
 
 type Props = {
   children: ReactElement;
 };
 
-const CameraProvider: FC<Props> = ({children}) => {
+const CameraProvider: FC<Props> = ({ children }) => {
   const [scanningPromise, setScanningPromise] = useState<{
     resolve: (data: string) => void;
     reject: (reason?: any) => void;
@@ -35,7 +36,7 @@ const CameraProvider: FC<Props> = ({children}) => {
 
   async function scan(): Promise<string> {
     return new Promise((resolve, reject) => {
-      setScanningPromise({resolve, reject});
+      setScanningPromise({ resolve, reject });
     });
   }
 
@@ -58,4 +59,4 @@ const CameraProvider: FC<Props> = ({children}) => {
   );
 };
 
-export {CameraProvider};
+export { CameraProvider };

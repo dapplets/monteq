@@ -1,13 +1,14 @@
 import * as React from 'react';
-import {Image, Platform, StyleSheet, View} from 'react-native';
-import MainButton from '../components/MainButton';
+import { Image, Platform, StyleSheet, View } from 'react-native';
+
+import { Padding, Border, FontFamily, FontSize, Color } from '../GlobalStyles';
 import HollowButton from '../components/HollowButton';
-import {Padding, Border, FontFamily, FontSize, Color} from '../GlobalStyles';
+import MainButton from '../components/MainButton';
 import { useWallet } from '../contexts/WalletContext';
 import { WalletTypes } from '../contexts/WalletContext/WalletContext';
 
 const WelcomeScreen = () => {
-  const {connect} = useWallet();
+  const { connect } = useWallet();
 
   function handleWalletConnectPress() {
     connect(WalletTypes.WalletConnect);
@@ -16,16 +17,8 @@ const WelcomeScreen = () => {
   return (
     <View style={styles.initiallogin}>
       <View style={styles.bg}>
-        <Image
-          style={styles.bg}
-          resizeMode="cover"
-          source={require('../assets/appbg.png')}
-        />
-        <Image
-          style={styles.qIcon}
-          resizeMode="contain"
-          source={require('../assets/q.png')}
-        />
+        <Image style={styles.bg} resizeMode="cover" source={require('../assets/appbg.png')} />
+        <Image style={styles.qIcon} resizeMode="contain" source={require('../assets/q.png')} />
       </View>
       <View style={[styles.monteqLogo1Wrapper, styles.mainbuttonParentFlexBox]}>
         <Image

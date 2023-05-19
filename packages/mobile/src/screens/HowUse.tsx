@@ -1,19 +1,14 @@
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import * as React from 'react';
-import {
-  Text,
-  StyleSheet,
-  ScrollView,
-  TouchableHighlight,
-  Platform,
-} from 'react-native';
+import { Text, StyleSheet, ScrollView, TouchableHighlight, Platform } from 'react-native';
+
+import { RootStackParamList } from '../App';
+import { FontFamily } from '../GlobalStyles';
+import InfoUseItem from '../components/InfoUseItem';
 import Navigation from '../components/Navigation';
 import Title from '../components/TitlePage';
-import {NavigationProp, useNavigation} from '@react-navigation/native';
-import {RootStackParamList} from '../App';
-import {FontFamily} from '../GlobalStyles';
-import InfoUseItem from '../components/InfoUseItem';
-import SvgComponentHowBgMain from '../icons/SVGHowBgMain';
 import { useWallet } from '../contexts/WalletContext';
+import SvgComponentHowBgMain from '../icons/SVGHowBgMain';
 
 const info = [
   {
@@ -26,8 +21,7 @@ const info = [
   {
     id: '2',
     title: 'Negotiate with a business',
-    description:
-      'Make sure the recipient is ready to accept crypto instead of cash.',
+    description: 'Make sure the recipient is ready to accept crypto instead of cash.',
     img: require('../assets/bgHow2.png'),
   },
   {
@@ -44,11 +38,11 @@ const info = [
   },
 ];
 
-export type HowUseProps = {};
+export type HowUseProps = object;
 
 const HowUse = ({}: HowUseProps) => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-  const {isConnected} = useWallet();
+  const { isConnected } = useWallet();
 
   async function navigationConnect() {
     navigation.navigate('WelcomeScreen');
@@ -58,9 +52,7 @@ const HowUse = ({}: HowUseProps) => {
     <>
       <ScrollView style={styles.InfoScreenWrapper}>
         {isConnected ? <Title label="How it works?" /> : null}
-        <SvgComponentHowBgMain
-          style={isConnected ? styles.mainBg : styles.mainBgNoConnect}
-        />
+        <SvgComponentHowBgMain style={isConnected ? styles.mainBg : styles.mainBgNoConnect} />
         {info.map((x, i) => {
           return (
             <InfoUseItem
@@ -77,7 +69,7 @@ const HowUse = ({}: HowUseProps) => {
         <Navigation path="help" />
       ) : (
         <TouchableHighlight
-          underlayColor={'#3B99FC'}
+          underlayColor="#3B99FC"
           activeOpacity={0.5}
           style={styles.back}
           onPress={navigationConnect}>

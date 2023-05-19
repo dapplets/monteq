@@ -1,5 +1,5 @@
-import React, {ReactNode, memo} from 'react';
-import {StyleSheet, View, TouchableHighlight} from 'react-native';
+import React, { ReactNode, memo } from 'react';
+import { StyleSheet, View, TouchableHighlight } from 'react-native';
 
 type ButtonNavigationDefaultType = {
   isActive?: boolean;
@@ -8,12 +8,11 @@ type ButtonNavigationDefaultType = {
 };
 
 const ButtonNavigationDefault = memo(
-  ({onPress, children, isActive}: ButtonNavigationDefaultType) => {
+  ({ onPress, children, isActive }: ButtonNavigationDefaultType) => {
     return (
-      <View
-        style={isActive ? styles.buttonWrapperActive : styles.buttonWrapper}>
+      <View style={isActive ? styles.buttonWrapperActive : styles.buttonWrapper}>
         <TouchableHighlight
-          underlayColor={'#14C58B'}
+          underlayColor="#14C58B"
           activeOpacity={0.5}
           style={styles.logOutWrapper}
           onPress={onPress}>
@@ -21,7 +20,7 @@ const ButtonNavigationDefault = memo(
         </TouchableHighlight>
       </View>
     );
-  },
+  }
 );
 
 const styles = StyleSheet.create({

@@ -1,5 +1,5 @@
-import type {Metadata, ConnectParams} from '@walletconnect/universal-provider';
-import { gnosis } from "wagmi/chains";
+import type { Metadata, ConnectParams } from '@walletconnect/universal-provider';
+import { gnosis } from 'wagmi/chains';
 
 export const WC_PROJECT_ID = '19682c1014c476ffa7f0cfb529e5b17a';
 
@@ -9,9 +9,7 @@ export const WC_METADATA: Metadata = {
   name: 'MonteQ',
   description: 'Pay as you like',
   url: 'https://github.com/dapplets/monteq',
-  icons: [
-    'https://github.com/dapplets/monteq/blob/main/docs/dapp-icon.png?raw=true',
-  ],
+  icons: ['https://github.com/dapplets/monteq/blob/main/docs/dapp-icon.png?raw=true'],
 };
 
 export const JSON_RPC_URL = 'https://rpc.ankr.com/gnosis';
@@ -46,8 +44,8 @@ export const WC_SESSION_PARAMS: ConnectParams = {
         // "eth_signTypedData_v3",
         // "eth_signTypedData_v4",
         // "personal_sign",
-        // "eth_accounts", 
-        // "eth_chainId", 
+        // "eth_accounts",
+        // "eth_chainId",
         // "net_version"
       ],
       events: ['accountsChanged', 'chainChanged'],
@@ -58,11 +56,9 @@ export const WC_SESSION_PARAMS: ConnectParams = {
   },
 };
 
-export const MONTEQ_CONTRACT_ADDRESS =
-  '0x6ecd78Cb2505309bAe00E11105666D2fD93e9634';
+export const MONTEQ_CONTRACT_ADDRESS = '0x6ecd78Cb2505309bAe00E11105666D2fD93e9634';
 
-export const EDCON_GAME_CONTRACT_ADDRESS =
-  '0x84270D71C516886E56F5219aE0A365c22A68050f';
+export const EDCON_GAME_CONTRACT_ADDRESS = '0x84270D71C516886E56F5219aE0A365c22A68050f';
 
 export const BASE_FIAT_CURRENCY = 'EUR';
 export const BASE_FIAT_MAX_DIGITS = 2;

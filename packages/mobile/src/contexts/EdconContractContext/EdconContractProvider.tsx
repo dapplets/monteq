@@ -1,10 +1,6 @@
-import React, {
-  FC,
-  ReactElement,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
+import { ethers } from 'ethers';
+import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react';
+
 import {
   EdconContractContext,
   EdconContractContextState,
@@ -14,16 +10,15 @@ import {
   MyTokenInfo,
   Address,
   TokenId,
-} from "./EdconContractContext";
-import { ethers } from "ethers";
+} from './EdconContractContext';
+import EDCON_GAME_ABI from '../../abis/EdconGame.json';
 import {
   CHAIN_ID,
   JSON_RPC_URL,
   EDCON_GAME_CONTRACT_ADDRESS,
   WC_SESSION_PARAMS,
-} from "../../common/constants";
-import EDCON_GAME_ABI from "../../abis/EdconGame.json";
-import { useWallet } from "../WalletContext";
+} from '../../common/constants';
+import { useWallet } from '../WalletContext';
 
 type Props = {
   children: ReactElement;
@@ -37,18 +32,12 @@ const EdconContractProvider: FC<Props> = ({ children }) => {
   const [myTokens, setMyTokens] = useState<MyTokenInfo[]>([]);
   const [areMyTokensLoading, setAreMyTokensLoading] = useState<boolean>(false);
 
-  const [setAmbassadorTxStatus, setSetAmbassadorTxStatus] = useState<TxStatus>(
-    TxStatus.Idle
-  );
-  const [transferOrMintTxStatus, setTransferOrMintTxStatus] =
-    useState<TxStatus>(TxStatus.Idle);
+  const [setAmbassadorTxStatus, setSetAmbassadorTxStatus] = useState<TxStatus>(TxStatus.Idle);
+  const [transferOrMintTxStatus, setTransferOrMintTxStatus] = useState<TxStatus>(TxStatus.Idle);
 
   useEffect(() => {
     if (writeEip1193) {
-      const readProvider = new ethers.providers.JsonRpcProvider(
-        JSON_RPC_URL,
-        CHAIN_ID
-      );
+      const readProvider = new ethers.providers.JsonRpcProvider(JSON_RPC_URL, CHAIN_ID);
 
       // The `eth_estimateGas` and `eth_call` calls are not resolved by WC-provider
       // So we split read and write calls by separate providers
@@ -118,23 +107,15 @@ const EdconContractProvider: FC<Props> = ({ children }) => {
     setAreMyTokensLoading(false);
   }, [contract]);
 
-  async function setAmbassador(
-    address: Address,
-    tokenId: TokenId,
-    ambassadorRank?: number
-  ) {
+  async function setAmbassador(address: Address, tokenId: TokenId, ambassadorRank?: number) {
     if (!contract) {
       return;
     }
     // setAmbassador(address, tokenId).calls()
     const txPromise =
       ambassadorRank === undefined
-        ? contract["setAmbassador(address,uint8)"](address, tokenId)
-        : contract["setAmbassador(address,uint8,uint8)"](
-            address,
-            tokenId,
-            ambassadorRank
-          );
+        ? contract['setAmbassador(address,uint8)'](address, tokenId)
+        : contract['setAmbassador(address,uint8,uint8)'](address, tokenId, ambassadorRank);
 
     processTransaction(txPromise, setSetAmbassadorTxStatus);
   }
@@ -143,16 +124,13 @@ const EdconContractProvider: FC<Props> = ({ children }) => {
     setSetAmbassadorTxStatus(TxStatus.Idle);
   }, []);
 
-  async function transferOrMint(
-    tokens: { tokenId: TokenId; amount: ParsedUint }[],
-    to: Address
-  ) {
+  async function transferOrMint(tokens: { tokenId: TokenId; amount: ParsedUint }[], to: Address) {
     if (!contract) {
       return;
     }
 
     if (tokens.length === 0) {
-      throw new Error("Tokens array is empty");
+      throw new Error('Tokens array is empty');
     }
 
     const txPromise =
@@ -194,18 +172,11 @@ const EdconContractProvider: FC<Props> = ({ children }) => {
     resetTransferOrMintTxStatus,
   };
 
-  return (
-    <EdconContractContext.Provider value={state}>
-      {children}
-    </EdconContractContext.Provider>
-  );
+  return <EdconContractContext.Provider value={state}>{children}</EdconContractContext.Provider>;
 };
 
 // ToDo: duplicated code
-async function processTransaction(
-  promise: Promise<any>,
-  setTxStatus: (status: TxStatus) => void
-) {
+async function processTransaction(promise: Promise<any>, setTxStatus: (status: TxStatus) => void) {
   setTxStatus(TxStatus.Sending);
 
   let receipt: any | null = null;

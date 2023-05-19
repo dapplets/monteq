@@ -1,6 +1,7 @@
 import * as React from 'react';
-import {Text, StyleSheet, View, Platform} from 'react-native';
-import {FontFamily} from '../GlobalStyles';
+import { Text, StyleSheet, View, Platform } from 'react-native';
+
+import { FontFamily } from '../GlobalStyles';
 
 export type GeneralPayInfoType = {
   generalPayAmount: string | number;
@@ -24,20 +25,14 @@ const GeneralPayInfo = ({
       <Text style={styles.GeneralPayLabel}>{title}</Text>
       <View style={styles.AmountBlock}>
         <Text style={styles.GeneralPayAmount}>{generalPayAmount}</Text>
-        <Text style={styles.GeneralPayAmountSubtitle}>
-          {generalPayAmountSubtitle}
-        </Text>
+        <Text style={styles.GeneralPayAmountSubtitle}>{generalPayAmountSubtitle}</Text>
       </View>
       {TipsAmount ? (
         <View style={styles.TipsBlock}>
-          {TipsSubtitleLeft ? (
-            <Text style={styles.TipsSubtitle}>{TipsSubtitleLeft}</Text>
-          ) : null}
+          {TipsSubtitleLeft ? <Text style={styles.TipsSubtitle}>{TipsSubtitleLeft}</Text> : null}
 
           <Text style={styles.TipsAmount}>{TipsAmount}</Text>
-          {TipsSubtitleRight ? (
-            <Text style={styles.TipsSubtitle}>{TipsSubtitleRight}</Text>
-          ) : null}
+          {TipsSubtitleRight ? <Text style={styles.TipsSubtitle}>{TipsSubtitleRight}</Text> : null}
         </View>
       ) : null}
     </View>

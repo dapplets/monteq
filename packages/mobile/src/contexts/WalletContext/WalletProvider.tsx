@@ -1,25 +1,10 @@
-import React, { FC, ReactElement, useMemo } from "react";
-import { WalletContext, WalletContextState } from "./WalletContext";
-import {
-  DEFAULT_CHAIN,
-  WC_METADATA,
-  WC_PROJECT_ID,
-} from "../../common/constants";
-import { contextDefaultValues } from "./WalletContext";
-import {
-  EthereumClient,
-  w3mConnectors,
-  w3mProvider,
-} from "@web3modal/ethereum";
-import { Web3Modal } from "@web3modal/react";
-import {
-  configureChains,
-  createConfig,
-  useAccount,
-  useDisconnect,
-  WagmiConfig,
-} from "wagmi";
-import { useWeb3Modal } from "@web3modal/react";
+import { EthereumClient, w3mConnectors, w3mProvider } from '@web3modal/ethereum';
+import { Web3Modal, useWeb3Modal } from '@web3modal/react';
+import React, { FC, ReactElement, useMemo } from 'react';
+import { configureChains, createConfig, useAccount, useDisconnect, WagmiConfig } from 'wagmi';
+
+import { WalletContext, WalletContextState, contextDefaultValues } from './WalletContext';
+import { DEFAULT_CHAIN, WC_METADATA, WC_PROJECT_ID } from '../../common/constants';
 
 const chains = [DEFAULT_CHAIN];
 const projectId = WC_PROJECT_ID;

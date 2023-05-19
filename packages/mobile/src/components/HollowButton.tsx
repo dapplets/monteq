@@ -1,8 +1,9 @@
-import React, {memo} from 'react';
-import {TouchableHighlight, Text, StyleSheet} from 'react-native';
-import {FontSize, FontFamily, Color, Border, Padding} from '../GlobalStyles';
-import {NavigationProp, useNavigation} from '@react-navigation/native';
-import {RootStackParamList} from '../App';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import React, { memo } from 'react';
+import { TouchableHighlight, Text, StyleSheet } from 'react-native';
+
+import { RootStackParamList } from '../App';
+import { FontSize, FontFamily, Color, Border, Padding } from '../GlobalStyles';
 
 const HollowButton = memo(() => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -11,7 +12,7 @@ const HollowButton = memo(() => {
   }
   return (
     <TouchableHighlight
-      underlayColor={'transparent'}
+      underlayColor="transparent"
       activeOpacity={0.5}
       onPress={navigationConnect}
       style={styles.mainbutton}>
