@@ -186,7 +186,7 @@ const MyBusiness = () => {
                 // https://stackoverflow.com/questions/61541163/style-the-container-of-react-natives-flatlist-items-separate-from-the-header
                 ListFooterComponent={
                   <FlatList
-                    style={styles.list}
+                    // style={styles.list}
                     data={inHistory}
                     keyExtractor={(item) => item.id}
                     renderItem={({ item }) => (

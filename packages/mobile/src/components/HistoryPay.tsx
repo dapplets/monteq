@@ -24,11 +24,12 @@ const HistoryPay = ({ time, company, amount }: HistoryPayType) => {
     <View style={styles.HistoryWrapper}>
       <SvgComponentPay style={styles.ImgHistory} />
       <View style={styles.HistoryPayBlock}>
-        <Text style={styles.HistoryAmount}>{amount}</Text>
+        <View style={styles.topRow}>
+          <Text style={styles.HistoryAmount}>{amount}</Text>
+          <Text style={styles.time}>{formatedDate(time)}</Text>
+        </View>
         <Text style={styles.company}>{company}</Text>
       </View>
-
-      <Text style={styles.time}>{formatedDate(time)}</Text>
     </View>
   );
 };
@@ -65,6 +66,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     paddingTop: 5,
     paddingBottom: 5,
+    flex: 1,
   },
   HistoryAmount: {
     fontWeight: '700',
@@ -85,10 +87,12 @@ const styles = StyleSheet.create({
     fontSize: 10,
     lineHeight: 12,
     color: '#919191',
-    marginLeft: 'auto',
-    paddingTop: 5,
-    paddingBottom: 5,
     fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoRegular,
+  },
+  topRow: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
 });
 export default HistoryPay;

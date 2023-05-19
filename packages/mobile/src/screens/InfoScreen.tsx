@@ -149,7 +149,7 @@ const InfoScreen = () => {
             />
 
             <FlatList
-              style={styles.listHistory}
+              // style={styles.listHistory}
               refreshing={isOutHistoryLoading}
               onRefresh={loadMoreOutHistory}
               progressViewOffset={-90}
@@ -167,7 +167,7 @@ const InfoScreen = () => {
                   }
                 />
               )}
-              ListFooterComponent={<View style={{ height: 30 }} />}
+              // ListFooterComponent={<View style={{ height: 30 }} />}
             />
           </>
         ) : null}
