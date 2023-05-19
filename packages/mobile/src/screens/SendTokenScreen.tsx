@@ -84,6 +84,10 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
   async function handleCloseButtonPress() {
     resetTransferOrMintTxStatus();
     setModalVisible(false);
+    setTokenAmountsMap({});
+    resetTransferOrMintTxStatus();
+    resetSetAmbassadorTxStatus();
+    loadMyTokens();
     navigation.navigate('InfoScreen');
   }
 
@@ -141,6 +145,9 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
         <View style={styles.tokensBlock}>
           {myTokens.map((token) => (
             <TokenBlock
+              status={
+                transferOrMintTxStatus !== TxStatus.Idle || setAmbassadorTxStatus !== TxStatus.Idle
+              }
               key={token.tokenId}
               children={
                 <View style={styles.imgTokenWrapper}>
