@@ -133,12 +133,12 @@ const EdconContractProvider: FC<Props> = ({ children }) => {
     if (!contract) {
       return;
     }
-
+    // setAmbassador(address, tokenId).calls()
     const txPromise =
       ambassadorRank === undefined
-        ? contract.setAmbassador(address, tokenId)
+        ? contract['setAmbassador(address,uint8)'](address, tokenId)
         :
-         contract.setAmbassador(address, tokenId, ambassadorRank);
+         contract['setAmbassador(address,uint8,uint8)'](address, tokenId, ambassadorRank);
 
     processTransaction(txPromise, setSetAmbassadorTxStatus);
   }
