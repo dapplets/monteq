@@ -80,9 +80,6 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
 
   useEffect(() => {
     loadMyTokens();
-    parsedQrCode.user && userName.length === 0
-      ? changeUserName(parsedQrCode.user)
-      : changeUserName(userName);
   }, [
     isFocused,
     loadMyTokens,
@@ -133,6 +130,12 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
       [tokenId]: (amount[tokenId] ?? 0) + 1,
     }));
   }
+  function handleLongPress(tokenId: TokenId) {
+    delete tokenAmountsMap[`${tokenId}`];
+
+    setTokenAmountsMap(tokenAmountsMap);
+    loadMyTokens();
+  }
 
   function handleSendTokensPress() {
     setModalVisible(true);
@@ -164,29 +167,31 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
         amount,
       })
     );
-
-    // todo: hardcode _ambassadorRunk
-    // todo: hardcode tokenID
     setAmbassador(
       parsedQrCode.to,
       tokensToTransfer[0].tokenId,
       +tokensToTransfer[0].amount
     );
   }
+  const parseSending = () => {
+    if (Object.keys(tokenAmountsMap).length === 0) {
+      return "0";
+    } else {
+      let amount = 0;
+      for (let i of Object.values(tokenAmountsMap)) {
+        amount += +i;
+      }
+      return amount.toString();
+    }
+  };
 
-  //   console.log(isAmbassadorStatus);
-  //   console.log(tokenAmountsMap);
-  console.log(isVisibleAmbassadorBtn);
-  // console.log(myTokens);
-  // console.log(transferOrMintTxStatus);
-  // console.log(`ToDo: send to ${parsedQrCode.to}`);
   return (
     <>
       <ScrollView style={styles.InfoScreenWrapperSendToken}>
         <Title label={`Sending tokens`} />
         <PaymentInfo
           isTokens
-          price={myTokens.reduce((s, i) => (s = s + +i.balance), 0)}
+          price={parseSending()}
           title={"Your are sending"}
         />
 
@@ -227,13 +232,14 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
               }
               title={`${token.balance}`}
               onPress={() => handleIncrementTokenPress(token.tokenId)}
+              onLongPress={() => handleLongPress(token.tokenId)}
             />
           ))}
         </View>
 
         {parsedQrCode.user ? (
           <View style={styles.PayInfo}>
-            <PaymentParameters parameters={"User"} value={userName} />
+            <PaymentParameters parameters={"User"} value={parsedQrCode.user} />
           </View>
         ) : null}
 
@@ -284,7 +290,7 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
           status={"Signing"}
           type={TxStatusType.Yellow}
           image={require("../assets/inProgress.png")}
-          recipientId={parsedQrCode.user}
+          recipientId={parsedQrCode.user!}
           // date={new Date(parsedQrCode.createdAt).toLocaleString()}
           // fiatAmount={parsedQrCode.currencyReceipt}
           onRequestClose={() => setModalVisible(!modalVisible)}
@@ -299,7 +305,7 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
           status={"Mining"}
           type={TxStatusType.Yellow}
           image={require("../assets/inProgress.png")}
-          recipientId={parsedQrCode.user}
+          recipientId={parsedQrCode.user!}
           // date={new Date(parsedQrCode.createdAt).toLocaleString()}
           // fiatAmount={parsedQrCode.currencyReceipt}
           onRequestClose={() => setModalVisible(!modalVisible)}
@@ -314,7 +320,7 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
           status={"Confirmed"}
           type={TxStatusType.Green}
           image={require("../assets/confirmed.png")}
-          recipientId={parsedQrCode.user}
+          recipientId={parsedQrCode.user!}
           // date={new Date(parsedQrCode.createdAt).toLocaleString()}
           // fiatAmount={parsedQrCode.currencyReceipt}
           onRequestClose={() => setModalVisible(!modalVisible)}
