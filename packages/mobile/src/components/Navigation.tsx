@@ -1,5 +1,4 @@
 import {NavigationProp, useNavigation} from '@react-navigation/native';
-import {useWeb3Modal} from '@web3modal/react-native';
 import * as React from 'react';
 import {
   View,
@@ -22,20 +21,21 @@ import SvgComponentHowActive from '../icons/SVGHowActive';
 import SvgComponentHowDefault from '../icons/SVGHowDefault';
 import {useMonteqContract} from '../contexts/MonteqContractContext';
 import SvgComponentScan from '../icons/SVGScanBtn';
+import { useWallet } from '../contexts/WalletContext';
 
 export type NavigationType = {
   path: string;
 };
 
 const Navigation = ({path}: NavigationType) => {
-  const {provider} = useWeb3Modal();
+  const {disconnect} = useWallet();
   const {scan} = useCamera();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   const {getBusinessInfoById, updateUserBalance} = useMonteqContract();
 
   function handleDisconnectPress() {
-    provider?.disconnect();
+    disconnect();
   }
 
   async function navigationMyBusiness() {
@@ -51,10 +51,6 @@ const Navigation = ({path}: NavigationType) => {
   }
 
   async function handleGmsScanPress() {
-    if (!provider) {
-      return;
-    }
-
     try {
       const url = await scan();
       const parsedQrCode = parseQrCodeData(url);

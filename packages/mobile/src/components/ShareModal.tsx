@@ -63,16 +63,20 @@ const ShareModal: React.FC<Props> = ({
           <QRCode getRef={ref as any} size={200} value={qrCodeUrl} />
 
           {username ? (
-            <LinearGradient
-              style={styles.linearGradientText}
-              colors={["#0dd977", "#1da4ac", "#14c48c"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-            >
-              <Text {...props} style={[styles.name, { opacity: 0 }]}>
-                {username}
-              </Text>
-            </LinearGradient>
+            // todo: only ios or android
+            // <LinearGradient
+            //   style={styles.linearGradientText}
+            //   colors={["#0dd977", "#1da4ac", "#14c48c"]}
+            //   start={{ x: 0, y: 0 }}
+            //   end={{ x: 1, y: 0 }}
+            // >
+            //   <Text {...props} style={[styles.name, { opacity: 0 }]}>
+            //     {username}
+            //   </Text>
+            // </LinearGradient>
+            <Text {...props} style={styles.name}>
+              {username}
+            </Text>
           ) : null}
 
           <LinearGradient
@@ -155,6 +159,9 @@ const styles = StyleSheet.create({
     fontSize: 20,
     lineHeight: 23,
     textAlign: "center",
+    // todo: only web
+    color: "#1da4ac",
+    marginTop: 10,
   },
   linearGradientText: {
     display: "flex",

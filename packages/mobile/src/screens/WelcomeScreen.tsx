@@ -3,10 +3,15 @@ import {Image, Platform, StyleSheet, View} from 'react-native';
 import MainButton from '../components/MainButton';
 import HollowButton from '../components/HollowButton';
 import {Padding, Border, FontFamily, FontSize, Color} from '../GlobalStyles';
-import {useWeb3Modal} from '@web3modal/react-native';
+import { useWallet } from '../contexts/WalletContext';
+import { WalletTypes } from '../contexts/WalletContext/WalletContext';
 
 const WelcomeScreen = () => {
-  const {open} = useWeb3Modal();
+  const {connect} = useWallet();
+
+  function handleWalletConnectPress() {
+    connect(WalletTypes.WalletConnect);
+  }
 
   return (
     <View style={styles.initiallogin}>
@@ -31,7 +36,7 @@ const WelcomeScreen = () => {
       </View>
       <View style={[styles.mainbuttonParent, styles.mainbuttonParentFlexBox]}>
         <MainButton
-          onPress={open}
+          onPress={handleWalletConnectPress}
           image={require('../assets/walletconnect.png')}
           label="Start with WalletConnect"
         />

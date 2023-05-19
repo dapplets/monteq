@@ -15,7 +15,6 @@ import Title from '../components/TitlePage';
 import {useMonteqContract} from '../contexts/MonteqContractContext';
 import { LinearGradient } from 'expo-linear-gradient';
 import SwitchBlock from '../components/SwitchBlock';
-import {useWeb3Modal} from '@web3modal/react-native';
 import {
   NavigationProp,
   useIsFocused,
@@ -52,7 +51,6 @@ const MyBusiness = () => {
   } = useMonteqContract();
 
   const [isRemember, setIsRemember] = React.useState(false);
-  const {provider} = useWeb3Modal();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   React.useEffect(() => {
@@ -87,10 +85,6 @@ const MyBusiness = () => {
   }
 
   async function handleGmsScanPressBusiness() {
-    if (!provider) {
-      return;
-    }
-
     try {
       const url = await scan();
       const parsedReceipt = parseQrCodeData(url);

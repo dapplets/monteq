@@ -1,5 +1,4 @@
 import { createContext } from "react";
-import { number } from "yargs";
 
 // ToDo: duplicated code
 export enum TxStatus {

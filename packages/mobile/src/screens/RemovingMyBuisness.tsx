@@ -17,7 +17,6 @@ import {
 import {memo, useEffect, useState} from 'react';
 import {RootStackParamList} from '../App';
 import PaymentParameters from '../components/PaymentParameters';
-import {useWeb3Modal} from '@web3modal/react-native';
 import {
   BusinessInfo,
   TxStatus,
@@ -28,7 +27,6 @@ import {FontFamily} from '../GlobalStyles';
 const RemovingMyBusiness: React.FC = memo(() => {
   const isFocused = useIsFocused();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-  const {provider} = useWeb3Modal();
   const {
     myBusiness,
     removeBusiness,
@@ -57,7 +55,7 @@ const RemovingMyBusiness: React.FC = memo(() => {
   }
 
   async function handleSendPress() {
-    if (!provider || !savedMyBusiness) {
+    if (!savedMyBusiness) {
       return;
     }
 

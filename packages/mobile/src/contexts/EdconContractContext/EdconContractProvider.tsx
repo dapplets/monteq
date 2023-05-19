@@ -16,7 +16,6 @@ import {
   TokenId,
 } from "./EdconContractContext";
 import { ethers } from "ethers";
-import { useWeb3Modal } from "@web3modal/react-native";
 import {
   CHAIN_ID,
   JSON_RPC_URL,
@@ -24,13 +23,14 @@ import {
   WC_SESSION_PARAMS,
 } from "../../common/constants";
 import EDCON_GAME_ABI from "../../abis/EdconGame.json";
+import { useWallet } from "../WalletContext";
 
 type Props = {
   children: ReactElement;
 };
 
 const EdconContractProvider: FC<Props> = ({ children }) => {
-  const { provider: writeEip1193 } = useWeb3Modal();
+  const { provider: writeEip1193 } = useWallet();
 
   const [contract, setContract] = useState<ethers.Contract | null>(null);
 

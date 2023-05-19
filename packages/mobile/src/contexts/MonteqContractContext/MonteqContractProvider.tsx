@@ -10,7 +10,6 @@ import {
   defaultBusinessInfo,
 } from './MonteqContractContext';
 import {ethers} from 'ethers';
-import {useWeb3Modal} from '@web3modal/react-native';
 import {
   BASE_CRYPTO_MAX_DIGITS,
   CHAIN_ID,
@@ -23,6 +22,7 @@ import {
 } from '../../common/constants';
 import MONTEQ_ABI from '../../abis/MonteQ.json';
 import {truncate} from '../../common/helpers';
+import { useWallet } from '../WalletContext';
 
 const {formatUnits, parseUnits, parseEther, formatEther} = ethers.utils;
 
@@ -31,7 +31,7 @@ type Props = {
 };
 
 const MonteqContractProvider: FC<Props> = ({children}) => {
-  const {provider: writeEip1193} = useWeb3Modal();
+  const {provider: writeEip1193} = useWallet();
 
   const [contract, setContract] = useState<ethers.Contract | null>(null);
   const [balance, setBalance] = useState<ParsedUint>(
