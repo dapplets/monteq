@@ -17,6 +17,7 @@ describe('EdconGame_v2', function () {
             anotherAccount,
             anotherAccount2,
             anotherAccount3,
+            anotherAccount4,
         ] = await ethers.getSigners()
 
         const EdconGame = await ethers.getContractFactory('contracts/EdconGame_v2.sol:EdconGame')
@@ -36,6 +37,7 @@ describe('EdconGame_v2', function () {
             anotherAccount,
             anotherAccount2,
             anotherAccount3,
+            anotherAccount4,
             TICKER_01,
             TOKEN_NAME_01,
             TOKEN_ICON_01,
@@ -362,20 +364,168 @@ describe('EdconGame_v2', function () {
         })
     })
 
-    // describe('Locktime', function () {
-    //     it('Should transfer tokens of different types from user to user during recipients locktime', async () => {
-    //         const { edconGame } = await loadFixture(deployOneYearLockFixture)
-    //         expect(false).to.eql(true)
-    //     })
+    describe('Locktime', function () {
+        it('Should not transfer tokens from user to user during recipients locktime', async () => {
+            const {
+                edconGame,
+                gameMaster,
+                businessOwner,
+                anotherAccount,
+                anotherAccount2,
+                TICKER_01,
+                TOKEN_NAME_01,
+                TOKEN_ICON_01,
+            } = await loadFixture(deployContractFixture)
+            await edconGame.connect(gameMaster).approveCreator(businessOwner.address, TICKER_01)
+            await edconGame
+                .connect(businessOwner)
+                .addToken(TICKER_01, TOKEN_NAME_01, TOKEN_ICON_01, 2)
 
-    //     it('Should transfer tokens of one type from ambassador to user during recipients locktime', async () => {
-    //         const { edconGame } = await loadFixture(deployOneYearLockFixture)
-    //         expect(false).to.eql(true)
-    //     })
+            await edconGame.connect(businessOwner).transfer(0, 9, anotherAccount.address)
+            await edconGame.connect(anotherAccount).transfer(0, 6, anotherAccount2.address)
 
-    //     it('Should not transfer tokens of one type from user to user during recipients locktime', async () => {
-    //         const { edconGame } = await loadFixture(deployOneYearLockFixture)
-    //         expect(true).to.throw("You aren't the ambassador")
-    //     })
-    // })
+            await expect(
+                edconGame.connect(anotherAccount).transfer(0, 3, anotherAccount2.address)
+            ).to.revertedWith('destination is still locked for this transfer')
+        })
+
+        it('Should transfer tokens from ambassador to user during recipients locktime', async () => {
+            const {
+                edconGame,
+                gameMaster,
+                businessOwner,
+                anotherAccount,
+                TICKER_01,
+                TOKEN_NAME_01,
+                TOKEN_ICON_01,
+            } = await loadFixture(deployContractFixture)
+            await edconGame.connect(gameMaster).approveCreator(businessOwner.address, TICKER_01)
+            await edconGame
+                .connect(businessOwner)
+                .addToken(TICKER_01, TOKEN_NAME_01, TOKEN_ICON_01, 2)
+
+            await edconGame.connect(businessOwner).transfer(0, 13, anotherAccount.address)
+            await edconGame.connect(businessOwner).transfer(0, 12, anotherAccount.address)
+
+            expect(await edconGame.box(businessOwner.address, 0)).to.equal(0)
+            expect(await edconGame.box(anotherAccount.address, 0)).to.equal(25)
+        })
+
+        it('Should get time to unlock', async () => {
+            const {
+                edconGame,
+                gameMaster,
+                businessOwner,
+                anotherAccount,
+                anotherAccount2,
+                TICKER_01,
+                TOKEN_NAME_01,
+                TOKEN_ICON_01,
+            } = await loadFixture(deployContractFixture)
+            await edconGame.connect(gameMaster).approveCreator(businessOwner.address, TICKER_01)
+            await edconGame
+                .connect(businessOwner)
+                .addToken(TICKER_01, TOKEN_NAME_01, TOKEN_ICON_01, 2)
+
+            await time.increase(1000)
+            await edconGame.connect(businessOwner).transfer(0, 9, anotherAccount.address)
+            await edconGame.connect(anotherAccount).transfer(0, 6, anotherAccount2.address)
+            await time.increase(2000)
+
+            const time1 = await edconGame.getTimeToUnlock(anotherAccount.address, 0)
+            const time2 = await edconGame.getTimeToUnlock(anotherAccount2.address, 0)
+
+            expect(ethers.BigNumber.from(time1).toString()).to.equal('2001') // ToDo: it is mot time to unlock but after the lock
+            expect(ethers.BigNumber.from(time2).toString()).to.equal('2000') // ToDo: it is mot time to unlock but after the lock
+
+            await time.increase(1600)
+
+            const time3 = await edconGame.getTimeToUnlock(anotherAccount.address, 0)
+            const time4 = await edconGame.getTimeToUnlock(anotherAccount2.address, 0)
+
+            expect(ethers.BigNumber.from(time3).toString()).to.equal('0')
+            expect(ethers.BigNumber.from(time4).toString()).to.equal('3600') // ToDo: it is mot time to unlock but after the lock + the one hour already ended!
+        })
+
+        it('Should transfer tokens from user to user after recipients locktime', async () => {
+            const {
+                edconGame,
+                gameMaster,
+                businessOwner,
+                anotherAccount,
+                anotherAccount2,
+                TICKER_01,
+                TOKEN_NAME_01,
+                TOKEN_ICON_01,
+            } = await loadFixture(deployContractFixture)
+            await edconGame.connect(gameMaster).approveCreator(businessOwner.address, TICKER_01)
+            await edconGame
+                .connect(businessOwner)
+                .addToken(TICKER_01, TOKEN_NAME_01, TOKEN_ICON_01, 2)
+
+            await edconGame.connect(businessOwner).transfer(0, 9, anotherAccount.address)
+            await edconGame.connect(anotherAccount).transfer(0, 6, anotherAccount2.address)
+
+            await time.increase(4000)
+
+            await edconGame.connect(anotherAccount).transfer(0, 3, anotherAccount2.address)
+            expect(await edconGame.box(anotherAccount2.address, 0)).to.equal(9)
+        })
+    })
+
+    describe('Karma', function () {
+        it('Should get a KarmaKick after transfer different tokens from user to user', async () => {
+            const {
+                edconGame,
+                gameMaster,
+                businessOwner,
+                anotherAccount,
+                anotherAccount2,
+                anotherAccount3,
+                TICKER_01,
+                TOKEN_NAME_01,
+                TOKEN_ICON_01,
+                TICKER_02,
+            } = await loadFixture(deployContractFixture)
+            await edconGame.connect(gameMaster).approveCreator(businessOwner.address, TICKER_01)
+            await edconGame
+                .connect(businessOwner)
+                .addToken(TICKER_01, TOKEN_NAME_01, TOKEN_ICON_01, 2)
+            await edconGame.connect(gameMaster).approveCreator(anotherAccount.address, TICKER_02)
+            await edconGame
+                .connect(anotherAccount)
+                .addToken(TICKER_02, TOKEN_NAME_01, TOKEN_ICON_01, 2)
+
+            await edconGame.connect(businessOwner).transfer(0, 7, anotherAccount2.address)
+            await edconGame.connect(anotherAccount).transfer(1, 15, anotherAccount2.address)
+            expect(await edconGame.box(anotherAccount2.address, 0)).to.equal(7)
+            expect(await edconGame.box(anotherAccount2.address, 1)).to.equal(15)
+
+            await edconGame
+                .connect(anotherAccount2)
+                .transferBatch([0, 1], [7, 10], anotherAccount3.address)
+
+            expect(await edconGame.box(businessOwner.address, 0)).to.equal(0)
+            expect(await edconGame.box(anotherAccount.address, 0)).to.equal(0)
+            expect(await edconGame.box(anotherAccount2.address, 0)).to.equal(0)
+            expect(await edconGame.box(anotherAccount3.address, 0)).to.equal(7)
+
+            expect(await edconGame.box(businessOwner.address, 1)).to.equal(0)
+            expect(await edconGame.box(anotherAccount.address, 1)).to.equal(0)
+            expect(await edconGame.box(anotherAccount2.address, 1)).to.equal(5)
+            expect(await edconGame.box(anotherAccount3.address, 1)).to.equal(10)
+
+            expect(await edconGame.karma(anotherAccount2.address, 0)).to.equal(30)
+            expect(await edconGame.karma(anotherAccount2.address, 1)).to.equal(10)
+
+            // expect(await edconGame.karmaKicks(anotherAccount2.address, 0)).to.eql({
+            //     kicks: [{ address: anotherAccount3.address, points: 7 }],
+            //     head: 0,
+            // })
+            // expect(await edconGame.karmaKicks(anotherAccount2.address, 1)).to.eql({
+            //     kicks: [{ address: anotherAccount3.address, points: 10 }],
+            //     head: 1,
+            // })
+        })
+    })
 })
