@@ -16,7 +16,6 @@ import {RootStackParamList} from '../App';
 import PaymentParameters from '../components/PaymentParameters';
 import {BASE_FIAT_CURRENCY} from '../common/constants';
 import CompanyParameters from '../components/CompanyParameters';
-import {useWeb3Modal} from '@web3modal/react-native';
 import {TxStatus} from '../contexts/MonteqContractContext/MonteqContractContext';
 import TxModal, {TxStatusType} from '../components/TxModal';
 import {FontFamily} from '../GlobalStyles';
@@ -32,7 +31,6 @@ const AddingMyBusiness: React.FC<Props> = memo(({route}) => {
 
   const [nameCompany, setNameCompany] = useState('');
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-  const {provider} = useWeb3Modal();
   const {addBusiness, resetAddBusinessTxStatus, addBusinessTxStatus} =
     useMonteqContract();
   const [modalVisible, setModalVisible] = useState(false);
@@ -46,7 +44,7 @@ const AddingMyBusiness: React.FC<Props> = memo(({route}) => {
   }
 
   async function handleSendPress() {
-    if (!provider || !parsedReceipt) {
+    if (!parsedReceipt) {
       return;
     }
 

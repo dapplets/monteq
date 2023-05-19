@@ -4,7 +4,6 @@ import {
   useNavigation,
   useIsFocused,
 } from "@react-navigation/native";
-import { useWeb3Modal } from "@web3modal/react-native";
 import React, { memo, useEffect, useState } from "react";
 import {
   Button,
@@ -68,7 +67,6 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
     setAmbassador,
   } = useEdconContract();
   const { userName, changeUserName } = useUserName();
-  const { provider } = useWeb3Modal();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const isFocused = useIsFocused();
 

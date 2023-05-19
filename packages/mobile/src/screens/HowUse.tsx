@@ -12,8 +12,8 @@ import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {RootStackParamList} from '../App';
 import {FontFamily} from '../GlobalStyles';
 import InfoUseItem from '../components/InfoUseItem';
-import {useWeb3Modal} from '@web3modal/react-native';
 import SvgComponentHowBgMain from '../icons/SVGHowBgMain';
+import { useWallet } from '../contexts/WalletContext';
 
 const info = [
   {
@@ -48,7 +48,7 @@ export type HowUseProps = {};
 
 const HowUse = ({}: HowUseProps) => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-  const {isConnected} = useWeb3Modal();
+  const {isConnected} = useWallet();
 
   async function navigationConnect() {
     navigation.navigate('WelcomeScreen');

@@ -4,7 +4,6 @@ import {
   useNavigation,
   useIsFocused,
 } from '@react-navigation/native';
-import {useWeb3Modal} from '@web3modal/react-native';
 import React, {memo, useEffect, useState} from 'react';
 import {
   Platform,
@@ -53,7 +52,6 @@ const TxScreen: React.FC<Props> = memo(({route}) => {
   const parsedReceipt = route.params.parsedReceipt;
   const businessInfo = route.params.businessInfo;
 
-  const {provider} = useWeb3Modal();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const isFocused = useIsFocused();
 
@@ -101,7 +99,7 @@ const TxScreen: React.FC<Props> = memo(({route}) => {
   const isEnoughTokens = gteStr(balance, amountInCrypto);
 
   async function handleSendPress() {
-    if (!provider || !parsedReceipt) {
+    if (!parsedReceipt) {
       return;
     }
 
