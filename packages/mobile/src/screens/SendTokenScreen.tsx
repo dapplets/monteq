@@ -122,13 +122,19 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
      // todo: hardcode tokenID
     setAmbassador(parsedQrCode.to, 0, 2);
   }
-  console.log(myTokens);
-  console.log(transferOrMintTxStatus);
-  console.log(`ToDo: send to ${parsedQrCode.to}`);
+  // console.log(myTokens);
+  // console.log(transferOrMintTxStatus);
+  // console.log(`ToDo: send to ${parsedQrCode.to}`);
   return (
     <>
       <ScrollView style={styles.InfoScreenWrapperSendToken}>
         <Title label={`Sending tokens`} />
+        <PaymentInfo
+        isTokens
+          price={myTokens.reduce((s, i) => (s = s + +i.balance), 0)}
+          title={"Your are sending"}
+        />
+
         <View>{areMyTokensLoading ? <Text>Loading</Text> : null}</View>
         <View style={styles.tokensBlock}>
           {myTokens.map((token) => (
@@ -155,11 +161,7 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
             />
           ))}
         </View>
-        <PaymentInfo
-          price={myTokens.reduce((s, i) => (s = s + +i.balance), 0)}
-          title={"Your are sending"}
-        />
-
+       
         {parsedQrCode.user ? (
           <View style={styles.PayInfo}>
             <PaymentParameters parameters={"User"} value={userName} />
