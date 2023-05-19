@@ -1,4 +1,4 @@
-import React, { FC, ReactElement } from "react";
+import React, { FC, ReactElement, useMemo } from "react";
 import { WalletContext, WalletContextState } from "./WalletContext";
 import {
   DEFAULT_CHAIN,
@@ -42,20 +42,23 @@ const WalletProviderChild: FC<Props> = ({ children }) => {
   const { disconnect } = useDisconnect();
   const { open } = useWeb3Modal();
 
-  const state: WalletContextState = {
-    connect: () => open(),
-    disconnect: () => disconnect(),
-    provider: connector
-      ? {
-          request: ({ method, params }) =>
-            connector
-              .getWalletClient()
-              // @ts-ignore
-              .then((x) => x.request({ method, params })),
-        }
-      : contextDefaultValues.provider,
-    isConnected: isConnected,
-  };
+  const state: WalletContextState = useMemo(
+    () => ({
+      connect: () => open(),
+      disconnect: () => disconnect(),
+      provider: connector
+        ? {
+            request: ({ method, params }) =>
+              connector
+                .getWalletClient()
+                // @ts-ignore
+                .then((x) => x.request({ method, params })),
+          }
+        : contextDefaultValues.provider,
+      isConnected: !!connector && isConnected,
+    }),
+    [open, connector, disconnect, isConnected]
+  );
 
   return (
     <WalletContext.Provider value={state}>
