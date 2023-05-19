@@ -17,6 +17,7 @@ describe('EdconGame_v2', function () {
             anotherAccount,
             anotherAccount2,
             anotherAccount3,
+            anotherAccount4,
         ] = await ethers.getSigners()
 
         const EdconGame = await ethers.getContractFactory('contracts/EdconGame_v2.sol:EdconGame')
@@ -36,6 +37,7 @@ describe('EdconGame_v2', function () {
             anotherAccount,
             anotherAccount2,
             anotherAccount3,
+            anotherAccount4,
             TICKER_01,
             TOKEN_NAME_01,
             TOKEN_ICON_01,
@@ -471,5 +473,59 @@ describe('EdconGame_v2', function () {
         })
     })
 
-    // describe('Others', function () {})
+    describe('Karma', function () {
+        it('Should get a KarmaKick after transfer different tokens from user to user', async () => {
+            const {
+                edconGame,
+                gameMaster,
+                businessOwner,
+                anotherAccount,
+                anotherAccount2,
+                anotherAccount3,
+                TICKER_01,
+                TOKEN_NAME_01,
+                TOKEN_ICON_01,
+                TICKER_02,
+            } = await loadFixture(deployContractFixture)
+            await edconGame.connect(gameMaster).approveCreator(businessOwner.address, TICKER_01)
+            await edconGame
+                .connect(businessOwner)
+                .addToken(TICKER_01, TOKEN_NAME_01, TOKEN_ICON_01, 2)
+            await edconGame.connect(gameMaster).approveCreator(anotherAccount.address, TICKER_02)
+            await edconGame
+                .connect(anotherAccount)
+                .addToken(TICKER_02, TOKEN_NAME_01, TOKEN_ICON_01, 2)
+
+            await edconGame.connect(businessOwner).transfer(0, 7, anotherAccount2.address)
+            await edconGame.connect(anotherAccount).transfer(1, 15, anotherAccount2.address)
+            expect(await edconGame.box(anotherAccount2.address, 0)).to.equal(7)
+            expect(await edconGame.box(anotherAccount2.address, 1)).to.equal(15)
+
+            await edconGame
+                .connect(anotherAccount2)
+                .transferBatch([0, 1], [7, 10], anotherAccount3.address)
+
+            expect(await edconGame.box(businessOwner.address, 0)).to.equal(0)
+            expect(await edconGame.box(anotherAccount.address, 0)).to.equal(0)
+            expect(await edconGame.box(anotherAccount2.address, 0)).to.equal(0)
+            expect(await edconGame.box(anotherAccount3.address, 0)).to.equal(7)
+
+            expect(await edconGame.box(businessOwner.address, 1)).to.equal(0)
+            expect(await edconGame.box(anotherAccount.address, 1)).to.equal(0)
+            expect(await edconGame.box(anotherAccount2.address, 1)).to.equal(5)
+            expect(await edconGame.box(anotherAccount3.address, 1)).to.equal(10)
+
+            expect(await edconGame.karma(anotherAccount2.address, 0)).to.equal(30)
+            expect(await edconGame.karma(anotherAccount2.address, 1)).to.equal(10)
+
+            // expect(await edconGame.karmaKicks(anotherAccount2.address, 0)).to.eql({
+            //     kicks: [{ address: anotherAccount3.address, points: 7 }],
+            //     head: 0,
+            // })
+            // expect(await edconGame.karmaKicks(anotherAccount2.address, 1)).to.eql({
+            //     kicks: [{ address: anotherAccount3.address, points: 10 }],
+            //     head: 1,
+            // })
+        })
+    })
 })

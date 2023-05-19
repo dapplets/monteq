@@ -18,8 +18,8 @@ contract EdconGame {
     uint constant LOCKTIME = 1 hours;
 
     uint constant KARMA_TRANSFER = 10;
-    uint constant KARMA_KICKBACK = 1;
-    uint constant KARMA_NEW_USER = 50;
+    uint constant KARMA_KICKBACK = 3;
+    uint constant KARMA_NEW_USER = 30;
 
     uint8 constant DEFAULT_INITIAL_RANK = 2;
 
