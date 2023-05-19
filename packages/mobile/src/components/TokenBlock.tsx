@@ -50,10 +50,8 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     padding: 5,
     width: 62,
-    height: 66,
     borderRadius: 4,
   },
-
   logOutWrapper: {
     display: 'flex',
     flexDirection: 'column',
