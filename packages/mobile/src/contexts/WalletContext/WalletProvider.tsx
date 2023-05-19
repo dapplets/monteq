@@ -42,20 +42,20 @@ const WalletProviderChild: FC<Props> = ({ children }) => {
   const { disconnect } = useDisconnect();
   const { open } = useWeb3Modal();
 
-  const state: WalletContextState = connector
-    ? {
-        connect: () => open(),
-        disconnect: () => disconnect(),
-        provider: {
+  const state: WalletContextState = {
+    connect: () => open(),
+    disconnect: () => disconnect(),
+    provider: connector
+      ? {
           request: ({ method, params }) =>
             connector
               .getWalletClient()
               // @ts-ignore
               .then((x) => x.request({ method, params })),
-        },
-        isConnected: isConnected,
-      }
-    : contextDefaultValues;
+        }
+      : contextDefaultValues.provider,
+    isConnected: isConnected,
+  };
 
   return (
     <WalletContext.Provider value={state}>
