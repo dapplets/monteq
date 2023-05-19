@@ -6,8 +6,7 @@ import {
 } from "@react-navigation/native";
 import React, { memo, useEffect, useState } from "react";
 import {
-  Button,
-  FlatList,
+  ActivityIndicator,
   Image,
   Platform,
   ScrollView,
@@ -21,36 +20,20 @@ import Title from "../components/TitlePage";
 import PaymentInfo from "../components/PaymentInfo";
 import { LinearGradient } from "expo-linear-gradient";
 import PaymentParameters from "../components/PaymentParameters";
-import Checkbox from "../components/Checkbox";
 import { type RootStackParamList } from "../App";
 import { ParsedEDCON2023Code } from "../common/parseReceipt";
-import { useMonteqContract } from "../contexts/MonteqContractContext";
-import {
-  BASE_CRYPTO_CURRENCY,
-  BASE_CRYPTO_MAX_DIGITS,
-  BASE_FIAT_CURRENCY,
-} from "../common/constants";
-import SwitchBlock from "../components/SwitchBlock";
-import { addStr, gteStr, mulStr, truncate } from "../common/helpers";
 import TxModal, { TxStatusType } from "../components/TxModal";
-
 import { FontFamily } from "../GlobalStyles";
-import GeneralPayInfo from "../components/GeneralPayInfo";
 import { useEdconContract } from "../contexts/EdconContractContext";
 import {
-  ParsedUint,
   TokenId,
   TxStatus,
 } from "../contexts/EdconContractContext/EdconContractContext";
-import CompanyParameters from "../components/CompanyParameters";
 import TokenBlock from "../components/TokenBlock";
-import { useUserName } from "../hooks/useUserName";
 
 type Props = {
   route: RouteProp<{ params: { parsedQrCode: ParsedEDCON2023Code } }, "params">;
 };
-
-const testTokens = [{}];
 
 const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
   const { parsedQrCode } = route.params;
@@ -64,18 +47,14 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
     resetTransferOrMintTxStatus,
     resetSetAmbassadorTxStatus,
     setAmbassadorTxStatus,
-    ambassadorRank,
     setAmbassador,
-    isAmbassadorStatus,
   } = useEdconContract();
-  const { userName, changeUserName } = useUserName();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const isFocused = useIsFocused();
 
   const [modalVisible, setModalVisible] = useState(false);
-  const [isVisibleAmbassadorBtn, setVisibleAmbassadorBtn] = useState(false);
   const [tokenAmountsMap, setTokenAmountsMap] = useState<{
-    [tokenId: TokenId]: ParsedUint;
+    [tokenId: TokenId]: number;
   }>({});
 
   useEffect(() => {
@@ -84,65 +63,32 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
     isFocused,
     loadMyTokens,
     transferOrMintTxStatus,
-    setAmbassadorTxStatus,
-    isVisibleAmbassadorBtn,
-    tokenAmountsMap,
+    setAmbassadorTxStatus
   ]);
+
   if (!parsedQrCode) {
     // ToDo: invalid receipt
     return null;
   }
 
   function handleIncrementTokenPress(tokenId: TokenId) {
-    if (isVisibleAmbassadorBtn) {
-      if (Object.keys(tokenAmountsMap).length === 1) {
-        isAmbassadorStatus.map((x, i) => {
-          if (x.tokenId === tokenId) {
-            if (x.isAmbassador) {
-              setVisibleAmbassadorBtn(true);
-            } else {
-              setVisibleAmbassadorBtn(false);
-            }
-          }
-        });
-      } else {
-        setVisibleAmbassadorBtn(false);
-      }
-    } else {
-      if (
-        isAmbassadorStatus &&
-        isAmbassadorStatus.length > 0 &&
-        Object.keys(tokenAmountsMap).length === 0
-      ) {
-        isAmbassadorStatus.map((x, i) => {
-          if (x.tokenId === tokenId)
-            if (x.isAmbassador) {
-              setVisibleAmbassadorBtn(true);
-            } else {
-              setVisibleAmbassadorBtn(false);
-            }
-        });
-      }
-    }
-
-    setTokenAmountsMap((amount) => ({
-      ...amount,
-      [tokenId]: (amount[tokenId] ?? 0) + 1,
+    setTokenAmountsMap((map) => ({
+      ...map,
+      [`${tokenId}`]: (map[tokenId] ?? 0) + 1,
     }));
   }
-  function handleLongPress(tokenId: TokenId) {
-    delete tokenAmountsMap[`${tokenId}`];
 
-    setTokenAmountsMap(tokenAmountsMap);
-    loadMyTokens();
+  function handleLongPress(tokenId: TokenId) {
+    setTokenAmountsMap((map) => ({ ...map, [tokenId]: 0 }));
   }
 
   function handleSendTokensPress() {
     setModalVisible(true);
+
     const tokensToTransfer = Object.entries(tokenAmountsMap).map(
       ([tokenId, amount]) => ({
         tokenId: Number(tokenId),
-        amount,
+        amount: Number(amount).toString(),
       })
     );
 
@@ -151,6 +97,7 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
 
   async function handleCloseButtonPress() {
     resetTransferOrMintTxStatus();
+    setModalVisible(false);
     navigation.navigate("InfoScreen");
   }
 
@@ -159,6 +106,7 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
     resetSetAmbassadorTxStatus();
     setModalVisible(false);
   }
+
   function handleSetAnAmbassadorRank() {
     setModalVisible(true);
     const tokensToTransfer = Object.entries(tokenAmountsMap).map(
@@ -173,6 +121,8 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
       +tokensToTransfer[0].amount
     );
   }
+
+  // ToDo: memorize
   const parseSending = () => {
     if (Object.keys(tokenAmountsMap).length === 0) {
       return "0";
@@ -185,6 +135,21 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
     }
   };
 
+  // ToDo: memorize
+  const isVisibleAmbassadorBtn = () => {
+    let foundTokenId: string | null = null;
+    
+    for (let [tokenIdStr, amount] of Object.entries(tokenAmountsMap)) {
+      if (amount > 0) {
+        if (foundTokenId !== null) return false; 
+        foundTokenId = tokenIdStr;
+      }
+    }
+
+    const token = myTokens.find(x => x.tokenId.toString() === foundTokenId);
+    return token?.isAmbassador === true;
+  }
+
   return (
     <>
       <ScrollView style={styles.InfoScreenWrapperSendToken}>
@@ -192,30 +157,24 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
         <PaymentInfo
           isTokens
           price={parseSending()}
-          title={"Your are sending"}
+          title={"You are sending"}
         />
 
-        <View>{areMyTokensLoading ? <Text>Loading</Text> : null}</View>
+        {areMyTokensLoading ? <ActivityIndicator size="large" color="#919191" /> : null}
+
         <View style={styles.tokensBlock}>
           {myTokens.map((token) => (
             <TokenBlock
               key={token.tokenId}
               children={
                 <View style={styles.imgTokenWrapper}>
-                  {isAmbassadorStatus &&
-                    isAmbassadorStatus.length > 0 &&
-                    isAmbassadorStatus.map((x, i) => {
-                      if (x.tokenId === token.tokenId && x.isAmbassador) {
-                        return (
-                          <Image
-                            key={i}
-                            style={styles.imgStar}
-                            resizeMode="contain"
-                            source={require("../assets/star.png")}
-                          />
-                        );
-                      }
-                    })}
+                  {token.isAmbassador ? (
+                    <Image
+                      style={styles.imgStar}
+                      resizeMode="contain"
+                      source={require("../assets/star.png")}
+                    />
+                  ) : null}
                   <Image
                     style={styles.img}
                     resizeMode="contain"
@@ -239,7 +198,7 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
 
         {parsedQrCode.user ? (
           <View style={styles.PayInfo}>
-            <PaymentParameters parameters={"User"} value={parsedQrCode.user} />
+            <PaymentParameters parameters={"Recipient"} value={parsedQrCode.user} />
           </View>
         ) : null}
 
@@ -266,7 +225,7 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
             </>
           </TouchableHighlight>
         </LinearGradient>
-        {isVisibleAmbassadorBtn && (
+        {isVisibleAmbassadorBtn() && (
           <TouchableHighlight
             underlayColor={"transparent"}
             activeOpacity={0.5}

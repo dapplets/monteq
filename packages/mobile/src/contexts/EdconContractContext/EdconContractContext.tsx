@@ -22,12 +22,8 @@ export type MyTokenInfo = {
   iconUrl: string;
   creator: Address;
   balance: ParsedUint;
+  isAmbassador: boolean;
 };
-
-export type isAmbassador ={
-  isAmbassador: boolean,
-  tokenId: TokenId;
-}
 
 export type EdconContractContextState = {
   myTokens: MyTokenInfo[];
@@ -35,9 +31,6 @@ export type EdconContractContextState = {
   loadMyTokens: () => Promise<void>;
 
   setAmbassadorTxStatus: TxStatus;
-  ambassadorRank: (address: Address, tokenId: TokenId) => Promise<number | undefined>;
-  isAmbassadorStatus:isAmbassador[]
-  // isAmbassador: isAmbassador;
   setAmbassador: (
     address: Address,
     tokenId: TokenId,
@@ -61,9 +54,6 @@ export const contextDefaultValues: EdconContractContextState = {
   setAmbassadorTxStatus: TxStatus.Idle,
   setAmbassador: () => undefined,
   resetSetAmbassadorTxStatus: () => undefined,
-  ambassadorRank:async () => 0,
-  isAmbassadorStatus:[],
-  // isAmbassador:{isAmbassador: false},
 
   transferOrMintTxStatus: TxStatus.Idle,
   transferOrMint: () => undefined,

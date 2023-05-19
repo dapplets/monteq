@@ -14,7 +14,6 @@ import {
   MyTokenInfo,
   Address,
   TokenId,
-  isAmbassador,
 } from "./EdconContractContext";
 import { ethers } from "ethers";
 import {
@@ -40,10 +39,6 @@ const EdconContractProvider: FC<Props> = ({ children }) => {
 
   const [setAmbassadorTxStatus, setSetAmbassadorTxStatus] = useState<TxStatus>(
     TxStatus.Idle
-  );
-  const [ambassadorRunk, setSetAmbassadorRunk] = useState<number>(0);
-  const [isAmbassadorStatus, setAmbassadorStatus] = useState<isAmbassador[]>(
-    []
   );
   const [transferOrMintTxStatus, setTransferOrMintTxStatus] =
     useState<TxStatus>(TxStatus.Idle);
@@ -91,11 +86,18 @@ const EdconContractProvider: FC<Props> = ({ children }) => {
       const allTokenInfos = await contract.readToken();
       const allTokenInfoBalances = await Promise.all(
         allTokenInfos.map((token: any, tokenId: number) =>
-          contract
-            .balanceOf(address, tokenId)
-            .then((balance: any) => ({ tokenId, token, balance }))
+          Promise.all([
+            contract.balanceOf(address, tokenId),
+            contract.isAmbassador(address, tokenId),
+          ]).then(([balance, isAmbassador]) => ({
+            tokenId,
+            token,
+            balance,
+            isAmbassador,
+          }))
         )
       );
+
       const myTokensWithBalance: MyTokenInfo[] = allTokenInfoBalances // ToDo: .filter((x: any) => !x.balance.eq(ethers.BigNumber.from(0)))
         .map((x: any) => ({
           tokenId: x.tokenId,
@@ -104,17 +106,9 @@ const EdconContractProvider: FC<Props> = ({ children }) => {
           iconUrl: x.token.iconUrl,
           creator: x.token.creator,
           balance: x.balance.toString(),
+          isAmbassador: x.isAmbassador,
         }));
-        const ambassadorTokens = await Promise.all(
-          myTokensWithBalance.map(({ tokenId }) =>
-            contract.isAmbassador(address, tokenId).then((isAmbassador) => ({
-              isAmbassador,
-              tokenId,
-            }))
-          )
-        );
-  
-      setAmbassadorStatus(ambassadorTokens)
+
       setMyTokens(myTokensWithBalance);
     } catch (e) {
       console.error(e);
@@ -124,25 +118,6 @@ const EdconContractProvider: FC<Props> = ({ children }) => {
     setAreMyTokensLoading(false);
   }, [contract]);
 
-  // ToDo: wrap all functions to useCallback
-  async function ambassadorRank(address: Address, tokenId: TokenId) {
-    if (!contract) {
-      return;
-    }
-
-    const txPromise = await contract.ambassadorRank(address, tokenId);
-
-    return txPromise as number;
-  }
-  async function isAmbassador(address: Address, tokenId: TokenId) {
-    if (!contract) {
-      return;
-    }
-
-    const txPromise = await contract.isAmbassador(address, tokenId);
-
-    return setAmbassadorStatus(txPromise);
-  }
   async function setAmbassador(
     address: Address,
     tokenId: TokenId,
@@ -213,9 +188,6 @@ const EdconContractProvider: FC<Props> = ({ children }) => {
     setAmbassadorTxStatus,
     setAmbassador,
     resetSetAmbassadorTxStatus,
-    ambassadorRank,
-    isAmbassadorStatus,
-    // isAmbassador,
 
     transferOrMintTxStatus,
     transferOrMint,
