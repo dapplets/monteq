@@ -35,6 +35,7 @@ const InfoScreen = () => {
     isOutHistoryLoading,
   } = useMonteqContract();
   const { userName, changeUserName } = useUserName();
+  const userNameInputRef = React.useRef<any>();
 
   const [isModalShareVisible, setIsModalShareVisible] = useState(false);
 
@@ -46,6 +47,10 @@ const InfoScreen = () => {
 
   const openShareModal = () => {
     setIsModalShareVisible(true);
+  };
+
+  const handleEditUserNamePress = () => {
+    userNameInputRef.current?.focus();
   };
 
   if (isOutHistoryLoading && outHistory.length === 0) {
@@ -80,7 +85,7 @@ const InfoScreen = () => {
             </View>
             <View style={styles.nameParameters}>
               <TextInput
-                // autoFocus={true}
+                ref={userNameInputRef}
                 numberOfLines={1}
                 placeholder="Enter your name"
                 value={userName}
@@ -88,11 +93,17 @@ const InfoScreen = () => {
                 onChangeText={changeUserName}
                 style={styles.Value}
               />
-              <Image
-                style={styles.shareImg}
-                resizeMode="contain"
-                source={require('../assets/edit.png')}
-              />
+              <TouchableHighlight
+                underlayColor="transparent"
+                onPress={handleEditUserNamePress}
+                activeOpacity={0.5}
+                style={styles.share}>
+                <Image
+                  style={styles.shareImg}
+                  resizeMode="contain"
+                  source={require('../assets/edit.png')}
+                />
+              </TouchableHighlight>
             </View>
             <View style={styles.CenterContentWrapper}>
               <Image
@@ -107,6 +118,7 @@ const InfoScreen = () => {
           </>
         ) : null}
 
+        {/* ToDo: duplication of code below */}
         {outHistory.length > 0 ? (
           <>
             <View style={styles.wrapperTitle}>
@@ -125,7 +137,7 @@ const InfoScreen = () => {
             </View>
             <View style={styles.nameParameters}>
               <TextInput
-                // autoFocus={true}
+                ref={userNameInputRef}
                 numberOfLines={1}
                 placeholder="Enter your name"
                 value={userName}
@@ -133,11 +145,17 @@ const InfoScreen = () => {
                 onChangeText={changeUserName}
                 style={styles.Value}
               />
-              <Image
-                style={styles.shareImg}
-                resizeMode="contain"
-                source={require('../assets/edit.png')}
-              />
+              <TouchableHighlight
+                underlayColor="transparent"
+                onPress={handleEditUserNamePress}
+                activeOpacity={0.5}
+                style={styles.share}>
+                <Image
+                  style={styles.shareImg}
+                  resizeMode="contain"
+                  source={require('../assets/edit.png')}
+                />
+              </TouchableHighlight>
             </View>
             <GeneralPayInfo
               generalPayAmount={truncate(spentTotalCryptoAmount, BASE_CRYPTO_MAX_DIGITS)}
