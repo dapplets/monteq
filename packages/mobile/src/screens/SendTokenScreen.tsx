@@ -64,13 +64,16 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
     resetTransferOrMintTxStatus,
     resetSetAmbassadorTxStatus,
     setAmbassadorTxStatus,
+    ambassadorRank,
     setAmbassador,
+    isAmbassadorStatus,
   } = useEdconContract();
   const { userName, changeUserName } = useUserName();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const isFocused = useIsFocused();
 
   const [modalVisible, setModalVisible] = useState(false);
+  const [isVisibleAmbassadorBtn, setVisibleAmbassadorBtn] = useState(false);
   const [tokenAmountsMap, setTokenAmountsMap] = useState<{
     [tokenId: TokenId]: ParsedUint;
   }>({});
@@ -80,13 +83,49 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
     parsedQrCode.user && userName.length === 0
       ? changeUserName(parsedQrCode.user)
       : changeUserName(userName);
-  }, [isFocused, loadMyTokens, transferOrMintTxStatus, setAmbassadorTxStatus]);
+  }, [
+    isFocused,
+    loadMyTokens,
+    transferOrMintTxStatus,
+    setAmbassadorTxStatus,
+    isVisibleAmbassadorBtn,
+    tokenAmountsMap,
+  ]);
   if (!parsedQrCode) {
     // ToDo: invalid receipt
     return null;
   }
 
   function handleIncrementTokenPress(tokenId: TokenId) {
+    if(isVisibleAmbassadorBtn){
+      if (isAmbassadorStatus && isAmbassadorStatus.length > 0) {
+     if(!isAmbassadorStatus[tokenId].isAmbassador) {
+      setVisibleAmbassadorBtn(false)
+     }  
+       
+      } 
+    }else{
+      if (isAmbassadorStatus && isAmbassadorStatus.length > 0) {
+        isAmbassadorStatus.map(
+          (x, i) =>
+          {if(x.tokenId === tokenId )
+            if(x.isAmbassador)
+            {
+              setVisibleAmbassadorBtn(true)
+             
+              
+            }else{
+              setVisibleAmbassadorBtn(false)
+            }
+           }
+        );
+       
+      } 
+    }
+     
+    
+   
+    
     setTokenAmountsMap((amount) => ({
       ...amount,
       [tokenId]: (amount[tokenId] ?? 0) + 1,
@@ -119,9 +158,13 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
     setModalVisible(true);
 
     // todo: hardcode _ambassadorRunk
-     // todo: hardcode tokenID
+    // todo: hardcode tokenID
     setAmbassador(parsedQrCode.to, 0, 2);
   }
+
+  //   console.log(isAmbassadorStatus);
+  //   console.log(tokenAmountsMap);
+  console.log(isVisibleAmbassadorBtn);
   // console.log(myTokens);
   // console.log(transferOrMintTxStatus);
   // console.log(`ToDo: send to ${parsedQrCode.to}`);
@@ -130,7 +173,7 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
       <ScrollView style={styles.InfoScreenWrapperSendToken}>
         <Title label={`Sending tokens`} />
         <PaymentInfo
-        isTokens
+          isTokens
           price={myTokens.reduce((s, i) => (s = s + +i.balance), 0)}
           title={"Your are sending"}
         />
@@ -142,6 +185,20 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
               key={token.tokenId}
               children={
                 <View style={styles.imgTokenWrapper}>
+                  {isAmbassadorStatus &&
+                    isAmbassadorStatus.length > 0 &&
+                    isAmbassadorStatus.map((x, i) => {
+                      if (x.tokenId === token.tokenId && x.isAmbassador) {
+                        return (
+                          <Image
+                            key={i}
+                            style={styles.imgStar}
+                            resizeMode="contain"
+                            source={require("../assets/star.png")}
+                          />
+                        );
+                      }
+                    })}
                   <Image
                     style={styles.img}
                     resizeMode="contain"
@@ -161,7 +218,7 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
             />
           ))}
         </View>
-       
+
         {parsedQrCode.user ? (
           <View style={styles.PayInfo}>
             <PaymentParameters parameters={"User"} value={userName} />
@@ -191,8 +248,8 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
             </>
           </TouchableHighlight>
         </LinearGradient>
-
-        <TouchableHighlight
+{isVisibleAmbassadorBtn&&
+  <TouchableHighlight
           underlayColor={"transparent"}
           activeOpacity={0.5}
           style={styles.buttonSendAmbassador}
@@ -201,7 +258,8 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
           <Text style={styles.buttonTextAmbassador}>
             Set an ambassador rank
           </Text>
-        </TouchableHighlight>
+        </TouchableHighlight>}
+        
       </ScrollView>
 
       {!modalVisible ? <Navigation path="Payment" /> : null}
@@ -349,7 +407,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "space-between",
-    marginBottom:10
+    marginBottom: 10,
   },
   imgTokenWrapper: {
     display: "flex",
@@ -382,6 +440,19 @@ const styles = StyleSheet.create({
     lineHeight: 14,
     color: "#14C58B",
     fontFamily: Platform.OS === "ios" ? undefined : FontFamily.robotoBold,
+  },
+  imgStar: {
+    position: "absolute",
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    top: 0,
+    left: -5,
+    zIndex: 100,
   },
 });
 

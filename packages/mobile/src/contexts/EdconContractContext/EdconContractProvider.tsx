@@ -14,6 +14,7 @@ import {
   MyTokenInfo,
   Address,
   TokenId,
+  isAmbassador,
 } from "./EdconContractContext";
 import { ethers } from "ethers";
 import {
@@ -41,7 +42,9 @@ const EdconContractProvider: FC<Props> = ({ children }) => {
     TxStatus.Idle
   );
   const [ambassadorRunk, setSetAmbassadorRunk] = useState<number>(0);
-
+  const [isAmbassadorStatus, setAmbassadorStatus] = useState<isAmbassador[]>(
+    []
+  );
   const [transferOrMintTxStatus, setTransferOrMintTxStatus] =
     useState<TxStatus>(TxStatus.Idle);
 
@@ -102,7 +105,16 @@ const EdconContractProvider: FC<Props> = ({ children }) => {
           creator: x.token.creator,
           balance: x.balance.toString(),
         }));
-
+        const ambassadorTokens = await Promise.all(
+          myTokensWithBalance.map(({ tokenId }) =>
+            contract.isAmbassador(address, tokenId).then((isAmbassador) => ({
+              isAmbassador,
+              tokenId,
+            }))
+          )
+        );
+  
+      setAmbassadorStatus(ambassadorTokens)
       setMyTokens(myTokensWithBalance);
     } catch (e) {
       console.error(e);
@@ -113,10 +125,7 @@ const EdconContractProvider: FC<Props> = ({ children }) => {
   }, [contract]);
 
   // ToDo: wrap all functions to useCallback
-  async function ambassadorRank(
-    address: Address,
-    tokenId: TokenId
-  ){
+  async function ambassadorRank(address: Address, tokenId: TokenId) {
     if (!contract) {
       return;
     }
@@ -124,6 +133,15 @@ const EdconContractProvider: FC<Props> = ({ children }) => {
     const txPromise = await contract.ambassadorRank(address, tokenId);
 
     return txPromise as number;
+  }
+  async function isAmbassador(address: Address, tokenId: TokenId) {
+    if (!contract) {
+      return;
+    }
+
+    const txPromise = await contract.isAmbassador(address, tokenId);
+
+    return setAmbassadorStatus(txPromise);
   }
   async function setAmbassador(
     address: Address,
@@ -136,9 +154,12 @@ const EdconContractProvider: FC<Props> = ({ children }) => {
     // setAmbassador(address, tokenId).calls()
     const txPromise =
       ambassadorRank === undefined
-        ? contract['setAmbassador(address,uint8)'](address, tokenId)
-        :
-         contract['setAmbassador(address,uint8,uint8)'](address, tokenId, ambassadorRank);
+        ? contract["setAmbassador(address,uint8)"](address, tokenId)
+        : contract["setAmbassador(address,uint8,uint8)"](
+            address,
+            tokenId,
+            ambassadorRank
+          );
 
     processTransaction(txPromise, setSetAmbassadorTxStatus);
   }
@@ -193,6 +214,8 @@ const EdconContractProvider: FC<Props> = ({ children }) => {
     setAmbassador,
     resetSetAmbassadorTxStatus,
     ambassadorRank,
+    isAmbassadorStatus,
+    // isAmbassador,
 
     transferOrMintTxStatus,
     transferOrMint,
