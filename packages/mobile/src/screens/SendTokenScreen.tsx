@@ -130,6 +130,7 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
       <ScrollView style={styles.InfoScreenWrapperSendToken}>
         <Title label={`Sending tokens`} />
         <PaymentInfo
+        isTokens
           price={myTokens.reduce((s, i) => (s = s + +i.balance), 0)}
           title={"Your are sending"}
         />
