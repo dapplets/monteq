@@ -129,16 +129,18 @@ const EdconContractProvider: FC<Props> = ({ children }) => {
       return;
     }
 
-    if (tokens.length === 0) {
+    const positiveTokens = tokens.filter((token) => !ethers.BigNumber.from(token.amount).eq(0));
+
+    if (positiveTokens.length === 0) {
       throw new Error('Tokens array is empty');
     }
 
     const txPromise =
-      tokens.length === 1
-        ? contract.transfer(tokens[0].tokenId, tokens[0].amount, to)
+      positiveTokens.length === 1
+        ? contract.transfer(positiveTokens[0].tokenId, positiveTokens[0].amount, to)
         : contract.transferBatch(
-            tokens.map((x) => x.tokenId),
-            tokens.map((x) => x.amount),
+            positiveTokens.map((x) => x.tokenId),
+            positiveTokens.map((x) => x.amount),
             to
           );
 
