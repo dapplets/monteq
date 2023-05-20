@@ -2,18 +2,8 @@ import { BarCodeScannedCallback, BarCodeScanner } from 'expo-barcode-scanner';
 import { Camera } from 'expo-camera';
 import * as Permissions from 'expo-permissions';
 import React, { FC, useState, useCallback } from 'react';
-import { BackHandler, View, StyleSheet, Platform, Button } from 'react-native';
+import { BackHandler, View, StyleSheet } from 'react-native';
 import ButtonNavigationDefault from './ButtonNavigationDefault';
-import SvgComponentUserDefault from '../icons/SVGUserDefault';
-import {
-  NavigationContainer,
-  NavigationProp,
-  useNavigation,
-  useNavigationContainerRef,
-} from '@react-navigation/native';
-import { RootStackParamList } from '../Router';
-import InfoScreen from '../screens/InfoScreen';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import SvgComponentExit from '../icons/SVGExitCamera';
 
 type Props = {
@@ -21,21 +11,17 @@ type Props = {
   onCanceled: () => void;
   onError: (error: Error) => void;
 };
-const Tab = createBottomTabNavigator();
+
 const CameraComponent: FC<Props> = ({ onQrCodeFound, onCanceled, onError }) => {
   const [hasPermission, setHasPermission] = useState(false);
   const [scanned, setScanned] = useState(false);
-  const [isActive, setIsActive] = useState(false);
-  const navigationRef = useNavigationContainerRef();
 
   const handleBackButtonPress = useCallback(() => {
-    setIsActive(false);
     setTimeout(() => onCanceled(), 500); // ToDo: hack
     return true;
   }, [onCanceled]);
   async function navigationUserHistory() {
-  
-    onCanceled()
+    onCanceled();
   }
 
   const checkCameraPermission = useCallback(async () => {
@@ -55,8 +41,6 @@ const CameraComponent: FC<Props> = ({ onQrCodeFound, onCanceled, onError }) => {
 
     if (status !== 'granted') {
       onError(new Error('Camera Permission Denied'));
-    } else {
-      setIsActive(true);
     }
 
     setHasPermission(status === 'granted');
@@ -96,10 +80,7 @@ const CameraComponent: FC<Props> = ({ onQrCodeFound, onCanceled, onError }) => {
       </View>
 
       <View style={styles.cameraScreenBtn}>
-        <ButtonNavigationDefault
-          onPress={navigationUserHistory}
-          children={<SvgComponentExit />}
-        />
+        <ButtonNavigationDefault onPress={navigationUserHistory} children={<SvgComponentExit />} />
       </View>
     </>
   );
@@ -107,15 +88,14 @@ const CameraComponent: FC<Props> = ({ onQrCodeFound, onCanceled, onError }) => {
 
 const styles = StyleSheet.create({
   container: {
-    // flex: 1,
-    // flexDirection: 'column',
-    // justifyContent: 'center',
     height: '100%',
     aspectRatio: 1,
     alignSelf: 'center',
   },
   cameraScreenBtn: {
     position: 'absolute',
+    top: 10,
+    left: 10,
   },
 });
 
