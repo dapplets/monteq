@@ -2,24 +2,41 @@ import { BarCodeScannedCallback, BarCodeScanner } from 'expo-barcode-scanner';
 import { Camera } from 'expo-camera';
 import * as Permissions from 'expo-permissions';
 import React, { FC, useState, useCallback } from 'react';
-import { BackHandler, View, StyleSheet, Platform } from 'react-native';
+import { BackHandler, View, StyleSheet, Platform, Button } from 'react-native';
+import ButtonNavigationDefault from './ButtonNavigationDefault';
+import SvgComponentUserDefault from '../icons/SVGUserDefault';
+import {
+  NavigationContainer,
+  NavigationProp,
+  useNavigation,
+  useNavigationContainerRef,
+} from '@react-navigation/native';
+import { RootStackParamList } from '../Router';
+import InfoScreen from '../screens/InfoScreen';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import SvgComponentExit from '../icons/SVGExitCamera';
 
 type Props = {
   onQrCodeFound: (data: string) => void;
   onCanceled: () => void;
   onError: (error: Error) => void;
 };
-
+const Tab = createBottomTabNavigator();
 const CameraComponent: FC<Props> = ({ onQrCodeFound, onCanceled, onError }) => {
   const [hasPermission, setHasPermission] = useState(false);
   const [scanned, setScanned] = useState(false);
   const [isActive, setIsActive] = useState(false);
+  const navigationRef = useNavigationContainerRef();
 
   const handleBackButtonPress = useCallback(() => {
     setIsActive(false);
     setTimeout(() => onCanceled(), 500); // ToDo: hack
     return true;
   }, [onCanceled]);
+  async function navigationUserHistory() {
+  
+    onCanceled()
+  }
 
   const checkCameraPermission = useCallback(async () => {
     // Use Permissions instead of Camera to workaround the issue
@@ -67,15 +84,24 @@ const CameraComponent: FC<Props> = ({ onQrCodeFound, onCanceled, onError }) => {
   }
 
   return (
-    <View style={styles.container}>
-      <Camera
-        style={styles.container}
-        onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-        barCodeScannerSettings={{
-          barCodeTypes: [BarCodeScanner.Constants.BarCodeType.qr],
-        }}
-      />
-    </View>
+    <>
+      <View style={styles.container}>
+        <Camera
+          style={styles.container}
+          onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+          barCodeScannerSettings={{
+            barCodeTypes: [BarCodeScanner.Constants.BarCodeType.qr],
+          }}
+        />
+      </View>
+
+      <View style={styles.cameraScreenBtn}>
+        <ButtonNavigationDefault
+          onPress={navigationUserHistory}
+          children={<SvgComponentExit />}
+        />
+      </View>
+    </>
   );
 };
 
@@ -87,6 +113,9 @@ const styles = StyleSheet.create({
     height: '100%',
     aspectRatio: 1,
     alignSelf: 'center',
+  },
+  cameraScreenBtn: {
+    position: 'absolute',
   },
 });
 
