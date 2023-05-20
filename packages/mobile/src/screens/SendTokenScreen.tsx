@@ -62,6 +62,10 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
   }
 
   function handleIncrementTokenPress(tokenId: TokenId) {
+    const token = myTokens.find((x) => x.tokenId.toString() === tokenId.toString());
+    if (!token) return;
+    if (Number(token.balance) <= tokenAmountsMap[tokenId]) return;
+
     setTokenAmountsMap((map) => ({
       ...map,
       [`${tokenId}`]: (map[tokenId] ?? 0) + 1,
