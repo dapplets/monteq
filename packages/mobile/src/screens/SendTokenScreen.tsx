@@ -109,15 +109,15 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
   }
 
   // ToDo: memorize
-  const parseSending = () => {
+  const totalAmount = () => {
     if (Object.keys(tokenAmountsMap).length === 0) {
-      return '0';
+      return 0;
     } else {
       let amount = 0;
       for (const i of Object.values(tokenAmountsMap)) {
         amount += +i;
       }
-      return amount.toString();
+      return amount;
     }
   };
 
@@ -136,48 +136,56 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
     return token?.isAmbassador === true;
   };
 
+  const isSendTokensButtonDisabled =
+    totalAmount() === 0 || transferOrMintTxStatus !== TxStatus.Idle;
+
   return (
     <>
       <ScrollView style={styles.InfoScreenWrapperSendToken}>
         <Title label="Sending tokens" />
-        <PaymentInfo isTokens price={parseSending()} title="You are sending" />
+        <PaymentInfo isTokens price={totalAmount().toString()} title="You are sending" />
 
-        {areMyTokensLoading ? <ActivityIndicator size="large" color="#919191" /> : null}
-
-        <View style={styles.tokensBlock}>
-          {myTokens.map((token) => (
-            <TokenBlock
-              status={
-                transferOrMintTxStatus !== TxStatus.Idle || setAmbassadorTxStatus !== TxStatus.Idle
-              }
-              key={token.tokenId}
-              children={
-                <View style={styles.imgTokenWrapper}>
-                  {token.isAmbassador ? (
+        {areMyTokensLoading ? (
+          <ActivityIndicator style={styles.TokensLoader} size="large" color="#919191" />
+        ) : (
+          <View style={styles.tokensBlock}>
+            {myTokens.map((token) => (
+              <TokenBlock
+                status={
+                  transferOrMintTxStatus !== TxStatus.Idle ||
+                  setAmbassadorTxStatus !== TxStatus.Idle
+                }
+                key={token.tokenId}
+                children={
+                  <View style={styles.imgTokenWrapper}>
+                    {token.isAmbassador ? (
+                      <Image
+                        style={styles.imgStar}
+                        resizeMode="contain"
+                        source={require('../assets/star.png')}
+                      />
+                    ) : null}
                     <Image
-                      style={styles.imgStar}
+                      style={styles.img}
                       resizeMode="contain"
-                      source={require('../assets/star.png')}
+                      source={{ uri: `${token.iconUrl}` }}
                     />
-                  ) : null}
-                  <Image
-                    style={styles.img}
-                    resizeMode="contain"
-                    source={{ uri: `${token.iconUrl}` }}
-                  />
-                  {tokenAmountsMap && tokenAmountsMap[`${token.tokenId}`] ? (
-                    <View style={styles.counter}>
-                      <Text style={styles.textCounter}>{tokenAmountsMap[`${token.tokenId}`]}</Text>
-                    </View>
-                  ) : null}
-                </View>
-              }
-              title={`${token.balance}`}
-              onPress={() => handleIncrementTokenPress(token.tokenId)}
-              onLongPress={() => handleLongPress(token.tokenId)}
-            />
-          ))}
-        </View>
+                    {tokenAmountsMap && tokenAmountsMap[`${token.tokenId}`] ? (
+                      <View style={styles.counter}>
+                        <Text style={styles.textCounter}>
+                          {tokenAmountsMap[`${token.tokenId}`]}
+                        </Text>
+                      </View>
+                    ) : null}
+                  </View>
+                }
+                title={`${token.balance}`}
+                onPress={() => handleIncrementTokenPress(token.tokenId)}
+                onLongPress={() => handleLongPress(token.tokenId)}
+              />
+            ))}
+          </View>
+        )}
 
         {parsedQrCode.user ? (
           <View style={styles.PayInfo}>
@@ -188,13 +196,17 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
         <LinearGradient
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
-          style={styles.linearGradient}
+          style={
+            isSendTokensButtonDisabled
+              ? [styles.linearGradient, styles.disabledOpacity]
+              : [styles.linearGradient]
+          }
           colors={['#0dd977', '#1da4ac', '#14c48c']}>
           <TouchableHighlight
             underlayColor="#1da4ac"
             activeOpacity={0.5}
             onPress={handleSendTokensPress}
-            disabled={transferOrMintTxStatus !== TxStatus.Idle}
+            disabled={isSendTokensButtonDisabled}
             style={styles.buttonSend}>
             <>
               <Image
@@ -206,7 +218,8 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
             </>
           </TouchableHighlight>
         </LinearGradient>
-        {isVisibleAmbassadorBtn() && (
+
+        {isVisibleAmbassadorBtn() ? (
           <TouchableHighlight
             underlayColor="transparent"
             activeOpacity={0.5}
@@ -214,7 +227,7 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
             onPress={handleSetAnAmbassadorRank}>
             <Text style={styles.buttonTextAmbassador}>Set an ambassador rank</Text>
           </TouchableHighlight>
-        )}
+        ) : null}
       </ScrollView>
 
       {!modalVisible ? <Navigation path="Payment" /> : null}
@@ -313,6 +326,9 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     width: '100%',
   },
+  disabledOpacity: {
+    opacity: 0.6,
+  },
   // ToDo: code duplicated in TxModal.tsx
   buttonSend: {
     backgroundColor: 'transparent',
@@ -409,6 +425,10 @@ const styles = StyleSheet.create({
     top: 0,
     left: -5,
     zIndex: 100,
+  },
+  TokensLoader: {
+    marginTop: 22,
+    marginBottom: 22,
   },
 });
 
