@@ -32,3 +32,20 @@ export function gteStr(a: string, b: string): boolean {
   const _b = ethers.utils.parseEther(b);
   return _a.gte(_b);
 }
+
+function capitalizeFirstLetter(str: string): string {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+export function parseRevertReason(err: any): string | null {
+  try {
+    const msg = JSON.parse(err.error.body).error.message;
+    const hexReason = /0x[0-9a-fA-F]*/gm.exec(msg)?.[0];
+    if (!hexReason) return null;
+    if (!ethers.utils.isHexString(hexReason)) return null;
+    const reason = ethers.utils.toUtf8String(hexReason);
+    return capitalizeFirstLetter(reason);
+  } catch (_) {
+    return null;
+  }
+}

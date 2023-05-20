@@ -30,10 +30,12 @@ export type EdconContractContextState = {
   areMyTokensLoading: boolean;
   loadMyTokens: () => Promise<void>;
 
+  setAmbassadorTxError: string | null;
   setAmbassadorTxStatus: TxStatus;
   setAmbassador: (address: Address, tokenId: TokenId, ambassadorRank: number) => void;
   resetSetAmbassadorTxStatus: () => void;
 
+  transferOrMintTxError: string | null;
   transferOrMintTxStatus: TxStatus;
   transferOrMint: (tokens: { tokenId: TokenId; amount: ParsedUint }[], to: Address) => void;
   resetTransferOrMintTxStatus: () => void;
@@ -44,10 +46,12 @@ export const contextDefaultValues: EdconContractContextState = {
   areMyTokensLoading: false,
   loadMyTokens: () => Promise.resolve(),
 
+  setAmbassadorTxError: null,
   setAmbassadorTxStatus: TxStatus.Idle,
   setAmbassador: () => undefined,
   resetSetAmbassadorTxStatus: () => undefined,
 
+  transferOrMintTxError: null,
   transferOrMintTxStatus: TxStatus.Idle,
   transferOrMint: () => undefined,
   resetTransferOrMintTxStatus: () => undefined,

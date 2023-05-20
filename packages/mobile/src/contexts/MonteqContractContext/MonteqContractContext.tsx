@@ -60,6 +60,7 @@ export type MonteqContractContextState = {
   loadMoreInHistory: () => void;
 
   // payment
+  paymentTxError: string | null;
   paymentTxStatus: TxStatus;
   payReceipt: (
     businessId: string,
@@ -71,10 +72,12 @@ export type MonteqContractContextState = {
 
   // for owner
   // ToDo: rename add/remove to link/unlink or attach/detach
+  addBusinessTxError: string | null;
   addBusinessTxStatus: TxStatus;
   addBusiness: (businessId: string, name: string) => void;
   resetAddBusinessTxStatus: () => void;
 
+  removeBusinessTxError: string | null;
   removeBusinessTxStatus: TxStatus;
   removeBusiness: (businessId: string) => void;
   resetRemoveBusinessTxStatus: () => void;
@@ -114,14 +117,17 @@ export const contextDefaultValues: MonteqContractContextState = {
   isInHistoryLoading: false,
   loadMoreInHistory: () => undefined,
 
+  paymentTxError: null,
   paymentTxStatus: TxStatus.Idle,
   payReceipt: () => undefined,
   resetPaymentTxStatus: () => undefined,
 
+  addBusinessTxError: null,
   addBusinessTxStatus: TxStatus.Idle,
   addBusiness: () => undefined,
   resetAddBusinessTxStatus: () => undefined,
 
+  removeBusinessTxError: null,
   removeBusinessTxStatus: TxStatus.Idle,
   removeBusiness: () => undefined,
   resetRemoveBusinessTxStatus: () => undefined,

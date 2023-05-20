@@ -18,6 +18,7 @@ import {
   EDCON_GAME_CONTRACT_ADDRESS,
   WC_SESSION_PARAMS,
 } from '../../common/constants';
+import { parseRevertReason } from '../../common/helpers';
 import { useWallet } from '../WalletContext';
 
 type Props = {
@@ -32,7 +33,10 @@ const EdconContractProvider: FC<Props> = ({ children }) => {
   const [myTokens, setMyTokens] = useState<MyTokenInfo[]>([]);
   const [areMyTokensLoading, setAreMyTokensLoading] = useState<boolean>(false);
 
+  const [setAmbassadorTxError, setSetAmbassadorTxError] = useState<string | null>(null);
   const [setAmbassadorTxStatus, setSetAmbassadorTxStatus] = useState<TxStatus>(TxStatus.Idle);
+
+  const [transferOrMintTxError, setTransferOrMintTxError] = useState<string | null>(null);
   const [transferOrMintTxStatus, setTransferOrMintTxStatus] = useState<TxStatus>(TxStatus.Idle);
 
   useEffect(() => {
@@ -61,6 +65,7 @@ const EdconContractProvider: FC<Props> = ({ children }) => {
       setContract(null);
     }
   }, [writeEip1193]);
+
   const loadMyTokens = useCallback(async () => {
     if (!contract) {
       return;
@@ -117,11 +122,12 @@ const EdconContractProvider: FC<Props> = ({ children }) => {
         ? contract['setAmbassador(address,uint8)'](address, tokenId)
         : contract['setAmbassador(address,uint8,uint8)'](address, tokenId, ambassadorRank);
 
-    processTransaction(txPromise, setSetAmbassadorTxStatus);
+    processTransaction(txPromise, setSetAmbassadorTxStatus, setSetAmbassadorTxError);
   }
 
   const resetSetAmbassadorTxStatus = useCallback(() => {
     setSetAmbassadorTxStatus(TxStatus.Idle);
+    setSetAmbassadorTxError(null);
   }, []);
 
   async function transferOrMint(tokens: { tokenId: TokenId; amount: ParsedUint }[], to: Address) {
@@ -144,12 +150,12 @@ const EdconContractProvider: FC<Props> = ({ children }) => {
             to
           );
 
-    processTransaction(txPromise, setTransferOrMintTxStatus);
-    resetTransferOrMintTxStatus();
+    processTransaction(txPromise, setTransferOrMintTxStatus, setTransferOrMintTxError);
   }
 
   const resetTransferOrMintTxStatus = useCallback(() => {
     setTransferOrMintTxStatus(TxStatus.Idle);
+    setTransferOrMintTxError(null);
   }, []);
 
   if (!contract) {
@@ -165,10 +171,12 @@ const EdconContractProvider: FC<Props> = ({ children }) => {
     areMyTokensLoading,
     loadMyTokens,
 
+    setAmbassadorTxError,
     setAmbassadorTxStatus,
     setAmbassador,
     resetSetAmbassadorTxStatus,
 
+    transferOrMintTxError,
     transferOrMintTxStatus,
     transferOrMint,
     resetTransferOrMintTxStatus,
@@ -178,8 +186,13 @@ const EdconContractProvider: FC<Props> = ({ children }) => {
 };
 
 // ToDo: duplicated code
-async function processTransaction(promise: Promise<any>, setTxStatus: (status: TxStatus) => void) {
+async function processTransaction(
+  promise: Promise<any>,
+  setTxStatus: (status: TxStatus) => void,
+  setTxError: (error: string | null) => void
+) {
   setTxStatus(TxStatus.Sending);
+  setTxError(null);
 
   let receipt: any | null = null;
 
@@ -188,6 +201,7 @@ async function processTransaction(promise: Promise<any>, setTxStatus: (status: T
     setTxStatus(TxStatus.Mining);
   } catch (e) {
     console.error(e);
+    setTxError(parseRevertReason(e));
     setTxStatus(TxStatus.Rejected);
     return false;
   }

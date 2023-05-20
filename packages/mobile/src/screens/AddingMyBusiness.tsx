@@ -27,7 +27,8 @@ const AddingMyBusiness: React.FC<Props> = memo(({ route }) => {
 
   const [nameCompany, setNameCompany] = useState('');
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-  const { addBusiness, resetAddBusinessTxStatus, addBusinessTxStatus } = useMonteqContract();
+  const { addBusiness, resetAddBusinessTxStatus, addBusinessTxError, addBusinessTxStatus } =
+    useMonteqContract();
   const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
@@ -133,7 +134,7 @@ const AddingMyBusiness: React.FC<Props> = memo(({ route }) => {
         <TxModal
           isVisible={modalVisible}
           title="Transaction rejected"
-          description="You have rejected the transaction in the wallet"
+          description={addBusinessTxError ?? 'You have rejected the transaction in the wallet'}
           image={require('../assets/errorOccured.png')}
           onRequestClose={() => setModalVisible(!modalVisible)}
           primaryButton="Retry"

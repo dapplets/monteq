@@ -45,8 +45,15 @@ const TxScreen: React.FC<Props> = memo(({ route }) => {
   const [paymentType, setPaymentType] = useState<PaymentType>(PaymentType.TIPS_ONLY);
   const [modalVisible, setModalVisible] = useState(false);
 
-  const { balance, isBalanceLoading, payReceipt, paymentTxStatus, rate, resetPaymentTxStatus } =
-    useMonteqContract();
+  const {
+    balance,
+    isBalanceLoading,
+    payReceipt,
+    paymentTxStatus,
+    paymentTxError,
+    rate,
+    resetPaymentTxStatus,
+  } = useMonteqContract();
 
   useEffect(() => {
     resetPaymentTxStatus();
@@ -296,7 +303,7 @@ const TxScreen: React.FC<Props> = memo(({ route }) => {
         <TxModal
           isVisible={modalVisible}
           title="Transaction rejected"
-          description="You have rejected the transaction in the wallet"
+          description={paymentTxError ?? 'You have rejected the transaction in the wallet'}
           image={require('../assets/errorOccured.png')}
           onRequestClose={() => setModalVisible(!modalVisible)}
           primaryButton="Retry"

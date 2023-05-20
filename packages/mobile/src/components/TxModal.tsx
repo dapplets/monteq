@@ -65,7 +65,7 @@ const TxModal: React.FC<Props> = ({
   onSecondaryButtonPress,
 }) => {
   return (
-    <Modal animationType="slide" transparent visible={isVisible} onRequestClose={onRequestClose}>
+    <Modal transparent visible={isVisible} onRequestClose={onRequestClose}>
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
           <Title isCenter label={title} />

@@ -22,7 +22,7 @@ import {
   MONTEQ_CONTRACT_ADDRESS,
   WC_SESSION_PARAMS,
 } from '../../common/constants';
-import { truncate } from '../../common/helpers';
+import { parseRevertReason, truncate } from '../../common/helpers';
 import { useWallet } from '../WalletContext';
 
 const { formatUnits, parseUnits, parseEther, formatEther } = ethers.utils;
@@ -61,6 +61,9 @@ const MonteqContractProvider: FC<Props> = ({ children }) => {
   const [isInHistoryLoading, setIsInHistoryLoading] = useState<boolean>(false);
   const [myBusiness, setMyBusiness] = useState<BusinessInfo | null>(null);
   const [isMyBusinessLoading, setIsMyBusinessLoading] = useState<boolean>(false);
+  const [paymentTxError, setPaymentTxError] = useState<string | null>(null);
+  const [addBusinessTxError, setAddBusinessTxError] = useState<string | null>(null);
+  const [removeBusinessTxError, setRemoveBusinessTxError] = useState<string | null>(null);
   const [paymentTxStatus, setPaymentTxStatus] = useState<TxStatus>(TxStatus.Idle);
   const [addBusinessTxStatus, setAddBusinessTxStatus] = useState<TxStatus>(TxStatus.Idle);
   const [removeBusinessTxStatus, setRemoveBusinessTxStatus] = useState<TxStatus>(TxStatus.Idle);
@@ -342,10 +345,11 @@ const MonteqContractProvider: FC<Props> = ({ children }) => {
       value: totalAmountBN,
     });
 
-    processTransaction(receiptPromise, setPaymentTxStatus);
+    processTransaction(receiptPromise, setPaymentTxStatus, setPaymentTxError);
   }
 
   const resetPaymentTxStatus = useCallback(() => {
+    setPaymentTxError(null);
     setPaymentTxStatus(TxStatus.Idle);
   }, []);
 
@@ -356,7 +360,11 @@ const MonteqContractProvider: FC<Props> = ({ children }) => {
 
     const receiptPromise = contract.addBusiness(businessId, name);
 
-    const success = await processTransaction(receiptPromise, setAddBusinessTxStatus);
+    const success = await processTransaction(
+      receiptPromise,
+      setAddBusinessTxStatus,
+      setAddBusinessTxError
+    );
 
     if (success) {
       setMyBusiness({
@@ -368,6 +376,7 @@ const MonteqContractProvider: FC<Props> = ({ children }) => {
   }
 
   const resetAddBusinessTxStatus = useCallback(() => {
+    setAddBusinessTxError(null);
     setAddBusinessTxStatus(TxStatus.Idle);
   }, []);
 
@@ -378,7 +387,11 @@ const MonteqContractProvider: FC<Props> = ({ children }) => {
 
     const receiptPromise = contract.removeBusiness(businessId);
 
-    const success = await processTransaction(receiptPromise, setRemoveBusinessTxStatus);
+    const success = await processTransaction(
+      receiptPromise,
+      setRemoveBusinessTxStatus,
+      setRemoveBusinessTxError
+    );
 
     if (success) {
       setMyBusiness(null);
@@ -386,6 +399,7 @@ const MonteqContractProvider: FC<Props> = ({ children }) => {
   }
 
   const resetRemoveBusinessTxStatus = useCallback(() => {
+    setRemoveBusinessTxError(null);
     setRemoveBusinessTxStatus(TxStatus.Idle);
   }, []);
 
@@ -418,12 +432,15 @@ const MonteqContractProvider: FC<Props> = ({ children }) => {
     inHistory,
     isInHistoryLoading,
     loadMoreInHistory,
+    paymentTxError,
     paymentTxStatus,
     payReceipt,
     resetPaymentTxStatus,
+    addBusinessTxError,
     addBusinessTxStatus,
     addBusiness,
     resetAddBusinessTxStatus,
+    removeBusinessTxError,
     removeBusinessTxStatus,
     removeBusiness,
     resetRemoveBusinessTxStatus,
@@ -432,8 +449,14 @@ const MonteqContractProvider: FC<Props> = ({ children }) => {
   return <MonteqContractContext.Provider value={state}>{children}</MonteqContractContext.Provider>;
 };
 
-async function processTransaction(promise: Promise<any>, setTxStatus: (status: TxStatus) => void) {
+// ToDo: duplicated code
+async function processTransaction(
+  promise: Promise<any>,
+  setTxStatus: (status: TxStatus) => void,
+  setTxError: (error: string | null) => void
+) {
   setTxStatus(TxStatus.Sending);
+  setTxError(null);
 
   let receipt: any | null = null;
 
@@ -442,6 +465,7 @@ async function processTransaction(promise: Promise<any>, setTxStatus: (status: T
     setTxStatus(TxStatus.Mining);
   } catch (e) {
     console.error(e);
+    setTxError(parseRevertReason(e));
     setTxStatus(TxStatus.Rejected);
     return false;
   }

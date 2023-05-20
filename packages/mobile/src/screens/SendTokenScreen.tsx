@@ -37,9 +37,11 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
     loadMyTokens,
     transferOrMint,
     transferOrMintTxStatus,
+    transferOrMintTxError,
     resetTransferOrMintTxStatus,
     resetSetAmbassadorTxStatus,
     setAmbassadorTxStatus,
+    setAmbassadorTxError,
     setAmbassador,
   } = useEdconContract();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -268,7 +270,11 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
         <TxModal
           isVisible={modalVisible}
           title="Transaction rejected"
-          description="You have rejected the transaction in the wallet"
+          description={
+            transferOrMintTxError ??
+            setAmbassadorTxError ??
+            'You have rejected the transaction in the wallet'
+          }
           image={require('../assets/errorOccured.png')}
           onRequestClose={() => setModalVisible(!modalVisible)}
           secondaryButton="Close"

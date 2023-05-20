@@ -15,8 +15,13 @@ import { BusinessInfo, TxStatus } from '../contexts/MonteqContractContext/Monteq
 const RemovingMyBusiness: React.FC = memo(() => {
   const isFocused = useIsFocused();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-  const { myBusiness, removeBusiness, removeBusinessTxStatus, resetRemoveBusinessTxStatus } =
-    useMonteqContract();
+  const {
+    myBusiness,
+    removeBusiness,
+    removeBusinessTxStatus,
+    removeBusinessTxError,
+    resetRemoveBusinessTxStatus,
+  } = useMonteqContract();
 
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -120,7 +125,7 @@ const RemovingMyBusiness: React.FC = memo(() => {
         <TxModal
           isVisible={modalVisible}
           title="Transaction rejected"
-          description="You have rejected the transaction in the wallet"
+          description={removeBusinessTxError ?? 'You have rejected the transaction in the wallet'}
           image={require('../assets/errorOccured.png')}
           onRequestClose={() => setModalVisible(!modalVisible)}
           primaryButton="Retry"
