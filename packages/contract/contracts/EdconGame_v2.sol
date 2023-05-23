@@ -209,6 +209,7 @@ contract EdconGame {
             ambassadorRank[a][tokenId] != 0 || a == tokenInfos[tokenId].creator;
     }
 
+    // ToDo: cover this function with tests!
     function processKarmaKicks(
         address from,
         address to,
