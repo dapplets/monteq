@@ -19,9 +19,10 @@ import SvgComponentUserDefault from '../icons/SVGUserDefault';
 
 export type NavigationType = {
   path: string;
+  isCamera?:boolean
 };
 
-const Navigation = ({ path }: NavigationType) => {
+const Navigation = ({ path,isCamera }: NavigationType) => {
   const { disconnect } = useWallet();
   const { scan } = useCamera();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -92,7 +93,7 @@ const Navigation = ({ path }: NavigationType) => {
         children={path === 'help' ? <SvgComponentHowActive /> : <SvgComponentHowDefault />}
       />
       <TouchableHighlight
-        style={styles.scanButton}
+        style={isCamera?styles.scanButtonCamera:styles.scanButton}
         underlayColor="transparent"
         activeOpacity={0.5}
         onPress={handleGmsScanPress}>
@@ -151,6 +152,18 @@ const styles = StyleSheet.create({
     zIndex: 101,
     padding: 5,
   },
+  scanButtonCamera:{
+    width: 70,
+    height: 70,
+    backgroundColor: '#000',
+    display: 'flex',
+
+    marginBottom: 50,
+    borderRadius: 45,
+    zIndex: 101,
+    padding: 5,
+  },
+
   scanButtonImg: {
     marginTop: '5%',
     zIndex: 20,
