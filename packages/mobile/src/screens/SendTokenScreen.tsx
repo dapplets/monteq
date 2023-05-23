@@ -23,6 +23,7 @@ import TokenBlock from '../components/TokenBlock';
 import TxModal, { TxStatusType } from '../components/TxModal';
 import { useEdconContract } from '../contexts/EdconContractContext';
 import { TokenId, TxStatus } from '../contexts/EdconContractContext/EdconContractContext';
+import TxStatusModal from '../components/TxStatusModal';
 
 type Props = {
   route: RouteProp<{ params: { parsedQrCode: ParsedEDCON2023Code } }, 'params'>;
@@ -236,68 +237,23 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
 
       {!modalVisible ? <Navigation path="Payment" /> : null}
 
-      {transferOrMintTxStatus === TxStatus.Sending || setAmbassadorTxStatus === TxStatus.Sending ? (
-        <TxModal
-          isVisible={modalVisible}
-          title="Transaction signing"
-          status="Signing"
-          type={TxStatusType.Yellow}
-          image={require('../assets/inProgress.png')}
-          recipientId={parsedQrCode.user!}
-          // date={new Date(parsedQrCode.createdAt).toLocaleString()}
-          // fiatAmount={parsedQrCode.currencyReceipt}
-          onRequestClose={() => setModalVisible(!modalVisible)}
-        />
-      ) : null}
+      <TxStatusModal
+        isVisible={modalVisible}
+        recipientId={parsedQrCode.user!}
+        onClose={handleCloseButtonPress}
+        onRetry={handleSendTokensPress}
+        error={transferOrMintTxError}
+        txStatus={transferOrMintTxStatus}
+      />
 
-      {transferOrMintTxStatus === TxStatus.Mining || setAmbassadorTxStatus === TxStatus.Mining ? (
-        <TxModal
-          isVisible={modalVisible}
-          title="Transaction sent"
-          status="Mining"
-          type={TxStatusType.Yellow}
-          image={require('../assets/inProgress.png')}
-          recipientId={parsedQrCode.user!}
-          // date={new Date(parsedQrCode.createdAt).toLocaleString()}
-          // fiatAmount={parsedQrCode.currencyReceipt}
-          onRequestClose={() => setModalVisible(!modalVisible)}
-        />
-      ) : null}
-
-      {transferOrMintTxStatus === TxStatus.Done || setAmbassadorTxStatus === TxStatus.Done ? (
-        <TxModal
-          isVisible={modalVisible}
-          title="Transaction sent"
-          status="Confirmed"
-          type={TxStatusType.Green}
-          image={require('../assets/confirmed.png')}
-          recipientId={parsedQrCode.user!}
-          // date={new Date(parsedQrCode.createdAt).toLocaleString()}
-          // fiatAmount={parsedQrCode.currencyReceipt}
-          onRequestClose={() => setModalVisible(!modalVisible)}
-          primaryButton="Close"
-          onPrimaryButtonPress={() => handleCloseButtonPress()}
-        />
-      ) : null}
-
-      {transferOrMintTxStatus === TxStatus.Rejected ||
-      transferOrMintTxStatus === TxStatus.Failed ||
-      setAmbassadorTxStatus === TxStatus.Failed ||
-      setAmbassadorTxStatus === TxStatus.Rejected ? (
-        <TxModal
-          isVisible={modalVisible}
-          title="Transaction rejected"
-          description={
-            transferOrMintTxError ??
-            setAmbassadorTxError ??
-            'You have rejected the transaction in the wallet'
-          }
-          image={require('../assets/errorOccured.png')}
-          onRequestClose={() => setModalVisible(!modalVisible)}
-          secondaryButton="Close"
-          onSecondaryButtonPress={() => handleCloseError()}
-        />
-      ) : null}
+      <TxStatusModal
+        isVisible={modalVisible}
+        recipientId={parsedQrCode.user!}
+        onClose={handleCloseButtonPress}
+        onRetry={handleSetAnAmbassadorRank}
+        error={setAmbassadorTxError}
+        txStatus={setAmbassadorTxStatus}
+      />
     </>
   );
 });

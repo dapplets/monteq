@@ -11,6 +11,7 @@ import Title from '../components/TitlePage';
 import TxModal, { TxStatusType } from '../components/TxModal';
 import { useMonteqContract } from '../contexts/MonteqContractContext';
 import { BusinessInfo, TxStatus } from '../contexts/MonteqContractContext/MonteqContractContext';
+import TxStatusModal from '../components/TxStatusModal';
 
 const RemovingMyBusiness: React.FC = memo(() => {
   const isFocused = useIsFocused();
@@ -38,6 +39,7 @@ const RemovingMyBusiness: React.FC = memo(() => {
   }, [isFocused, resetRemoveBusinessTxStatus]);
 
   async function handleCloseButtonPress() {
+    setModalVisible(false);
     navigation.navigate('MyBusiness');
   }
 
@@ -79,61 +81,15 @@ const RemovingMyBusiness: React.FC = memo(() => {
 
       {!modalVisible ? <Navigation path="home" /> : null}
 
-      {removeBusinessTxStatus === TxStatus.Sending ? (
-        <TxModal
-          isVisible={modalVisible}
-          title="Transaction signing"
-          status="Signing"
-          type={TxStatusType.Yellow}
-          image={require('../assets/inProgress.png')}
-          recipientId={savedMyBusiness.id}
-          recipientName={savedMyBusiness.name}
-          onRequestClose={() => setModalVisible(!modalVisible)}
-        />
-      ) : null}
-
-      {removeBusinessTxStatus === TxStatus.Mining ? (
-        <TxModal
-          isVisible={modalVisible}
-          title="Transaction sent"
-          status="Mining"
-          type={TxStatusType.Yellow}
-          image={require('../assets/inProgress.png')}
-          recipientId={savedMyBusiness.id}
-          recipientName={savedMyBusiness.name}
-          onRequestClose={() => setModalVisible(!modalVisible)}
-        />
-      ) : null}
-
-      {removeBusinessTxStatus === TxStatus.Done ? (
-        <TxModal
-          isVisible={modalVisible}
-          title="Transaction sent"
-          status="Confirmed"
-          type={TxStatusType.Green}
-          image={require('../assets/confirmed.png')}
-          recipientId={savedMyBusiness.id}
-          recipientName={savedMyBusiness.name}
-          onRequestClose={() => setModalVisible(!modalVisible)}
-          primaryButton="Close"
-          onPrimaryButtonPress={handleCloseButtonPress}
-        />
-      ) : null}
-
-      {removeBusinessTxStatus === TxStatus.Rejected ||
-      removeBusinessTxStatus === TxStatus.Failed ? (
-        <TxModal
-          isVisible={modalVisible}
-          title="Transaction rejected"
-          description={removeBusinessTxError ?? 'You have rejected the transaction in the wallet'}
-          image={require('../assets/errorOccured.png')}
-          onRequestClose={() => setModalVisible(!modalVisible)}
-          primaryButton="Retry"
-          onPrimaryButtonPress={handleSendPress}
-          secondaryButton="Close"
-          onSecondaryButtonPress={handleCloseButtonPress}
-        />
-      ) : null}
+      <TxStatusModal
+        isVisible={modalVisible}
+        recipientId={savedMyBusiness.id}
+        recipientName={savedMyBusiness.name}
+        onClose={handleCloseButtonPress}
+        onRetry={handleSendPress}
+        error={removeBusinessTxError}
+        txStatus={removeBusinessTxStatus}
+      />
     </>
   );
 });

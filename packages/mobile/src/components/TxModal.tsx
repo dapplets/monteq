@@ -27,7 +27,7 @@ export enum TxStatusType {
   Yellow,
 }
 
-type Props = {
+export type TxModalProps = {
   title: string;
   description?: string;
   status?: string;
@@ -46,7 +46,7 @@ type Props = {
   onSecondaryButtonPress?: () => void;
 };
 
-const TxModal: React.FC<Props> = ({
+const TxModal: React.FC<TxModalProps> = ({
   title,
   description,
   status,
@@ -65,7 +65,7 @@ const TxModal: React.FC<Props> = ({
   onSecondaryButtonPress,
 }) => {
   return (
-    <Modal transparent visible={isVisible} onRequestClose={onRequestClose}>
+    <Modal transparent visible={isVisible} animationType="slide" onRequestClose={onRequestClose}>
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
           <Title isCenter label={title} />

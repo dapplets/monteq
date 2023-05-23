@@ -21,6 +21,7 @@ import Title from '../components/TitlePage';
 import TxModal, { TxStatusType } from '../components/TxModal';
 import { useMonteqContract } from '../contexts/MonteqContractContext';
 import { BusinessInfo, TxStatus } from '../contexts/MonteqContractContext/MonteqContractContext';
+import TxStatusModal from '../components/TxStatusModal';
 
 type Props = {
   route: RouteProp<
@@ -249,69 +250,18 @@ const TxScreen: React.FC<Props> = memo(({ route }) => {
 
       {!modalVisible ? <Navigation path="Payment" /> : null}
 
-      {paymentTxStatus === TxStatus.Sending ? (
-        <TxModal
-          isVisible={modalVisible}
-          title="Transaction signing"
-          status="Signing"
-          type={TxStatusType.Yellow}
-          image={require('../assets/inProgress.png')}
-          recipientId={parsedReceipt.businessId}
-          recipientName={businessInfo.name}
-          date={new Date(parsedReceipt.createdAt).toLocaleString()}
-          fiatAmount={parsedReceipt.currencyReceipt}
-          cryptoAmount={amountInCrypto}
-          onRequestClose={() => setModalVisible(!modalVisible)}
-        />
-      ) : null}
-
-      {paymentTxStatus === TxStatus.Mining ? (
-        <TxModal
-          isVisible={modalVisible}
-          title="Transaction sent"
-          status="Mining"
-          type={TxStatusType.Yellow}
-          image={require('../assets/inProgress.png')}
-          recipientId={parsedReceipt.businessId}
-          recipientName={businessInfo.name}
-          date={new Date(parsedReceipt.createdAt).toLocaleString()}
-          fiatAmount={parsedReceipt.currencyReceipt}
-          cryptoAmount={amountInCrypto}
-          onRequestClose={() => setModalVisible(!modalVisible)}
-        />
-      ) : null}
-
-      {paymentTxStatus === TxStatus.Done ? (
-        <TxModal
-          isVisible={modalVisible}
-          title="Transaction sent"
-          status="Confirmed"
-          type={TxStatusType.Green}
-          image={require('../assets/confirmed.png')}
-          recipientId={parsedReceipt.businessId}
-          recipientName={businessInfo.name}
-          date={new Date(parsedReceipt.createdAt).toLocaleString()}
-          fiatAmount={parsedReceipt.currencyReceipt}
-          cryptoAmount={amountInCrypto}
-          onRequestClose={() => setModalVisible(!modalVisible)}
-          primaryButton="Close"
-          onPrimaryButtonPress={handleCloseButtonPress}
-        />
-      ) : null}
-
-      {paymentTxStatus === TxStatus.Rejected || paymentTxStatus === TxStatus.Failed ? (
-        <TxModal
-          isVisible={modalVisible}
-          title="Transaction rejected"
-          description={paymentTxError ?? 'You have rejected the transaction in the wallet'}
-          image={require('../assets/errorOccured.png')}
-          onRequestClose={() => setModalVisible(!modalVisible)}
-          primaryButton="Retry"
-          onPrimaryButtonPress={handleSendPress}
-          secondaryButton="Close"
-          onSecondaryButtonPress={handleCloseButtonPress}
-        />
-      ) : null}
+      <TxStatusModal
+        isVisible={modalVisible}
+        recipientId={parsedReceipt.businessId}
+        recipientName={businessInfo.name}
+        date={new Date(parsedReceipt.createdAt).toLocaleString()}
+        fiatAmount={parsedReceipt.currencyReceipt}
+        cryptoAmount={amountInCrypto}
+        onClose={handleCloseButtonPress}
+        onRetry={handleSendPress}
+        error={paymentTxError}
+        txStatus={paymentTxStatus}
+      />
     </>
   );
 });
