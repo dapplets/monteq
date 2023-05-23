@@ -16,21 +16,21 @@ export type PaymentInfoType = {
 
 const PaymentInfo = ({ price, title, convert, isTokens }: PaymentInfoType) => {
   return (
-    <View style={styles.PaymentWrapper}>
-      <Text style={styles.PaymentTitle}>{title}</Text>
-      <View style={styles.PaymentPrice}>
+    <View style={styles.paymentWrapper}>
+      <Text style={styles.paymentTitle}>{title}</Text>
+      <View style={styles.paymentPrice}>
         <Text style={styles.priceTitle}>{price}</Text>
         <Text style={styles.priceSubtitle}>{isTokens ? 'tokens' : `${BASE_CRYPTO_CURRENCY}`}</Text>
       </View>
       {convert ? (
         <>
-          <View style={styles.PaymentConvert}>
+          <View style={styles.paymentConvert}>
             <Text style={styles.convertEUR}>{convert.convertEUR}</Text>
             <Text style={styles.convertCurrensy}>=</Text>
             <Text style={styles.convertCurrensy}>{convert.convertCurrency}</Text>
           </View>
-          <View style={styles.PaymentDescription}>
-            <Text style={styles.DescriptionText}>
+          <View style={styles.paymentDescription}>
+            <Text style={styles.descriptionText}>
               Always get consent from the recepient before you pay in crypto.
             </Text>
           </View>
@@ -41,7 +41,7 @@ const PaymentInfo = ({ price, title, convert, isTokens }: PaymentInfoType) => {
 };
 
 const styles = StyleSheet.create({
-  PaymentWrapper: {
+  paymentWrapper: {
     width: '100%',
     display: 'flex',
     flexDirection: 'column',
@@ -54,14 +54,14 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 10,
   },
-  PaymentTitle: {
+  paymentTitle: {
     color: '#919191',
     fontSize: 12,
     lineHeight: 14,
     marginBottom: 10,
     fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoRegular,
   },
-  PaymentPrice: {
+  paymentPrice: {
     width: '100%',
     display: 'flex',
     flexDirection: 'row',
@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     marginBottom: 6,
     fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
-  PaymentConvert: {
+  paymentConvert: {
     width: '100%',
     display: 'flex',
     flexDirection: 'row',
@@ -110,11 +110,11 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoRegular,
   },
-  PaymentDescription: {
+  paymentDescription: {
     marginTop: 10,
     width: '60%',
   },
-  DescriptionText: {
+  descriptionText: {
     fontSize: 12,
     lineHeight: 14,
     color: '#919191',

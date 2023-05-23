@@ -73,14 +73,14 @@ export const Splash = ({ isAppReady }: { isAppReady: boolean }) => {
   if (state === HIDDEN) return null;
 
   return (
-    <Animated.View collapsable={false} style={[style.container, { opacity: containerOpacity }]}>
+    <Animated.View collapsable={false} style={[style.containerWithSplashScreen, { opacity: containerOpacity }]}>
       <Animated.Image
         source={require('~/assets/splash.png')}
         fadeDuration={0}
         onLoad={() => {
           setState(FADE_IN_IMAGE);
         }}
-        style={[style.image, { opacity: imageOpacity }]}
+        style={[style.imageWithSplashScreen, { opacity: imageOpacity }]}
         resizeMode="contain"
       />
     </Animated.View>
@@ -88,13 +88,13 @@ export const Splash = ({ isAppReady }: { isAppReady: boolean }) => {
 };
 
 const style = StyleSheet.create({
-  container: {
+  containerWithSplashScreen: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: '#E0B9BB',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  image: {
+  imageWithSplashScreen: {
     width: 250,
     height: 250,
   },

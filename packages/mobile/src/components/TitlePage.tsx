@@ -10,14 +10,14 @@ export type TitleType = {
 
 const Title = ({ label, isCenter }: TitleType) => {
   return (
-    <View style={isCenter ? styles.TextWrapperCenter : styles.TextWrapper}>
-      <Text style={styles.TitleText}>{label}</Text>
+    <View style={isCenter ? styles.textWrapperCenterTitle : styles.textWrapperTitle}>
+      <Text style={styles.titleText}>{label}</Text>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  TextWrapper: {
+  textWrapperTitle: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
     paddingLeft: 0,
     paddingTop: 0,
   },
-  TextWrapperCenter: {
+  textWrapperCenterTitle: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
     height: 60,
     paddingLeft: 0,
   },
-  TitleText: {
+  titleText: {
     fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
     color: '#222222',
     fontWeight: '600',

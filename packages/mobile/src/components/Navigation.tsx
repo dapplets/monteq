@@ -80,7 +80,7 @@ const Navigation = ({ path }: NavigationType) => {
   }
 
   return (
-    <View style={styles.NavigationWrapper}>
+    <View style={styles.navigationWrapper}>
       <ButtonNavigationDefault
         onPress={navigationMyBusiness}
         isActive={path === 'home'}
@@ -113,7 +113,7 @@ const Navigation = ({ path }: NavigationType) => {
 };
 
 const styles = StyleSheet.create({
-  NavigationWrapper: {
+  navigationWrapper: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -127,7 +127,6 @@ const styles = StyleSheet.create({
     borderTopStartRadius: 10,
     paddingStart: Platform.OS === 'ios' || Platform.OS === 'web' ? 21 : 11,
     paddingEnd: 21,
-    // paddingBottom: Platform.OS === 'ios' || Platform.OS === 'web' ? 10 : 0,
     bottom: 0,
     left: 0,
     shadowColor: '#000',
@@ -155,8 +154,6 @@ const styles = StyleSheet.create({
     marginTop: '5%',
     zIndex: 20,
     alignSelf: 'center',
-    // marginLeft:'auto',
-    // marginRight:'auto',
     width: 70,
     height: 70,
   },

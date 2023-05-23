@@ -56,7 +56,7 @@ const InfoScreen = () => {
   if (isOutHistoryLoading && outHistory.length === 0) {
     return (
       <>
-        <View style={styles.CenterContentWrapper}>
+        <View style={styles.centerContentWrapperInfoScreen}>
           <ActivityIndicator size="large" color="#919191" />
         </View>
         <Navigation path="user" />
@@ -66,24 +66,24 @@ const InfoScreen = () => {
 
   return (
     <>
-      <View style={styles.InfoScreenWrapper}>
+      <View style={styles.infoScreenWrapperInfoScreen}>
         {!isOutHistoryLoading && outHistory.length === 0 ? (
           <>
-            <View style={styles.wrapperTitle}>
+            <View style={styles.wrapperTitleInfoScreen}>
               <Title label="Payment history" />
               <TouchableHighlight
                 underlayColor="transparent"
                 onPress={openShareModal}
                 activeOpacity={0.5}
-                style={styles.share}>
+                style={styles.shareInfoScreen}>
                 <Image
-                  style={styles.shareImg}
+                  style={styles.shareImgInfoScreen}
                   resizeMode="contain"
                   source={require('../assets/share.png')}
                 />
               </TouchableHighlight>
             </View>
-            <View style={styles.nameParameters}>
+            <View style={styles.nameParametersInfoScreen}>
               <TextInput
                 ref={userNameInputRef}
                 numberOfLines={1}
@@ -91,27 +91,27 @@ const InfoScreen = () => {
                 value={userName}
                 maxLength={20}
                 onChangeText={changeUserName}
-                style={styles.Value}
+                style={styles.valueInfoScreen}
               />
               <TouchableHighlight
                 underlayColor="transparent"
                 onPress={handleEditUserNamePress}
                 activeOpacity={0.5}
-                style={styles.share}>
+                style={styles.shareInfoScreen}>
                 <Image
-                  style={styles.shareImg}
+                  style={styles.shareImgInfoScreen}
                   resizeMode="contain"
                   source={require('../assets/edit.png')}
                 />
               </TouchableHighlight>
             </View>
-            <View style={styles.CenterContentWrapper}>
+            <View style={styles.centerContentWrapperInfoScreen}>
               <Image
                 resizeMode="contain"
-                style={styles.BusinessImg}
+                style={styles.businessImgInfoScreen}
                 source={require('../assets/Lines.png')}
               />
-              <Text style={styles.DescriptionText}>
+              <Text style={styles.descriptionTextInfoScreen}>
                 No history of outgoing transactions associated to your wallet right now.
               </Text>
             </View>
@@ -121,21 +121,21 @@ const InfoScreen = () => {
         {/* ToDo: duplication of code below */}
         {outHistory.length > 0 ? (
           <>
-            <View style={styles.wrapperTitle}>
+            <View style={styles.wrapperTitleInfoScreen}>
               <Title label="Payment history" />
               <TouchableHighlight
                 underlayColor="transparent"
                 onPress={openShareModal}
                 activeOpacity={0.5}
-                style={styles.share}>
+                style={styles.shareInfoScreen}>
                 <Image
-                  style={styles.shareImg}
+                  style={styles.shareImgInfoScreen}
                   resizeMode="contain"
                   source={require('../assets/share.png')}
                 />
               </TouchableHighlight>
             </View>
-            <View style={styles.nameParameters}>
+            <View style={styles.nameParametersInfoScreen}>
               <TextInput
                 ref={userNameInputRef}
                 numberOfLines={1}
@@ -143,15 +143,15 @@ const InfoScreen = () => {
                 value={userName}
                 maxLength={20}
                 onChangeText={changeUserName}
-                style={styles.Value}
+                style={styles.valueInfoScreen}
               />
               <TouchableHighlight
                 underlayColor="transparent"
                 onPress={handleEditUserNamePress}
                 activeOpacity={0.5}
-                style={styles.share}>
+                style={styles.shareInfoScreen}>
                 <Image
-                  style={styles.shareImg}
+                  style={styles.shareImgInfoScreen}
                   resizeMode="contain"
                   source={require('../assets/edit.png')}
                 />
@@ -202,14 +202,14 @@ const InfoScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  InfoScreenWrapper: {
+  infoScreenWrapperInfoScreen: {
     display: 'flex',
     width: '100%',
     height: '100%',
     padding: 10,
     marginBottom: 60,
   },
-  CenterContentWrapper: {
+  centerContentWrapperInfoScreen: {
     flex: 1,
     width: '100%',
     height: '100%',
@@ -217,7 +217,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: 100,
   },
-  GeneralPay: {
+  generalPayInfoScreen: {
     display: 'flex',
     flexDirection: 'column',
     width: '100%',
@@ -228,14 +228,14 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     padding: 10,
   },
-  GeneralPayLabel: {
+  generalPayLabelInfoScreen: {
     fontWeight: '400',
     fontSize: 11,
     lineHeight: 13,
     color: '#777777',
     fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoRegular,
   },
-  AmountBlock: {
+  amountBlockInfoScreen: {
     width: '100%',
     display: 'flex',
     flexDirection: 'row',
@@ -243,14 +243,14 @@ const styles = StyleSheet.create({
     marginTop: 7,
     marginBottom: 7,
   },
-  GeneralPayAmount: {
+  generalPayAmountInfoScreen: {
     fontWeight: '700',
     fontSize: 28,
     lineHeight: 33,
     color: '#222222',
     fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
-  GeneralPayAmountSubtitle: {
+  generalPayAmountSubtitleInfoScreen: {
     fontWeight: '700',
     fontSize: 14,
     lineHeight: 17,
@@ -260,19 +260,19 @@ const styles = StyleSheet.create({
     marginBottom: 4,
     fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
-  TipsBlock: {
+  tipsBlockInfoScreen: {
     display: 'flex',
     flexDirection: 'row',
     height: 13,
   },
-  TipsSubtitle: {
+  tipsSubtitleInfoScreen: {
     fontWeight: '400',
     fontSize: 11,
     lineHeight: 13,
     color: '#777777',
     fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoRegular,
   },
-  TipsAmount: {
+  tipsAmountInfoScreen: {
     fontWeight: '700',
     fontSize: 11,
     lineHeight: 13,
@@ -281,7 +281,7 @@ const styles = StyleSheet.create({
     marginRight: 3,
     fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
-  listHistory: {
+  listHistoryInfoScreen: {
     display: 'flex',
     flexDirection: 'column',
     width: '100%',
@@ -295,7 +295,7 @@ const styles = StyleSheet.create({
     marginBottom: 70,
     marginTop: 10,
   },
-  BusinessImg: {
+  businessImgInfoScreen: {
     width: 174,
     height: 158,
     marginLeft: 'auto',
@@ -303,7 +303,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 20,
   },
-  DescriptionText: {
+  descriptionTextInfoScreen: {
     fontSize: 12,
     lineHeight: 14,
     color: '#919191',
@@ -313,7 +313,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoRegular,
   },
-  wrapperTitle: {
+  wrapperTitleInfoScreen: {
     display: 'flex',
     width: '100%',
     paddingRight: 25,
@@ -321,16 +321,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  share: {
+  shareInfoScreen: {
     backgroundColor: 'transparent',
     width: 24,
     height: 24,
   },
-  shareImg: {
+  shareImgInfoScreen: {
     width: 24,
     height: 24,
   },
-  nameParameters: {
+  nameParametersInfoScreen: {
     display: 'flex',
     width: '100%',
     flexDirection: 'row',
@@ -340,7 +340,7 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 10,
   },
-  Value: {
+  valueInfoScreen: {
     fontSize: 14,
     lineHeight: 16,
     fontWeight: '400',

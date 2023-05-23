@@ -50,9 +50,9 @@ const HowUse = ({}: HowUseProps) => {
 
   return (
     <>
-      <ScrollView style={styles.InfoScreenWrapper}>
+      <ScrollView style={styles.infoScreenWrapperHowUse}>
         {isConnected ? <Title label="How it works?" /> : null}
-        <SvgComponentHowBgMain style={isConnected ? styles.mainBg : styles.mainBgNoConnect} />
+        <SvgComponentHowBgMain style={isConnected ? styles.mainBgHowUse : styles.mainBgNoConnectHowUse} />
         {info.map((x, i) => {
           return (
             <InfoUseItem
@@ -71,9 +71,9 @@ const HowUse = ({}: HowUseProps) => {
         <TouchableHighlight
           underlayColor="#3B99FC"
           activeOpacity={0.5}
-          style={styles.back}
+          style={styles.backHowUse}
           onPress={navigationConnect}>
-          <Text style={styles.backText}>Back</Text>
+          <Text style={styles.backTextHowUse}>Back</Text>
         </TouchableHighlight>
       )}
     </>
@@ -81,12 +81,12 @@ const HowUse = ({}: HowUseProps) => {
 };
 
 const styles = StyleSheet.create({
-  wrapperBlock: {
+  wrapperBlockHowUse: {
     height: '100%',
     width: '100%',
   },
 
-  InfoScreenWrapper: {
+  infoScreenWrapperHowUse: {
     display: 'flex',
     width: '100%',
     height: '150%',
@@ -96,16 +96,16 @@ const styles = StyleSheet.create({
     marginBottom: 60,
     flexGrow: 1,
   },
-  mainBg: {
+  mainBgHowUse: {
     marginLeft: 'auto',
     marginRight: 'auto',
   },
-  mainBgNoConnect: {
+  mainBgNoConnectHowUse: {
     marginLeft: 'auto',
     marginRight: 'auto',
     marginTop: 20,
   },
-  back: {
+  backHowUse: {
     position: 'absolute',
     display: 'flex',
     justifyContent: 'center',
@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     alignSelf: 'center',
   },
-  backText: {
+  backTextHowUse: {
     fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
     fontSize: 14,
     lineHeight: 16,

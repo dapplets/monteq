@@ -21,21 +21,21 @@ const formatedDate = (_time: string) => {
 
 const HistoryPay = ({ time, company, amount }: HistoryPayType) => {
   return (
-    <View style={styles.HistoryWrapper}>
-      <SvgComponentPay style={styles.ImgHistory} />
-      <View style={styles.HistoryPayBlock}>
+    <View style={styles.historyWrapper}>
+      <SvgComponentPay style={styles.imgHistory} />
+      <View style={styles.historyPayBlock}>
         <View style={styles.topRow}>
-          <Text style={styles.HistoryAmount}>{amount}</Text>
-          <Text style={styles.time}>{formatedDate(time)}</Text>
+          <Text style={styles.historyAmount}>{amount}</Text>
+          <Text style={styles.timeHistory}>{formatedDate(time)}</Text>
         </View>
-        <Text style={styles.company}>{company}</Text>
+        <Text style={styles.companyHistory}>{company}</Text>
       </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  HistoryWrapper: {
+  historyWrapper: {
     width: '100%',
     display: 'flex',
     flexDirection: 'row',
@@ -50,13 +50,13 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     paddingRight: 10,
   },
-  ImgHistory: {
+  imgHistory: {
     width: 24,
     height: 24,
     marginTop: 'auto',
     marginBottom: 'auto',
   },
-  HistoryPayBlock: {
+  historyPayBlock: {
     display: 'flex',
     flexDirection: 'column',
     width: 'auto',
@@ -68,21 +68,21 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
     flex: 1,
   },
-  HistoryAmount: {
+  historyAmount: {
     fontWeight: '700',
     fontSize: 14,
     lineHeight: 16,
     color: '#222222',
     fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
-  company: {
+  companyHistory: {
     fontWeight: '400',
     fontSize: 10,
     lineHeight: 12,
     color: '#919191',
     fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoRegular,
   },
-  time: {
+  timeHistory: {
     fontWeight: '400',
     fontSize: 10,
     lineHeight: 12,

@@ -47,11 +47,11 @@ const MainButton = memo(
 
     return (
       <TouchableHighlight
-        style={[styles.mainbutton, mainButtonStyle]}
+        style={[styles.mainButton, mainButtonStyle]}
         underlayColor="#2261a5"
         onPress={onPress}>
         <>
-          <Image style={styles.mainbuttonChild} resizeMode="cover" source={image} />
+          <Image style={styles.mainButtonChild} resizeMode="cover" source={image} />
           <Text style={styles.startWithWalletconnect}>{startWithWalletConnect}</Text>
         </>
       </TouchableHighlight>
@@ -60,7 +60,7 @@ const MainButton = memo(
 );
 
 const styles = StyleSheet.create({
-  mainbuttonChild: {
+  mainButtonChild: {
     width: 40,
     height: 40,
     overflow: 'hidden',
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     marginLeft: 10,
   },
-  mainbutton: {
+  mainButton: {
     alignSelf: 'stretch',
     borderRadius: Border.br_31xl,
     backgroundColor: Color.dodgerblue,

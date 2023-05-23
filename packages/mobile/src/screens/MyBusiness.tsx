@@ -118,7 +118,7 @@ const MyBusiness = () => {
   if (isMyBusinessLoading || (isInHistoryLoading && inHistory.length === 0)) {
     return (
       <>
-        <View style={styles.CenterContentWrapper}>
+        <View style={styles.centerContentWrapperMyBusiness}>
           <ActivityIndicator size="large" color="#919191" />
         </View>
         <Navigation path="home" />
@@ -131,18 +131,18 @@ const MyBusiness = () => {
       {myBusiness ? (
         <>
           {inHistory.length === 0 ? (
-            <View style={styles.CenterContentWrapper}>
+            <View style={styles.centerContentWrapperMyBusiness}>
               <Image
                 resizeMode="contain"
-                style={styles.BusinessImg}
+                style={styles.businessImgMyBusiness}
                 source={require('../assets/Lines.png')}
               />
-              <Text style={styles.DescriptionText}>
+              <Text style={styles.descriptionTextMyBusiness}>
                 No history of incoming transactions associated to your business right now.
               </Text>
             </View>
           ) : (
-            <View style={styles.InfoScreenWrapper}>
+            <View style={styles.infoScreenWrapperMyBusiness}>
               <Title label="Owner’s View" />
 
               <FlatList
@@ -176,9 +176,9 @@ const MyBusiness = () => {
                     <TouchableHighlight
                       underlayColor="#ca3131"
                       activeOpacity={0.5}
-                      style={styles.buttonRemove}
+                      style={styles.buttonRemoveMyBusiness}
                       onPress={handleGmsScanPressBusinessRemoving}>
-                      <Text style={styles.buttonRemoveText}>Remove my business</Text>
+                      <Text style={styles.buttonRemoveTextMyBusiness}>Remove my business</Text>
                     </TouchableHighlight>
                   </>
                 }
@@ -211,34 +211,34 @@ const MyBusiness = () => {
         </>
       ) : (
         <>
-          <View style={styles.InfoScreenWrapper}>
+          <View style={styles.infoScreenWrapperMyBusiness}>
             <Title label="Owner’s View" />
             <SwitchBlock
               parameters="Always start from business page"
               onPress={handleRememberSwitch}
               isPress={isRemember}
             />
-            <View style={styles.CenterContentWrapper}>
+            <View style={styles.centerContentWrapperMyBusiness}>
               <Image
                 resizeMode="contain"
-                style={styles.BusinessImg}
+                style={styles.businessImgMyBusiness}
                 source={require('../assets/Lines.png')}
               />
-              <Text style={styles.DescriptionText}>
+              <Text style={styles.descriptionTextMyBusiness}>
                 No business is associated with this wallet right now. Connect a business to start
                 getting paid in cryptocurrency or log in with the right wallet.
               </Text>
               <LinearGradient
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
-                style={styles.linearGradient}
+                style={styles.linearGradientMyBusiness}
                 colors={['#0dd977', '#1da4ac', '#14c48c']}>
                 <TouchableHighlight
                   underlayColor="#1da4ac"
                   activeOpacity={0.5}
-                  style={styles.buttonSend}
+                  style={styles.buttonSendMyBusiness}
                   onPress={handleGmsScanPressBusiness}>
-                  <Text style={styles.buttonText}>Connect my business</Text>
+                  <Text style={styles.buttonTextMyBusiness}>Connect my business</Text>
                 </TouchableHighlight>
               </LinearGradient>
             </View>
@@ -251,7 +251,7 @@ const MyBusiness = () => {
 };
 
 const styles = StyleSheet.create({
-  InfoScreenWrapper: {
+  infoScreenWrapperMyBusiness: {
     display: 'flex',
     width: '100%',
     height: '100%',
@@ -259,7 +259,7 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 60,
   },
-  CenterContentWrapper: {
+  centerContentWrapperMyBusiness: {
     flex: 1,
     width: '100%',
     height: '100%',
@@ -267,7 +267,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: 100,
   },
-  timeNavigation: {
+  timeNavigationMyBusiness: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
@@ -278,7 +278,7 @@ const styles = StyleSheet.create({
     paddingRight: 20,
     marginBottom: 'auto',
   },
-  list: {
+  listMyBusiness: {
     display: 'flex',
     flexDirection: 'column',
     width: '100%',
@@ -292,23 +292,23 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 60,
   },
-  wrapperBorder: {},
-  clockIcon: {},
-  iconLayout: {},
-  logOutWrapper: {},
-  linearGradient: {
+  wrapperBorderMyBusiness: {},
+  clockIconMyBusiness: {},
+  iconLayoutMyBusiness: {},
+  logOutWrapperMyBusiness: {},
+  linearGradientMyBusiness: {
     display: 'flex',
     borderRadius: 50,
     width: '100%',
   },
-  buttonText: {
+  buttonTextMyBusiness: {
     fontSize: 14,
     fontWeight: '700',
     lineHeight: 16,
     color: '#ffffff',
     fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
-  buttonSend: {
+  buttonSendMyBusiness: {
     backgroundColor: 'transparent',
     width: '100%',
     height: 48,
@@ -318,7 +318,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 50,
   },
-  buttonRemove: {
+  buttonRemoveMyBusiness: {
     backgroundColor: '#FF3E3E',
     width: '100%',
     height: 48,
@@ -328,7 +328,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 50,
   },
-  buttonRemoveText: {
+  buttonRemoveTextMyBusiness: {
     fontSize: 14,
     fontWeight: '700',
     lineHeight: 16,
@@ -338,7 +338,7 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
-  BusinessImg: {
+  businessImgMyBusiness: {
     width: 174,
     height: 158,
     marginLeft: 'auto',
@@ -346,7 +346,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 20,
   },
-  DescriptionText: {
+  descriptionTextMyBusiness: {
     fontSize: 12,
     lineHeight: 14,
     color: '#919191',

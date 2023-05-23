@@ -15,19 +15,19 @@ const WelcomeScreen = () => {
   }
 
   return (
-    <View style={styles.initiallogin}>
-      <View style={styles.bg}>
-        <Image style={styles.bg} resizeMode="cover" source={require('../assets/appbg.png')} />
-        <Image style={styles.qIcon} resizeMode="contain" source={require('../assets/q.png')} />
+    <View style={styles.initialLoginWelcomeScreen}>
+      <View style={styles.bgWelcomeScreen}>
+        <Image style={styles.bgWelcomeScreen} resizeMode="cover" source={require('../assets/appbg.png')} />
+        <Image style={styles.qIconWelcomeScreen} resizeMode="contain" source={require('../assets/q.png')} />
       </View>
-      <View style={[styles.monteqLogo1Wrapper, styles.mainbuttonParentFlexBox]}>
+      <View style={[styles.monteqLogo1WrapperWelcomeScreen, styles.mainButtonParentFlexBoxWelcomeScreen]}>
         <Image
-          style={styles.monteqLogo1}
+          style={styles.monteqLogo1WelcomeScreen}
           resizeMode="center"
           source={require('../assets/monteq-logo-1.png')}
         />
       </View>
-      <View style={[styles.mainbuttonParent, styles.mainbuttonParentFlexBox]}>
+      <View style={[styles.mainButtonParentWelcomeScreen, styles.mainButtonParentFlexBoxWelcomeScreen]}>
         <MainButton
           onPress={handleWalletConnectPress}
           image={require('../assets/walletconnect.png')}
@@ -40,12 +40,12 @@ const WelcomeScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  mainbuttonParentFlexBox: {
+  mainButtonParentFlexBoxWelcomeScreen: {
     justifyContent: 'center',
     alignItems: 'center',
     position: 'absolute',
   },
-  mainbuttonFlexBox: {
+  mainButtonFlexBoxWelcomeScreen: {
     paddingVertical: 0,
     paddingHorizontal: Padding.p_xl,
     flexDirection: 'row',
@@ -56,17 +56,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     overflow: 'hidden',
   },
-  howItWorksTypo: {
+  howItWorksTypoWelcomeScreen: {
     textAlign: 'left',
     fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
     fontWeight: '700',
     fontSize: FontSize.semibold_size,
   },
-  bg: {
+  bgWelcomeScreen: {
     width: '100%',
     height: '100%',
   },
-  qIcon: {
+  qIconWelcomeScreen: {
     width: '200%',
     height: '200%',
     position: 'absolute',
@@ -74,41 +74,41 @@ const styles = StyleSheet.create({
     left: '-63%',
     zIndex: 0,
   },
-  monteqLogo1: {
+  monteqLogo1WelcomeScreen: {
     width: 236,
     height: 100,
   },
-  monteqLogo1Wrapper: {
+  monteqLogo1WrapperWelcomeScreen: {
     width: '100%',
     height: '100%',
   },
-  mainbuttonChild: {
+  mainButtonChildWelcomeScreen: {
     width: 40,
     height: 40,
     overflow: 'hidden',
   },
-  startWithWalletconnect: {
+  startWithWalletconnectWelcomeScreen: {
     color: Color.white,
     marginLeft: 10,
   },
-  mainbutton: {
+  mainButtonWelcomeScreen: {
     backgroundColor: Color.dodgerblue,
   },
-  howItWorks: {
+  howItWorksWelcomeScreen: {
     textDecorationLine: 'underline',
     color: Color.gray_300,
   },
-  mainbutton1: {
+  mainButton1WelcomeScreen: {
     marginTop: 10,
   },
-  mainbuttonParent: {
+  mainButtonParentWelcomeScreen: {
     marginLeft: -133.5,
     bottom: 0,
     width: 267,
     padding: Padding.p_3xs,
     left: '50%',
   },
-  initiallogin: {
+  initialLoginWelcomeScreen: {
     borderRadius: Border.br_9xs,
     backgroundColor: Color.whitesmoke,
     flex: 1,

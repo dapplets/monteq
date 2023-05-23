@@ -69,9 +69,9 @@ const CameraComponent: FC<Props> = ({ onQrCodeFound, onCanceled, onError }) => {
 
   return (
     <>
-      <View style={styles.container}>
+      <View style={styles.containerCamera}>
         <Camera
-          style={styles.container}
+          style={styles.containerCamera}
           onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
           barCodeScannerSettings={{
             barCodeTypes: [BarCodeScanner.Constants.BarCodeType.qr],
@@ -87,7 +87,7 @@ const CameraComponent: FC<Props> = ({ onQrCodeFound, onCanceled, onError }) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
+  containerCamera: {
     height: '100%',
     aspectRatio: 1,
     alignSelf: 'center',

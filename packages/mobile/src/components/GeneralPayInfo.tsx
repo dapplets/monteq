@@ -21,18 +21,18 @@ const GeneralPayInfo = ({
   TipsSubtitleRight,
 }: GeneralPayInfoType) => {
   return (
-    <View style={styles.GeneralPay}>
-      <Text style={styles.GeneralPayLabel}>{title}</Text>
-      <View style={styles.AmountBlock}>
-        <Text style={styles.GeneralPayAmount}>{generalPayAmount}</Text>
-        <Text style={styles.GeneralPayAmountSubtitle}>{generalPayAmountSubtitle}</Text>
+    <View style={styles.generalPay}>
+      <Text style={styles.generalPayLabel}>{title}</Text>
+      <View style={styles.amountBlock}>
+        <Text style={styles.generalPayAmount}>{generalPayAmount}</Text>
+        <Text style={styles.generalPayAmountSubtitle}>{generalPayAmountSubtitle}</Text>
       </View>
       {TipsAmount ? (
-        <View style={styles.TipsBlock}>
-          {TipsSubtitleLeft ? <Text style={styles.TipsSubtitle}>{TipsSubtitleLeft}</Text> : null}
+        <View style={styles.tipsBlock}>
+          {TipsSubtitleLeft ? <Text style={styles.tipsSubtitle}>{TipsSubtitleLeft}</Text> : null}
 
-          <Text style={styles.TipsAmount}>{TipsAmount}</Text>
-          {TipsSubtitleRight ? <Text style={styles.TipsSubtitle}>{TipsSubtitleRight}</Text> : null}
+          <Text style={styles.tipsAmount}>{TipsAmount}</Text>
+          {TipsSubtitleRight ? <Text style={styles.tipsSubtitle}>{TipsSubtitleRight}</Text> : null}
         </View>
       ) : null}
     </View>
@@ -40,7 +40,7 @@ const GeneralPayInfo = ({
 };
 
 const styles = StyleSheet.create({
-  GeneralPay: {
+  generalPay: {
     display: 'flex',
     flexDirection: 'column',
 
@@ -53,14 +53,14 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     padding: 10,
   },
-  GeneralPayLabel: {
+  generalPayLabel: {
     fontWeight: '400',
     fontSize: 11,
     lineHeight: 13,
     color: '#777777',
     fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoRegular,
   },
-  AmountBlock: {
+  amountBlock: {
     width: '100%',
     display: 'flex',
     flexDirection: 'row',
@@ -68,14 +68,14 @@ const styles = StyleSheet.create({
     marginTop: 5,
     marginBottom: 5,
   },
-  GeneralPayAmount: {
+  generalPayAmount: {
     fontWeight: '700',
     fontSize: 28,
     lineHeight: 33,
     color: '#222222',
     fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
-  GeneralPayAmountSubtitle: {
+  generalPayAmountSubtitle: {
     fontWeight: '700',
     fontSize: 14,
     lineHeight: 17,
@@ -85,19 +85,19 @@ const styles = StyleSheet.create({
     marginBottom: 4,
     fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
-  TipsBlock: {
+  tipsBlock: {
     display: 'flex',
     flexDirection: 'row',
     height: 13,
   },
-  TipsSubtitle: {
+  tipsSubtitle: {
     fontWeight: '400',
     fontSize: 11,
     lineHeight: 13,
     color: '#777777',
     fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoRegular,
   },
-  TipsAmount: {
+  tipsAmount: {
     fontWeight: '700',
     fontSize: 11,
     lineHeight: 13,

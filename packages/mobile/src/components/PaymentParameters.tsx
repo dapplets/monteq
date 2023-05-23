@@ -11,15 +11,15 @@ export type PaymentParametersType = {
 
 const PaymentParameters: React.FC<PaymentParametersType> = ({ parameters, value, isGray }) => {
   return (
-    <View style={isGray ? styles.PaymentParametersGray : styles.PaymentParameters}>
-      <Text style={styles.Parameters}>{parameters}</Text>
-      <Text style={styles.Value}>{value}</Text>
+    <View style={isGray ? styles.paymentParametersGray : styles.paymentParameters}>
+      <Text style={styles.parametersPayment}>{parameters}</Text>
+      <Text style={styles.valuePayment}>{value}</Text>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  PaymentParameters: {
+  paymentParameters: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     borderRadius: 4,
   },
-  PaymentParametersGray: {
+  paymentParametersGray: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -41,14 +41,14 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     borderRadius: 4,
   },
-  Parameters: {
+  parametersPayment: {
     fontSize: 14,
     lineHeight: 17,
     fontWeight: '400',
     color: '#222222',
     fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoRegular,
   },
-  Value: {
+  valuePayment: {
     fontSize: 14,
     lineHeight: 17,
     fontWeight: '600',

@@ -34,36 +34,14 @@ const ShareModal: React.FC<Props> = ({
   const qrCodeUrl = makeShareUrl(account, username);
   const ref = React.useRef();
 
-  // const copyToClipboard = async () => {
-  //   await Clipboard.setStringAsync(qrCodeUrl);
-  // };
-
   return (
     <Modal animationType="slide" transparent visible={isVisible} onRequestClose={onRequestClose}>
-      <View style={styles.centeredView}>
-        <View style={styles.modalView}>
-          {/* <TouchableHighlight
-            underlayColor="transparent"
-            activeOpacity={0.5}
-            onPress={copyToClipboard}
-            style={styles.Title}>
-            <Text>Tap to copy</Text>
-          </TouchableHighlight> */}
+      <View style={styles.centeredViewShareModal}>
+        <View style={styles.modalViewShareModal}>
           <QRCode getRef={ref as any} size={200} value={qrCodeUrl} />
 
           {username ? (
-            // todo: only ios or android
-            // <LinearGradient
-            //   style={styles.linearGradientText}
-            //   colors={["#0dd977", "#1da4ac", "#14c48c"]}
-            //   start={{ x: 0, y: 0 }}
-            //   end={{ x: 1, y: 0 }}
-            // >
-            //   <Text {...props} style={[styles.name, { opacity: 0 }]}>
-            //     {username}
-            //   </Text>
-            // </LinearGradient>
-            <Text {...props} style={styles.name}>
+            <Text {...props} style={styles.nameShareModal}>
               {username}
             </Text>
           ) : null}
@@ -71,14 +49,14 @@ const ShareModal: React.FC<Props> = ({
           <LinearGradient
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
-            style={styles.linearGradient}
+            style={styles.linearGradientShareModal}
             colors={['#0dd977', '#1da4ac', '#14c48c']}>
             <TouchableHighlight
               underlayColor="#1da4ac"
               activeOpacity={0.5}
-              style={styles.primaryButton}
+              style={styles.primaryButtonShareModal}
               onPress={onRequestClose}>
-              <Text style={styles.primaryButtonText}>Close</Text>
+              <Text style={styles.primaryButtonTextShareModal}>Close</Text>
             </TouchableHighlight>
           </LinearGradient>
         </View>
@@ -88,13 +66,13 @@ const ShareModal: React.FC<Props> = ({
 };
 
 const styles = StyleSheet.create({
-  centeredView: {
+  centeredViewShareModal: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 22,
   },
-  modalView: {
+  modalViewShareModal: {
     width: 240,
     margin: 0,
     backgroundColor: 'white',
@@ -110,20 +88,13 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
-  Title: {
-    fontFamily: FontFamily.robotoRegular,
-    color: '#999999',
-    marginBottom: 20,
-    fontSize: 14,
-    backgroundColor: 'transparent',
-  },
-  linearGradient: {
+  linearGradientShareModal: {
     display: 'flex',
     borderRadius: 50,
     width: 200,
     marginTop: 10,
   },
-  primaryButton: {
+  primaryButtonShareModal: {
     backgroundColor: 'transparent',
     width: 200,
     height: 48,
@@ -133,7 +104,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 50,
   },
-  primaryButtonText: {
+  primaryButtonTextShareModal: {
     fontSize: 14,
     fontWeight: '700',
     lineHeight: 16,
@@ -141,7 +112,7 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontFamily: FontFamily.robotoBold,
   },
-  name: {
+  nameShareModal: {
     fontFamily: FontFamily.robotoBold,
     fontSize: 20,
     lineHeight: 23,
@@ -149,20 +120,6 @@ const styles = StyleSheet.create({
     // todo: only web
     color: '#1da4ac',
     marginTop: 10,
-  },
-  linearGradientText: {
-    display: 'flex',
-
-    justifyContent: 'center',
-    flexDirection: 'row',
-  },
-  maskStyle: {
-    marginTop: 10,
-    display: 'flex',
-    justifyContent: 'center',
-    flexDirection: 'row',
-    marginLeft: 'auto',
-    marginRight: 10,
   },
 });
 

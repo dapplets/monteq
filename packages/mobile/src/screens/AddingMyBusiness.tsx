@@ -54,9 +54,9 @@ const AddingMyBusiness: React.FC<Props> = memo(({ route }) => {
 
   return (
     <>
-      <View style={styles.InfoScreenWrapper}>
+      <View style={styles.infoScreenWrapperAddingMyBusiness}>
         <Title label="Adding my business" />
-        <View style={styles.PayInfo}>
+        <View style={styles.payInfoAddingMyBusiness}>
           <CompanyParameters
             parameters="Company"
             value={nameCompany}
@@ -76,15 +76,15 @@ const AddingMyBusiness: React.FC<Props> = memo(({ route }) => {
         <LinearGradient
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
-          style={styles.linearGradient}
+          style={styles.linearGradientAddingMyBusiness}
           colors={['#0dd977', '#1da4ac', '#14c48c']}>
           <TouchableHighlight
             underlayColor="#1da4ac"
             activeOpacity={0.5}
             disabled={nameCompany.length === 0}
-            style={styles.buttonSend}
+            style={styles.buttonSendAddingMyBusiness}
             onPress={handleSendPress}>
-            <Text style={styles.buttonText}>It's me. Add the business!</Text>
+            <Text style={styles.buttonTextAddingMyBusiness}>It's me. Add the business!</Text>
           </TouchableHighlight>
         </LinearGradient>
       </View>
@@ -105,18 +105,18 @@ const AddingMyBusiness: React.FC<Props> = memo(({ route }) => {
 });
 
 const styles = StyleSheet.create({
-  InfoScreenWrapper: {
+  infoScreenWrapperAddingMyBusiness: {
     display: 'flex',
     width: '100%',
     height: '100%',
     padding: 10,
   },
-  linearGradient: {
+  linearGradientAddingMyBusiness: {
     display: 'flex',
     borderRadius: 50,
     width: '100%',
   },
-  buttonText: {
+  buttonTextAddingMyBusiness: {
     fontSize: 14,
     fontWeight: '700',
     lineHeight: 16,
@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontFamily: FontFamily.robotoBold,
   },
-  buttonSend: {
+  buttonSendAddingMyBusiness: {
     backgroundColor: 'transparent',
     width: '100%',
     height: 48,
@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 50,
   },
-  PayInfo: {
+  payInfoAddingMyBusiness: {
     display: 'flex',
     flexDirection: 'column',
     width: '100%',

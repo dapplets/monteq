@@ -8,13 +8,15 @@ export type CheckboxType = {
 
 const Checkbox = ({ onPress, isChecked }: CheckboxType) => {
   return (
-    <View style={styles.container}>
-      <Pressable style={isChecked ? styles.label : styles.labelDefault} onPress={onPress}>
+    <View style={styles.containerCheckbox}>
+      <Pressable
+        style={isChecked ? styles.labelCheckbox : styles.labelCheckboxDefault}
+        onPress={onPress}>
         {isChecked ? (
           <Image
             resizeMode="cover"
             source={require('../assets/checked.png')}
-            style={styles.ImgCheckbox}
+            style={styles.imgCheckbox}
           />
         ) : null}
       </Pressable>
@@ -23,16 +25,16 @@ const Checkbox = ({ onPress, isChecked }: CheckboxType) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
+  containerCheckbox: {
     width: 16,
     height: 16,
     borderRadius: 2,
   },
-  ImgCheckbox: {
+  imgCheckbox: {
     width: 8,
     height: 5,
   },
-  label: {
+  labelCheckbox: {
     backgroundColor: '#14C58B',
     width: '100%',
     height: '100%',
@@ -41,7 +43,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  labelDefault: {
+  labelCheckboxDefault: {
     backgroundColor: '#fff',
     borderStyle: 'solid',
     borderWidth: 1,

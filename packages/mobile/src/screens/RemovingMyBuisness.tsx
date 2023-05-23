@@ -60,12 +60,12 @@ const RemovingMyBusiness: React.FC = memo(() => {
 
   return (
     <>
-      <View style={styles.InfoScreenWrapper}>
-        <View style={styles.wrapperTitle}>
+      <View style={styles.infoScreenWrapperRemovingMyBusiness}>
+        <View style={styles.wrapperTitleRemovingMyBusiness}>
           <Title label="Removing my business" />
         </View>
 
-        <View style={styles.PayInfo}>
+        <View style={styles.payInfoRemovingMyBusiness}>
           <PaymentParameters parameters="Business unit" value={savedMyBusiness.id} />
           <PaymentParameters parameters="Business name" value={savedMyBusiness.name} />
         </View>
@@ -73,9 +73,9 @@ const RemovingMyBusiness: React.FC = memo(() => {
         <TouchableHighlight
           underlayColor="#ca3131"
           activeOpacity={0.5}
-          style={styles.buttonRemove}
+          style={styles.buttonRemoveRemovingMyBusiness}
           onPress={handleSendPress}>
-          <Text style={styles.buttonRemoveText}>Remove my business</Text>
+          <Text style={styles.buttonRemoveTextRemovingMyBusiness}>Remove my business</Text>
         </TouchableHighlight>
       </View>
 
@@ -95,22 +95,22 @@ const RemovingMyBusiness: React.FC = memo(() => {
 });
 
 const styles = StyleSheet.create({
-  InfoScreenWrapper: {
+  infoScreenWrapperRemovingMyBusiness: {
     display: 'flex',
     width: '100%',
     height: '100%',
     padding: 10,
   },
-  wrapperTitle: {
+  wrapperTitleRemovingMyBusiness: {
     display: 'flex',
     width: '100%',
   },
-  linearGradient: {
+  linearGradientRemovingMyBusiness: {
     display: 'flex',
     borderRadius: 50,
     width: '100%',
   },
-  buttonRemove: {
+  buttonRemoveRemovingMyBusiness: {
     backgroundColor: '#FF3E3E',
     width: '100%',
     height: 48,
@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 50,
   },
-  buttonRemoveText: {
+  buttonRemoveTextRemovingMyBusiness: {
     fontSize: 14,
     fontWeight: '700',
     lineHeight: 16,
@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
-  PayInfo: {
+  payInfoRemovingMyBusiness: {
     display: 'flex',
     flexDirection: 'column',
     width: '100%',
