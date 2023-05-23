@@ -13,16 +13,13 @@ import {
 } from './MonteqContractContext';
 import MONTEQ_ABI from '../../abis/MonteQ.json';
 import {
-  BASE_CRYPTO_MAX_DIGITS,
   CHAIN_ID,
-  COINGECKO_CRYPTO_CURRENCY_ID,
-  COINGECKO_FIAT_CURRENCY_ID,
-  COINGECKO_PRICE_URL,
   JSON_RPC_URL,
   MONTEQ_CONTRACT_ADDRESS,
   WC_SESSION_PARAMS,
 } from '../../common/constants';
-import { parseRevertReason, truncate } from '../../common/helpers';
+import { parseRevertReason } from '../../common/helpers';
+import { useCoingecko } from '../../hooks/useCoingecko';
 import { useWallet } from '../WalletContext';
 
 const { formatUnits, parseUnits, parseEther, formatEther } = ethers.utils;
@@ -33,13 +30,12 @@ type Props = {
 
 const MonteqContractProvider: FC<Props> = ({ children }) => {
   const { provider: writeEip1193 } = useWallet();
+  const { rate, isRateLoading } = useCoingecko();
 
   const [contract, setContract] = useState<ethers.Contract | null>(null);
   const [balance, setBalance] = useState<ParsedUint>(contextDefaultValues.balance);
   const [account, setAccount] = useState<string>(contextDefaultValues.account);
   const [isBalanceLoading, setIsBalanceLoading] = useState(false);
-  const [rate, setRate] = useState<ParsedUint>(contextDefaultValues.rate);
-  const [isRateLoading, setIsRateLoading] = useState(false);
   const [spentTotalCryptoAmount, setSpentTotalCryptoAmount] = useState(
     contextDefaultValues.spentTotalCryptoAmount
   );
@@ -67,32 +63,6 @@ const MonteqContractProvider: FC<Props> = ({ children }) => {
   const [paymentTxStatus, setPaymentTxStatus] = useState<TxStatus>(TxStatus.Idle);
   const [addBusinessTxStatus, setAddBusinessTxStatus] = useState<TxStatus>(TxStatus.Idle);
   const [removeBusinessTxStatus, setRemoveBusinessTxStatus] = useState<TxStatus>(TxStatus.Idle);
-
-  // ToDo: move to separate hook?
-  useEffect(() => {
-    (async () => {
-      setIsRateLoading(true);
-
-      try {
-        const resp = await fetch(COINGECKO_PRICE_URL);
-        const json = await resp.json();
-        const price = json[COINGECKO_CRYPTO_CURRENCY_ID][COINGECKO_FIAT_CURRENCY_ID];
-
-        if (isNaN(price)) {
-          throw new Error('Invalid price from CoinGecko received');
-        }
-
-        // 1 EUR = ??? XDAI
-        const reversedPrice = 1 / price;
-
-        setRate(truncate(reversedPrice.toString(), BASE_CRYPTO_MAX_DIGITS));
-      } catch (e) {
-        console.error(e);
-      }
-
-      setIsRateLoading(false);
-    })();
-  }, []);
 
   useEffect(() => {
     if (writeEip1193) {
