@@ -22,7 +22,7 @@ import Navigation from '../components/Navigation';
 import ShareModal from '../components/ShareModal';
 import Title from '../components/TitlePage';
 import { useMonteqContract } from '../contexts/MonteqContractContext';
-import { useUserName } from '../hooks/useUserName';
+import { useSettings } from '../hooks/useSettings';
 
 const InfoScreen = () => {
   const isFocused = useIsFocused();
@@ -34,7 +34,7 @@ const InfoScreen = () => {
     loadMoreOutHistory,
     isOutHistoryLoading,
   } = useMonteqContract();
-  const { userName, changeUserName } = useUserName();
+  const { userName, changeUserName } = useSettings();
   const userNameInputRef = React.useRef<any>();
 
   const [isModalShareVisible, setIsModalShareVisible] = useState(false);

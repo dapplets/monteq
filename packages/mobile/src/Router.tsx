@@ -1,8 +1,6 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
-import * as SplashScreen from 'expo-splash-screen';
 import React, { FC } from 'react';
-import { enableScreens } from 'react-native-screens';
 
 import { PAGE_TITLE } from './common/constants';
 import { ParsedReceipt, ParsedEDCON2023Code } from './common/parseReceipt';
@@ -20,10 +18,6 @@ import RemovingMyBusiness from './screens/RemovingMyBuisness';
 import SendTokenScreen from './screens/SendTokenScreen';
 import TxScreen from './screens/TxScreen';
 import WelcomeScreen from './screens/WelcomeScreen';
-
-SplashScreen.preventAutoHideAsync();
-
-enableScreens();
 
 export type RootStackParamList = {
   InfoScreen: undefined;
@@ -45,7 +39,7 @@ export type Props = {
 };
 
 const Router: FC<Props> = ({ initialRouteName }) => {
-  const { isConnected: isWalletConnected, provider } = useWallet();
+  const { isConnected: isWalletConnected } = useWallet();
 
   if (!isWalletConnected) {
     return (
