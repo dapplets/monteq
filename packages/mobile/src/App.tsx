@@ -1,18 +1,16 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNetInfo } from '@react-native-community/netinfo';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { SafeAreaView, StyleSheet, View } from 'react-native';
 import { enableScreens } from 'react-native-screens';
 
 import Router from './Router';
-import { IS_OWNER_VIEW_PREFERRED_KEY } from './common/constants';
 import { ParsedReceipt, ParsedEDCON2023Code } from './common/parseReceipt';
 import TxModal from './components/TxModal';
 import { BusinessInfo } from './contexts/MonteqContractContext/MonteqContractContext';
 import { WalletProvider } from './contexts/WalletContext';
+import { useSettings } from './hooks/useSettings';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -33,8 +31,7 @@ export type RootStackParamList = {
 
 function App() {
   const { isConnected: isInternetConnected } = useNetInfo();
-
-  const [initialRouteName, setInitialRouteName] = useState<string | null>(null);
+  const { isOwnerViewPreferred, isInitializing } = useSettings();
 
   const [fontsLoaded, error] = useFonts({
     roboto_black_italic: require('./assets/fonts/roboto_black_italic.ttf'),
@@ -51,26 +48,18 @@ function App() {
   });
 
   useEffect(() => {
-    // ToDo: move to separate hook?
     (async () => {
-      try {
-        const isOwnerViewPreferred = await AsyncStorage.getItem(IS_OWNER_VIEW_PREFERRED_KEY);
-
-        setInitialRouteName(isOwnerViewPreferred === 'true' ? 'MyBusiness' : 'InfoScreen');
-      } catch (e) {
-        console.error(e);
-        setInitialRouteName('InfoScreen');
-      } finally {
+      if (!isInitializing) {
         await SplashScreen.hideAsync();
       }
     })();
-  }, []);
+  }, [isInitializing]);
 
   // if (!fontsLoaded) {
   //   return null;
   // }
 
-  if (!isInternetConnected && initialRouteName) {
+  if (!isInternetConnected && !isInitializing) {
     return (
       <View>
         <TxModal
@@ -83,14 +72,14 @@ function App() {
     );
   }
 
-  if (!initialRouteName) {
+  if (isInitializing) {
     return null;
   }
 
   return (
     <SafeAreaView style={styles.containerApp}>
       <WalletProvider>
-        <Router initialRouteName={initialRouteName} />
+        <Router initialRouteName={isOwnerViewPreferred ? 'MyBusiness' : 'InfoScreen'} />
       </WalletProvider>
     </SafeAreaView>
   );

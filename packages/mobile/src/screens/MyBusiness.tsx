@@ -1,4 +1,3 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NavigationProp, useIsFocused, useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as React from 'react';
@@ -21,7 +20,6 @@ import {
   BASE_CRYPTO_MAX_DIGITS,
   BASE_FIAT_CURRENCY,
   BASE_FIAT_MAX_DIGITS,
-  IS_OWNER_VIEW_PREFERRED_KEY,
 } from '../common/constants';
 import { mulStr, truncate } from '../common/helpers';
 import { DomainType, parseQrCodeData } from '../common/parseReceipt';
@@ -32,6 +30,7 @@ import SwitchBlock from '../components/SwitchBlock';
 import Title from '../components/TitlePage';
 import { useCamera } from '../contexts/CameraContext';
 import { useMonteqContract } from '../contexts/MonteqContractContext';
+import { useSettings } from '../hooks/useSettings';
 
 const MyBusiness = () => {
   const { scan } = useCamera();
@@ -46,8 +45,8 @@ const MyBusiness = () => {
     myBusiness,
     isMyBusinessLoading,
   } = useMonteqContract();
+  const { isOwnerViewPreferred, changeIsOwnerViewPreferred } = useSettings();
 
-  const [isRemember, setIsRemember] = React.useState(false);
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   React.useEffect(() => {
@@ -55,29 +54,6 @@ const MyBusiness = () => {
       loadMoreInHistory();
     }
   }, [isFocused, loadMoreInHistory]);
-
-  React.useEffect(() => {
-    (async () => {
-      try {
-        // ToDo: move to separate hook?
-        const isOwnerViewPreferred = await AsyncStorage.getItem(IS_OWNER_VIEW_PREFERRED_KEY);
-        setIsRemember(isOwnerViewPreferred === 'true');
-      } catch (e) {
-        console.error(e);
-      }
-    })();
-  }, []);
-
-  async function handleRememberSwitch(value: boolean) {
-    setIsRemember(value);
-
-    try {
-      // ToDo: move to separate hook?
-      await AsyncStorage.setItem(IS_OWNER_VIEW_PREFERRED_KEY, value.toString());
-    } catch (e) {
-      console.error(e);
-    }
-  }
 
   async function handleGmsScanPressBusiness() {
     try {
@@ -170,8 +146,8 @@ const MyBusiness = () => {
                     />
                     <SwitchBlock
                       parameters="Always start from this page"
-                      onPress={handleRememberSwitch}
-                      isPress={isRemember}
+                      onPress={changeIsOwnerViewPreferred}
+                      isPress={isOwnerViewPreferred}
                     />
                     <TouchableHighlight
                       underlayColor="#ca3131"
@@ -215,8 +191,8 @@ const MyBusiness = () => {
             <Title label="Owner’s View" />
             <SwitchBlock
               parameters="Always start from business page"
-              onPress={handleRememberSwitch}
-              isPress={isRemember}
+              onPress={changeIsOwnerViewPreferred}
+              isPress={isOwnerViewPreferred}
             />
             <View style={styles.centerContentWrapperMyBusiness}>
               <Image
