@@ -67,44 +67,44 @@ const InfoScreen = () => {
   return (
     <>
       <View style={styles.infoScreenWrapperInfoScreen}>
+        <View style={styles.wrapperTitleInfoScreen}>
+          <Title label="Payment history" />
+          <TouchableHighlight
+            underlayColor="transparent"
+            onPress={openShareModal}
+            activeOpacity={0.5}
+            style={styles.shareInfoScreen}>
+            <Image
+              style={styles.shareImgInfoScreen}
+              resizeMode="contain"
+              source={require('../assets/share.png')}
+            />
+          </TouchableHighlight>
+        </View>
+        <View style={styles.nameParametersInfoScreen}>
+          <TextInput
+            ref={userNameInputRef}
+            numberOfLines={1}
+            placeholder="Enter your name"
+            value={userName}
+            maxLength={20}
+            onChangeText={changeUserName}
+            style={styles.valueInfoScreen}
+          />
+          <TouchableHighlight
+            underlayColor="transparent"
+            onPress={handleEditUserNamePress}
+            activeOpacity={0.5}
+            style={styles.shareInfoScreen}>
+            <Image
+              style={styles.shareImgInfoScreen}
+              resizeMode="contain"
+              source={require('../assets/edit.png')}
+            />
+          </TouchableHighlight>
+        </View>
         {!isOutHistoryLoading && outHistory.length === 0 ? (
           <>
-            <View style={styles.wrapperTitleInfoScreen}>
-              <Title label="Payment history" />
-              <TouchableHighlight
-                underlayColor="transparent"
-                onPress={openShareModal}
-                activeOpacity={0.5}
-                style={styles.shareInfoScreen}>
-                <Image
-                  style={styles.shareImgInfoScreen}
-                  resizeMode="contain"
-                  source={require('../assets/share.png')}
-                />
-              </TouchableHighlight>
-            </View>
-            <View style={styles.nameParametersInfoScreen}>
-              <TextInput
-                ref={userNameInputRef}
-                numberOfLines={1}
-                placeholder="Enter your name"
-                value={userName}
-                maxLength={20}
-                onChangeText={changeUserName}
-                style={styles.valueInfoScreen}
-              />
-              <TouchableHighlight
-                underlayColor="transparent"
-                onPress={handleEditUserNamePress}
-                activeOpacity={0.5}
-                style={styles.shareInfoScreen}>
-                <Image
-                  style={styles.shareImgInfoScreen}
-                  resizeMode="contain"
-                  source={require('../assets/edit.png')}
-                />
-              </TouchableHighlight>
-            </View>
             <View style={styles.centerContentWrapperInfoScreen}>
               <Image
                 resizeMode="contain"
@@ -121,42 +121,6 @@ const InfoScreen = () => {
         {/* ToDo: duplication of code below */}
         {outHistory.length > 0 ? (
           <>
-            <View style={styles.wrapperTitleInfoScreen}>
-              <Title label="Payment history" />
-              <TouchableHighlight
-                underlayColor="transparent"
-                onPress={openShareModal}
-                activeOpacity={0.5}
-                style={styles.shareInfoScreen}>
-                <Image
-                  style={styles.shareImgInfoScreen}
-                  resizeMode="contain"
-                  source={require('../assets/share.png')}
-                />
-              </TouchableHighlight>
-            </View>
-            <View style={styles.nameParametersInfoScreen}>
-              <TextInput
-                ref={userNameInputRef}
-                numberOfLines={1}
-                placeholder="Enter your name"
-                value={userName}
-                maxLength={20}
-                onChangeText={changeUserName}
-                style={styles.valueInfoScreen}
-              />
-              <TouchableHighlight
-                underlayColor="transparent"
-                onPress={handleEditUserNamePress}
-                activeOpacity={0.5}
-                style={styles.shareInfoScreen}>
-                <Image
-                  style={styles.shareImgInfoScreen}
-                  resizeMode="contain"
-                  source={require('../assets/edit.png')}
-                />
-              </TouchableHighlight>
-            </View>
             <GeneralPayInfo
               generalPayAmount={truncate(spentTotalCryptoAmount, BASE_CRYPTO_MAX_DIGITS)}
               title="Spent"
@@ -185,7 +149,6 @@ const InfoScreen = () => {
                   }
                 />
               )}
-              // ListFooterComponent={<View style={{ height: 30 }} />}
             />
           </>
         ) : null}

@@ -96,7 +96,6 @@ const Navigation = ({ path, isCamera }: NavigationType) => {
         underlayColor="transparent"
         activeOpacity={0.5}
         onPress={handleGmsScanPress}>
-        {/* <SvgComponentScan style={styles.scanButtonImg} /> */}
         <Image style={styles.scanButtonImg} source={require('../assets/circularButton.png')} />
       </TouchableHighlight>
       <ButtonNavigationDefault
