@@ -255,10 +255,6 @@ const styles = StyleSheet.create({
     marginRight: 10,
     fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
-  availableImgTxScreen: {
-    width: 20,
-    height: 20,
-  },
   payInfoTxScreen: {
     display: 'flex',
     flexDirection: 'column',
@@ -284,13 +280,13 @@ const styles = StyleSheet.create({
     lineHeight: 16,
     fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoRegular,
   },
-  // ToDo: code duplicated in TxModal.tsx
+
   linearGradientTxScreen: {
     display: 'flex',
     borderRadius: 50,
     width: '100%',
   },
-  // ToDo: code duplicated in TxModal.tsx
+
   buttonSendTxScreen: {
     backgroundColor: 'transparent',
     width: '100%',
@@ -301,7 +297,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 50,
   },
-  // ToDo: code duplicated in TxModal.tsx
+
   buttonTextTxScreen: {
     fontSize: 14,
     fontWeight: '700',

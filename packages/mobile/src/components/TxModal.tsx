@@ -211,13 +211,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '50%',
   },
-  valueStatusText: {
-    fontSize: 14,
-    lineHeight: 17,
-    fontWeight: '600',
-    color: '#EBC200',
-    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
-  },
+
   valueStatusTextTxModal: {
     fontSize: 14,
     lineHeight: 17,
@@ -240,7 +234,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#EBC200',
     marginLeft: 10,
   },
-  valueStatusTextOkGreenTxModal: {
+  valueStatusLabelOkTxModal: {
     width: 5,
     height: 5,
     borderRadius: 2.5,

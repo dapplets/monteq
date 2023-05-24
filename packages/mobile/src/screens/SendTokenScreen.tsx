@@ -276,8 +276,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 10,
   },
-
-  // ToDo: code duplicated in TxModal.tsx
   linearGradientSendTokenScreen: {
     display: 'flex',
     borderRadius: 50,
@@ -286,7 +284,7 @@ const styles = StyleSheet.create({
   disabledOpacitySendTokenScreen: {
     opacity: 0.6,
   },
-  // ToDo: code duplicated in TxModal.tsx
+
   buttonSendSendTokenScreen: {
     backgroundColor: 'transparent',
     width: '100%',
@@ -297,7 +295,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 50,
   },
-  // ToDo: code duplicated in TxModal.tsx
+
   buttonTextSendTokenScreen: {
     fontSize: 14,
     fontWeight: '700',

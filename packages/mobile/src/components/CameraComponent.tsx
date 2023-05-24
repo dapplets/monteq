@@ -85,7 +85,6 @@ const CameraComponent: FC<Props> = ({ onQrCodeFound, onCanceled, onError }) => {
             <SvgComponentCameraBorder style={styles.cameraBorderBottomLeft} />
             <SvgComponentCameraBorder style={styles.cameraBorderBottomRight} />
             <Camera
-              // style={styles.container}
               onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
               barCodeScannerSettings={{
                 barCodeTypes: [BarCodeScanner.Constants.BarCodeType.qr],

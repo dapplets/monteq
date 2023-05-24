@@ -104,11 +104,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     width: '100%',
   },
-  linearGradientRemovingMyBusiness: {
-    display: 'flex',
-    borderRadius: 50,
-    width: '100%',
-  },
+
   buttonRemoveRemovingMyBusiness: {
     backgroundColor: '#FF3E3E',
     width: '100%',
