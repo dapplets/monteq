@@ -1,4 +1,5 @@
-// import "./expo-crypto-shim.js"; // Only for Expo SDK 48+
+// import "@ethersproject/shims"; // shims for ethers.js https://docs.ethers.org/v5/cookbook/react-native/#cookbook-reactnative
+import "./expo-crypto-shim.js"; // Only for Expo SDK 48+
 // import "react-native-url-polyfill/auto.js";
 // import "@walletconnect/react-native-compat";
 // import "@ethersproject/shims";

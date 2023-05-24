@@ -1,67 +1,38 @@
-import { EthereumClient, w3mConnectors, w3mProvider } from '@web3modal/ethereum';
-import { Web3Modal, useWeb3Modal } from '@web3modal/react';
+import { Web3Modal, useWeb3Modal } from '@web3modal/react-native';
 import React, { FC, ReactElement, useMemo } from 'react';
-import { configureChains, createConfig, useAccount, useDisconnect, WagmiConfig } from 'wagmi';
 
 import { WalletContext, WalletContextState, contextDefaultValues } from './WalletContext';
-import { DEFAULT_CHAIN, WC_METADATA, WC_PROJECT_ID } from '../../common/constants';
+import { WC_METADATA, WC_PROJECT_ID } from '../../common/constants';
 
-const chains = [DEFAULT_CHAIN];
 const projectId = WC_PROJECT_ID;
-const metadata = WC_METADATA;
-
-const { publicClient } = configureChains(chains, [w3mProvider({ projectId })]);
-const wagmiConfig = createConfig({
-  autoConnect: true,
-  connectors: w3mConnectors({ projectId, version: 1, chains }),
-  publicClient,
-});
-const ethereumClient = new EthereumClient(wagmiConfig, chains);
+const providerMetadata = WC_METADATA;
 
 type Props = {
   children: ReactElement;
 };
 
-const WalletProviderChild: FC<Props> = ({ children }) => {
-  const { isConnected, connector } = useAccount();
-  const { disconnect } = useDisconnect();
-  const { open } = useWeb3Modal();
+const WalletProvider: FC<Props> = ({ children }) => {
+  const { open, provider, isConnected } = useWeb3Modal();
 
   const state: WalletContextState = useMemo(
     () => ({
       connect: () => open(),
-      disconnect: () => disconnect(),
-      provider: connector
+      disconnect: () => provider?.disconnect(),
+      provider: provider
         ? {
-            request: ({ method, params }) =>
-              connector
-                .getWalletClient()
-                // @ts-ignore
-                .then((x) => x.request({ method, params })),
+            request: provider.request.bind(provider),
           }
         : contextDefaultValues.provider,
-      isConnected: !!connector && isConnected,
+      isConnected: !!provider && isConnected,
     }),
-    [open, connector, disconnect, isConnected]
+    [open, provider, isConnected]
   );
 
   return (
     <WalletContext.Provider value={state}>
-      <Web3Modal
-        projectId={projectId}
-        ethereumClient={ethereumClient}
-        defaultChain={DEFAULT_CHAIN}
-      />
+      <Web3Modal projectId={projectId} providerMetadata={providerMetadata} />
       {children}
     </WalletContext.Provider>
-  );
-};
-
-const WalletProvider: FC<Props> = ({ children }) => {
-  return (
-    <WagmiConfig config={wagmiConfig}>
-      <WalletProviderChild>{children}</WalletProviderChild>
-    </WagmiConfig>
   );
 };
 
