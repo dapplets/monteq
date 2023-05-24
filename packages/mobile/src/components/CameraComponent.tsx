@@ -2,9 +2,14 @@ import { BarCodeScannedCallback, BarCodeScanner } from 'expo-barcode-scanner';
 import { Camera } from 'expo-camera';
 import * as Permissions from 'expo-permissions';
 import React, { FC, useState, useCallback } from 'react';
-import { BackHandler, View, StyleSheet } from 'react-native';
+import { BackHandler, View, StyleSheet, Text, Platform } from 'react-native';
 import ButtonNavigationDefault from './ButtonNavigationDefault';
 import SvgComponentExit from '../icons/SVGExitCamera';
+import Navigation from './Navigation';
+import { NavigationContainer } from '@react-navigation/native';
+import SvgComponentScanIcon from '../icons/SVGScanIcon';
+import { FontFamily } from '../GlobalStyles';
+import SvgComponentCameraBorder from '../icons/SVGCameraBorder';
 
 type Props = {
   onQrCodeFound: (data: string) => void;
@@ -20,9 +25,9 @@ const CameraComponent: FC<Props> = ({ onQrCodeFound, onCanceled, onError }) => {
     setTimeout(() => onCanceled(), 500); // ToDo: hack
     return true;
   }, [onCanceled]);
-  async function navigationUserHistory() {
-    onCanceled();
-  }
+  // async function navigationUserHistory() {
+  //   onCanceled();
+  // }
 
   const checkCameraPermission = useCallback(async () => {
     // Use Permissions instead of Camera to workaround the issue
@@ -70,17 +75,31 @@ const CameraComponent: FC<Props> = ({ onQrCodeFound, onCanceled, onError }) => {
   return (
     <>
       <View style={styles.container}>
-        <Camera
-          style={styles.container}
-          onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-          barCodeScannerSettings={{
-            barCodeTypes: [BarCodeScanner.Constants.BarCodeType.qr],
-          }}
-        />
+        <View style={styles.wrapperCamera}>
+          <View style={styles.containerDescription}>
+            <SvgComponentScanIcon />
+            <Text style={styles.containerDescriptionText}>Scan QR on your receipt</Text>
+          </View>
+          <View style={styles.containerCamera}>
+            <SvgComponentCameraBorder style={styles.cameraBorderTopLeft} />
+            <SvgComponentCameraBorder style={styles.cameraBorderTopRight} />
+            <SvgComponentCameraBorder style={styles.cameraBorderBottomLeft} />
+            <SvgComponentCameraBorder style={styles.cameraBorderBottomRight} />
+            <Camera
+              style={styles.container}
+              onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+              barCodeScannerSettings={{
+                barCodeTypes: [BarCodeScanner.Constants.BarCodeType.qr],
+              }}
+            />
+          </View>
+        </View>
       </View>
 
       <View style={styles.cameraScreenBtn}>
-        <ButtonNavigationDefault onPress={navigationUserHistory} children={<SvgComponentExit />} />
+        <NavigationContainer>
+          <Navigation isCamera path={'Camera'} />
+        </NavigationContainer>
       </View>
     </>
   );
@@ -89,13 +108,76 @@ const CameraComponent: FC<Props> = ({ onQrCodeFound, onCanceled, onError }) => {
 const styles = StyleSheet.create({
   container: {
     height: '100%',
+    width: '100%',
     aspectRatio: 1,
     alignSelf: 'center',
+    backgroundColor: '#000',
+    position: 'relative',
   },
+  wrapperCamera: {
+    margin: 'auto',
+    width: 250,
+    height: 305,
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  containerDescription: {
+    display: 'flex',
+    flexDirection: 'row',
+    width: 260,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  containerDescriptionText: {
+    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
+    fontWeight: '600',
+    fontSize: 20,
+    color: '#fff',
+  },
+  containerCamera: {
+    height: 250,
+    width: 250,
+    padding: 10,
+  },
+  cameraBorderTopLeft: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: 80,
+    height: 80,
+  },
+  cameraBorderTopRight: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    width: 80,
+    height: 80,
+    transform: [{ scaleX: -1 }],
+  },
+  cameraBorderBottomLeft: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    width: 80,
+    height: 80,
+    transform: [{ scaleY: -1 }],
+  },
+  cameraBorderBottomRight: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    width: 80,
+    height: 80,
+    transform: [{ scaleX: -1 }, { scaleY: -1 }],
+  },
+
   cameraScreenBtn: {
     position: 'absolute',
-    top: 10,
-    left: 10,
+    bottom: 0,
+    left: 0,
+    width: '100%',
   },
 });
 
