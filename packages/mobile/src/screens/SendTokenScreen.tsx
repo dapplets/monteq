@@ -146,14 +146,14 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
 
   return (
     <>
-      <ScrollView style={styles.InfoScreenWrapperSendToken}>
+      <ScrollView style={styles.infoScreenWrapperSendTokenSendTokenScreen}>
         <Title label="Sending tokens" />
         <PaymentInfo isTokens price={totalAmount().toString()} title="You are sending" />
 
         {areMyTokensLoading ? (
-          <ActivityIndicator style={styles.TokensLoader} size="large" color="#919191" />
+          <ActivityIndicator style={styles.tokensLoaderSendTokenScreen} size="large" color="#919191" />
         ) : (
-          <View style={styles.tokensBlock}>
+          <View style={styles.tokensBlockSendTokenScreen}>
             {myTokens.map((token) => (
               <TokenBlock
                 status={
@@ -162,22 +162,22 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
                 }
                 key={token.tokenId}
                 children={
-                  <View style={styles.imgTokenWrapper}>
+                  <View style={styles.imgTokenWrapperSendTokenScreen}>
                     {token.isAmbassador ? (
                       <Image
-                        style={styles.imgStar}
+                        style={styles.imgStarSendTokenScreen}
                         resizeMode="contain"
                         source={require('../assets/star.png')}
                       />
                     ) : null}
                     <Image
-                      style={styles.img}
+                      style={styles.imgSendTokenScreen}
                       resizeMode="contain"
                       source={{ uri: `${token.iconUrl}` }}
                     />
                     {tokenAmountsMap && tokenAmountsMap[`${token.tokenId}`] ? (
-                      <View style={styles.counter}>
-                        <Text style={styles.textCounter}>
+                      <View style={styles.counterSendTokenScreen}>
+                        <Text style={styles.textCounterSendTokenScreen}>
                           {tokenAmountsMap[`${token.tokenId}`]}
                         </Text>
                       </View>
@@ -193,7 +193,7 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
         )}
 
         {parsedQrCode.user ? (
-          <View style={styles.PayInfo}>
+          <View style={styles.payInfoSendTokenScreen}>
             <PaymentParameters parameters="Recipient" value={parsedQrCode.user} />
           </View>
         ) : null}
@@ -203,8 +203,8 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
           end={{ x: 1, y: 0 }}
           style={
             isSendTokensButtonDisabled
-              ? [styles.linearGradient, styles.disabledOpacity]
-              : [styles.linearGradient]
+              ? [styles.linearGradientSendTokenScreen, styles.disabledOpacitySendTokenScreen]
+              : [styles.linearGradientSendTokenScreen]
           }
           colors={['#0dd977', '#1da4ac', '#14c48c']}>
           <TouchableHighlight
@@ -212,14 +212,14 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
             activeOpacity={0.5}
             onPress={handleSendTokensPress}
             disabled={isSendTokensButtonDisabled}
-            style={styles.buttonSend}>
+            style={styles.buttonSendSendTokenScreen}>
             <>
               <Image
-                style={styles.imgBtnSend}
+                style={styles.imgBtnSendSendTokenScreen}
                 resizeMode="contain"
                 source={require('../assets/ok.png')}
               />
-              <Text style={styles.buttonText}>Send tokens</Text>
+              <Text style={styles.buttonTextSendTokenScreen}>Send tokens</Text>
             </>
           </TouchableHighlight>
         </LinearGradient>
@@ -228,9 +228,9 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
           <TouchableHighlight
             underlayColor="transparent"
             activeOpacity={0.5}
-            style={styles.buttonSendAmbassador}
+            style={styles.buttonSendAmbassadorSendTokenScreen}
             onPress={handleSetAnAmbassadorRank}>
-            <Text style={styles.buttonTextAmbassador}>Set an ambassador rank</Text>
+            <Text style={styles.buttonTextAmbassadorSendTokenScreen}>Set an ambassador rank</Text>
           </TouchableHighlight>
         ) : null}
       </ScrollView>
@@ -259,7 +259,7 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
 });
 
 const styles = StyleSheet.create({
-  InfoScreenWrapperSendToken: {
+  infoScreenWrapperSendTokenSendTokenScreen: {
     display: 'flex',
     width: '100%',
     height: '100%',
@@ -269,7 +269,7 @@ const styles = StyleSheet.create({
     zIndex: 2,
   },
 
-  PayInfo: {
+  payInfoSendTokenScreen: {
     display: 'flex',
     flexDirection: 'column',
     width: '100%',
@@ -281,16 +281,16 @@ const styles = StyleSheet.create({
   },
 
   // ToDo: code duplicated in TxModal.tsx
-  linearGradient: {
+  linearGradientSendTokenScreen: {
     display: 'flex',
     borderRadius: 50,
     width: '100%',
   },
-  disabledOpacity: {
+  disabledOpacitySendTokenScreen: {
     opacity: 0.6,
   },
   // ToDo: code duplicated in TxModal.tsx
-  buttonSend: {
+  buttonSendSendTokenScreen: {
     backgroundColor: 'transparent',
     width: '100%',
     height: 48,
@@ -301,7 +301,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
   },
   // ToDo: code duplicated in TxModal.tsx
-  buttonText: {
+  buttonTextSendTokenScreen: {
     fontSize: 14,
     fontWeight: '700',
     lineHeight: 16,
@@ -309,10 +309,10 @@ const styles = StyleSheet.create({
     fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
 
-  imgBtnSend: {
+  imgBtnSendSendTokenScreen: {
     marginRight: 5,
   },
-  buttonSendAmbassador: {
+  buttonSendAmbassadorSendTokenScreen: {
     display: 'flex',
     borderRadius: 50,
     width: '100%',
@@ -326,14 +326,14 @@ const styles = StyleSheet.create({
     borderColor: '#14C58B',
     marginTop: 10,
   },
-  buttonTextAmbassador: {
+  buttonTextAmbassadorSendTokenScreen: {
     fontSize: 14,
     fontWeight: '700',
     lineHeight: 16,
     color: '#14C58B',
     fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
-  tokensBlock: {
+  tokensBlockSendTokenScreen: {
     width: '100%',
     display: 'flex',
     flexDirection: 'row',
@@ -341,19 +341,19 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 10,
   },
-  imgTokenWrapper: {
+  imgTokenWrapperSendTokenScreen: {
     display: 'flex',
     width: 40,
     height: 40,
     borderRadius: 20,
     position: 'relative',
   },
-  img: {
+  imgSendTokenScreen: {
     width: 40,
     height: 40,
     borderRadius: 20,
   },
-  counter: {
+  counterSendTokenScreen: {
     position: 'absolute',
     width: 18,
     height: 18,
@@ -366,14 +366,14 @@ const styles = StyleSheet.create({
     top: 0,
     right: 0,
   },
-  textCounter: {
+  textCounterSendTokenScreen: {
     fontSize: 12,
     fontWeight: '700',
     lineHeight: 14,
     color: '#14C58B',
     fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
-  imgStar: {
+  imgStarSendTokenScreen: {
     position: 'absolute',
     width: 18,
     height: 18,
@@ -386,7 +386,7 @@ const styles = StyleSheet.create({
     left: -5,
     zIndex: 100,
   },
-  TokensLoader: {
+  tokensLoaderSendTokenScreen: {
     marginTop: 22,
     marginBottom: 22,
   },

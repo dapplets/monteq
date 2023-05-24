@@ -10,11 +10,11 @@ type ButtonNavigationDefaultType = {
 const ButtonNavigationDefault = memo(
   ({ onPress, children, isActive }: ButtonNavigationDefaultType) => {
     return (
-      <View style={isActive ? styles.buttonWrapperActive : styles.buttonWrapper}>
+      <View style={isActive ? styles.buttonWrapperActive : styles.buttonWrapperDefault}>
         <TouchableHighlight
           underlayColor="#14C58B"
           activeOpacity={0.5}
-          style={styles.logOutWrapper}
+          style={styles.logOutWrapperWelcome}
           onPress={onPress}>
           {children}
         </TouchableHighlight>
@@ -24,7 +24,7 @@ const ButtonNavigationDefault = memo(
 );
 
 const styles = StyleSheet.create({
-  buttonWrapper: {
+  buttonWrapperDefault: {
     borderRadius: 6,
     borderColor: '#ebebeb',
     flexDirection: 'row',
@@ -52,15 +52,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  clockIcon: {
-    overflow: 'hidden',
-  },
-  iconLayout: {
-    height: 24,
-    width: 24,
-    overflow: 'hidden',
-  },
-  logOutWrapper: {
+  logOutWrapperWelcome: {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',

@@ -12,8 +12,8 @@ export type SwitchBlockType = {
 
 const SwitchBlock: React.FC<SwitchBlockType> = ({ parameters, onPress, isPress }) => {
   return (
-    <View style={styles.PaymentParameters}>
-      <Text style={styles.Parameters}>{parameters}</Text>
+    <View style={styles.paymentParametersSwitchBlock}>
+      <Text style={styles.parametersSwitchBlock}>{parameters}</Text>
       <View>
         <CustomSwitch
           selectionMode={onPress}
@@ -27,7 +27,7 @@ const SwitchBlock: React.FC<SwitchBlockType> = ({ parameters, onPress, isPress }
 };
 
 const styles = StyleSheet.create({
-  PaymentParameters: {
+  paymentParametersSwitchBlock: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -38,19 +38,12 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     borderRadius: 4,
   },
-  Parameters: {
+  parametersSwitchBlock: {
     fontSize: 14,
     lineHeight: 17,
     fontWeight: '400',
     color: '#222222',
     fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoRegular,
-  },
-  Value: {
-    fontSize: 14,
-    lineHeight: 17,
-    fontWeight: '600',
-    color: '#222222',
-    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
 });
 

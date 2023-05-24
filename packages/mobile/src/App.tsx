@@ -88,7 +88,7 @@ function App() {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.containerApp}>
       <WalletProvider>
         <Router initialRouteName={initialRouteName} />
       </WalletProvider>
@@ -97,7 +97,7 @@ function App() {
 }
 
 const styles = StyleSheet.create({
-  container: {
+  containerApp: {
     flex: 1,
   },
 });

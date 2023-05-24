@@ -66,32 +66,34 @@ const TxModal: React.FC<TxModalProps> = ({
 }) => {
   return (
     <Modal transparent visible={isVisible} animationType="slide" onRequestClose={onRequestClose}>
-      <View style={styles.centeredView}>
-        <View style={styles.modalView}>
+      <View style={styles.centeredViewTxModal}>
+        <View style={styles.modalViewTxModal}>
           <Title isCenter label={title} />
 
           {image ? (
-            <Image resizeMode="contain" style={styles.TransactionImg} source={image} />
+            <Image resizeMode="contain" style={styles.transactionImgTxModal} source={image} />
           ) : null}
 
-          {description ? <Text style={styles.DescriptionText}>{description}</Text> : null}
+          {description ? <Text style={styles.descriptionTextTxModal}>{description}</Text> : null}
 
           {status !== undefined && type !== undefined ? (
-            <View style={styles.StatusBlock}>
-              <Text style={styles.ParametersStatus}>Status</Text>
+            <View style={styles.statusBlockTxModal}>
+              <Text style={styles.parametersStatusTxModal}>Status</Text>
 
-              <View style={styles.ValueStatus}>
+              <View style={styles.valueStatusTxModal}>
                 <Text
                   style={
-                    type === TxStatusType.Green ? styles.ValueStatusTextOk : styles.ValueStatusText
+                    type === TxStatusType.Green
+                      ? styles.valueStatusTextOkGreenTxModal
+                      : styles.valueStatusTextTxModal
                   }>
                   {status}
                 </Text>
                 <View
                   style={
                     type === TxStatusType.Green
-                      ? styles.ValueStatusLabelOk
-                      : styles.ValueStatusLabel
+                      ? styles.valueStatusLabelOkTxModal
+                      : styles.valueStatusLabelTxModal
                   }
                 />
               </View>
@@ -128,14 +130,14 @@ const TxModal: React.FC<TxModalProps> = ({
             <LinearGradient
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
-              style={styles.linearGradient}
+              style={styles.linearGradientTxModal}
               colors={['#0dd977', '#1da4ac', '#14c48c']}>
               <TouchableHighlight
                 underlayColor="#1da4ac"
                 activeOpacity={0.5}
-                style={styles.primaryButton}
+                style={styles.primaryButtonTxModal}
                 onPress={onPrimaryButtonPress}>
-                <Text style={styles.primaryButtonText}>{primaryButton}</Text>
+                <Text style={styles.primaryButtonTextTxModal}>{primaryButton}</Text>
               </TouchableHighlight>
             </LinearGradient>
           ) : null}
@@ -144,9 +146,9 @@ const TxModal: React.FC<TxModalProps> = ({
             <TouchableHighlight
               underlayColor="#F6F7F8"
               activeOpacity={0.5}
-              style={styles.secondaryButton}
+              style={styles.secondaryButtonTxModal}
               onPress={onSecondaryButtonPress}>
-              <Text style={styles.secondaryButtonText}>{secondaryButton}</Text>
+              <Text style={styles.secondaryButtonTextTxModal}>{secondaryButton}</Text>
             </TouchableHighlight>
           ) : null}
         </View>
@@ -156,13 +158,13 @@ const TxModal: React.FC<TxModalProps> = ({
 };
 
 const styles = StyleSheet.create({
-  centeredView: {
+  centeredViewTxModal: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 22,
   },
-  modalView: {
+  modalViewTxModal: {
     width: '90%',
     margin: 0,
     backgroundColor: 'white',
@@ -178,12 +180,12 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
-  TransactionImg: {
+  transactionImgTxModal: {
     width: 140,
     height: 70,
     marginBottom: 10,
   },
-  StatusBlock: {
+  statusBlockTxModal: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -194,7 +196,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     borderRadius: 4,
   },
-  ParametersStatus: {
+  parametersStatusTxModal: {
     fontSize: 14,
     lineHeight: 17,
     fontWeight: '400',
@@ -202,21 +204,21 @@ const styles = StyleSheet.create({
     width: '50%',
     fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoRegular,
   },
-  ValueStatus: {
+  valueStatusTxModal: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignItems: 'center',
     width: '50%',
   },
-  ValueStatusText: {
+  valueStatusText: {
     fontSize: 14,
     lineHeight: 17,
     fontWeight: '600',
     color: '#EBC200',
     fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
-  ValueStatusTextOk: {
+  valueStatusTextTxModal: {
     fontSize: 14,
     lineHeight: 17,
     fontWeight: '600',
@@ -224,27 +226,27 @@ const styles = StyleSheet.create({
     fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
 
-  ValueStatusLabel: {
+  valueStatusLabelTxModal: {
     width: 5,
     height: 5,
     borderRadius: 2.5,
     backgroundColor: '#EBC200',
     marginLeft: 10,
   },
-  ValueStatusLabelOk: {
+  valueStatusTextOkGreenTxModal: {
     width: 5,
     height: 5,
     borderRadius: 2.5,
     backgroundColor: '#14C58B',
     marginLeft: 10,
   },
-  linearGradient: {
+  linearGradientTxModal: {
     display: 'flex',
     borderRadius: 50,
     width: '100%',
     marginBottom: 10,
   },
-  primaryButton: {
+  primaryButtonTxModal: {
     backgroundColor: 'transparent',
     width: '100%',
     height: 48,
@@ -254,7 +256,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 50,
   },
-  primaryButtonText: {
+  primaryButtonTextTxModal: {
     fontSize: 14,
     fontWeight: '700',
     lineHeight: 16,
@@ -262,7 +264,7 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
-  secondaryButton: {
+  secondaryButtonTxModal: {
     backgroundColor: '#F6F7F8',
     width: '100%',
     height: 48,
@@ -272,7 +274,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 50,
   },
-  secondaryButtonText: {
+  secondaryButtonTextTxModal: {
     fontSize: 14,
     fontWeight: '700',
     lineHeight: 16,
@@ -281,7 +283,7 @@ const styles = StyleSheet.create({
     textDecorationLine: 'underline',
     fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
-  DescriptionText: {
+  descriptionTextTxModal: {
     fontSize: 14,
     lineHeight: 21,
     color: '#222222',

@@ -15,14 +15,14 @@ const HollowButton = memo(() => {
       underlayColor="transparent"
       activeOpacity={0.5}
       onPress={navigationConnect}
-      style={styles.mainbutton}>
-      <Text style={styles.howItWorks}>How it works?</Text>
+      style={styles.mainButtonHollow}>
+      <Text style={styles.howItWorksHollow}>How it works?</Text>
     </TouchableHighlight>
   );
 });
 
 const styles = StyleSheet.create({
-  howItWorks: {
+  howItWorksHollow: {
     fontSize: FontSize.semibold_size,
     textDecorationLine: 'underline',
     fontWeight: '700',
@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     color: Color.gray_300,
     textAlign: 'left',
   },
-  mainbutton: {
+  mainButtonHollow: {
     alignSelf: 'stretch',
     borderRadius: Border.br_31xl,
     height: 48,

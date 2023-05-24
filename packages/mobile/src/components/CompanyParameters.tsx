@@ -12,8 +12,8 @@ export type CompanyParametersType = {
 
 const CompanyParameters = ({ parameters, value, isGray, onChangeValue }: CompanyParametersType) => {
   return (
-    <View style={isGray ? styles.PaymentParametersGray : styles.PaymentParameters}>
-      <Text style={styles.Parameters}>{parameters}</Text>
+    <View style={isGray ? styles.companyParametersGray : styles.companyParameters}>
+      <Text style={styles.parametersText}>{parameters}</Text>
       <TextInput
         autoFocus
         numberOfLines={1}
@@ -21,14 +21,14 @@ const CompanyParameters = ({ parameters, value, isGray, onChangeValue }: Company
         value={value}
         maxLength={12}
         onChangeText={onChangeValue}
-        style={styles.Value}
+        style={styles.parametersValue}
       />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  PaymentParameters: {
+  companyParameters: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     borderRadius: 4,
   },
-  PaymentParametersGray: {
+  companyParametersGray: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -50,14 +50,14 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     borderRadius: 4,
   },
-  Parameters: {
+  parametersText: {
     fontSize: 14,
     lineHeight: 17,
     fontWeight: '400',
     color: '#222222',
     fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoRegular,
   },
-  Value: {
+  parametersValue: {
     fontSize: 14,
     lineHeight: 17,
     fontWeight: '600',

@@ -101,15 +101,15 @@ const TxScreen: React.FC<Props> = memo(({ route }) => {
   return (
     <>
       {paymentType === PaymentType.TIPS_ONLY ? (
-        <View style={styles.InfoScreenWrapper}>
+        <View style={styles.infoScreenWrapperTxScreen}>
           <Title label="Check your payment" />
-          <View style={styles.AvailableWrapper}>
-            <Text style={styles.AvailableTitle}>Available</Text>
-            <View style={styles.AvailableBlock}>
-              <Text style={styles.AvailableAmount}>
+          <View style={styles.availableWrapperTxScreen}>
+            <Text style={styles.availableTitleTxScreen}>Available</Text>
+            <View style={styles.availableBlockTxScreen}>
+              <Text style={styles.availableAmountTxScreen}>
                 {isBalanceLoading ? '-' : truncate(balance, BASE_CRYPTO_MAX_DIGITS)}
               </Text>
-              <Text style={styles.AvailableCurrency}>{BASE_CRYPTO_CURRENCY}</Text>
+              <Text style={styles.availableCurrencyTxScreen}>{BASE_CRYPTO_CURRENCY}</Text>
               {/* 
               // ToDo: implement hide balance
               <Image
@@ -131,25 +131,25 @@ const TxScreen: React.FC<Props> = memo(({ route }) => {
             <LinearGradient
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
-              style={styles.linearGradient}
+              style={styles.linearGradientTxScreen}
               colors={['#7f0dd9', '#5951c0', '#7f0dd9']}>
               <TouchableHighlight
                 underlayColor="#5951c0"
                 activeOpacity={0.5}
-                style={styles.buttonSend}
+                style={styles.buttonSendTxScreen}
                 onPress={handleSendPress}>
-                <Text style={styles.buttonText}>Send Tips</Text>
+                <Text style={styles.buttonTextTxScreen}>Send Tips</Text>
               </TouchableHighlight>
             </LinearGradient>
           ) : (
-            <TouchableHighlight disabled style={styles.buttonInsufficient}>
-              <Text style={styles.buttonInsufficientText}>Insufficient funds</Text>
+            <TouchableHighlight disabled style={styles.buttonInsufficientTxScreen}>
+              <Text style={styles.buttonInsufficientTextTxScreen}>Insufficient funds</Text>
             </TouchableHighlight>
           )}
 
-          <View style={styles.PayInfo}>
-            <View style={styles.PayInfoTitle}>
-              <Text style={styles.PayInfoTitleText}>I’ve got the consent to pay in crypto</Text>
+          <View style={styles.payInfoTxScreen}>
+            <View style={styles.payInfoTitleTxScreen}>
+              <Text style={styles.payInfoTitleTextTxScreen}>I’ve got the consent to pay in crypto</Text>
               <Checkbox
                 isChecked={false}
                 onPress={() => setPaymentType(PaymentType.BILL_AND_TIPS)}
@@ -170,15 +170,15 @@ const TxScreen: React.FC<Props> = memo(({ route }) => {
           </View>
         </View>
       ) : (
-        <View style={styles.InfoScreenWrapper}>
+        <View style={styles.infoScreenWrapperTxScreen}>
           <Title label="Check your payment" />
-          <View style={styles.AvailableWrapper}>
-            <Text style={styles.AvailableTitle}>Available</Text>
-            <View style={styles.AvailableBlock}>
-              <Text style={styles.AvailableAmount}>
+          <View style={styles.availableWrapperTxScreen}>
+            <Text style={styles.availableTitleTxScreen}>Available</Text>
+            <View style={styles.availableBlockTxScreen}>
+              <Text style={styles.availableAmountTxScreen}>
                 {isBalanceLoading ? '-' : truncate(balance, BASE_CRYPTO_MAX_DIGITS)}
               </Text>
-              <Text style={styles.AvailableCurrency}>{BASE_CRYPTO_CURRENCY}</Text>
+              <Text style={styles.availableCurrencyTxScreen}>{BASE_CRYPTO_CURRENCY}</Text>
 
               {/* <Image
               // ToDo: implement hide balance
@@ -200,25 +200,25 @@ const TxScreen: React.FC<Props> = memo(({ route }) => {
             <LinearGradient
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
-              style={styles.linearGradient}
+              style={styles.linearGradientTxScreen}
               colors={['#0dd977', '#1da4ac', '#14c48c']}>
               <TouchableHighlight
                 underlayColor="#1da4ac"
                 activeOpacity={0.5}
-                style={styles.buttonSend}
+                style={styles.buttonSendTxScreen}
                 onPress={handleSendPress}>
-                <Text style={styles.buttonText}>Pay invoice in full</Text>
+                <Text style={styles.buttonTextTxScreen}>Pay invoice in full</Text>
               </TouchableHighlight>
             </LinearGradient>
           ) : (
-            <TouchableHighlight disabled style={styles.buttonInsufficient}>
-              <Text style={styles.buttonInsufficientText}>Insufficient funds</Text>
+            <TouchableHighlight disabled style={styles.buttonInsufficientTxScreen}>
+              <Text style={styles.buttonInsufficientTextTxScreen}>Insufficient funds</Text>
             </TouchableHighlight>
           )}
 
-          <View style={styles.PayInfo}>
-            <View style={styles.PayInfoTitle}>
-              <Text style={styles.PayInfoTitleText}>I’ve got the consent to pay in crypto</Text>
+          <View style={styles.payInfoTxScreen}>
+            <View style={styles.payInfoTitleTxScreen}>
+              <Text style={styles.payInfoTitleTextTxScreen}>I’ve got the consent to pay in crypto</Text>
               <Checkbox isChecked onPress={() => setPaymentType(PaymentType.TIPS_ONLY)} />
             </View>
             <SwitchBlock
@@ -267,7 +267,7 @@ const TxScreen: React.FC<Props> = memo(({ route }) => {
 });
 
 const styles = StyleSheet.create({
-  InfoScreenWrapper: {
+  infoScreenWrapperTxScreen: {
     display: 'flex',
     width: '100%',
     height: '100%',
@@ -276,7 +276,7 @@ const styles = StyleSheet.create({
     paddingRight: 10,
     zIndex: 2,
   },
-  AvailableWrapper: {
+  availableWrapperTxScreen: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
@@ -285,7 +285,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     padding: 10,
   },
-  AvailableTitle: {
+  availableTitleTxScreen: {
     color: '#222222',
     fontSize: 14,
     lineHeight: 17,
@@ -293,14 +293,14 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoRegular,
   },
-  AvailableBlock: {
+  availableBlockTxScreen: {
     display: 'flex',
     width: '40%',
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignItems: 'center',
   },
-  AvailableAmount: {
+  availableAmountTxScreen: {
     color: '#222222',
     fontSize: 14,
     lineHeight: 17,
@@ -308,7 +308,7 @@ const styles = StyleSheet.create({
     marginRight: 5,
     fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
-  AvailableCurrency: {
+  availableCurrencyTxScreen: {
     color: '#222222',
     fontSize: 14,
     lineHeight: 17,
@@ -316,11 +316,11 @@ const styles = StyleSheet.create({
     marginRight: 10,
     fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
-  AvailableImg: {
+  availableImgTxScreen: {
     width: 20,
     height: 20,
   },
-  PayInfo: {
+  payInfoTxScreen: {
     display: 'flex',
     flexDirection: 'column',
     width: '100%',
@@ -329,7 +329,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginTop: 10,
   },
-  PayInfoTitle: {
+  payInfoTitleTxScreen: {
     display: 'flex',
     flexDirection: 'row',
 
@@ -339,20 +339,20 @@ const styles = StyleSheet.create({
     width: '100%',
     marginBottom: 10,
   },
-  PayInfoTitleText: {
+  payInfoTitleTextTxScreen: {
     color: '#222222',
     fontSize: 14,
     lineHeight: 16,
     fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoRegular,
   },
   // ToDo: code duplicated in TxModal.tsx
-  linearGradient: {
+  linearGradientTxScreen: {
     display: 'flex',
     borderRadius: 50,
     width: '100%',
   },
   // ToDo: code duplicated in TxModal.tsx
-  buttonSend: {
+  buttonSendTxScreen: {
     backgroundColor: 'transparent',
     width: '100%',
     height: 48,
@@ -363,14 +363,14 @@ const styles = StyleSheet.create({
     borderRadius: 50,
   },
   // ToDo: code duplicated in TxModal.tsx
-  buttonText: {
+  buttonTextTxScreen: {
     fontSize: 14,
     fontWeight: '700',
     lineHeight: 16,
     color: '#ffffff',
     fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
-  buttonInsufficient: {
+  buttonInsufficientTxScreen: {
     backgroundColor: '#FF3E3E',
     width: '100%',
     height: 48,
@@ -380,7 +380,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 50,
   },
-  buttonInsufficientText: {
+  buttonInsufficientTextTxScreen: {
     fontSize: 14,
     fontWeight: '700',
     lineHeight: 16,

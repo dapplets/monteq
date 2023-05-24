@@ -74,19 +74,19 @@ const CameraComponent: FC<Props> = ({ onQrCodeFound, onCanceled, onError }) => {
 
   return (
     <>
-      <View style={styles.container}>
+      <View style={styles.containerCamera}>
         <View style={styles.wrapperCamera}>
           <View style={styles.containerDescription}>
             <SvgComponentScanIcon />
             <Text style={styles.containerDescriptionText}>Scan QR on your receipt</Text>
           </View>
-          <View style={styles.containerCamera}>
+          <View style={styles.container}>
             <SvgComponentCameraBorder style={styles.cameraBorderTopLeft} />
             <SvgComponentCameraBorder style={styles.cameraBorderTopRight} />
             <SvgComponentCameraBorder style={styles.cameraBorderBottomLeft} />
             <SvgComponentCameraBorder style={styles.cameraBorderBottomRight} />
             <Camera
-              style={styles.container}
+              // style={styles.container}
               onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
               barCodeScannerSettings={{
                 barCodeTypes: [BarCodeScanner.Constants.BarCodeType.qr],
@@ -106,7 +106,7 @@ const CameraComponent: FC<Props> = ({ onQrCodeFound, onCanceled, onError }) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
+  containerCamera: {
     height: '100%',
     width: '100%',
     aspectRatio: 1,
@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: '#fff',
   },
-  containerCamera: {
+  container: {
     height: 250,
     width: 250,
     padding: 10,

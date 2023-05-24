@@ -25,20 +25,20 @@ const InfoUseItem = ({ title, description, img, isLast }: InfoUseItemType) => {
     setOpen(!isOpen);
   };
   return (
-    <View style={isLast ? styles.itemLast : styles.item}>
-      <Pressable onPress={openFAQ} style={styles.itemTitle}>
-        <Text style={styles.title}>{title}</Text>
+    <View style={isLast ? styles.itemLastInfoUse : styles.itemInfoUse}>
+      <Pressable onPress={openFAQ} style={styles.itemTitleInfoUse}>
+        <Text style={styles.titleInfoUse}>{title}</Text>
 
         <Image
           resizeMode="contain"
-          style={styles.arrow}
+          style={styles.arrowInfoUse}
           source={isOpen ? require('../assets/arrowGreen.png') : require('../assets/arrowGray.png')}
         />
       </Pressable>
       {isOpen ? (
-        <View style={styles.descriptonBlock}>
-          <Image resizeMode="contain" style={styles.descriptonImg} source={img} />
-          <Text style={styles.descripton}>{description}</Text>
+        <View style={styles.descriptonBlockInfoUse}>
+          <Image resizeMode="contain" style={styles.descriptonImgInfoUse} source={img} />
+          <Text style={styles.descriptonInfoUse}>{description}</Text>
         </View>
       ) : null}
     </View>
@@ -46,7 +46,7 @@ const InfoUseItem = ({ title, description, img, isLast }: InfoUseItemType) => {
 };
 
 const styles = StyleSheet.create({
-  item: {
+  itemInfoUse: {
     display: 'flex',
     flexDirection: 'column',
     width: '100%',
@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
     padding: 10,
     marginTop: 10,
   },
-  itemLast: {
+  itemLastInfoUse: {
     display: 'flex',
     flexDirection: 'column',
     width: '100%',
@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 30,
   },
-  itemTitle: {
+  itemTitleInfoUse: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -75,26 +75,26 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 42,
   },
-  title: {
+  titleInfoUse: {
     width: '80%',
     fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
     fontSize: 18,
     lineHeight: 21,
     color: '#222222',
   },
-  arrow: {
+  arrowInfoUse: {
     width: 12,
     height: 6,
     marginRight: 4,
   },
-  descriptonBlock: {
+  descriptonBlockInfoUse: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     width: '100%',
     marginTop: 20,
   },
-  descripton: {
+  descriptonInfoUse: {
     width: '100%',
     fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoRegular,
     fontSize: 14,
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     color: '#222222',
     marginBottom: 10,
   },
-  descriptonImg: {
+  descriptonImgInfoUse: {
     width: 260,
     height: 100,
     marginBottom: 20,
