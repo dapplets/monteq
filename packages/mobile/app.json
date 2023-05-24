@@ -1,23 +1,48 @@
 {
   "expo": {
-    "name": "monteq",
+    "name": "MonteQ",
+    "description": "MonteQ lets you create and join social games using QR codes",
+    "privacy": "hidden",
+    "platforms": ["android", "ios", "web"],
+    "githubUrl": "https://github.com/dapplets/monteq",
+    "orientation": "portrait",
     "slug": "monteq",
     "version": "1.0.0",
-    "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#f6f7f8"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
-      "icon": "./assets/icon.png"
+      "icon": "./assets/icon.png",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Allow $(PRODUCT_NAME) to access camera."
+      },
+      "bundleIdentifier": "de.cryrem.monteq",
+      "splash": {
+        "image": "./assets/splash.png",
+        "resizeMode": "contain",
+        "backgroundColor": "#f6f7f8"
+      }
     },
     "android": {
-      "icon": "./assets/icon.png"
+      "icon": "./assets/icon.png",
+      "permissions": [
+        "android.permission.CAMERA"
+      ],
+      "package": "de.cryrem.monteq",
+      "playStoreUrl": "https://play.google.com/store/apps/details?id=de.cryrem.monteq",
+      "splash": {
+        "image": "./assets/splash.png",
+        "resizeMode": "contain",
+        "backgroundColor": "#f6f7f8"
+      }
     },
     "web": {
       "bundler": "webpack",
@@ -26,8 +51,12 @@
       "name": "MonteQ",
       "lang": "en",
       "orientation": "portrait",
-      "short_name": "MonteQ",
-      "splash": "./assets/splash.png",
+      "shortName": "MonteQ",
+      "splash": {
+        "image": "./assets/splash.png",
+        "resizeMode": "contain",
+        "backgroundColor": "#f6f7f8"
+      },
       "themeColor": "#ffffff",
       "barStyle": "default"
     },
@@ -38,6 +67,19 @@
           "cameraPermission": "Allow $(PRODUCT_NAME) to access camera."
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "0cae208e-fa81-4377-adac-a720ebb11128"
+      }
+    }
+  },
+  "build": {
+    "preview": {
+      "android": {
+        "buildType": "apk"
+      }
+    },
+    "production": {}
   }
 }
