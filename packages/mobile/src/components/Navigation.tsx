@@ -13,16 +13,15 @@ import SvgComponentHomeActive from '../icons/SVGHomeActive';
 import SvgComponentHomeDefault from '../icons/SVGHomeDefault';
 import SvgComponentHowActive from '../icons/SVGHowActive';
 import SvgComponentHowDefault from '../icons/SVGHowDefault';
-import SvgComponentScan from '../icons/SVGScanBtn';
 import SvgComponentUserActive from '../icons/SVGUserActive';
 import SvgComponentUserDefault from '../icons/SVGUserDefault';
 
 export type NavigationType = {
   path: string;
-  isCamera?:boolean
+  isCamera?: boolean;
 };
 
-const Navigation = ({ path,isCamera }: NavigationType) => {
+const Navigation = ({ path, isCamera }: NavigationType) => {
   const { disconnect } = useWallet();
   const { scan } = useCamera();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -93,12 +92,11 @@ const Navigation = ({ path,isCamera }: NavigationType) => {
         children={path === 'help' ? <SvgComponentHowActive /> : <SvgComponentHowDefault />}
       />
       <TouchableHighlight
-        style={isCamera?styles.scanButtonCamera:styles.scanButton}
+        style={isCamera ? styles.scanButtonCamera : styles.scanButton}
         underlayColor="transparent"
         activeOpacity={0.5}
         onPress={handleGmsScanPress}>
-        {/* <SvgComponentScan style={styles.scanButtonImg} /> */}
-        <Image style={styles.scanButtonImg} source={require('../assets/CircularButton.png')} />
+        <Image style={styles.scanButtonImg} source={require('../assets/circularButton.png')} />
       </TouchableHighlight>
       <ButtonNavigationDefault
         onPress={navigationUserHistory}
@@ -151,7 +149,7 @@ const styles = StyleSheet.create({
     zIndex: 101,
     padding: 5,
   },
-  scanButtonCamera:{
+  scanButtonCamera: {
     width: 70,
     height: 70,
     backgroundColor: '#000',

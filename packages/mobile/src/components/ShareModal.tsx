@@ -1,4 +1,3 @@
-import * as Clipboard from 'expo-clipboard';
 import { LinearGradient } from 'expo-linear-gradient';
 import React from 'react';
 import { StyleSheet, Text, TouchableHighlight, View, Modal } from 'react-native';

@@ -67,49 +67,49 @@ const InfoScreen = () => {
   return (
     <>
       <View style={styles.infoScreenWrapperInfoScreen}>
+        <View style={styles.wrapperTitleInfoScreen}>
+          <Title label="Payment history" />
+          <TouchableHighlight
+            underlayColor="transparent"
+            onPress={openShareModal}
+            activeOpacity={0.5}
+            style={styles.shareInfoScreen}>
+            <Image
+              style={styles.shareImgInfoScreen}
+              resizeMode="contain"
+              source={require('../assets/share.png')}
+            />
+          </TouchableHighlight>
+        </View>
+        <View style={styles.nameParametersInfoScreen}>
+          <TextInput
+            ref={userNameInputRef}
+            numberOfLines={1}
+            placeholder="Enter your name"
+            value={userName}
+            maxLength={20}
+            onChangeText={changeUserName}
+            style={styles.valueInfoScreen}
+          />
+          <TouchableHighlight
+            underlayColor="transparent"
+            onPress={handleEditUserNamePress}
+            activeOpacity={0.5}
+            style={styles.shareInfoScreen}>
+            <Image
+              style={styles.shareImgInfoScreen}
+              resizeMode="contain"
+              source={require('../assets/edit.png')}
+            />
+          </TouchableHighlight>
+        </View>
         {!isOutHistoryLoading && outHistory.length === 0 ? (
           <>
-            <View style={styles.wrapperTitleInfoScreen}>
-              <Title label="Payment history" />
-              <TouchableHighlight
-                underlayColor="transparent"
-                onPress={openShareModal}
-                activeOpacity={0.5}
-                style={styles.shareInfoScreen}>
-                <Image
-                  style={styles.shareImgInfoScreen}
-                  resizeMode="contain"
-                  source={require('../assets/share.png')}
-                />
-              </TouchableHighlight>
-            </View>
-            <View style={styles.nameParametersInfoScreen}>
-              <TextInput
-                ref={userNameInputRef}
-                numberOfLines={1}
-                placeholder="Enter your name"
-                value={userName}
-                maxLength={20}
-                onChangeText={changeUserName}
-                style={styles.valueInfoScreen}
-              />
-              <TouchableHighlight
-                underlayColor="transparent"
-                onPress={handleEditUserNamePress}
-                activeOpacity={0.5}
-                style={styles.shareInfoScreen}>
-                <Image
-                  style={styles.shareImgInfoScreen}
-                  resizeMode="contain"
-                  source={require('../assets/edit.png')}
-                />
-              </TouchableHighlight>
-            </View>
             <View style={styles.centerContentWrapperInfoScreen}>
               <Image
                 resizeMode="contain"
                 style={styles.businessImgInfoScreen}
-                source={require('../assets/Lines.png')}
+                source={require('../assets/lines.png')}
               />
               <Text style={styles.descriptionTextInfoScreen}>
                 No history of outgoing transactions associated to your wallet right now.
@@ -121,42 +121,6 @@ const InfoScreen = () => {
         {/* ToDo: duplication of code below */}
         {outHistory.length > 0 ? (
           <>
-            <View style={styles.wrapperTitleInfoScreen}>
-              <Title label="Payment history" />
-              <TouchableHighlight
-                underlayColor="transparent"
-                onPress={openShareModal}
-                activeOpacity={0.5}
-                style={styles.shareInfoScreen}>
-                <Image
-                  style={styles.shareImgInfoScreen}
-                  resizeMode="contain"
-                  source={require('../assets/share.png')}
-                />
-              </TouchableHighlight>
-            </View>
-            <View style={styles.nameParametersInfoScreen}>
-              <TextInput
-                ref={userNameInputRef}
-                numberOfLines={1}
-                placeholder="Enter your name"
-                value={userName}
-                maxLength={20}
-                onChangeText={changeUserName}
-                style={styles.valueInfoScreen}
-              />
-              <TouchableHighlight
-                underlayColor="transparent"
-                onPress={handleEditUserNamePress}
-                activeOpacity={0.5}
-                style={styles.shareInfoScreen}>
-                <Image
-                  style={styles.shareImgInfoScreen}
-                  resizeMode="contain"
-                  source={require('../assets/edit.png')}
-                />
-              </TouchableHighlight>
-            </View>
             <GeneralPayInfo
               generalPayAmount={truncate(spentTotalCryptoAmount, BASE_CRYPTO_MAX_DIGITS)}
               title="Spent"
@@ -185,7 +149,6 @@ const InfoScreen = () => {
                   }
                 />
               )}
-              // ListFooterComponent={<View style={{ height: 30 }} />}
             />
           </>
         ) : null}
@@ -217,84 +180,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: 100,
   },
-  generalPayInfoScreen: {
-    display: 'flex',
-    flexDirection: 'column',
-    width: '100%',
-    borderRadius: 4,
-    borderStyle: 'solid',
-    borderWidth: 1,
-    borderColor: '#0dd977',
-    marginBottom: 10,
-    padding: 10,
-  },
-  generalPayLabelInfoScreen: {
-    fontWeight: '400',
-    fontSize: 11,
-    lineHeight: 13,
-    color: '#777777',
-    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoRegular,
-  },
-  amountBlockInfoScreen: {
-    width: '100%',
-    display: 'flex',
-    flexDirection: 'row',
-    height: 33,
-    marginTop: 7,
-    marginBottom: 7,
-  },
-  generalPayAmountInfoScreen: {
-    fontWeight: '700',
-    fontSize: 28,
-    lineHeight: 33,
-    color: '#222222',
-    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
-  },
-  generalPayAmountSubtitleInfoScreen: {
-    fontWeight: '700',
-    fontSize: 14,
-    lineHeight: 17,
-    color: '#222222',
-    marginTop: 'auto',
-    marginLeft: 5,
-    marginBottom: 4,
-    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
-  },
-  tipsBlockInfoScreen: {
-    display: 'flex',
-    flexDirection: 'row',
-    height: 13,
-  },
-  tipsSubtitleInfoScreen: {
-    fontWeight: '400',
-    fontSize: 11,
-    lineHeight: 13,
-    color: '#777777',
-    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoRegular,
-  },
-  tipsAmountInfoScreen: {
-    fontWeight: '700',
-    fontSize: 11,
-    lineHeight: 13,
-    color: '#222222',
-    marginLeft: 3,
-    marginRight: 3,
-    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
-  },
-  listHistoryInfoScreen: {
-    display: 'flex',
-    flexDirection: 'column',
-    width: '100%',
-    height: '100%',
-    paddingLeft: 10,
-    paddingRight: 10,
-    borderRadius: 4,
-    borderStyle: 'solid',
-    borderWidth: 1,
-    borderColor: '#E3E3E3',
-    marginBottom: 70,
-    marginTop: 10,
-  },
+
   businessImgInfoScreen: {
     width: 174,
     height: 158,

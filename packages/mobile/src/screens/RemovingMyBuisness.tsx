@@ -8,10 +8,9 @@ import { FontFamily } from '../GlobalStyles';
 import Navigation from '../components/Navigation';
 import PaymentParameters from '../components/PaymentParameters';
 import Title from '../components/TitlePage';
-import TxModal, { TxStatusType } from '../components/TxModal';
-import { useMonteqContract } from '../contexts/MonteqContractContext';
-import { BusinessInfo, TxStatus } from '../contexts/MonteqContractContext/MonteqContractContext';
 import TxStatusModal from '../components/TxStatusModal';
+import { useMonteqContract } from '../contexts/MonteqContractContext';
+import { BusinessInfo } from '../contexts/MonteqContractContext/MonteqContractContext';
 
 const RemovingMyBusiness: React.FC = memo(() => {
   const isFocused = useIsFocused();
@@ -105,11 +104,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     width: '100%',
   },
-  linearGradientRemovingMyBusiness: {
-    display: 'flex',
-    borderRadius: 50,
-    width: '100%',
-  },
+
   buttonRemoveRemovingMyBusiness: {
     backgroundColor: '#FF3E3E',
     width: '100%',

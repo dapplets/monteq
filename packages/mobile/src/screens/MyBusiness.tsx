@@ -111,7 +111,7 @@ const MyBusiness = () => {
               <Image
                 resizeMode="contain"
                 style={styles.businessImgMyBusiness}
-                source={require('../assets/Lines.png')}
+                source={require('../assets/lines.png')}
               />
               <Text style={styles.descriptionTextMyBusiness}>
                 No history of incoming transactions associated to your business right now.
@@ -198,7 +198,7 @@ const MyBusiness = () => {
               <Image
                 resizeMode="contain"
                 style={styles.businessImgMyBusiness}
-                source={require('../assets/Lines.png')}
+                source={require('../assets/lines.png')}
               />
               <Text style={styles.descriptionTextMyBusiness}>
                 No business is associated with this wallet right now. Connect a business to start
@@ -243,35 +243,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: 100,
   },
-  timeNavigationMyBusiness: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    width: '100%',
-    height: 60,
-    paddingLeft: 20,
-    paddingRight: 20,
-    marginBottom: 'auto',
-  },
-  listMyBusiness: {
-    display: 'flex',
-    flexDirection: 'column',
-    width: '100%',
-    height: '100%',
-    paddingLeft: 10,
-    paddingRight: 10,
-    borderRadius: 4,
-    borderStyle: 'solid',
-    borderWidth: 1,
-    borderColor: '#E3E3E3',
-    marginTop: 10,
-    marginBottom: 60,
-  },
-  wrapperBorderMyBusiness: {},
-  clockIconMyBusiness: {},
-  iconLayoutMyBusiness: {},
-  logOutWrapperMyBusiness: {},
+
   linearGradientMyBusiness: {
     display: 'flex',
     borderRadius: 50,

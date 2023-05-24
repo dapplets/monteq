@@ -4,7 +4,6 @@ import * as SplashScreen from 'expo-splash-screen';
 import React, { useEffect } from 'react';
 import { SafeAreaView, StyleSheet, View } from 'react-native';
 import { enableScreens } from 'react-native-screens';
-
 import Router from './Router';
 import { ParsedReceipt, ParsedEDCON2023Code } from './common/parseReceipt';
 import TxModal from './components/TxModal';
@@ -54,10 +53,6 @@ function App() {
       }
     })();
   }, [isInitializing]);
-
-  // if (!fontsLoaded) {
-  //   return null;
-  // }
 
   if (!isInternetConnected && !isInitializing) {
     return (

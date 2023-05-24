@@ -52,7 +52,9 @@ const HowUse = ({}: HowUseProps) => {
     <>
       <ScrollView style={styles.infoScreenWrapperHowUse}>
         {isConnected ? <Title label="How it works?" /> : null}
-        <SvgComponentHowBgMain style={isConnected ? styles.mainBgHowUse : styles.mainBgNoConnectHowUse} />
+        <SvgComponentHowBgMain
+          style={isConnected ? styles.mainBgHowUse : styles.mainBgNoConnectHowUse}
+        />
         {info.map((x, i) => {
           return (
             <InfoUseItem

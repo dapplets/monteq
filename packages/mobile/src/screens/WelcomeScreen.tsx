@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { Image, Platform, StyleSheet, View } from 'react-native';
+import { Image, StyleSheet, View } from 'react-native';
 
-import { Padding, Border, FontFamily, FontSize, Color } from '../GlobalStyles';
+import { Padding, Border, Color } from '../GlobalStyles';
 import HollowButton from '../components/HollowButton';
 import MainButton from '../components/MainButton';
 import { useWallet } from '../contexts/WalletContext';
@@ -17,20 +17,33 @@ const WelcomeScreen = () => {
   return (
     <View style={styles.initialLoginWelcomeScreen}>
       <View style={styles.bgWelcomeScreen}>
-        <Image style={styles.bgWelcomeScreen} resizeMode="cover" source={require('../assets/appbg.png')} />
-        <Image style={styles.qIconWelcomeScreen} resizeMode="contain" source={require('../assets/q.png')} />
+        <Image
+          style={styles.bgWelcomeScreen}
+          resizeMode="cover"
+          source={require('../assets/appbg.png')}
+        />
+        <Image
+          style={styles.qIconWelcomeScreen}
+          resizeMode="contain"
+          source={require('../assets/q.png')}
+        />
       </View>
-      <View style={[styles.monteqLogo1WrapperWelcomeScreen, styles.mainButtonParentFlexBoxWelcomeScreen]}>
+      <View
+        style={[
+          styles.monteqLogo1WrapperWelcomeScreen,
+          styles.mainButtonParentFlexBoxWelcomeScreen,
+        ]}>
         <Image
           style={styles.monteqLogo1WelcomeScreen}
           resizeMode="center"
           source={require('../assets/monteq-logo-1.png')}
         />
       </View>
-      <View style={[styles.mainButtonParentWelcomeScreen, styles.mainButtonParentFlexBoxWelcomeScreen]}>
+      <View
+        style={[styles.mainButtonParentWelcomeScreen, styles.mainButtonParentFlexBoxWelcomeScreen]}>
         <MainButton
           onPress={handleWalletConnectPress}
-          image={require('../assets/walletconnect.png')}
+          image={require('../assets/walletConnect.png')}
           label="Start with WalletConnect"
         />
         <HollowButton />
@@ -45,23 +58,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     position: 'absolute',
   },
-  mainButtonFlexBoxWelcomeScreen: {
-    paddingVertical: 0,
-    paddingHorizontal: Padding.p_xl,
-    flexDirection: 'row',
-    height: 48,
-    borderRadius: Border.br_31xl,
-    alignSelf: 'stretch',
-    justifyContent: 'center',
-    alignItems: 'center',
-    overflow: 'hidden',
-  },
-  howItWorksTypoWelcomeScreen: {
-    textAlign: 'left',
-    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
-    fontWeight: '700',
-    fontSize: FontSize.semibold_size,
-  },
+
   bgWelcomeScreen: {
     width: '100%',
     height: '100%',
@@ -82,25 +79,12 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
-  mainButtonChildWelcomeScreen: {
-    width: 40,
-    height: 40,
-    overflow: 'hidden',
-  },
+
   startWithWalletconnectWelcomeScreen: {
     color: Color.white,
     marginLeft: 10,
   },
-  mainButtonWelcomeScreen: {
-    backgroundColor: Color.dodgerblue,
-  },
-  howItWorksWelcomeScreen: {
-    textDecorationLine: 'underline',
-    color: Color.gray_300,
-  },
-  mainButton1WelcomeScreen: {
-    marginTop: 10,
-  },
+
   mainButtonParentWelcomeScreen: {
     marginLeft: -133.5,
     bottom: 0,
