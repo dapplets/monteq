@@ -118,7 +118,6 @@ const InfoScreen = () => {
           </>
         ) : null}
 
-        {/* ToDo: duplication of code below */}
         {outHistory.length > 0 ? (
           <>
             <GeneralPayInfo
@@ -131,7 +130,6 @@ const InfoScreen = () => {
             />
 
             <FlatList
-              // style={styles.listHistory}
               refreshing={isOutHistoryLoading}
               onRefresh={loadMoreOutHistory}
               progressViewOffset={-90}

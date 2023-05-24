@@ -151,7 +151,7 @@ const TxScreen: React.FC<Props> = memo(({ route }) => {
               I’ve got the consent to pay in crypto
             </Text>
             <Checkbox
-              isChecked={paymentType === PaymentType.TIPS_ONLY ? false : true}
+              isChecked={paymentType !== PaymentType.TIPS_ONLY}
               onPress={() => {
                 paymentType === PaymentType.TIPS_ONLY
                   ? setPaymentType(PaymentType.BILL_AND_TIPS)

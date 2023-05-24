@@ -5,6 +5,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView, StyleSheet, View } from 'react-native';
 import { enableScreens } from 'react-native-screens';
+
 import Router from './Router';
 import { IS_OWNER_VIEW_PREFERRED_KEY } from './common/constants';
 import { ParsedReceipt, ParsedEDCON2023Code } from './common/parseReceipt';
