@@ -1,15 +1,14 @@
+import { NavigationContainer } from '@react-navigation/native';
 import { BarCodeScannedCallback, BarCodeScanner } from 'expo-barcode-scanner';
 import { Camera } from 'expo-camera';
 import * as Permissions from 'expo-permissions';
 import React, { FC, useState, useCallback } from 'react';
 import { BackHandler, View, StyleSheet, Text, Platform } from 'react-native';
-import ButtonNavigationDefault from './ButtonNavigationDefault';
-import SvgComponentExit from '../icons/SVGExitCamera';
+
 import Navigation from './Navigation';
-import { NavigationContainer } from '@react-navigation/native';
-import SvgComponentScanIcon from '../icons/SVGScanIcon';
 import { FontFamily } from '../GlobalStyles';
 import SvgComponentCameraBorder from '../icons/SVGCameraBorder';
+import SvgComponentScanIcon from '../icons/SVGScanIcon';
 
 type Props = {
   onQrCodeFound: (data: string) => void;
@@ -98,7 +97,7 @@ const CameraComponent: FC<Props> = ({ onQrCodeFound, onCanceled, onError }) => {
 
       <View style={styles.cameraScreenBtn}>
         <NavigationContainer>
-          <Navigation isCamera path={'Camera'} />
+          <Navigation isCamera path="Camera" />
         </NavigationContainer>
       </View>
     </>

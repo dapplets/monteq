@@ -135,7 +135,7 @@ const MyBusiness = () => {
               <Image
                 resizeMode="contain"
                 style={styles.businessImgMyBusiness}
-                source={require('../assets/Lines.png')}
+                source={require('../assets/lines.png')}
               />
               <Text style={styles.descriptionTextMyBusiness}>
                 No history of incoming transactions associated to your business right now.
@@ -222,7 +222,7 @@ const MyBusiness = () => {
               <Image
                 resizeMode="contain"
                 style={styles.businessImgMyBusiness}
-                source={require('../assets/Lines.png')}
+                source={require('../assets/lines.png')}
               />
               <Text style={styles.descriptionTextMyBusiness}>
                 No business is associated with this wallet right now. Connect a business to start

@@ -20,10 +20,9 @@ import PaymentInfo from '../components/PaymentInfo';
 import PaymentParameters from '../components/PaymentParameters';
 import Title from '../components/TitlePage';
 import TokenBlock from '../components/TokenBlock';
-import TxModal, { TxStatusType } from '../components/TxModal';
+import TxStatusModal from '../components/TxStatusModal';
 import { useEdconContract } from '../contexts/EdconContractContext';
 import { TokenId, TxStatus } from '../contexts/EdconContractContext/EdconContractContext';
-import TxStatusModal from '../components/TxStatusModal';
 
 type Props = {
   route: RouteProp<{ params: { parsedQrCode: ParsedEDCON2023Code } }, 'params'>;
@@ -98,12 +97,6 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
     navigation.navigate('InfoScreen');
   }
 
-  async function handleCloseError() {
-    resetTransferOrMintTxStatus();
-    resetSetAmbassadorTxStatus();
-    setModalVisible(false);
-  }
-
   function handleSetAnAmbassadorRank() {
     setModalVisible(true);
     const tokensToTransfer = Object.entries(tokenAmountsMap).map(([tokenId, amount]) => ({
@@ -151,7 +144,11 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
         <PaymentInfo isTokens price={totalAmount().toString()} title="You are sending" />
 
         {areMyTokensLoading ? (
-          <ActivityIndicator style={styles.tokensLoaderSendTokenScreen} size="large" color="#919191" />
+          <ActivityIndicator
+            style={styles.tokensLoaderSendTokenScreen}
+            size="large"
+            color="#919191"
+          />
         ) : (
           <View style={styles.tokensBlockSendTokenScreen}>
             {myTokens.map((token) => (

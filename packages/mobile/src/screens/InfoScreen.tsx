@@ -109,7 +109,7 @@ const InfoScreen = () => {
               <Image
                 resizeMode="contain"
                 style={styles.businessImgInfoScreen}
-                source={require('../assets/Lines.png')}
+                source={require('../assets/lines.png')}
               />
               <Text style={styles.descriptionTextInfoScreen}>
                 No history of outgoing transactions associated to your wallet right now.

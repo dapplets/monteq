@@ -1,6 +1,6 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { ReactNode, memo, useEffect, useState } from 'react';
-import { StyleSheet, View, TouchableHighlight, Text, Platform } from 'react-native';
+import { StyleSheet, TouchableHighlight, Text, Platform } from 'react-native';
 
 import { FontFamily } from '../GlobalStyles';
 

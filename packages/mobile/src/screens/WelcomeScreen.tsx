@@ -17,20 +17,33 @@ const WelcomeScreen = () => {
   return (
     <View style={styles.initialLoginWelcomeScreen}>
       <View style={styles.bgWelcomeScreen}>
-        <Image style={styles.bgWelcomeScreen} resizeMode="cover" source={require('../assets/appbg.png')} />
-        <Image style={styles.qIconWelcomeScreen} resizeMode="contain" source={require('../assets/q.png')} />
+        <Image
+          style={styles.bgWelcomeScreen}
+          resizeMode="cover"
+          source={require('../assets/appbg.png')}
+        />
+        <Image
+          style={styles.qIconWelcomeScreen}
+          resizeMode="contain"
+          source={require('../assets/q.png')}
+        />
       </View>
-      <View style={[styles.monteqLogo1WrapperWelcomeScreen, styles.mainButtonParentFlexBoxWelcomeScreen]}>
+      <View
+        style={[
+          styles.monteqLogo1WrapperWelcomeScreen,
+          styles.mainButtonParentFlexBoxWelcomeScreen,
+        ]}>
         <Image
           style={styles.monteqLogo1WelcomeScreen}
           resizeMode="center"
           source={require('../assets/monteq-logo-1.png')}
         />
       </View>
-      <View style={[styles.mainButtonParentWelcomeScreen, styles.mainButtonParentFlexBoxWelcomeScreen]}>
+      <View
+        style={[styles.mainButtonParentWelcomeScreen, styles.mainButtonParentFlexBoxWelcomeScreen]}>
         <MainButton
           onPress={handleWalletConnectPress}
-          image={require('../assets/walletconnect.png')}
+          image={require('../assets/walletConnect.png')}
           label="Start with WalletConnect"
         />
         <HollowButton />

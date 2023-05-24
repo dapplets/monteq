@@ -18,10 +18,9 @@ import PaymentInfo from '../components/PaymentInfo';
 import PaymentParameters from '../components/PaymentParameters';
 import SwitchBlock from '../components/SwitchBlock';
 import Title from '../components/TitlePage';
-import TxModal, { TxStatusType } from '../components/TxModal';
-import { useMonteqContract } from '../contexts/MonteqContractContext';
-import { BusinessInfo, TxStatus } from '../contexts/MonteqContractContext/MonteqContractContext';
 import TxStatusModal from '../components/TxStatusModal';
+import { useMonteqContract } from '../contexts/MonteqContractContext';
+import { BusinessInfo } from '../contexts/MonteqContractContext/MonteqContractContext';
 
 type Props = {
   route: RouteProp<
@@ -100,127 +99,67 @@ const TxScreen: React.FC<Props> = memo(({ route }) => {
 
   return (
     <>
-      {paymentType === PaymentType.TIPS_ONLY ? (
-        <View style={styles.infoScreenWrapperTxScreen}>
-          <Title label="Check your payment" />
-          <View style={styles.availableWrapperTxScreen}>
-            <Text style={styles.availableTitleTxScreen}>Available</Text>
-            <View style={styles.availableBlockTxScreen}>
-              <Text style={styles.availableAmountTxScreen}>
-                {isBalanceLoading ? '-' : truncate(balance, BASE_CRYPTO_MAX_DIGITS)}
-              </Text>
-              <Text style={styles.availableCurrencyTxScreen}>{BASE_CRYPTO_CURRENCY}</Text>
-              {/* 
-              // ToDo: implement hide balance
-              <Image
-                style={styles.AvailableImg}
-                source={require('../assets/eye.png')}
-              /> */}
-            </View>
-          </View>
-          <PaymentInfo
-            price={truncate(amountInCrypto, BASE_CRYPTO_MAX_DIGITS)}
-            title="You are paying tips"
-            convert={{
-              convertEUR: '1 ' + BASE_FIAT_CURRENCY,
-              convertCurrency: truncate(rate, BASE_CRYPTO_MAX_DIGITS) + ' ' + BASE_CRYPTO_CURRENCY,
-            }}
-          />
-
-          {isEnoughTokens ? (
-            <LinearGradient
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={styles.linearGradientTxScreen}
-              colors={['#7f0dd9', '#5951c0', '#7f0dd9']}>
-              <TouchableHighlight
-                underlayColor="#5951c0"
-                activeOpacity={0.5}
-                style={styles.buttonSendTxScreen}
-                onPress={handleSendPress}>
-                <Text style={styles.buttonTextTxScreen}>Send Tips</Text>
-              </TouchableHighlight>
-            </LinearGradient>
-          ) : (
-            <TouchableHighlight disabled style={styles.buttonInsufficientTxScreen}>
-              <Text style={styles.buttonInsufficientTextTxScreen}>Insufficient funds</Text>
-            </TouchableHighlight>
-          )}
-
-          <View style={styles.payInfoTxScreen}>
-            <View style={styles.payInfoTitleTxScreen}>
-              <Text style={styles.payInfoTitleTextTxScreen}>I’ve got the consent to pay in crypto</Text>
-              <Checkbox
-                isChecked={false}
-                onPress={() => setPaymentType(PaymentType.BILL_AND_TIPS)}
-              />
-            </View>
-            <PaymentParameters
-              parameters="Date"
-              value={new Date(parsedReceipt.createdAt).toLocaleString()}
-            />
-            <PaymentParameters parameters="Recipient ID" value={parsedReceipt.businessId} />
-            {businessInfo.name && (
-              <PaymentParameters parameters="Recipient Name" value={businessInfo.name} />
-            )}
-            <PaymentParameters
-              parameters="Invoice total"
-              value={`${parsedReceipt.currencyReceipt} ${BASE_FIAT_CURRENCY}`}
-            />
+      <View style={styles.infoScreenWrapperTxScreen}>
+        <Title label="Check your payment" />
+        <View style={styles.availableWrapperTxScreen}>
+          <Text style={styles.availableTitleTxScreen}>Available</Text>
+          <View style={styles.availableBlockTxScreen}>
+            <Text style={styles.availableAmountTxScreen}>
+              {isBalanceLoading ? '-' : truncate(balance, BASE_CRYPTO_MAX_DIGITS)}
+            </Text>
+            <Text style={styles.availableCurrencyTxScreen}>{BASE_CRYPTO_CURRENCY}</Text>
           </View>
         </View>
-      ) : (
-        <View style={styles.infoScreenWrapperTxScreen}>
-          <Title label="Check your payment" />
-          <View style={styles.availableWrapperTxScreen}>
-            <Text style={styles.availableTitleTxScreen}>Available</Text>
-            <View style={styles.availableBlockTxScreen}>
-              <Text style={styles.availableAmountTxScreen}>
-                {isBalanceLoading ? '-' : truncate(balance, BASE_CRYPTO_MAX_DIGITS)}
+        <PaymentInfo
+          price={truncate(amountInCrypto, BASE_CRYPTO_MAX_DIGITS)}
+          title="You are paying tips"
+          convert={{
+            convertEUR: '1 ' + BASE_FIAT_CURRENCY,
+            convertCurrency: truncate(rate, BASE_CRYPTO_MAX_DIGITS) + ' ' + BASE_CRYPTO_CURRENCY,
+          }}
+        />
+
+        {isEnoughTokens ? (
+          <LinearGradient
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={styles.linearGradientTxScreen}
+            colors={
+              paymentType === PaymentType.TIPS_ONLY
+                ? ['#7f0dd9', '#5951c0', '#7f0dd9']
+                : ['#0dd977', '#1da4ac', '#14c48c']
+            }>
+            <TouchableHighlight
+              underlayColor={paymentType === PaymentType.TIPS_ONLY ? '#5951c0' : '#1da4ac'}
+              activeOpacity={0.5}
+              style={styles.buttonSendTxScreen}
+              onPress={handleSendPress}>
+              <Text style={styles.buttonTextTxScreen}>
+                {PaymentType.TIPS_ONLY ? 'Send Tips' : 'Pay invoice in full'}
               </Text>
-              <Text style={styles.availableCurrencyTxScreen}>{BASE_CRYPTO_CURRENCY}</Text>
-
-              {/* <Image
-              // ToDo: implement hide balance
-                style={styles.AvailableImg}
-                source={require('../assets/eye.png')}
-              /> */}
-            </View>
-          </View>
-          <PaymentInfo
-            price={truncate(amountInCrypto, BASE_CRYPTO_MAX_DIGITS)}
-            title="You are paying tips"
-            convert={{
-              convertEUR: '1 ' + BASE_FIAT_CURRENCY,
-              convertCurrency: truncate(rate, BASE_CRYPTO_MAX_DIGITS) + ' ' + BASE_CRYPTO_CURRENCY,
-            }}
-          />
-
-          {isEnoughTokens ? (
-            <LinearGradient
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={styles.linearGradientTxScreen}
-              colors={['#0dd977', '#1da4ac', '#14c48c']}>
-              <TouchableHighlight
-                underlayColor="#1da4ac"
-                activeOpacity={0.5}
-                style={styles.buttonSendTxScreen}
-                onPress={handleSendPress}>
-                <Text style={styles.buttonTextTxScreen}>Pay invoice in full</Text>
-              </TouchableHighlight>
-            </LinearGradient>
-          ) : (
-            <TouchableHighlight disabled style={styles.buttonInsufficientTxScreen}>
-              <Text style={styles.buttonInsufficientTextTxScreen}>Insufficient funds</Text>
             </TouchableHighlight>
-          )}
+          </LinearGradient>
+        ) : (
+          <TouchableHighlight disabled style={styles.buttonInsufficientTxScreen}>
+            <Text style={styles.buttonInsufficientTextTxScreen}>Insufficient funds</Text>
+          </TouchableHighlight>
+        )}
 
-          <View style={styles.payInfoTxScreen}>
-            <View style={styles.payInfoTitleTxScreen}>
-              <Text style={styles.payInfoTitleTextTxScreen}>I’ve got the consent to pay in crypto</Text>
-              <Checkbox isChecked onPress={() => setPaymentType(PaymentType.TIPS_ONLY)} />
-            </View>
+        <View style={styles.payInfoTxScreen}>
+          <View style={styles.payInfoTitleTxScreen}>
+            <Text style={styles.payInfoTitleTextTxScreen}>
+              I’ve got the consent to pay in crypto
+            </Text>
+            <Checkbox
+              isChecked={paymentType === PaymentType.TIPS_ONLY ? false : true}
+              onPress={() => {
+                paymentType === PaymentType.TIPS_ONLY
+                  ? setPaymentType(PaymentType.BILL_AND_TIPS)
+                  : setPaymentType(PaymentType.TIPS_ONLY);
+              }}
+            />
+          </View>
+          {paymentType === PaymentType.TIPS_ONLY ? null : (
             <SwitchBlock
               parameters="Add 10% tips to this invoice"
               onPress={() =>
@@ -232,21 +171,21 @@ const TxScreen: React.FC<Props> = memo(({ route }) => {
               }
               isPress={paymentType !== PaymentType.BILL_ONLY}
             />
-            <PaymentParameters
-              parameters="Date"
-              value={new Date(parsedReceipt.createdAt).toLocaleString()}
-            />
-            <PaymentParameters parameters="Recipient ID" value={parsedReceipt.businessId} />
-            {businessInfo.name && (
-              <PaymentParameters parameters="Recipient Name" value={businessInfo.name} />
-            )}
-            <PaymentParameters
-              parameters="Invoice total"
-              value={`${parsedReceipt.currencyReceipt} ${BASE_FIAT_CURRENCY}`}
-            />
-          </View>
+          )}
+          <PaymentParameters
+            parameters="Date"
+            value={new Date(parsedReceipt.createdAt).toLocaleString()}
+          />
+          <PaymentParameters parameters="Recipient ID" value={parsedReceipt.businessId} />
+          {businessInfo.name && (
+            <PaymentParameters parameters="Recipient Name" value={businessInfo.name} />
+          )}
+          <PaymentParameters
+            parameters="Invoice total"
+            value={`${parsedReceipt.currencyReceipt} ${BASE_FIAT_CURRENCY}`}
+          />
         </View>
-      )}
+      </View>
 
       {!modalVisible ? <Navigation path="Payment" /> : null}
 

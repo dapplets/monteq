@@ -12,10 +12,8 @@ import CompanyParameters from '../components/CompanyParameters';
 import Navigation from '../components/Navigation';
 import PaymentParameters from '../components/PaymentParameters';
 import Title from '../components/TitlePage';
-import TxModal, { TxStatusType } from '../components/TxModal';
-import { useMonteqContract } from '../contexts/MonteqContractContext';
-import { TxStatus } from '../contexts/MonteqContractContext/MonteqContractContext';
 import TxStatusModal from '../components/TxStatusModal';
+import { useMonteqContract } from '../contexts/MonteqContractContext';
 
 type Props = {
   route: RouteProp<{ params: { parsedReceipt: ParsedReceipt } }, 'params'>;

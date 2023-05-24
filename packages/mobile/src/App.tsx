@@ -1,6 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNetInfo } from '@react-native-community/netinfo';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import React, { useEffect, useState } from 'react';
@@ -65,11 +64,6 @@ function App() {
       }
     })();
   }, []);
-
-  // if (!fontsLoaded) {
-  //   return null;
-  // }
-
   if (!isInternetConnected && initialRouteName) {
     return (
       <View>

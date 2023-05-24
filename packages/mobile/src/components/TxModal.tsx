@@ -84,7 +84,7 @@ const TxModal: React.FC<TxModalProps> = ({
                 <Text
                   style={
                     type === TxStatusType.Green
-                      ? styles.valueStatusTextOkGreenTxModal
+                      ? styles.valueStatusOkTextTxModal
                       : styles.valueStatusTextTxModal
                   }>
                   {status}
@@ -219,6 +219,13 @@ const styles = StyleSheet.create({
     fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
   valueStatusTextTxModal: {
+    fontSize: 14,
+    lineHeight: 17,
+    fontWeight: '600',
+    color: '#14C58B',
+    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
+  },
+  valueStatusOkTextTxModal: {
     fontSize: 14,
     lineHeight: 17,
     fontWeight: '600',
