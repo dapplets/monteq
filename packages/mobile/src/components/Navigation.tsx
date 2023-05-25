@@ -81,7 +81,7 @@ const Navigation: React.FC<BottomTabBarProps> = ({ navigation, state }) => {
       }
     }
   }
-
+  console.log(isScanning);
   return (
     <View style={styles.navigationWrapper}>
       <ButtonNavigationDefault
@@ -97,11 +97,19 @@ const Navigation: React.FC<BottomTabBarProps> = ({ navigation, state }) => {
         children={routeName === 'HowUse' ? <SvgComponentHowActive /> : <SvgComponentHowDefault />}
       />
       <TouchableHighlight
+        disabled={isScanning}
         style={isScanning ? styles.scanButtonCamera : styles.scanButton}
         underlayColor="transparent"
         activeOpacity={0.5}
         onPress={handleGmsScanPress}>
-        <Image style={styles.scanButtonImg} source={require('../assets/circularButton.png')} />
+        <Image
+          style={styles.scanButtonImg}
+          source={
+            isScanning
+              ? require('../assets/circularButtonDisabled.png')
+              : require('../assets/circularButton.png')
+          }
+        />
       </TouchableHighlight>
       <ButtonNavigationDefault
         onPress={navigationUserHistory}
