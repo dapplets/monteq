@@ -87,7 +87,7 @@ const AddingMyBusiness: React.FC<Props> = memo(({ route }) => {
         </LinearGradient>
       </View>
 
-      {!modalVisible ? <Navigation path="home" /> : null}
+      {/* {!modalVisible ? <Navigation path="home" /> : null} */}
 
       <TxStatusModal
         isVisible={modalVisible}

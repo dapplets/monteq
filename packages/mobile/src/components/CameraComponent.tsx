@@ -1,11 +1,9 @@
-import { NavigationContainer } from '@react-navigation/native';
 import { BarCodeScannedCallback, BarCodeScanner } from 'expo-barcode-scanner';
 import { Camera } from 'expo-camera';
 import * as Permissions from 'expo-permissions';
 import React, { FC, useState, useCallback } from 'react';
 import { BackHandler, View, StyleSheet, Text, Platform } from 'react-native';
 
-import Navigation from './Navigation';
 import { FontFamily } from '../GlobalStyles';
 import SvgComponentCameraBorder from '../icons/SVGCameraBorder';
 import SvgComponentScanIcon from '../icons/SVGScanIcon';
@@ -24,9 +22,6 @@ const CameraComponent: FC<Props> = ({ onQrCodeFound, onCanceled, onError }) => {
     setTimeout(() => onCanceled(), 500); // ToDo: hack
     return true;
   }, [onCanceled]);
-  // async function navigationUserHistory() {
-  //   onCanceled();
-  // }
 
   const checkCameraPermission = useCallback(async () => {
     // Use Permissions instead of Camera to workaround the issue
@@ -92,12 +87,6 @@ const CameraComponent: FC<Props> = ({ onQrCodeFound, onCanceled, onError }) => {
             />
           </View>
         </View>
-      </View>
-
-      <View style={styles.cameraScreenBtn}>
-        <NavigationContainer>
-          <Navigation isCamera path="Camera" />
-        </NavigationContainer>
       </View>
     </>
   );

@@ -187,7 +187,7 @@ const TxScreen: React.FC<Props> = memo(({ route }) => {
         </View>
       </View>
 
-      {!modalVisible ? <Navigation path="Payment" /> : null}
+      {/* {!modalVisible ? <Navigation path="Payment" /> : null} */}
 
       <TxStatusModal
         isVisible={modalVisible}
