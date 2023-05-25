@@ -1,9 +1,11 @@
 import { useNetInfo } from '@react-native-community/netinfo';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
+import { StatusBar } from 'expo-status-bar';
 import React, { useEffect } from 'react';
 import { SafeAreaView, StyleSheet, View } from 'react-native';
 import { enableScreens } from 'react-native-screens';
+
 import Router from './Router';
 import { ParsedReceipt, ParsedEDCON2023Code } from './common/parseReceipt';
 import TxModal from './components/TxModal';
@@ -32,7 +34,7 @@ function App() {
   const { isConnected: isInternetConnected } = useNetInfo();
   const { isOwnerViewPreferred, isInitializing } = useSettings();
 
-  const [fontsLoaded, error] = useFonts({
+  const [fontsLoaded] = useFonts({
     roboto_black_italic: require('./assets/fonts/roboto_black_italic.ttf'),
     roboto_black: require('./assets/fonts/roboto_black.ttf'),
     roboto_bold_italic: require('./assets/fonts/roboto_bold_italic.ttf'),
@@ -54,9 +56,14 @@ function App() {
     })();
   }, [isInitializing]);
 
+  if (isInitializing || !fontsLoaded) {
+    return null;
+  }
+
   if (!isInternetConnected && !isInitializing) {
     return (
       <View>
+        <StatusBar style="dark" />
         <TxModal
           isVisible
           title="Check your connection"
@@ -67,12 +74,9 @@ function App() {
     );
   }
 
-  if (isInitializing) {
-    return null;
-  }
-
   return (
     <SafeAreaView style={styles.containerApp}>
+      <StatusBar style="dark" />
       <WalletProvider>
         <Router initialRouteName={isOwnerViewPreferred ? 'MyBusiness' : 'InfoScreen'} />
       </WalletProvider>
