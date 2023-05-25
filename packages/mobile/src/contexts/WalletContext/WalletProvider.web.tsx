@@ -1,19 +1,25 @@
 import { EthereumClient, w3mConnectors, w3mProvider } from '@web3modal/ethereum';
 import { Web3Modal, useWeb3Modal } from '@web3modal/react';
 import React, { FC, ReactElement, useMemo } from 'react';
-import { configureChains, createConfig, useAccount, useDisconnect, WagmiConfig } from 'wagmi';
+import {
+  configureChains,
+  createConfig,
+  mainnet,
+  useAccount,
+  useDisconnect,
+  WagmiConfig,
+} from 'wagmi';
 
 import { WalletContext, WalletContextState, contextDefaultValues } from './WalletContext';
-import { DEFAULT_CHAIN, WC_METADATA, WC_PROJECT_ID } from '../../common/constants';
+import { DEFAULT_CHAIN, WC_PROJECT_ID } from '../../common/constants';
 
-const chains = [DEFAULT_CHAIN];
+const chains = [mainnet, DEFAULT_CHAIN];
 const projectId = WC_PROJECT_ID;
-const metadata = WC_METADATA;
 
 const { publicClient } = configureChains(chains, [w3mProvider({ projectId })]);
 const wagmiConfig = createConfig({
   autoConnect: true,
-  connectors: w3mConnectors({ projectId, version: 1, chains }),
+  connectors: w3mConnectors({ projectId, version: 2, chains }),
   publicClient,
 });
 const ethereumClient = new EthereumClient(wagmiConfig, chains);
