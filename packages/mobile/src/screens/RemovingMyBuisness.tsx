@@ -78,7 +78,7 @@ const RemovingMyBusiness: React.FC = memo(() => {
         </TouchableHighlight>
       </View>
 
-      {!modalVisible ? <Navigation path="home" /> : null}
+      {/* {!modalVisible ? <Navigation path="home" /> : null} */}
 
       <TxStatusModal
         isVisible={modalVisible}

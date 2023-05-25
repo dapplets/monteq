@@ -3,7 +3,6 @@ import * as React from 'react';
 import { View, Alert, StyleSheet, TouchableHighlight, Platform, Image } from 'react-native';
 
 import ButtonNavigationDefault from './ButtonNavigationDefault';
-import { type RootStackParamList } from '../App';
 import { DomainType, parseQrCodeData } from '../common/parseReceipt';
 import { useCamera } from '../contexts/CameraContext';
 import { useMonteqContract } from '../contexts/MonteqContractContext';
@@ -15,6 +14,7 @@ import SvgComponentHowActive from '../icons/SVGHowActive';
 import SvgComponentHowDefault from '../icons/SVGHowDefault';
 import SvgComponentUserActive from '../icons/SVGUserActive';
 import SvgComponentUserDefault from '../icons/SVGUserDefault';
+import { RootStackParamList } from '../Router';
 
 export type NavigationType = {
   path: string;

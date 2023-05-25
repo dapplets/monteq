@@ -18,6 +18,8 @@ import RemovingMyBusiness from './screens/RemovingMyBuisness';
 import SendTokenScreen from './screens/SendTokenScreen';
 import TxScreen from './screens/TxScreen';
 import WelcomeScreen from './screens/WelcomeScreen';
+import { View, StyleSheet } from 'react-native';
+import Navigation from './components/Navigation';
 
 export type RootStackParamList = {
   InfoScreen: undefined;
@@ -59,7 +61,6 @@ const Router: FC<Props> = ({ initialRouteName }) => {
       </NavigationContainer>
     );
   }
-
   return (
     <MonteqContractProvider>
       <EdconContractProvider>
@@ -81,9 +82,10 @@ const Router: FC<Props> = ({ initialRouteName }) => {
                 options={{ title: PAGE_TITLE }}
               />
               <Tab.Screen
+              
                 name="CameraScreen"
                 component={CameraScreen}
-                options={{ title: PAGE_TITLE }}
+                options={{ title: PAGE_TITLE ,}}
               />
               <Tab.Screen name="TxScreen" component={TxScreen} options={{ title: PAGE_TITLE }} />
               <Tab.Screen
@@ -103,11 +105,21 @@ const Router: FC<Props> = ({ initialRouteName }) => {
                 options={{ title: PAGE_TITLE }}
               />
             </Tab.Navigator>
+            <View style={styles.cameraScreenBtn}>
+              <Navigation  path="" />
+            </View>
           </NavigationContainer>
         </CameraProvider>
       </EdconContractProvider>
     </MonteqContractProvider>
   );
 };
-
+const styles = StyleSheet.create({
+  cameraScreenBtn: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    width: '100%',
+  },
+});
 export default Router;

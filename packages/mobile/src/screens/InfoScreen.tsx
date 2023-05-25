@@ -18,7 +18,6 @@ import { BASE_CRYPTO_CURRENCY, BASE_CRYPTO_MAX_DIGITS } from '../common/constant
 import { truncate } from '../common/helpers';
 import GeneralPayInfo from '../components/GeneralPayInfo';
 import HistoryPay from '../components/HistoryPay';
-import Navigation from '../components/Navigation';
 import ShareModal from '../components/ShareModal';
 import Title from '../components/TitlePage';
 import { useMonteqContract } from '../contexts/MonteqContractContext';
@@ -36,7 +35,6 @@ const InfoScreen = () => {
   } = useMonteqContract();
   const { userName, changeUserName } = useSettings();
   const userNameInputRef = React.useRef<any>();
-
   const [isModalShareVisible, setIsModalShareVisible] = useState(false);
 
   React.useEffect(() => {
@@ -59,7 +57,7 @@ const InfoScreen = () => {
         <View style={styles.centerContentWrapperInfoScreen}>
           <ActivityIndicator size="large" color="#919191" />
         </View>
-        <Navigation path="user" />
+        {/* <Navigation path="user" /> */}
       </>
     );
   }
@@ -118,7 +116,6 @@ const InfoScreen = () => {
           </>
         ) : null}
 
-        {/* ToDo: duplication of code below */}
         {outHistory.length > 0 ? (
           <>
             <GeneralPayInfo
@@ -131,7 +128,6 @@ const InfoScreen = () => {
             />
 
             <FlatList
-              // style={styles.listHistory}
               refreshing={isOutHistoryLoading}
               onRefresh={loadMoreOutHistory}
               progressViewOffset={-90}
@@ -153,7 +149,7 @@ const InfoScreen = () => {
           </>
         ) : null}
       </View>
-      <Navigation path="user" />
+      {/* <Navigation path="user" /> */}
       <ShareModal
         account={account}
         username={userName}

@@ -97,7 +97,7 @@ const MyBusiness = () => {
         <View style={styles.centerContentWrapperMyBusiness}>
           <ActivityIndicator size="large" color="#919191" />
         </View>
-        <Navigation path="home" />
+        {/* <Navigation path="home" /> */}
       </>
     );
   }
@@ -183,7 +183,7 @@ const MyBusiness = () => {
               />
             </View>
           )}
-          <Navigation path="home" />
+          {/* <Navigation path="home" /> */}
         </>
       ) : (
         <>
@@ -219,7 +219,7 @@ const MyBusiness = () => {
               </LinearGradient>
             </View>
           </View>
-          <Navigation path="home" />
+          {/* <Navigation path="home" /> */}
         </>
       )}
     </>

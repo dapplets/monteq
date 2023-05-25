@@ -68,7 +68,8 @@ const HowUse = ({}: HowUseProps) => {
         })}
       </ScrollView>
       {isConnected ? (
-        <Navigation path="help" />
+        // <Navigation path="help" />
+        null
       ) : (
         <TouchableHighlight
           underlayColor="#3B99FC"

@@ -232,7 +232,7 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
         ) : null}
       </ScrollView>
 
-      {!modalVisible ? <Navigation path="Payment" /> : null}
+      {/* {!modalVisible ? <Navigation path="Payment" /> : null} */}
 
       <TxStatusModal
         isVisible={modalVisible}
