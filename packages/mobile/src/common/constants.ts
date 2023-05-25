@@ -7,8 +7,8 @@ export const WC_RELAY_URL = undefined;
 
 export const WC_METADATA: Metadata = {
   name: 'MonteQ',
-  description: 'Pay as you like',
-  url: 'https://github.com/dapplets/monteq',
+  description: 'Play as you like',
+  url: 'https://monteq.dapplets.org',
   icons: ['https://github.com/dapplets/monteq/blob/main/docs/dapp-icon.png?raw=true'],
 };
 
