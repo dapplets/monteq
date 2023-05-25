@@ -5,6 +5,7 @@ import React, { FC } from 'react';
 import { PAGE_TITLE } from './common/constants';
 import { ParsedReceipt, ParsedEDCON2023Code } from './common/parseReceipt';
 import CameraScreen from './components/CameraComponent';
+import Navigation from './components/Navigation';
 import { CameraProvider } from './contexts/CameraContext';
 import { EdconContractProvider } from './contexts/EdconContractContext';
 import { MonteqContractProvider } from './contexts/MonteqContractContext';
@@ -18,8 +19,6 @@ import RemovingMyBusiness from './screens/RemovingMyBuisness';
 import SendTokenScreen from './screens/SendTokenScreen';
 import TxScreen from './screens/TxScreen';
 import WelcomeScreen from './screens/WelcomeScreen';
-import { View, StyleSheet } from 'react-native';
-import Navigation from './components/Navigation';
 
 export type RootStackParamList = {
   InfoScreen: undefined;

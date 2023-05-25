@@ -18,7 +18,7 @@ export type WalletContextState = {
 
 export const contextDefaultValues: WalletContextState = {
   provider: {
-    request: () => Promise.reject('WalletProvider is not initialized'),
+    request: () => Promise.reject(new Error('WalletProvider is not initialized')),
   },
   isConnected: false,
   connect: () => undefined,

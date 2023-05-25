@@ -13,10 +13,13 @@ type TokenBlockType = {
 };
 
 const TokenBlock = memo(({ onPress, children, title, onLongPress, status }: TokenBlockType) => {
+  // ToDo: refactor as controlled component
   const [isActive, setIsActive] = useState(false);
+
   useEffect(() => {
     status && setIsActive(false);
   }, [isActive, status]);
+
   return (
     <LinearGradient
       start={{ x: 0, y: 0 }}
@@ -32,7 +35,8 @@ const TokenBlock = memo(({ onPress, children, title, onLongPress, status }: Toke
           onLongPress && onLongPress();
         }}
         onPress={() => {
-          setIsActive(true), onPress && onPress();
+          setIsActive(true);
+          onPress?.();
         }}>
         <>
           {children}

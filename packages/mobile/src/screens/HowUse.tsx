@@ -5,7 +5,6 @@ import { Text, StyleSheet, ScrollView, TouchableHighlight, Platform } from 'reac
 import { RootStackParamList } from '../App';
 import { FontFamily } from '../GlobalStyles';
 import InfoUseItem from '../components/InfoUseItem';
-import Navigation from '../components/Navigation';
 import Title from '../components/TitlePage';
 import { useWallet } from '../contexts/WalletContext';
 import SvgComponentHowBgMain from '../icons/SVGHowBgMain';
@@ -38,9 +37,7 @@ const info = [
   },
 ];
 
-export type HowUseProps = object;
-
-const HowUse = ({}: HowUseProps) => {
+const HowUse: React.FC = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const { isConnected } = useWallet();
 
@@ -67,10 +64,7 @@ const HowUse = ({}: HowUseProps) => {
           );
         })}
       </ScrollView>
-      {isConnected ? (
-        // <Navigation path="help" />
-        null
-      ) : (
+      {isConnected ? null : (
         <TouchableHighlight
           underlayColor="#3B99FC"
           activeOpacity={0.5}

@@ -15,7 +15,6 @@ import {
 import { type RootStackParamList } from '../App';
 import { FontFamily } from '../GlobalStyles';
 import { ParsedEDCON2023Code } from '../common/parseReceipt';
-import Navigation from '../components/Navigation';
 import PaymentInfo from '../components/PaymentInfo';
 import PaymentParameters from '../components/PaymentParameters';
 import Title from '../components/TitlePage';

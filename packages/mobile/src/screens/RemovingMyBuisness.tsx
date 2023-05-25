@@ -5,7 +5,6 @@ import { Text, StyleSheet, View, TouchableHighlight, Platform } from 'react-nati
 
 import { RootStackParamList } from '../App';
 import { FontFamily } from '../GlobalStyles';
-import Navigation from '../components/Navigation';
 import PaymentParameters from '../components/PaymentParameters';
 import Title from '../components/TitlePage';
 import TxStatusModal from '../components/TxStatusModal';

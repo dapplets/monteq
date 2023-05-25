@@ -25,7 +25,6 @@ import { mulStr, truncate } from '../common/helpers';
 import { DomainType, parseQrCodeData } from '../common/parseReceipt';
 import GeneralPayInfo from '../components/GeneralPayInfo';
 import HistoryPay from '../components/HistoryPay';
-import Navigation from '../components/Navigation';
 import SwitchBlock from '../components/SwitchBlock';
 import Title from '../components/TitlePage';
 import { useCamera } from '../contexts/CameraContext';

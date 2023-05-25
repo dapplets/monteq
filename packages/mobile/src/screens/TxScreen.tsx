@@ -13,7 +13,6 @@ import {
 import { addStr, gteStr, mulStr, truncate } from '../common/helpers';
 import { ParsedReceipt } from '../common/parseReceipt';
 import Checkbox from '../components/Checkbox';
-import Navigation from '../components/Navigation';
 import PaymentInfo from '../components/PaymentInfo';
 import PaymentParameters from '../components/PaymentParameters';
 import SwitchBlock from '../components/SwitchBlock';
@@ -153,9 +152,11 @@ const TxScreen: React.FC<Props> = memo(({ route }) => {
             <Checkbox
               isChecked={paymentType !== PaymentType.TIPS_ONLY}
               onPress={() => {
-                paymentType === PaymentType.TIPS_ONLY
-                  ? setPaymentType(PaymentType.BILL_AND_TIPS)
-                  : setPaymentType(PaymentType.TIPS_ONLY);
+                setPaymentType(
+                  paymentType === PaymentType.TIPS_ONLY
+                    ? PaymentType.BILL_AND_TIPS
+                    : PaymentType.TIPS_ONLY
+                );
               }}
             />
           </View>

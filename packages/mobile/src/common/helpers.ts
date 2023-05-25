@@ -45,7 +45,8 @@ export function parseRevertReason(err: any): string | null {
     if (!ethers.utils.isHexString(hexReason)) return null;
     const reason = ethers.utils.toUtf8String(hexReason);
     return capitalizeFirstLetter(reason);
-  } catch (_) {
+  } catch (err) {
+    console.error(err);
     return null;
   }
 }

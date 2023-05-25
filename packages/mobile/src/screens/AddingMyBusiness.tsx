@@ -9,7 +9,6 @@ import { FontFamily } from '../GlobalStyles';
 import { BASE_FIAT_CURRENCY } from '../common/constants';
 import { ParsedReceipt } from '../common/parseReceipt';
 import CompanyParameters from '../components/CompanyParameters';
-import Navigation from '../components/Navigation';
 import PaymentParameters from '../components/PaymentParameters';
 import Title from '../components/TitlePage';
 import TxStatusModal from '../components/TxStatusModal';
@@ -86,8 +85,6 @@ const AddingMyBusiness: React.FC<Props> = memo(({ route }) => {
           </TouchableHighlight>
         </LinearGradient>
       </View>
-
-      {/* {!modalVisible ? <Navigation path="home" /> : null} */}
 
       <TxStatusModal
         isVisible={modalVisible}
