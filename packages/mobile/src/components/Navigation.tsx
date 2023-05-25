@@ -1,4 +1,4 @@
-import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import * as React from 'react';
 import { View, Alert, StyleSheet, TouchableHighlight, Platform, Image } from 'react-native';
 
@@ -14,37 +14,40 @@ import SvgComponentHowActive from '../icons/SVGHowActive';
 import SvgComponentHowDefault from '../icons/SVGHowDefault';
 import SvgComponentUserActive from '../icons/SVGUserActive';
 import SvgComponentUserDefault from '../icons/SVGUserDefault';
-import { RootStackParamList } from '../Router';
 
-export type NavigationType = {
-  path: string;
-  isCamera?: boolean;
-};
-
-const Navigation = ({ path, isCamera }: NavigationType) => {
+const Navigation: React.FC<BottomTabBarProps> = ({ navigation, state }) => {
   const { disconnect } = useWallet();
-  const { scan } = useCamera();
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-
+  const { scan, stop: stopScanning, isScanning } = useCamera();
   const { getBusinessInfoById, updateUserBalance } = useMonteqContract();
 
+  const routeName = state.routeNames[state.index];
+
   function handleDisconnectPress() {
+    stopScanning();
     disconnect();
   }
 
   async function navigationMyBusiness() {
+    stopScanning();
     navigation.navigate('MyBusiness');
   }
 
   async function navigationHowUse() {
+    stopScanning();
     navigation.navigate('HowUse');
   }
 
   async function navigationUserHistory() {
+    stopScanning();
     navigation.navigate('InfoScreen');
   }
 
   async function handleGmsScanPress() {
+    if (isScanning) {
+      stopScanning();
+      return;
+    }
+
     try {
       const url = await scan();
       const parsedQrCode = parseQrCodeData(url);
@@ -83,16 +86,18 @@ const Navigation = ({ path, isCamera }: NavigationType) => {
     <View style={styles.navigationWrapper}>
       <ButtonNavigationDefault
         onPress={navigationMyBusiness}
-        isActive={path === 'home'}
-        children={path === 'home' ? <SvgComponentHomeActive /> : <SvgComponentHomeDefault />}
+        isActive={routeName === 'MyBusiness'}
+        children={
+          routeName === 'MyBusiness' ? <SvgComponentHomeActive /> : <SvgComponentHomeDefault />
+        }
       />
       <ButtonNavigationDefault
         onPress={navigationHowUse}
-        isActive={path === 'help'}
-        children={path === 'help' ? <SvgComponentHowActive /> : <SvgComponentHowDefault />}
+        isActive={routeName === 'HowUse'}
+        children={routeName === 'HowUse' ? <SvgComponentHowActive /> : <SvgComponentHowDefault />}
       />
       <TouchableHighlight
-        style={isCamera ? styles.scanButtonCamera : styles.scanButton}
+        style={isScanning ? styles.scanButtonCamera : styles.scanButton}
         underlayColor="transparent"
         activeOpacity={0.5}
         onPress={handleGmsScanPress}>
@@ -100,8 +105,10 @@ const Navigation = ({ path, isCamera }: NavigationType) => {
       </TouchableHighlight>
       <ButtonNavigationDefault
         onPress={navigationUserHistory}
-        isActive={path === 'user'}
-        children={path === 'user' ? <SvgComponentUserActive /> : <SvgComponentUserDefault />}
+        isActive={routeName === 'InfoScreen'}
+        children={
+          routeName === 'InfoScreen' ? <SvgComponentUserActive /> : <SvgComponentUserDefault />
+        }
       />
       <ButtonNavigationDefault
         onPress={handleDisconnectPress}

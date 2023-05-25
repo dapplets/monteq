@@ -68,7 +68,7 @@ const Router: FC<Props> = ({ initialRouteName }) => {
           <NavigationContainer>
             <Tab.Navigator
               screenOptions={{ headerShown: false }}
-              tabBar={() => null}
+              tabBar={(props) => <Navigation {...props} />}
               detachInactiveScreens
               initialRouteName={initialRouteName}>
               <Tab.Screen
@@ -82,10 +82,9 @@ const Router: FC<Props> = ({ initialRouteName }) => {
                 options={{ title: PAGE_TITLE }}
               />
               <Tab.Screen
-              
                 name="CameraScreen"
                 component={CameraScreen}
-                options={{ title: PAGE_TITLE ,}}
+                options={{ title: PAGE_TITLE }}
               />
               <Tab.Screen name="TxScreen" component={TxScreen} options={{ title: PAGE_TITLE }} />
               <Tab.Screen
@@ -105,21 +104,11 @@ const Router: FC<Props> = ({ initialRouteName }) => {
                 options={{ title: PAGE_TITLE }}
               />
             </Tab.Navigator>
-            <View style={styles.cameraScreenBtn}>
-              <Navigation  path="" />
-            </View>
           </NavigationContainer>
         </CameraProvider>
       </EdconContractProvider>
     </MonteqContractProvider>
   );
 };
-const styles = StyleSheet.create({
-  cameraScreenBtn: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    width: '100%',
-  },
-});
+
 export default Router;

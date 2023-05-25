@@ -1,7 +1,6 @@
 import React, { FC, ReactElement, useState } from 'react';
 
 import { CameraContext, CameraContextState } from './CameraContext';
-
 import CameraComponent from '../../components/CameraComponent';
 
 type Props = {
@@ -13,6 +12,7 @@ const CameraProvider: FC<Props> = ({ children }) => {
     resolve: (data: string) => void;
     reject: (reason?: any) => void;
   } | null>(null);
+
   function handleQrCodeFound(data: string) {
     if (scanningPromise) {
       scanningPromise.resolve(data);
@@ -41,7 +41,9 @@ const CameraProvider: FC<Props> = ({ children }) => {
   }
 
   const state: CameraContextState = {
+    isScanning: !!scanningPromise,
     scan,
+    stop: handleScanningCanceled,
   };
 
   return (
