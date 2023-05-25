@@ -19,6 +19,7 @@
       "**/*"
     ],
     "ios": {
+      "bundler": "metro",
       "supportsTablet": true,
       "icon": "./assets/icon.png",
       "infoPlist": {
@@ -32,6 +33,7 @@
       }
     },
     "android": {
+      "bundler": "metro",
       "icon": "./assets/icon.png",
       "permissions": [
         "android.permission.CAMERA"
