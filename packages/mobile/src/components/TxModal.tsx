@@ -216,7 +216,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 17,
     fontWeight: '600',
-    color: '#14C58B',
+    color: '#EBC200',
     fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
   valueStatusOkTextTxModal: {
