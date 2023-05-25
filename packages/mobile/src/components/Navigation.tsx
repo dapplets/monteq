@@ -81,7 +81,7 @@ const Navigation: React.FC<BottomTabBarProps> = ({ navigation, state }) => {
       }
     }
   }
-  console.log(isScanning);
+
   return (
     <View style={styles.navigationWrapper}>
       <ButtonNavigationDefault

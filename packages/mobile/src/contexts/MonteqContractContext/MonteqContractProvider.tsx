@@ -189,7 +189,7 @@ const MonteqContractProvider: FC<Props> = ({ children }) => {
       try {
         businessInfo = await contract.businessInfos(businessId);
       } catch (err) {
-        console.log(err);
+        console.error(err);
       }
     }
     return businessInfo;
