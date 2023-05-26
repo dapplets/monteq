@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
   },
   containerDescriptionText: {
     fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
-    fontWeight: '600',
+    // fontWeight: '600',
     fontSize: 20,
     color: '#fff',
   },
