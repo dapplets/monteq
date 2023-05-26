@@ -1,3 +1,4 @@
+import { ethers } from 'ethers';
 import { createContext } from 'react';
 
 export enum WalletTypes {
@@ -5,21 +6,15 @@ export enum WalletTypes {
   EphemeralKey,
 }
 
-export interface IEIP1193Provider {
-  request(args: { method: string; params?: any[] }): Promise<any>;
-}
-
 export type WalletContextState = {
-  provider: IEIP1193Provider;
+  web3Provider: ethers.providers.Web3Provider | null;
   isConnected: boolean;
   connect: (walletType: WalletTypes) => void;
   disconnect: () => void;
 };
 
 export const contextDefaultValues: WalletContextState = {
-  provider: {
-    request: () => Promise.reject(new Error('WalletProvider is not initialized')),
-  },
+  web3Provider: null,
   isConnected: false,
   connect: () => undefined,
   disconnect: () => undefined,

@@ -4,15 +4,15 @@ import * as React from 'react';
 import { memo, useEffect, useState } from 'react';
 import { Text, StyleSheet, View, TouchableHighlight } from 'react-native';
 
-import { RootStackParamList } from '../App';
 import { FontFamily } from '../GlobalStyles';
+import { RootStackParamList } from '../Router';
 import { BASE_FIAT_CURRENCY } from '../common/constants';
 import { ParsedReceipt } from '../common/parseReceipt';
 import CompanyParameters from '../components/CompanyParameters';
 import PaymentParameters from '../components/PaymentParameters';
 import Title from '../components/TitlePage';
 import TxStatusModal from '../components/TxStatusModal';
-import { useMonteqContract } from '../contexts/MonteqContractContext';
+import { useAddBusiness } from '../hooks/monteq/useAddBusiness';
 
 type Props = {
   route: RouteProp<{ params: { parsedReceipt: ParsedReceipt } }, 'params'>;
@@ -25,8 +25,12 @@ const AddingMyBusiness: React.FC<Props> = memo(({ route }) => {
 
   const [nameCompany, setNameCompany] = useState('');
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-  const { addBusiness, resetAddBusinessTxStatus, addBusinessTxError, addBusinessTxStatus } =
-    useMonteqContract();
+  const {
+    send: addBusiness,
+    reset: resetAddBusinessTxStatus,
+    error: addBusinessTxError,
+    status: addBusinessTxStatus,
+  } = useAddBusiness();
   const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {

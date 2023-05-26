@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import TxModal, { TxModalProps, TxStatusType } from '../components/TxModal';
-import { TxStatus } from '../contexts/MonteqContractContext/MonteqContractContext';
+import { TxStatus } from '../hooks/useContractWrite';
 
 type Props = {
   txStatus: TxStatus;

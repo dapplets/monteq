@@ -13,8 +13,8 @@ import {
   Platform,
 } from 'react-native';
 
-import { RootStackParamList } from '../App';
 import { FontFamily } from '../GlobalStyles';
+import { RootStackParamList } from '../Router';
 import {
   BASE_CRYPTO_CURRENCY,
   BASE_CRYPTO_MAX_DIGITS,
@@ -28,31 +28,43 @@ import HistoryPay from '../components/HistoryPay';
 import SwitchBlock from '../components/SwitchBlock';
 import Title from '../components/TitlePage';
 import { useCamera } from '../contexts/CameraContext';
-import { useMonteqContract } from '../contexts/MonteqContractContext';
+import { useGetBusinessByOwner } from '../hooks/monteq/useGetBusinessByOwner';
+import { useGetInHistory } from '../hooks/monteq/useGetInHistory';
+import { useAccount } from '../hooks/useAccount';
+import { useCoingecko } from '../hooks/useCoingecko';
 import { useSettings } from '../hooks/useSettings';
 
 const MyBusiness = () => {
   const { scan } = useCamera();
   const isFocused = useIsFocused();
+
+  const { address } = useAccount();
+  const {
+    business: myBusiness,
+    isLoading: isMyBusinessLoading,
+    refetch,
+  } = useGetBusinessByOwner(address);
   const {
     isInHistoryLoading,
     inHistory,
     loadMoreInHistory,
     earnedTipsCryptoAmount,
     earnedInvoicesCryptoAmount,
-    rate,
-    myBusiness,
-    isMyBusinessLoading,
-  } = useMonteqContract();
+  } = useGetInHistory(myBusiness?.id);
+  const { rate } = useCoingecko();
   const { isOwnerViewPreferred, changeIsOwnerViewPreferred } = useSettings();
 
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   React.useEffect(() => {
     if (isFocused) {
-      loadMoreInHistory();
+      refetch();
     }
-  }, [isFocused, loadMoreInHistory]);
+  }, [isFocused]);
+
+  React.useEffect(() => {
+    loadMoreInHistory();
+  }, [myBusiness]);
 
   async function handleGmsScanPressBusiness() {
     try {
@@ -90,14 +102,11 @@ const MyBusiness = () => {
     navigation.navigate('RemovingMyBusiness');
   }
 
-  if (isMyBusinessLoading || (isInHistoryLoading && inHistory.length === 0)) {
+  if ((!myBusiness && isMyBusinessLoading) || (isInHistoryLoading && inHistory.length === 0)) {
     return (
-      <>
-        <View style={styles.centerContentWrapperMyBusiness}>
-          <ActivityIndicator size="large" color="#919191" />
-        </View>
-        {/* <Navigation path="home" /> */}
-      </>
+      <View style={styles.centerContentWrapperMyBusiness}>
+        <ActivityIndicator size="large" color="#919191" />
+      </View>
     );
   }
 
@@ -182,44 +191,40 @@ const MyBusiness = () => {
               />
             </View>
           )}
-          {/* <Navigation path="home" /> */}
         </>
       ) : (
-        <>
-          <View style={styles.infoScreenWrapperMyBusiness}>
-            <Title label="Owner’s View" />
-            <SwitchBlock
-              parameters="Always start from business page"
-              onPress={changeIsOwnerViewPreferred}
-              isPress={isOwnerViewPreferred}
+        <View style={styles.infoScreenWrapperMyBusiness}>
+          <Title label="Owner’s View" />
+          <SwitchBlock
+            parameters="Always start from business page"
+            onPress={changeIsOwnerViewPreferred}
+            isPress={isOwnerViewPreferred}
+          />
+          <View style={styles.centerContentWrapperMyBusiness}>
+            <Image
+              resizeMode="contain"
+              style={styles.businessImgMyBusiness}
+              source={require('../assets/lines.png')}
             />
-            <View style={styles.centerContentWrapperMyBusiness}>
-              <Image
-                resizeMode="contain"
-                style={styles.businessImgMyBusiness}
-                source={require('../assets/lines.png')}
-              />
-              <Text style={styles.descriptionTextMyBusiness}>
-                No business is associated with this wallet right now. Connect a business to start
-                getting paid in cryptocurrency or log in with the right wallet.
-              </Text>
-              <LinearGradient
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                style={styles.linearGradientMyBusiness}
-                colors={['#0dd977', '#1da4ac', '#14c48c']}>
-                <TouchableHighlight
-                  underlayColor="#1da4ac"
-                  activeOpacity={0.5}
-                  style={styles.buttonSendMyBusiness}
-                  onPress={handleGmsScanPressBusiness}>
-                  <Text style={styles.buttonTextMyBusiness}>Connect my business</Text>
-                </TouchableHighlight>
-              </LinearGradient>
-            </View>
+            <Text style={styles.descriptionTextMyBusiness}>
+              No business is associated with this wallet right now. Connect a business to start
+              getting paid in cryptocurrency or log in with the right wallet.
+            </Text>
+            <LinearGradient
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={styles.linearGradientMyBusiness}
+              colors={['#0dd977', '#1da4ac', '#14c48c']}>
+              <TouchableHighlight
+                underlayColor="#1da4ac"
+                activeOpacity={0.5}
+                style={styles.buttonSendMyBusiness}
+                onPress={handleGmsScanPressBusiness}>
+                <Text style={styles.buttonTextMyBusiness}>Connect my business</Text>
+              </TouchableHighlight>
+            </LinearGradient>
           </View>
-          {/* <Navigation path="home" /> */}
-        </>
+        </View>
       )}
     </>
   );

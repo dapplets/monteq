@@ -33,10 +33,12 @@ export function gteStr(a: string, b: string): boolean {
   return _a.gte(_b);
 }
 
+// ToDo: remove
 function capitalizeFirstLetter(str: string): string {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
+// ToDo: remove
 export function parseRevertReason(err: any): string | null {
   try {
     const msg = JSON.parse(err.error.body).error.message;

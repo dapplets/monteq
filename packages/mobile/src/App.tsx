@@ -7,28 +7,13 @@ import { SafeAreaView, StyleSheet, View } from 'react-native';
 import { enableScreens } from 'react-native-screens';
 
 import Router from './Router';
-import { ParsedReceipt, ParsedEDCON2023Code } from './common/parseReceipt';
 import TxModal from './components/TxModal';
-import { BusinessInfo } from './contexts/MonteqContractContext/MonteqContractContext';
 import { WalletProvider } from './contexts/WalletContext';
 import { useSettings } from './hooks/useSettings';
 
 SplashScreen.preventAutoHideAsync();
 
 enableScreens();
-
-export type RootStackParamList = {
-  InfoScreen: undefined;
-  CameraScreen: undefined;
-  TxScreen: { parsedReceipt: ParsedReceipt; businessInfo: BusinessInfo };
-  WelcomeScreen: undefined;
-  CodeScanned: undefined;
-  MyBusiness: undefined;
-  AddingMyBusiness: { parsedReceipt: ParsedReceipt };
-  HowUse: undefined;
-  RemovingMyBusiness: undefined;
-  SendTokenScreen: { parsedQrCode: ParsedEDCON2023Code };
-};
 
 function App() {
   const { isConnected: isInternetConnected } = useNetInfo();

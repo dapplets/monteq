@@ -20,19 +20,20 @@ import GeneralPayInfo from '../components/GeneralPayInfo';
 import HistoryPay from '../components/HistoryPay';
 import ShareModal from '../components/ShareModal';
 import Title from '../components/TitlePage';
-import { useMonteqContract } from '../contexts/MonteqContractContext';
+import { useGetOutHistory } from '../hooks/monteq/useGetOutHistory';
+import { useAccount } from '../hooks/useAccount';
 import { useSettings } from '../hooks/useSettings';
 
 const InfoScreen = () => {
   const isFocused = useIsFocused();
+  const { address: account } = useAccount();
   const {
-    account,
     outHistory,
     spentTotalCryptoAmount,
     spentTipsCryptoAmount,
     loadMoreOutHistory,
     isOutHistoryLoading,
-  } = useMonteqContract();
+  } = useGetOutHistory(account);
   const { userName, changeUserName } = useSettings();
   const userNameInputRef = React.useRef<any>();
   const [isModalShareVisible, setIsModalShareVisible] = useState(false);
@@ -53,12 +54,9 @@ const InfoScreen = () => {
 
   if (isOutHistoryLoading && outHistory.length === 0) {
     return (
-      <>
-        <View style={styles.centerContentWrapperInfoScreen}>
-          <ActivityIndicator size="large" color="#919191" />
-        </View>
-        {/* <Navigation path="user" /> */}
-      </>
+      <View style={styles.centerContentWrapperInfoScreen}>
+        <ActivityIndicator size="large" color="#919191" />
+      </View>
     );
   }
 
@@ -70,6 +68,7 @@ const InfoScreen = () => {
           <TouchableHighlight
             underlayColor="transparent"
             onPress={openShareModal}
+            disabled={!account}
             activeOpacity={0.5}
             style={styles.shareInfoScreen}>
             <Image
@@ -149,13 +148,15 @@ const InfoScreen = () => {
           </>
         ) : null}
       </View>
-      {/* <Navigation path="user" /> */}
-      <ShareModal
-        account={account}
-        username={userName}
-        isVisible={isModalShareVisible}
-        onRequestClose={() => setIsModalShareVisible(!isModalShareVisible)}
-      />
+
+      {account ? (
+        <ShareModal
+          account={account}
+          username={userName}
+          isVisible={isModalShareVisible}
+          onRequestClose={() => setIsModalShareVisible(!isModalShareVisible)}
+        />
+      ) : null}
     </>
   );
 };

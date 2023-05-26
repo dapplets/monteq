@@ -12,8 +12,8 @@ import {
   View,
 } from 'react-native';
 
-import { type RootStackParamList } from '../App';
 import { FontFamily } from '../GlobalStyles';
+import { type RootStackParamList } from '../Router';
 import { ParsedEDCON2023Code } from '../common/parseReceipt';
 import PaymentInfo from '../components/PaymentInfo';
 import PaymentParameters from '../components/PaymentParameters';
@@ -230,8 +230,6 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
           </TouchableHighlight>
         ) : null}
       </ScrollView>
-
-      {/* {!modalVisible ? <Navigation path="Payment" /> : null} */}
 
       <TxStatusModal
         isVisible={modalVisible}

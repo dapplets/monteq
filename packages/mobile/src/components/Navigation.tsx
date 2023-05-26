@@ -5,7 +5,6 @@ import { View, Alert, StyleSheet, TouchableHighlight, Platform, Image } from 're
 import ButtonNavigationDefault from './ButtonNavigationDefault';
 import { DomainType, parseQrCodeData } from '../common/parseReceipt';
 import { useCamera } from '../contexts/CameraContext';
-import { useMonteqContract } from '../contexts/MonteqContractContext';
 import { useWallet } from '../contexts/WalletContext';
 import SvgComponentExitDefault from '../icons/SVGExitDefault';
 import SvgComponentHomeActive from '../icons/SVGHomeActive';
@@ -18,7 +17,6 @@ import SvgComponentUserDefault from '../icons/SVGUserDefault';
 const Navigation: React.FC<BottomTabBarProps> = ({ navigation, state }) => {
   const { disconnect } = useWallet();
   const { scan, stop: stopScanning, isScanning } = useCamera();
-  const { getBusinessInfoById, updateUserBalance } = useMonteqContract();
 
   const routeName = state.routeNames[state.index];
 
@@ -53,11 +51,8 @@ const Navigation: React.FC<BottomTabBarProps> = ({ navigation, state }) => {
       const parsedQrCode = parseQrCodeData(url);
 
       if (parsedQrCode.domain === DomainType.MontenegroFiscalCheck) {
-        const businessInfo = await getBusinessInfoById(parsedQrCode.payload.businessId);
-        await updateUserBalance();
         navigation.navigate('TxScreen', {
           parsedReceipt: parsedQrCode.payload,
-          businessInfo,
         });
       } else if (parsedQrCode.domain === DomainType.EDCON2023) {
         navigation.navigate('SendTokenScreen', {

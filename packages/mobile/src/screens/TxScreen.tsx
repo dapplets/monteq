@@ -3,8 +3,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import React, { memo, useEffect, useState } from 'react';
 import { Platform, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
 
-import { type RootStackParamList } from '../App';
 import { FontFamily } from '../GlobalStyles';
+import { type RootStackParamList } from '../Router';
 import {
   BASE_CRYPTO_CURRENCY,
   BASE_CRYPTO_MAX_DIGITS,
@@ -18,14 +18,13 @@ import PaymentParameters from '../components/PaymentParameters';
 import SwitchBlock from '../components/SwitchBlock';
 import Title from '../components/TitlePage';
 import TxStatusModal from '../components/TxStatusModal';
-import { useMonteqContract } from '../contexts/MonteqContractContext';
-import { BusinessInfo } from '../contexts/MonteqContractContext/MonteqContractContext';
+import { useGetBusinessById } from '../hooks/monteq/useGetBusinessById';
+import { usePayReceipt } from '../hooks/monteq/usePayReceipt';
+import { useBalance } from '../hooks/useBalance';
+import { useCoingecko } from '../hooks/useCoingecko';
 
 type Props = {
-  route: RouteProp<
-    { params: { parsedReceipt: ParsedReceipt; businessInfo: BusinessInfo } },
-    'params'
-  >;
+  route: RouteProp<{ params: { parsedReceipt: ParsedReceipt } }, 'params'>;
 };
 
 enum PaymentType {
@@ -36,29 +35,30 @@ enum PaymentType {
 
 const TxScreen: React.FC<Props> = memo(({ route }) => {
   const parsedReceipt = route.params.parsedReceipt;
-  const businessInfo = route.params.businessInfo;
 
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const isFocused = useIsFocused();
+  const { business: businessInfo, isLoading: isBusinessLoading } = useGetBusinessById(
+    parsedReceipt.businessId
+  );
 
   const [paymentType, setPaymentType] = useState<PaymentType>(PaymentType.TIPS_ONLY);
   const [modalVisible, setModalVisible] = useState(false);
 
+  const { balance, isLoading: isBalanceLoading } = useBalance();
+  const { rate } = useCoingecko();
   const {
-    balance,
-    isBalanceLoading,
-    payReceipt,
-    paymentTxStatus,
-    paymentTxError,
-    rate,
-    resetPaymentTxStatus,
-  } = useMonteqContract();
+    send: payReceipt,
+    status: paymentTxStatus,
+    error: paymentTxError,
+    reset: resetPaymentTxStatus,
+  } = usePayReceipt();
 
   useEffect(() => {
     resetPaymentTxStatus();
   }, [isFocused, resetPaymentTxStatus]);
 
-  if (!parsedReceipt) {
+  if (!parsedReceipt || balance === null || isBusinessLoading) {
     // ToDo: invalid receipt
     return null;
   }
@@ -178,8 +178,8 @@ const TxScreen: React.FC<Props> = memo(({ route }) => {
             value={new Date(parsedReceipt.createdAt).toLocaleString()}
           />
           <PaymentParameters parameters="Recipient ID" value={parsedReceipt.businessId} />
-          {businessInfo.name && (
-            <PaymentParameters parameters="Recipient Name" value={businessInfo.name} />
+          {businessInfo?.name && (
+            <PaymentParameters parameters="Recipient Name" value={businessInfo?.name} />
           )}
           <PaymentParameters
             parameters="Invoice total"
@@ -188,12 +188,10 @@ const TxScreen: React.FC<Props> = memo(({ route }) => {
         </View>
       </View>
 
-      {/* {!modalVisible ? <Navigation path="Payment" /> : null} */}
-
       <TxStatusModal
         isVisible={modalVisible}
         recipientId={parsedReceipt.businessId}
-        recipientName={businessInfo.name}
+        recipientName={businessInfo?.name}
         date={new Date(parsedReceipt.createdAt).toLocaleString()}
         fiatAmount={parsedReceipt.currencyReceipt}
         cryptoAmount={amountInCrypto}

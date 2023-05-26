@@ -8,8 +8,6 @@ import CameraScreen from './components/CameraComponent';
 import Navigation from './components/Navigation';
 import { CameraProvider } from './contexts/CameraContext';
 import { EdconContractProvider } from './contexts/EdconContractContext';
-import { MonteqContractProvider } from './contexts/MonteqContractContext';
-import { BusinessInfo } from './contexts/MonteqContractContext/MonteqContractContext';
 import { useWallet } from './contexts/WalletContext';
 import AddingMyBusiness from './screens/AddingMyBusiness';
 import HowUse from './screens/HowUse';
@@ -23,7 +21,7 @@ import WelcomeScreen from './screens/WelcomeScreen';
 export type RootStackParamList = {
   InfoScreen: undefined;
   CameraScreen: undefined;
-  TxScreen: { parsedReceipt: ParsedReceipt; businessInfo: BusinessInfo };
+  TxScreen: { parsedReceipt: ParsedReceipt };
   WelcomeScreen: undefined;
   CodeScanned: undefined;
   MyBusiness: undefined;
@@ -61,52 +59,42 @@ const Router: FC<Props> = ({ initialRouteName }) => {
     );
   }
   return (
-    <MonteqContractProvider>
-      <EdconContractProvider>
-        <CameraProvider>
-          <NavigationContainer>
-            <Tab.Navigator
-              screenOptions={{ headerShown: false }}
-              tabBar={(props) => <Navigation {...props} />}
-              detachInactiveScreens
-              initialRouteName={initialRouteName}>
-              <Tab.Screen
-                name="InfoScreen"
-                component={InfoScreen}
-                options={{ title: PAGE_TITLE }}
-              />
-              <Tab.Screen
-                name="MyBusiness"
-                component={MyBusiness}
-                options={{ title: PAGE_TITLE }}
-              />
-              <Tab.Screen
-                name="CameraScreen"
-                component={CameraScreen}
-                options={{ title: PAGE_TITLE }}
-              />
-              <Tab.Screen name="TxScreen" component={TxScreen} options={{ title: PAGE_TITLE }} />
-              <Tab.Screen
-                name="AddingMyBusiness"
-                component={AddingMyBusiness}
-                options={{ title: PAGE_TITLE }}
-              />
-              <Tab.Screen
-                name="RemovingMyBusiness"
-                component={RemovingMyBusiness}
-                options={{ title: PAGE_TITLE }}
-              />
-              <Tab.Screen name="HowUse" component={HowUse} options={{ title: PAGE_TITLE }} />
-              <Tab.Screen
-                name="SendTokenScreen"
-                component={SendTokenScreen}
-                options={{ title: PAGE_TITLE }}
-              />
-            </Tab.Navigator>
-          </NavigationContainer>
-        </CameraProvider>
-      </EdconContractProvider>
-    </MonteqContractProvider>
+    <EdconContractProvider>
+      <CameraProvider>
+        <NavigationContainer>
+          <Tab.Navigator
+            screenOptions={{ headerShown: false }}
+            tabBar={(props) => <Navigation {...props} />}
+            detachInactiveScreens
+            initialRouteName={initialRouteName}>
+            <Tab.Screen name="InfoScreen" component={InfoScreen} options={{ title: PAGE_TITLE }} />
+            <Tab.Screen name="MyBusiness" component={MyBusiness} options={{ title: PAGE_TITLE }} />
+            <Tab.Screen
+              name="CameraScreen"
+              component={CameraScreen}
+              options={{ title: PAGE_TITLE }}
+            />
+            <Tab.Screen name="TxScreen" component={TxScreen} options={{ title: PAGE_TITLE }} />
+            <Tab.Screen
+              name="AddingMyBusiness"
+              component={AddingMyBusiness}
+              options={{ title: PAGE_TITLE }}
+            />
+            <Tab.Screen
+              name="RemovingMyBusiness"
+              component={RemovingMyBusiness}
+              options={{ title: PAGE_TITLE }}
+            />
+            <Tab.Screen name="HowUse" component={HowUse} options={{ title: PAGE_TITLE }} />
+            <Tab.Screen
+              name="SendTokenScreen"
+              component={SendTokenScreen}
+              options={{ title: PAGE_TITLE }}
+            />
+          </Tab.Navigator>
+        </NavigationContainer>
+      </CameraProvider>
+    </EdconContractProvider>
   );
 };
 

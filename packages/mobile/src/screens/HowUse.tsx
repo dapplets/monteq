@@ -2,8 +2,8 @@ import { NavigationProp, useNavigation } from '@react-navigation/native';
 import * as React from 'react';
 import { Text, StyleSheet, ScrollView, TouchableHighlight, Platform } from 'react-native';
 
-import { RootStackParamList } from '../App';
 import { FontFamily } from '../GlobalStyles';
+import { RootStackParamList } from '../Router';
 import InfoUseItem from '../components/InfoUseItem';
 import Title from '../components/TitlePage';
 import { useWallet } from '../contexts/WalletContext';

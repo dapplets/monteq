@@ -3,24 +3,27 @@ import * as React from 'react';
 import { memo, useEffect, useState } from 'react';
 import { Text, StyleSheet, View, TouchableHighlight, Platform } from 'react-native';
 
-import { RootStackParamList } from '../App';
 import { FontFamily } from '../GlobalStyles';
+import { RootStackParamList } from '../Router';
 import PaymentParameters from '../components/PaymentParameters';
 import Title from '../components/TitlePage';
 import TxStatusModal from '../components/TxStatusModal';
-import { useMonteqContract } from '../contexts/MonteqContractContext';
-import { BusinessInfo } from '../contexts/MonteqContractContext/MonteqContractContext';
+import { BusinessInfo } from '../hooks/monteq/useGetBusinessById';
+import { useGetBusinessByOwner } from '../hooks/monteq/useGetBusinessByOwner';
+import { useRemoveBusiness } from '../hooks/monteq/useRemoveBusiness';
+import { useAccount } from '../hooks/useAccount';
 
 const RemovingMyBusiness: React.FC = memo(() => {
   const isFocused = useIsFocused();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const { address } = useAccount();
+  const { business: myBusiness } = useGetBusinessByOwner(address);
   const {
-    myBusiness,
-    removeBusiness,
-    removeBusinessTxStatus,
-    removeBusinessTxError,
-    resetRemoveBusinessTxStatus,
-  } = useMonteqContract();
+    send: removeBusiness,
+    status: removeBusinessTxStatus,
+    error: removeBusinessTxError,
+    reset: resetRemoveBusinessTxStatus,
+  } = useRemoveBusiness();
 
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -76,8 +79,6 @@ const RemovingMyBusiness: React.FC = memo(() => {
           <Text style={styles.buttonRemoveTextRemovingMyBusiness}>Remove my business</Text>
         </TouchableHighlight>
       </View>
-
-      {/* {!modalVisible ? <Navigation path="home" /> : null} */}
 
       <TxStatusModal
         isVisible={modalVisible}
