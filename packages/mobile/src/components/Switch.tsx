@@ -3,9 +3,9 @@ import { View, TouchableOpacity } from 'react-native';
 
 // ToDo: rename props or types
 export type CustomSwitchProps = {
-  selectionMode: (x: boolean) => void;
-  roundCorner: boolean;
-  onSelectSwitch: boolean;
+  selectionMode: (x: boolean) => void; // ToDo: `selectionMode` looks like enum
+  roundCorner: boolean; // ToDo: should be isRoundCorner if it's boolean
+  onSelectSwitch: boolean; // ToDo: `onSelectSwitch` looks like callback
   selectionColor: string;
 };
 

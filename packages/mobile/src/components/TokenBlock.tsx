@@ -9,13 +9,15 @@ type TokenBlockType = {
   children: ReactNode;
   title: string;
   onLongPress?: () => void;
-  status?: boolean;
+  status?: boolean; // ToDo: name looks like enum, rename it.
 };
 
+// ToDo: why memo?
 const TokenBlock = memo(({ onPress, children, title, onLongPress, status }: TokenBlockType) => {
   // ToDo: refactor as controlled component
   const [isActive, setIsActive] = useState(false);
 
+  // ToDo: what's happening here?
   useEffect(() => {
     status && setIsActive(false);
   }, [isActive, status]);
