@@ -152,7 +152,7 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
           <View style={styles.tokensBlockSendTokenScreen}>
             {myTokens.map((token) => (
               <TokenBlock
-                status={
+              isStatus={
                   transferOrMintTxStatus !== TxStatus.Idle ||
                   setAmbassadorTxStatus !== TxStatus.Idle
                 }
