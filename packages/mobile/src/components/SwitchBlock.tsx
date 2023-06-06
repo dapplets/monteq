@@ -16,9 +16,9 @@ const SwitchBlock: React.FC<SwitchBlockType> = ({ parameters, onPress, isPress }
       <Text style={styles.parametersSwitchBlock}>{parameters}</Text>
       <View>
         <CustomSwitch
-          selectionMode={onPress}
-          roundCorner
-          onSelectSwitch={isPress}
+          getSelectionMode={onPress}
+          isRoundCorner
+          isSelectSwitch={isPress}
           selectionColor="#14C58B"
         />
       </View>
