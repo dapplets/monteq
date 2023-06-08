@@ -80,7 +80,7 @@ export function useContractWrite<T extends [...any[]]>({
   };
 }
 
-function parseRevertReason(err: any): string | null {
+export function parseRevertReason(err: any): string | null {
   try {
     const msg = JSON.parse(err.error.body).error.message;
     const hexReason = /0x[0-9a-fA-F]*/gm.exec(msg)?.[0];

@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react';
+import React, { FC, ReactElement, useCallback, useMemo, useState } from 'react';
 
 import {
   EdconContractContext,
@@ -12,23 +12,17 @@ import {
   TokenId,
 } from './EdconContractContext';
 import EDCON_GAME_ABI from '../../abis/EdconGame.json';
-import {
-  CHAIN_ID,
-  JSON_RPC_URL,
-  EDCON_GAME_CONTRACT_ADDRESS,
-  WC_SESSION_PARAMS,
-} from '../../common/constants';
-import { parseRevertReason } from '../../common/helpers';
+import { EDCON_GAME_CONTRACT_ADDRESS } from '../../common/constants';
+import { parseRevertReason } from '../../hooks/useContractWrite';
 import { useWallet } from '../WalletContext';
 
 type Props = {
   children: ReactElement;
 };
 
+// ToDo: refactor to use useContractWrite
 const EdconContractProvider: FC<Props> = ({ children }) => {
-  const { provider: writeEip1193 } = useWallet();
-
-  const [contract, setContract] = useState<ethers.Contract | null>(null);
+  const { web3Provider } = useWallet();
 
   const [myTokens, setMyTokens] = useState<MyTokenInfo[]>([]);
   const [areMyTokensLoading, setAreMyTokensLoading] = useState<boolean>(false);
@@ -39,32 +33,13 @@ const EdconContractProvider: FC<Props> = ({ children }) => {
   const [transferOrMintTxError, setTransferOrMintTxError] = useState<string | null>(null);
   const [transferOrMintTxStatus, setTransferOrMintTxStatus] = useState<TxStatus>(TxStatus.Idle);
 
-  useEffect(() => {
-    if (writeEip1193) {
-      const readProvider = new ethers.providers.JsonRpcProvider(JSON_RPC_URL, CHAIN_ID);
-
-      // The `eth_estimateGas` and `eth_call` calls are not resolved by WC-provider
-      // So we split read and write calls by separate providers
-      const provider = new ethers.providers.Web3Provider({
-        request: ({ method, params }) => {
-          const writeMethods = WC_SESSION_PARAMS.namespaces.eip155.methods;
-          return writeMethods.includes(method)
-            ? writeEip1193.request({ method, params })
-            : readProvider.send(method, params ?? []);
-        },
-      });
-
-      const _contract = new ethers.Contract(
-        EDCON_GAME_CONTRACT_ADDRESS,
-        EDCON_GAME_ABI,
-        provider.getSigner()
-      );
-
-      setContract(_contract);
-    } else {
-      setContract(null);
-    }
-  }, [writeEip1193]);
+  const contract = useMemo(
+    () =>
+      web3Provider
+        ? new ethers.Contract(EDCON_GAME_CONTRACT_ADDRESS, EDCON_GAME_ABI, web3Provider.getSigner())
+        : null,
+    [web3Provider]
+  );
 
   const loadMyTokens = useCallback(async () => {
     if (!contract) {
