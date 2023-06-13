@@ -16,6 +16,7 @@ import MyBusiness from './screens/MyBusiness';
 import RemovingMyBusiness from './screens/RemovingMyBuisness';
 import SendTokenScreen from './screens/SendTokenScreen';
 import TxScreen from './screens/TxScreen';
+import WebViewScreen from './screens/WebViewScreen';
 import WelcomeScreen from './screens/WelcomeScreen';
 
 export type RootStackParamList = {
@@ -89,6 +90,11 @@ const Router: FC<Props> = ({ initialRouteName }) => {
             <Tab.Screen
               name="SendTokenScreen"
               component={SendTokenScreen}
+              options={{ title: PAGE_TITLE }}
+            />
+            <Tab.Screen
+              name="WebViewScreen"
+              component={WebViewScreen}
               options={{ title: PAGE_TITLE }}
             />
           </Tab.Navigator>

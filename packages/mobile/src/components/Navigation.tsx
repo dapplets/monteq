@@ -32,7 +32,7 @@ const Navigation: React.FC<BottomTabBarProps> = ({ navigation, state }) => {
 
   async function navigationHowUse() {
     stopScanning();
-    navigation.navigate('HowUse');
+    navigation.navigate('WebViewScreen');
   }
 
   async function navigationUserHistory() {
@@ -88,8 +88,8 @@ const Navigation: React.FC<BottomTabBarProps> = ({ navigation, state }) => {
       />
       <ButtonNavigationDefault
         onPress={navigationHowUse}
-        isActive={routeName === 'HowUse'}
-        children={routeName === 'HowUse' ? <SvgComponentHowActive /> : <SvgComponentHowDefault />}
+        isActive={routeName === 'WebViewScreen'}
+        children={routeName === 'WebViewScreen' ? <SvgComponentHowActive /> : <SvgComponentHowDefault />}
       />
       <TouchableHighlight
         disabled={isScanning}
