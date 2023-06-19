@@ -1,5 +1,5 @@
 import { BarCodeScannedCallback, BarCodeScanner } from 'expo-barcode-scanner';
-import { Camera } from 'expo-camera';
+import { Camera, CameraType } from 'expo-camera';
 import * as Permissions from 'expo-permissions';
 import React, { FC, useState, useCallback } from 'react';
 import { BackHandler, View, StyleSheet, Text, Platform } from 'react-native';
@@ -17,6 +17,7 @@ type Props = {
 const CameraComponent: FC<Props> = ({ onQrCodeFound, onCanceled, onError }) => {
   const [hasPermission, setHasPermission] = useState(false);
   const [scanned, setScanned] = useState(false);
+  const [cameraTypeOrDeviceId, setCameraTypeOrDeviceId] = useState<any>(null);
 
   const handleBackButtonPress = useCallback(() => {
     setTimeout(() => onCanceled(), 500); // ToDo: hack
@@ -53,6 +54,35 @@ const CameraComponent: FC<Props> = ({ onQrCodeFound, onCanceled, onError }) => {
     return () => backHandler.remove();
   }, [handleBackButtonPress, checkCameraPermission]);
 
+  // ToDo: remove this workaround when the issue is fixed in expo-camera.
+  // Workaround for PWA where expo-camera selects the wrong camera on multi-camera devices.
+  // For example on Samsung devices it selects the ultra-wide camera that is not able to scan QR codes.
+  // The expo-camera library is patched to support the deviceId prop.
+  // More info: https://stackoverflow.com/questions/59636464/how-to-select-proper-backfacing-camera-in-javascript
+  React.useEffect(() => {
+    if (cameraTypeOrDeviceId !== null) return;
+
+    if (
+      Platform.OS === 'web' &&
+      typeof navigator !== 'undefined' &&
+      // @ts-ignore
+      navigator.mediaDevices.enumerateDevices
+    ) {
+      navigator.mediaDevices.enumerateDevices().then((devices) => {
+        const videoDevices = devices.filter((device) => device.kind === 'videoinput');
+
+        if (videoDevices.length > 1) {
+          // ToDo: find a normal back camera id
+          setCameraTypeOrDeviceId(videoDevices[1].deviceId);
+        } else {
+          setCameraTypeOrDeviceId(CameraType.back);
+        }
+      });
+    } else {
+      setCameraTypeOrDeviceId(CameraType.back);
+    }
+  }, [cameraTypeOrDeviceId]);
+
   const handleBarCodeScanned: BarCodeScannedCallback = ({ data }) => {
     setScanned(true);
     onQrCodeFound(data);
@@ -63,6 +93,10 @@ const CameraComponent: FC<Props> = ({ onQrCodeFound, onCanceled, onError }) => {
   }
 
   if (hasPermission === false) {
+    return null;
+  }
+
+  if (cameraTypeOrDeviceId === null) {
     return null;
   }
 
@@ -83,6 +117,7 @@ const CameraComponent: FC<Props> = ({ onQrCodeFound, onCanceled, onError }) => {
             <SvgComponentCameraBorder style={styles.cameraBorderBottomRight} />
 
             <Camera
+              type={cameraTypeOrDeviceId}
               onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
               barCodeScannerSettings={{
                 barCodeTypes: [BarCodeScanner.Constants.BarCodeType.qr],

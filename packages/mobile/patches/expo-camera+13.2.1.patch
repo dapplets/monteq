@@ -1,0 +1,16 @@
+diff --git a/node_modules/expo-camera/build/WebCameraUtils.js b/node_modules/expo-camera/build/WebCameraUtils.js
+index f957051..760e7bc 100644
+--- a/node_modules/expo-camera/build/WebCameraUtils.js
++++ b/node_modules/expo-camera/build/WebCameraUtils.js
+@@ -144,6 +144,11 @@ export async function getPreferredStreamDevice(preferredCameraType, preferredWid
+     }
+ }
+ export async function getStreamDevice(preferredCameraType, preferredWidth, preferredHeight) {
++    const isDeviceSpecified = !Object.values(CameraType).includes(preferredCameraType);
++    if (isDeviceSpecified) {
++        return requestUserMediaAsync({ video: { deviceId: preferredCameraType } });
++    }
++
+     const constraints = getIdealConstraints(preferredCameraType, preferredWidth, preferredHeight);
+     const stream = await requestUserMediaAsync(constraints);
+     return stream;
