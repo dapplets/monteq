@@ -74,12 +74,19 @@ const CameraComponent: FC<Props> = ({ onQrCodeFound, onCanceled, onError }) => {
             <SvgComponentScanIcon />
             <Text style={styles.containerDescriptionText}>Scan QR on your receipt</Text>
           </View>
+        
           <View style={styles.container}>
+            <View style={styles.containerBg}></View>
             <SvgComponentCameraBorder style={styles.cameraBorderTopLeft} />
             <SvgComponentCameraBorder style={styles.cameraBorderTopRight} />
             <SvgComponentCameraBorder style={styles.cameraBorderBottomLeft} />
             <SvgComponentCameraBorder style={styles.cameraBorderBottomRight} />
+            
             <Camera
+            
+            // children={
+            //   // <View style={styles.containerWindow}></View>
+            // }
               onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
               barCodeScannerSettings={{
                 barCodeTypes: [BarCodeScanner.Constants.BarCodeType.qr],
@@ -103,16 +110,19 @@ const styles = StyleSheet.create({
   },
   wrapperCamera: {
     margin: 'auto',
-    width: 250,
-    height: 305,
+    width: '100%',
+    height: '100%',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
   containerDescription: {
+    position:'absolute',
     display: 'flex',
     flexDirection: 'row',
+    zIndex: 1,
+    top: 90,
     width: 260,
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -124,40 +134,68 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   container: {
-    height: 250,
-    width: 250,
-    padding: 10,
+    height: '100%',
+    width: '100%',
+    position:'relative'
+    // backgroundColor:'#000',
+    // opacity:0.8,
+    // zIndex:2
+    // padding: 10,
   },
+  containerBg:{
+    height: '100%',
+    width: '100%',
+    position:'absolute',
+    top:0,
+    left:0,
+    zIndex:1,
+    borderColor:'#000',
+    borderStyle:'solid',
+    // borderWidth:50,
+    borderBottomWidth:200,
+  borderLeftWidth:50,
+  borderRightWidth:50,
+  borderTopWidth:150,
+    // backgroundColor:'#000',
+    opacity:0.6,
+  },
+ 
+
+
   cameraBorderTopLeft: {
     position: 'absolute',
-    top: 0,
-    left: 0,
+    top: 148,
+    left: 48,
     width: 80,
     height: 80,
+    zIndex:2
   },
   cameraBorderTopRight: {
     position: 'absolute',
-    top: 0,
-    right: 0,
+    top: 148,
+    right: 48,
     width: 80,
     height: 80,
     transform: [{ scaleX: -1 }],
+    zIndex:2
   },
   cameraBorderBottomLeft: {
     position: 'absolute',
-    bottom: 0,
-    left: 0,
+    bottom: 198,
+    left: 48,
     width: 80,
     height: 80,
     transform: [{ scaleY: -1 }],
+    zIndex:2
   },
   cameraBorderBottomRight: {
     position: 'absolute',
-    bottom: 0,
-    right: 0,
+    bottom: 198,
+    right: 48,
     width: 80,
     height: 80,
     transform: [{ scaleX: -1 }, { scaleY: -1 }],
+    zIndex:2
   },
 
   cameraScreenBtn: {
