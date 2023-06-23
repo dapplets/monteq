@@ -2,9 +2,10 @@ import { BarCodeScannedCallback, BarCodeScanner } from 'expo-barcode-scanner';
 import { Camera, CameraType } from 'expo-camera';
 import * as Permissions from 'expo-permissions';
 import React, { FC, useState, useCallback } from 'react';
-import { BackHandler, View, StyleSheet, Text, Platform } from 'react-native';
+import { BackHandler, View, StyleSheet, Text, Platform, Pressable } from 'react-native';
 
 import { FontFamily } from '../GlobalStyles';
+import CameraSwitchIcon from '../assets/camera-switch.svg';
 import SvgComponentCameraBorder from '../icons/SVGCameraBorder';
 import SvgComponentScanIcon from '../icons/SVGScanIcon';
 
@@ -17,7 +18,9 @@ type Props = {
 const CameraComponent: FC<Props> = ({ onQrCodeFound, onCanceled, onError }) => {
   const [hasPermission, setHasPermission] = useState(false);
   const [scanned, setScanned] = useState(false);
-  const [cameraTypeOrDeviceId, setCameraTypeOrDeviceId] = useState<any>(null);
+  const [cameraType, setCameraType] = useState<CameraType | null>(null);
+  const [deviceId, setDeviceId] = useState<string | null>(null);
+  const [devices, setDevices] = useState<string[]>([]);
 
   const handleBackButtonPress = useCallback(() => {
     setTimeout(() => onCanceled(), 500); // ToDo: hack
@@ -60,7 +63,7 @@ const CameraComponent: FC<Props> = ({ onQrCodeFound, onCanceled, onError }) => {
   // The expo-camera library is patched to support the deviceId prop.
   // More info: https://stackoverflow.com/questions/59636464/how-to-select-proper-backfacing-camera-in-javascript
   React.useEffect(() => {
-    if (cameraTypeOrDeviceId !== null) return;
+    if (cameraType !== null || deviceId !== null) return;
 
     if (
       Platform.OS === 'web' &&
@@ -69,19 +72,36 @@ const CameraComponent: FC<Props> = ({ onQrCodeFound, onCanceled, onError }) => {
       navigator.mediaDevices.enumerateDevices
     ) {
       navigator.mediaDevices.enumerateDevices().then((devices) => {
-        const videoDevices = devices.filter((device) => device.kind === 'videoinput');
+        const videoDevices = devices
+          .filter((device) => device.kind === 'videoinput')
+          .filter((device) => {
+            if (
+              device.label.toLowerCase().includes('back') ||
+              device.label.toLowerCase().includes('front')
+            ) {
+              return device.label.toLowerCase().includes('back');
+            }
+            return true;
+          });
 
-        if (videoDevices.length > 1) {
-          // ToDo: find a normal back camera id
-          setCameraTypeOrDeviceId(videoDevices[1].deviceId);
+        const id = videoDevices.find((x) => x.label.toLowerCase().includes('camera2 0'))?.deviceId;
+        if (id) {
+          setDeviceId(id);
+          setCameraType(null);
+        } else if (videoDevices[videoDevices.length - 1].label.toLowerCase().includes('back')) {
+          setDeviceId(videoDevices[videoDevices.length - 1].deviceId);
+          setCameraType(null);
         } else {
-          setCameraTypeOrDeviceId(CameraType.back);
+          setCameraType(CameraType.back);
+          setDeviceId(null);
         }
+        setDevices(videoDevices.map((x) => x.deviceId));
       });
     } else {
-      setCameraTypeOrDeviceId(CameraType.back);
+      setCameraType(CameraType.back);
+      setDeviceId(null);
     }
-  }, [cameraTypeOrDeviceId]);
+  }, [cameraType, deviceId]);
 
   const handleBarCodeScanned: BarCodeScannedCallback = ({ data }) => {
     setScanned(true);
@@ -96,14 +116,40 @@ const CameraComponent: FC<Props> = ({ onQrCodeFound, onCanceled, onError }) => {
     return null;
   }
 
-  if (cameraTypeOrDeviceId === null) {
+  if (cameraType === null && deviceId === null) {
     return null;
   }
+
+  const handleSwitchCamera = (e: any) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const videoEl = document.evaluate('..//video', e?.currentTarget)?.iterateNext();
+    if (videoEl) {
+      const video: any = videoEl;
+      const stream = video.srcObject;
+      const tracks = stream.getTracks();
+      tracks.forEach((track: any) => {
+        track.stop();
+      });
+      video.srcObject = null;
+    }
+    const index = devices.findIndex((x) => x === deviceId);
+    if (index === devices.length - 1) {
+      setDeviceId(devices[0]);
+    } else {
+      setDeviceId(devices[index + 1]);
+    }
+  };
 
   return (
     <>
       <View style={styles.containerCamera}>
         <View style={styles.wrapperCamera}>
+          {devices.length > 1 && (
+            <Pressable style={styles.cameraSwitcher} onPress={handleSwitchCamera}>
+              <img src={CameraSwitchIcon} alt="camera switch" />
+            </Pressable>
+          )}
           <View style={styles.containerDescription}>
             <SvgComponentScanIcon />
             <Text style={styles.containerDescriptionText}>Scan QR on your receipt</Text>
@@ -117,7 +163,7 @@ const CameraComponent: FC<Props> = ({ onQrCodeFound, onCanceled, onError }) => {
             <SvgComponentCameraBorder style={styles.cameraBorderBottomRight} />
 
             <Camera
-              type={cameraTypeOrDeviceId}
+              type={deviceId ? { exact: deviceId } : cameraType}
               onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
               barCodeScannerSettings={{
                 barCodeTypes: [BarCodeScanner.Constants.BarCodeType.qr],
@@ -147,6 +193,14 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'space-between',
     alignItems: 'center',
+  },
+  cameraSwitcher: {
+    position: 'absolute',
+    display: 'flex',
+    zIndex: 2,
+    padding: 10,
+    top: 10,
+    right: 12,
   },
   containerDescription: {
     position: 'absolute',
