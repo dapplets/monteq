@@ -1,0 +1,70 @@
+diff --git a/node_modules/expo-camera/build/Camera.d.ts b/node_modules/expo-camera/build/Camera.d.ts
+index 9315df9..678f2a2 100644
+--- a/node_modules/expo-camera/build/Camera.d.ts
++++ b/node_modules/expo-camera/build/Camera.d.ts
+@@ -21,7 +21,7 @@ export default class Camera extends React.Component<CameraProps> {
+     static getAvailableVideoCodecsAsync(): Promise<VideoCodec[]>;
+     static Constants: ConstantsType;
+     static ConversionTables: {
+-        type: Record<"front" | "back", string | number | undefined>;
++        type: Record<any>;
+         flashMode: Record<"on" | "off" | "auto" | "torch", string | number | undefined>;
+         autoFocus: Record<"on" | "off" | "auto" | "singleShot", string | number | boolean | undefined>;
+         whiteBalance: Record<"auto" | "sunny" | "cloudy" | "shadow" | "incandescent" | "fluorescent" | "continuous" | "manual", string | number | undefined>;
+diff --git a/node_modules/expo-camera/build/Camera.types.d.ts b/node_modules/expo-camera/build/Camera.types.d.ts
+index b230c33..322e4ef 100644
+--- a/node_modules/expo-camera/build/Camera.types.d.ts
++++ b/node_modules/expo-camera/build/Camera.types.d.ts
+@@ -338,7 +338,7 @@ export type CameraProps = ViewProps & {
+      * When `CameraType.back`, use the back-facing camera.
+      * @default CameraType.back
+      */
+-    type?: number | CameraType;
++    type?: any;
+     /**
+      * Camera flash mode. Use one of [`FlashMode.<value>`](#flashmode-1). When `FlashMode.on`, the flash on your device will
+      * turn on when taking a picture, when `FlashMode.off`, it won't. Setting to `FlashMode.auto` will fire flash if required,
+diff --git a/node_modules/expo-camera/build/WebCameraUtils.d.ts b/node_modules/expo-camera/build/WebCameraUtils.d.ts
+index a4ab62e..671a0a0 100644
+--- a/node_modules/expo-camera/build/WebCameraUtils.d.ts
++++ b/node_modules/expo-camera/build/WebCameraUtils.d.ts
+@@ -19,8 +19,8 @@ export declare function getIdealConstraints(preferredCameraType: CameraType, wid
+  * @param preferredWidth
+  * @param preferredHeight
+  */
+-export declare function getPreferredStreamDevice(preferredCameraType: CameraType, preferredWidth?: number | ConstrainLongRange, preferredHeight?: number | ConstrainLongRange): Promise<MediaStream>;
+-export declare function getStreamDevice(preferredCameraType: CameraType, preferredWidth?: number | ConstrainLongRange, preferredHeight?: number | ConstrainLongRange): Promise<MediaStream>;
++export declare function getPreferredStreamDevice(preferredCameraType: CameraType | string, preferredWidth?: number | ConstrainLongRange, preferredHeight?: number | ConstrainLongRange): Promise<MediaStream>;
++export declare function getStreamDevice(preferredCameraType: CameraType | string, preferredWidth?: number | ConstrainLongRange, preferredHeight?: number | ConstrainLongRange): Promise<MediaStream>;
+ export declare function isWebKit(): boolean;
+ export declare function compareStreams(a: MediaStream | null, b: MediaStream | null): boolean;
+ export declare function capture(video: HTMLVideoElement, settings: MediaTrackSettings, config: CameraPictureOptions): CameraCapturedPicture;
+diff --git a/node_modules/expo-camera/build/WebCameraUtils.js b/node_modules/expo-camera/build/WebCameraUtils.js
+index f957051..760e7bc 100644
+--- a/node_modules/expo-camera/build/WebCameraUtils.js
++++ b/node_modules/expo-camera/build/WebCameraUtils.js
+@@ -144,6 +144,11 @@ export async function getPreferredStreamDevice(preferredCameraType, preferredWid
+     }
+ }
+ export async function getStreamDevice(preferredCameraType, preferredWidth, preferredHeight) {
++    const isDeviceSpecified = !Object.values(CameraType).includes(preferredCameraType);
++    if (isDeviceSpecified) {
++        return requestUserMediaAsync({ video: { deviceId: preferredCameraType } });
++    }
++
+     const constraints = getIdealConstraints(preferredCameraType, preferredWidth, preferredHeight);
+     const stream = await requestUserMediaAsync(constraints);
+     return stream;
+diff --git a/node_modules/expo-camera/src/Camera.types.ts b/node_modules/expo-camera/src/Camera.types.ts
+index 8e10478..87208d7 100644
+--- a/node_modules/expo-camera/src/Camera.types.ts
++++ b/node_modules/expo-camera/src/Camera.types.ts
+@@ -370,7 +370,7 @@ export type CameraProps = ViewProps & {
+    * When `CameraType.back`, use the back-facing camera.
+    * @default CameraType.back
+    */
+-  type?: number | CameraType;
++  type?: any;
+   /**
+    * Camera flash mode. Use one of [`FlashMode.<value>`](#flashmode-1). When `FlashMode.on`, the flash on your device will
+    * turn on when taking a picture, when `FlashMode.off`, it won't. Setting to `FlashMode.auto` will fire flash if required,
