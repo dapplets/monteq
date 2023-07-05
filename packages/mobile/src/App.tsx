@@ -19,7 +19,7 @@ function App() {
   const { isConnected: isInternetConnected } = useNetInfo();
   const { isOwnerViewPreferred, isInitializing } = useSettings();
 
-  const [fontsLoaded] = useFonts({
+  useFonts({
     roboto_black_italic: require('./assets/fonts/roboto_black_italic.ttf'),
     roboto_black: require('./assets/fonts/roboto_black.ttf'),
     roboto_bold_italic: require('./assets/fonts/roboto_bold_italic.ttf'),
@@ -41,7 +41,7 @@ function App() {
     })();
   }, [isInitializing]);
 
-  if (isInitializing || !fontsLoaded) {
+  if (isInitializing) {
     return null;
   }
 
