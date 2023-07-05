@@ -1,5 +1,5 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Image,
   StyleSheet,
@@ -64,6 +64,18 @@ const TxModal: React.FC<TxModalProps> = ({
   onPrimaryButtonPress,
   onSecondaryButtonPress,
 }) => {
+  const [isDelayTransaction, setDelayTransaction] = useState(false);
+
+  useEffect(() => {
+    if (status === 'Signing') {
+      const timer = setTimeout(() => {
+        setDelayTransaction(true);
+      }, 7000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [status]);
+
   return (
     <Modal transparent visible={isVisible} animationType="slide" onRequestClose={onRequestClose}>
       <View style={styles.centeredViewTxModal}>
@@ -126,7 +138,9 @@ const TxModal: React.FC<TxModalProps> = ({
 
           {date !== undefined ? <PaymentParameters isGray parameters="Date" value={date} /> : null}
 
-          {onPrimaryButtonPress !== undefined && primaryButton !== undefined ? (
+          {onPrimaryButtonPress !== undefined &&
+          primaryButton !== undefined &&
+          isDelayTransaction ? (
             <LinearGradient
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}

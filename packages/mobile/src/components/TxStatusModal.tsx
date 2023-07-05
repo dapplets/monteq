@@ -43,6 +43,8 @@ const TxStatusModal: React.FC<Props> = ({
       status: 'Signing',
       type: TxStatusType.Yellow,
       image: require('../assets/inProgress.png'),
+      primaryButton: 'Close',
+      onPrimaryButtonPress: onClose,
     },
     [TxStatus.Mining]: {
       isVisible,
@@ -56,6 +58,7 @@ const TxStatusModal: React.FC<Props> = ({
       status: 'Mining',
       type: TxStatusType.Yellow,
       image: require('../assets/inProgress.png'),
+      
     },
     [TxStatus.Done]: {
       isVisible,
