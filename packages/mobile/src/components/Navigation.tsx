@@ -37,7 +37,7 @@ const Navigation: React.FC<BottomTabBarProps> = ({ navigation, state }) => {
 
   async function navigationUserHistory() {
     stopScanning();
-    navigation.navigate('InfoScreen');
+    navigation.navigate('Profile');
   }
 
   async function handleGmsScanPress() {

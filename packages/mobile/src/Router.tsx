@@ -17,6 +17,7 @@ import RemovingMyBusiness from './screens/RemovingMyBuisness';
 import SendTokenScreen from './screens/SendTokenScreen';
 import TxScreen from './screens/TxScreen';
 import WelcomeScreen from './screens/WelcomeScreen';
+import ProfileScreen from './screens/ProfileScreen';
 
 export type RootStackParamList = {
   InfoScreen: undefined;
@@ -67,7 +68,7 @@ const Router: FC<Props> = ({ initialRouteName }) => {
             tabBar={(props) => <Navigation {...props} />}
             detachInactiveScreens
             initialRouteName={initialRouteName}>
-            <Tab.Screen name="InfoScreen" component={InfoScreen} options={{ title: PAGE_TITLE }} />
+            <Tab.Screen name="Profile" component={ProfileScreen} options={{ title: PAGE_TITLE }} />
             <Tab.Screen name="MyBusiness" component={MyBusiness} options={{ title: PAGE_TITLE }} />
             <Tab.Screen
               name="CameraScreen"

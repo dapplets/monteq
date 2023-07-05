@@ -64,6 +64,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     overflow: 'hidden',
+    
   },
   startWithWalletconnect: {
     fontSize: FontSize.semibold_size,
@@ -84,6 +85,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'hidden',
+    marginTop: 10,
   },
 });
 

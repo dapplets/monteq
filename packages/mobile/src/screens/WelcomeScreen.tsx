@@ -42,9 +42,19 @@ const WelcomeScreen = () => {
       <View
         style={[styles.mainButtonParentWelcomeScreen, styles.mainButtonParentFlexBoxWelcomeScreen]}>
         <MainButton
+          // onPress={handleWalletConnectPress}
+          image={require('../assets/walletConnect.png')}
+          label="Biometry"
+        />
+          <MainButton
+          // onPress={handleWalletConnectPress}
+          image={require('../assets/walletConnect.png')}
+          label="Twitter"
+        />
+          <MainButton
           onPress={handleWalletConnectPress}
           image={require('../assets/walletConnect.png')}
-          label="Start with WalletConnect"
+          label="WalletConnect"
         />
         <HollowButton />
       </View>
