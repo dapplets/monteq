@@ -19,6 +19,9 @@ import { useSettings } from '../hooks/useSettings';
 import SwitchBlock from '../components/SwitchBlock';
 import * as ImagePicker from 'expo-image-picker';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useIsFocused } from '@react-navigation/native';
+import { useWallet } from '../contexts/WalletContext';
+import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 const TEST_NEWS = [
   {
     id: '1',
@@ -87,14 +90,26 @@ const TEST_PERKS = [
   },
 ];
 
-const ProfileScreen = () => {
+const ProfileScreen: React.FC<BottomTabBarProps> = ({ navigation }) => {
+  const isFocused = useIsFocused();
   const { userName, changeUserName } = useSettings();
+  const { isOwnerViewPreferred, changeIsOwnerViewPreferred } = useSettings();
   const userNameInputRef = React.useRef<any>();
   const [image, setImage] = useState(null || '');
-  //   todo:mocked
-  //   todo: use useSettings()
-  const [isOpenThisPage, setOpenThisPage] = useState(false);
-  React.useEffect(() => {}, [userName]);
+  const [isSmallImg, setisSmallImg] = useState(false);
+  const { disconnect } = useWallet();
+
+  const { isConnected: isWalletConnected } = useWallet();
+  function handleDisconnectPress() {
+    disconnect();
+    navigation.navigate('WelcomeScreen');
+  }
+
+  function handleBack() {
+    navigation.goBack();
+  }
+
+  React.useEffect(() => {}, [userName, isSmallImg]);
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -111,15 +126,23 @@ const ProfileScreen = () => {
   const resetImg = () => {
     setImage('');
   };
+  const handleOnScroll = (event) => {
+    if (event.nativeEvent.contentOffset.y > 180) {
+      setisSmallImg(true);
+    } else {
+      setisSmallImg(false);
+    }
+  };
   return (
     <>
-      <ScrollView style={styles.infoScreenWrapperInfoScreen}>
+      <ScrollView onScroll={(e) => handleOnScroll(e)} style={styles.infoScreenWrapperInfoScreen}>
         {/* title */}
         <View style={styles.wrapperTitleInfoScreen}>
           <View style={styles.profileTitle}>
             <TouchableHighlight
               underlayColor="transparent"
               activeOpacity={0.5}
+              onPress={handleBack}
               style={styles.arrowLeftTitleProfile}>
               <Image
                 style={styles.shareImgInfoScreen}
@@ -133,6 +156,7 @@ const ProfileScreen = () => {
           <TouchableHighlight
             underlayColor="transparent"
             activeOpacity={0.5}
+            onPress={handleDisconnectPress}
             style={styles.shareInfoScreen}>
             <Image
               style={styles.shareImgInfoScreen}
@@ -179,6 +203,10 @@ const ProfileScreen = () => {
         {/* choise img */}
         {/* enter name */}
         <View style={styles.nameParametersInfoScreen}>
+          {image && isSmallImg && (
+            <Image style={styles.nameParametersImg} resizeMode="contain" source={{ uri: image }} />
+          )}
+
           <TextInput
             ref={userNameInputRef}
             numberOfLines={1}
@@ -202,8 +230,8 @@ const ProfileScreen = () => {
         {/* always start */}
         <SwitchBlock
           parameters="Always start from this page"
-          onPress={setOpenThisPage}
-          isPress={isOpenThisPage}
+          onPress={changeIsOwnerViewPreferred}
+          isPress={isOwnerViewPreferred}
         />
         {/* can get in */}
         <View style={styles.nameParametersInfoScreen}>
@@ -419,10 +447,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     backgroundColor: '#fff',
-    borderRadius: 4,
+    borderRadius: 20,
     padding: 10,
     marginBottom: 10,
     alignItems: 'center',
+  },
+  nameParametersImg: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    marginRight: 10,
   },
   valueInfoScreen: {
     fontSize: 14,

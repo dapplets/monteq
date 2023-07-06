@@ -18,6 +18,7 @@ import SendTokenScreen from './screens/SendTokenScreen';
 import TxScreen from './screens/TxScreen';
 import WelcomeScreen from './screens/WelcomeScreen';
 import ProfileScreen from './screens/ProfileScreen';
+import LoginRequestScreen from './screens/LoginRequestScreen';
 
 export type RootStackParamList = {
   InfoScreen: undefined;
@@ -30,6 +31,8 @@ export type RootStackParamList = {
   HowUse: undefined;
   RemovingMyBusiness: undefined;
   SendTokenScreen: { parsedQrCode: ParsedEDCON2023Code };
+  ProfileScreen: undefined;
+  LoginRequestScreen: undefined;
 };
 
 const Tab = createBottomTabNavigator();
@@ -41,24 +44,27 @@ export type Props = {
 const Router: FC<Props> = ({ initialRouteName }) => {
   const { isConnected: isWalletConnected } = useWallet();
 
-  if (!isWalletConnected) {
-    return (
-      <NavigationContainer>
-        <Tab.Navigator
-          screenOptions={{ headerShown: false }}
-          tabBar={() => null}
-          detachInactiveScreens
-          initialRouteName="WelcomeScreen">
-          <Tab.Screen
-            name="WelcomeScreen"
-            component={WelcomeScreen}
-            options={{ title: PAGE_TITLE }}
-          />
-          <Tab.Screen name="HowUse" component={HowUse} options={{ title: PAGE_TITLE }} />
-        </Tab.Navigator>
-      </NavigationContainer>
-    );
-  }
+  // if (!isWalletConnected) {
+  //   return (
+  //     <CameraProvider>
+  //       <NavigationContainer>
+  //         <Tab.Navigator
+  //           screenOptions={{ headerShown: false }}
+  //           tabBar={(props) => <Navigation {...props} />}
+  //           detachInactiveScreens
+  //           initialRouteName="CameraScreen">
+  //           <Tab.Screen
+  //             name="CameraScreen"
+  //             component={CameraScreen}
+  //             options={{ title: PAGE_TITLE }}
+  //           />
+  //           {/* <Tab.Screen name="HowUse" component={HowUse} options={{ title: PAGE_TITLE }} /> */}
+  //         </Tab.Navigator>
+  //       </NavigationContainer>
+  //     </CameraProvider>
+  //   );
+  // }
+
   return (
     <EdconContractProvider>
       <CameraProvider>
@@ -68,7 +74,21 @@ const Router: FC<Props> = ({ initialRouteName }) => {
             tabBar={(props) => <Navigation {...props} />}
             detachInactiveScreens
             initialRouteName={initialRouteName}>
-            <Tab.Screen name="Profile" component={ProfileScreen} options={{ title: PAGE_TITLE }} />
+            <Tab.Screen
+              name="WelcomeScreen"
+              component={WelcomeScreen}
+              options={{ title: PAGE_TITLE }}
+            />
+            <Tab.Screen
+              name="LoginRequestScreen"
+              component={LoginRequestScreen}
+              options={{ title: PAGE_TITLE }}
+            />
+            <Tab.Screen
+              name="ProfileScreen"
+              component={ProfileScreen}
+              options={{ title: PAGE_TITLE }}
+            />
             <Tab.Screen name="MyBusiness" component={MyBusiness} options={{ title: PAGE_TITLE }} />
             <Tab.Screen
               name="CameraScreen"

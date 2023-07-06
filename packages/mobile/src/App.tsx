@@ -8,7 +8,7 @@ import { enableScreens } from 'react-native-screens';
 
 import Router from './Router';
 import TxModal from './components/TxModal';
-import { WalletProvider } from './contexts/WalletContext';
+import { WalletProvider, useWallet } from './contexts/WalletContext';
 import { useSettings } from './hooks/useSettings';
 
 SplashScreen.preventAutoHideAsync();
@@ -18,7 +18,7 @@ enableScreens();
 function App() {
   const { isConnected: isInternetConnected } = useNetInfo();
   const { isOwnerViewPreferred, isInitializing } = useSettings();
-
+  const { isConnected: isWalletConnected } = useWallet();
   const [fontsLoaded] = useFonts({
     roboto_black_italic: require('./assets/fonts/roboto_black_italic.ttf'),
     roboto_black: require('./assets/fonts/roboto_black.ttf'),
@@ -39,7 +39,7 @@ function App() {
         await SplashScreen.hideAsync();
       }
     })();
-  }, [isInitializing]);
+  }, [isInitializing,isWalletConnected]);
 
   if (isInitializing || !fontsLoaded) {
     return null;
@@ -63,7 +63,15 @@ function App() {
     <SafeAreaView style={styles.containerApp}>
       <StatusBar style="dark" />
       <WalletProvider>
-        <Router initialRouteName={isOwnerViewPreferred ? 'MyBusiness' : 'InfoScreen'} />
+        <Router
+          initialRouteName={
+            isOwnerViewPreferred && isWalletConnected
+              ? 'ProfileScreen'
+              : isOwnerViewPreferred && !isWalletConnected
+              ? 'WelcomeScreen'
+              : 'CameraScreen'
+          }
+        />
       </WalletProvider>
     </SafeAreaView>
   );
