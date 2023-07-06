@@ -3,7 +3,7 @@ import React, { memo } from 'react';
 import { TouchableHighlight, Text, StyleSheet } from 'react-native';
 
 import { RootStackParamList } from '../App';
-import { FontSize, FontFamily, Color, Border, Padding } from '../GlobalStyles';
+import { FontSize, Color, Border, Padding } from '../GlobalStyles';
 
 const HollowButton = memo(() => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
     fontSize: FontSize.semibold_size,
     textDecorationLine: 'underline',
     fontWeight: '700',
-    fontFamily: FontFamily.robotoBold,
+
     color: Color.gray_300,
     textAlign: 'left',
   },

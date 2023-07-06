@@ -9,11 +9,9 @@ import {
   ActivityIndicator,
   Image,
   TouchableHighlight,
-  Platform,
   TextInput,
 } from 'react-native';
 
-import { FontFamily } from '../GlobalStyles';
 import { BASE_CRYPTO_CURRENCY, BASE_CRYPTO_MAX_DIGITS } from '../common/constants';
 import { truncate } from '../common/helpers';
 import GeneralPayInfo from '../components/GeneralPayInfo';
@@ -194,7 +192,7 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     paddingRight: 20,
     marginBottom: 20,
-    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoRegular,
+    fontWeight: '400',
   },
   wrapperTitleInfoScreen: {
     display: 'flex',
@@ -233,7 +231,6 @@ const styles = StyleSheet.create({
     margin: 0,
     textAlign: 'left',
     width: '80%',
-    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoRegular,
   },
 });
 

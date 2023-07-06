@@ -1,7 +1,6 @@
 import React from 'react';
-import { Platform, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
-import { FontFamily } from '../GlobalStyles';
 import SvgComponentPay from '../icons/SVGPay';
 
 export type HistoryPayType = {
@@ -73,21 +72,18 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 16,
     color: '#222222',
-    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
   companyHistory: {
     fontWeight: '400',
     fontSize: 10,
     lineHeight: 12,
     color: '#919191',
-    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoRegular,
   },
   timeHistory: {
     fontWeight: '400',
     fontSize: 10,
     lineHeight: 12,
     color: '#919191',
-    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoRegular,
   },
   topRow: {
     display: 'flex',

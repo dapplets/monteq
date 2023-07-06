@@ -1,7 +1,5 @@
 import React from 'react';
-import { Platform, StyleSheet, Text, View } from 'react-native';
-
-import { FontFamily } from '../GlobalStyles';
+import { StyleSheet, Text, View } from 'react-native';
 
 export type PaymentParametersType = {
   parameters: string;
@@ -46,14 +44,12 @@ const styles = StyleSheet.create({
     lineHeight: 17,
     fontWeight: '400',
     color: '#222222',
-    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoRegular,
   },
   valuePayment: {
     fontSize: 14,
     lineHeight: 17,
     fontWeight: '600',
     color: '#222222',
-    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
 });
 

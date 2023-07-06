@@ -4,7 +4,6 @@ import React, { memo, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Image,
-  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -12,7 +11,6 @@ import {
   View,
 } from 'react-native';
 
-import { FontFamily } from '../GlobalStyles';
 import { type RootStackParamList } from '../Router';
 import { ParsedEDCON2023Code } from '../common/parseReceipt';
 import PaymentInfo from '../components/PaymentInfo';
@@ -152,7 +150,7 @@ const SendTokenScreen: React.FC<Props> = memo(({ route }) => {
           <View style={styles.tokensBlockSendTokenScreen}>
             {myTokens.map((token) => (
               <TokenBlock
-              isStatus={
+                isStatus={
                   transferOrMintTxStatus !== TxStatus.Idle ||
                   setAmbassadorTxStatus !== TxStatus.Idle
                 }
@@ -298,7 +296,6 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     lineHeight: 16,
     color: '#ffffff',
-    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
 
   imgBtnSendSendTokenScreen: {
@@ -323,7 +320,6 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     lineHeight: 16,
     color: '#14C58B',
-    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
   tokensBlockSendTokenScreen: {
     width: '100%',
@@ -363,7 +359,6 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     lineHeight: 14,
     color: '#14C58B',
-    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
   imgStarSendTokenScreen: {
     position: 'absolute',

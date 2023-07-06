@@ -1,16 +1,6 @@
 import * as React from 'react';
 import { useState } from 'react';
-import {
-  Text,
-  StyleSheet,
-  View,
-  Image,
-  Pressable,
-  ImageSourcePropType,
-  Platform,
-} from 'react-native';
-
-import { FontFamily } from '../GlobalStyles';
+import { Text, StyleSheet, View, Image, Pressable, ImageSourcePropType } from 'react-native';
 
 export type InfoUseItemType = {
   title: string;
@@ -77,7 +67,8 @@ const styles = StyleSheet.create({
   },
   titleInfoUse: {
     width: '80%',
-    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
+
+    fontWeight: '600',
     fontSize: 18,
     lineHeight: 21,
     color: '#222222',
@@ -96,7 +87,8 @@ const styles = StyleSheet.create({
   },
   descriptonInfoUse: {
     width: '100%',
-    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoRegular,
+
+    fontWeight: '400',
     fontSize: 14,
     lineHeight: 16,
     color: '#222222',

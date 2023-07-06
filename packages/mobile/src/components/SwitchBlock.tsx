@@ -1,8 +1,7 @@
 import React from 'react';
-import { Platform, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 import CustomSwitch from './Switch';
-import { FontFamily } from '../GlobalStyles';
 
 export type SwitchBlockType = {
   parameters: string;
@@ -43,7 +42,6 @@ const styles = StyleSheet.create({
     lineHeight: 17,
     fontWeight: '400',
     color: '#222222',
-    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoRegular,
   },
 });
 

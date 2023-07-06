@@ -1,9 +1,8 @@
 import { RouteProp, NavigationProp, useNavigation, useIsFocused } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { memo, useEffect, useState } from 'react';
-import { Platform, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
+import { StyleSheet, Text, TouchableHighlight, View } from 'react-native';
 
-import { FontFamily } from '../GlobalStyles';
 import { type RootStackParamList } from '../Router';
 import {
   BASE_CRYPTO_CURRENCY,
@@ -229,7 +228,6 @@ const styles = StyleSheet.create({
     lineHeight: 17,
     width: '60%',
     fontWeight: '400',
-    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoRegular,
   },
   availableBlockTxScreen: {
     display: 'flex',
@@ -244,7 +242,6 @@ const styles = StyleSheet.create({
     lineHeight: 17,
     fontWeight: '600',
     marginRight: 5,
-    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
   availableCurrencyTxScreen: {
     color: '#222222',
@@ -252,7 +249,6 @@ const styles = StyleSheet.create({
     lineHeight: 17,
     fontWeight: '600',
     marginRight: 10,
-    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
   payInfoTxScreen: {
     display: 'flex',
@@ -277,7 +273,7 @@ const styles = StyleSheet.create({
     color: '#222222',
     fontSize: 14,
     lineHeight: 16,
-    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoRegular,
+    fontWeight: '400',
   },
 
   linearGradientTxScreen: {
@@ -302,7 +298,6 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     lineHeight: 16,
     color: '#ffffff',
-    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
   buttonInsufficientTxScreen: {
     backgroundColor: '#FF3E3E',
@@ -322,7 +317,6 @@ const styles = StyleSheet.create({
     textDecorationColor: '#fff',
     textDecorationStyle: 'solid',
     color: '#fff',
-    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
 });
 

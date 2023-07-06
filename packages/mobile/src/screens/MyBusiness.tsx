@@ -13,7 +13,6 @@ import {
   Platform,
 } from 'react-native';
 
-import { FontFamily } from '../GlobalStyles';
 import { RootStackParamList } from '../Router';
 import {
   BASE_CRYPTO_CURRENCY,
@@ -258,7 +257,6 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     lineHeight: 16,
     color: '#ffffff',
-    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
   buttonSendMyBusiness: {
     backgroundColor: 'transparent',
@@ -288,7 +286,6 @@ const styles = StyleSheet.create({
     textDecorationColor: '#fff',
     textDecorationStyle: 'solid',
     color: '#fff',
-    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
   businessImgMyBusiness: {
     width: 174,
@@ -306,7 +303,7 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     paddingRight: 20,
     marginBottom: 20,
-    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoRegular,
+    fontWeight: '400',
   },
 });
 

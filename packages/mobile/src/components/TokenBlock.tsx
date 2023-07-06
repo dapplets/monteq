@@ -1,8 +1,6 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { ReactNode, memo, useEffect, useState } from 'react';
-import { StyleSheet, TouchableHighlight, Text, Platform } from 'react-native';
-
-import { FontFamily } from '../GlobalStyles';
+import { StyleSheet, TouchableHighlight, Text } from 'react-native';
 
 type TokenBlockType = {
   onPress?: () => void;
@@ -73,7 +71,6 @@ const styles = StyleSheet.create({
     marginTop: 5,
     lineHeight: 16,
     color: '#ffffff',
-    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
   titleDefaultTokenBlock: {
     fontSize: 14,
@@ -81,7 +78,6 @@ const styles = StyleSheet.create({
     lineHeight: 16,
     color: '#222222',
     marginTop: 5,
-    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
 });
 
