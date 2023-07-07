@@ -152,7 +152,7 @@ const CameraComponent: FC<Props> = ({ onQrCodeFound, onCanceled, onError }) => {
           )}
           <View style={styles.containerDescription}>
             <SvgComponentScanIcon />
-            <Text style={styles.containerDescriptionText}>Scan QR on your receipt</Text>
+            <Text style={styles.containerDescriptionText}>Scan QR</Text>
           </View>
 
           <View style={styles.container}>
@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     zIndex: 1,
     top: 90,
-    width: 260,
+    width: 120,
     justifyContent: 'space-between',
     alignItems: 'center',
   },
@@ -217,6 +217,8 @@ const styles = StyleSheet.create({
     // fontWeight: '600',
     fontSize: 20,
     color: '#fff',
+    marginLeft: 'auto',
+    marginRight: 'auto',
   },
   container: {
     height: '100%',

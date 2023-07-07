@@ -61,9 +61,10 @@ const MainButton = memo(
 
 const styles = StyleSheet.create({
   mainButtonChild: {
-    width: 40,
-    height: 40,
+    width: 24,
+    height: 24,
     overflow: 'hidden',
+    
   },
   startWithWalletconnect: {
     fontSize: FontSize.semibold_size,
@@ -84,6 +85,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'hidden',
+    marginTop: 10,
   },
 });
 
