@@ -1,10 +1,17 @@
 import { BarCodeScannedCallback, BarCodeScanner } from 'expo-barcode-scanner';
 import { Camera, CameraType } from 'expo-camera';
 import * as Permissions from 'expo-permissions';
-import React, { FC, useState, useCallback } from 'react';
-import { BackHandler, View, StyleSheet, Text, Platform, Pressable } from 'react-native';
+import React, { FC, useState, useCallback, useEffect } from 'react';
+import {
+  BackHandler,
+  View,
+  StyleSheet,
+  Text,
+  Platform,
+  Animated,
+  TouchableHighlight,
+} from 'react-native';
 
-import CameraSwitchIcon from '../assets/camera-switch.svg';
 import SvgComponentCameraBorder from '../icons/SVGCameraBorder';
 import SvgComponentScanIcon from '../icons/SVGScanIcon';
 
@@ -20,7 +27,34 @@ const CameraComponent: FC<Props> = ({ onQrCodeFound, onCanceled, onError }) => {
   const [cameraType, setCameraType] = useState<CameraType | null>(null);
   const [deviceId, setDeviceId] = useState<string | null>(null);
   const [devices, setDevices] = useState<string[]>([]);
-
+  const transformAnim = new Animated.Value(1);
+  useEffect(() => {
+    function cycleAnimation() {
+      Animated.sequence([
+        Animated.timing(transformAnim, {
+          toValue: 1.5,
+          duration: 1500,
+          delay: 1000,
+          useNativeDriver: true,
+        }),
+        Animated.timing(transformAnim, {
+          toValue: 1,
+          duration: 1500,
+          useNativeDriver: true,
+        }),
+      ]).start(() => {
+        cycleAnimation();
+      });
+    }
+    cycleAnimation();
+    // Animated.loop(
+    //   Animated.timing(transformAnim, {
+    //     toValue: 2,
+    //     duration: 500,
+    //     useNativeDriver: true,
+    //   })
+    // ).start();
+  }, [transformAnim]);
   const handleBackButtonPress = useCallback(() => {
     setTimeout(() => onCanceled(), 500); // ToDo: hack
     return true;
@@ -139,15 +173,23 @@ const CameraComponent: FC<Props> = ({ onQrCodeFound, onCanceled, onError }) => {
       setDeviceId(devices[index + 1]);
     }
   };
-// console.log(devices,'devices')
+
   return (
     <>
-      <View style={styles.containerCamera}>
+      <TouchableHighlight
+        style={styles.containerCamera}
+        onPress={(e) => (devices.length > 1 ? handleSwitchCamera(e) : null)}>
         <View style={styles.wrapperCamera}>
           {devices.length > 1 && (
-            <Pressable style={styles.cameraSwitcher} onPress={handleSwitchCamera}>
-              <img src={CameraSwitchIcon} alt="camera switch" />
-            </Pressable>
+            <View style={styles.cameraSwitcher}>
+              {devices.map((x, i) => (
+                <View
+                  key={x}
+                  style={
+                    x === deviceId ? styles.cameraSwitcherPointActive : styles.cameraSwitcherPoint
+                  }></View>
+              ))}
+            </View>
           )}
           <View style={styles.containerDescription}>
             <SvgComponentScanIcon />
@@ -168,9 +210,24 @@ const CameraComponent: FC<Props> = ({ onQrCodeFound, onCanceled, onError }) => {
                 barCodeTypes: [BarCodeScanner.Constants.BarCodeType.qr],
               }}
             />
+            {devices.length > 1 && (
+              <View style={styles.containerDescriptionBottom}>
+                <Animated.Image
+                  resizeMode="cover"
+                  style={[
+                    styles.containerDescriptionBottomImg,
+                    {
+                      transform: [{ scale: transformAnim }],
+                    },
+                  ]}
+                  source={require('../assets/tap.png')}
+                />
+                <Text style={styles.containerDescriptionBottomText}>Tap if can’t scan QR</Text>
+              </View>
+            )}
           </View>
         </View>
-      </View>
+      </TouchableHighlight>
     </>
   );
 };
@@ -199,8 +256,33 @@ const styles = StyleSheet.create({
     zIndex: 2,
     padding: 10,
     top: 10,
-    right: 12,
+    paddingRight: 10,
+    paddingLeft: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
+  cameraSwitcherPoint: {
+    borderRadius: 2,
+    backgroundColor: 'transparent',
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: '#fff',
+    width: 4,
+    height: 4,
+    marginLeft: 6,
+    marginRight: 6,
+  },
+  cameraSwitcherPointActive: {
+    borderRadius: 4,
+    backgroundColor: '#14C58B',
+
+    width: 8,
+    height: 8,
+    marginLeft: 6,
+    marginRight: 6,
+  },
+
   containerDescription: {
     position: 'absolute',
     display: 'flex',
@@ -286,6 +368,30 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     width: '100%',
+  },
+  containerDescriptionBottom: {
+    position: 'absolute',
+    display: 'flex',
+    flexDirection: 'column',
+    zIndex: 1,
+    bottom: 120,
+    width: '100%',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  containerDescriptionBottomText: {
+    fontWeight: '400',
+    fontSize: 14,
+    color: '#fff',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+  },
+  containerDescriptionBottomImg: {
+    marginBottom: 10,
+    width: 21,
+    height: 26,
+    marginLeft: 'auto',
+    marginRight: 'auto',
   },
 });
 
