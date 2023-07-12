@@ -19,6 +19,7 @@ import TxScreen from './screens/TxScreen';
 import WelcomeScreen from './screens/WelcomeScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import LoginRequestScreen from './screens/LoginRequestScreen';
+import WhatNextScreen from './screens/WhatNextScreen';
 
 export type RootStackParamList = {
   InfoScreen: undefined;
@@ -32,7 +33,7 @@ export type RootStackParamList = {
   RemovingMyBusiness: undefined;
   SendTokenScreen: { parsedQrCode: ParsedEDCON2023Code };
   ProfileScreen: undefined;
-  LoginRequestScreen: undefined;
+  WhatNextScreen: undefined;
 };
 
 const Tab = createBottomTabNavigator();
@@ -80,8 +81,8 @@ const Router: FC<Props> = ({ initialRouteName }) => {
               options={{ title: PAGE_TITLE }}
             />
             <Tab.Screen
-              name="LoginRequestScreen"
-              component={LoginRequestScreen}
+              name="WhatNextScreen"
+              component={WhatNextScreen}
               options={{ title: PAGE_TITLE }}
             />
             <Tab.Screen
@@ -89,6 +90,7 @@ const Router: FC<Props> = ({ initialRouteName }) => {
               component={ProfileScreen}
               options={{ title: PAGE_TITLE }}
             />
+
             <Tab.Screen name="MyBusiness" component={MyBusiness} options={{ title: PAGE_TITLE }} />
             <Tab.Screen
               name="CameraScreen"

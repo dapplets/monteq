@@ -140,7 +140,7 @@ const CameraComponent: FC<Props> = ({ onQrCodeFound, onCanceled, onError }) => {
       setDeviceId(devices[index + 1]);
     }
   };
-
+// console.log(devices,'devices')
   return (
     <>
       <View style={styles.containerCamera}>

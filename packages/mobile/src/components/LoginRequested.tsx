@@ -1,21 +1,29 @@
-import * as React from 'react';
-import { Image, StyleSheet, View, Text, Platform } from 'react-native';
+import React from 'react';
+import { Platform, StyleSheet, Text, View, Image, TouchableHighlight } from 'react-native';
 
-import { Padding, Border, Color, FontSize, FontFamily } from '../GlobalStyles';
-import HollowButton from '../components/HollowButton';
-import MainButton from '../components/MainButton';
-import { useWallet } from '../contexts/WalletContext';
-import { WalletTypes } from '../contexts/WalletContext/WalletContext';
+import { Border, Color, FontFamily, Padding } from '../GlobalStyles';
+import MainButton from './MainButton';
 
-const LoginRequestScreen = () => {
-  const { connect } = useWallet();
+export type LoginRequestedType = {
+  handleWalletConnectPress: any;
+  closeLoginRequest: any;
+};
 
-  function handleWalletConnectPress() {
-    connect(WalletTypes.WalletConnect);
-  }
-
+const LoginRequested = ({ handleWalletConnectPress, closeLoginRequest }: LoginRequestedType) => {
   return (
     <View style={styles.initialLoginWelcomeScreen}>
+      <TouchableHighlight
+        underlayColor="transparent"
+        activeOpacity={0.5}
+        onPress={closeLoginRequest}
+        style={styles.initialLoginClose}>
+        <Image
+          style={styles.initialLoginClose}
+          resizeMode="cover"
+          source={require('../assets/new_close.png')}
+        />
+      </TouchableHighlight>
+
       <View style={styles.bgWelcomeScreen}>
         <Image
           style={styles.bgWelcomeScreen}
@@ -23,11 +31,7 @@ const LoginRequestScreen = () => {
           source={require('../assets/appbg.png')}
         />
       </View>
-      {/* <View
-        style={[
-          styles.monteqLogo1WrapperWelcomeScreen,
-          styles.mainButtonParentFlexBoxWelcomeScreen,
-        ]}> */}
+
       <View
         style={[styles.mainButtonParentFlexBoxWelcomeScreen, styles.mainButtonParentWelcomeScreen]}>
         <View style={styles.loginRequestDescriptionBlock}>
@@ -36,53 +40,26 @@ const LoginRequestScreen = () => {
             Scenarioname scenario requested you to be logged in for further actions
           </Text>
         </View>
-        {/* <MainButton
-          // onPress={handleWalletConnectPress}
-          image={require('../assets/biometry.png')}
-          label="Biometry"
-        /> */}
-        {/* <MainButton
-          // onPress={handleWalletConnectPress}
-          image={require('../assets/twitter.png')}
-          label="Twitter"
-        /> */}
+
         <MainButton
           onPress={handleWalletConnectPress}
           image={require('../assets/walletConnect.png')}
           label="Log In"
         />
-        {/* </View> */}
       </View>
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   mainButtonParentFlexBoxWelcomeScreen: {
     justifyContent: 'center',
     alignItems: 'center',
     position: 'absolute',
   },
-
   bgWelcomeScreen: {
     width: '100%',
     height: '100%',
   },
-
-  monteqLogo1WelcomeScreen: {
-    width: 236,
-    height: 100,
-  },
-  monteqLogo1WrapperWelcomeScreen: {
-    width: '100%',
-    height: '100%',
-  },
-
-  startWithWalletconnectWelcomeScreen: {
-    color: Color.white,
-    marginLeft: 10,
-  },
-
   mainButtonParentWelcomeScreen: {
     // position: 'relative',
     marginLeft: -133.5,
@@ -95,11 +72,11 @@ const styles = StyleSheet.create({
   initialLoginWelcomeScreen: {
     borderRadius: Border.br_9xs,
     backgroundColor: Color.whitesmoke,
-    flex: 1,
+    // flex: 1,
     width: '100%',
     overflow: 'hidden',
     height: '100%',
-    zIndex: 100,
+    zIndex: 99,
   },
   loginRequestDescriptionBlock: {
     display: 'flex',
@@ -123,6 +100,16 @@ const styles = StyleSheet.create({
     fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoRegular,
     color: '#222',
   },
+  initialLoginClose: {
+    position: 'absolute',
+    right: 5,
+    top: 10,
+    width: 24,
+    height: 24,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 100,
+  },
 });
-
-export default LoginRequestScreen;
+export default LoginRequested;
