@@ -4,7 +4,6 @@ import * as Permissions from 'expo-permissions';
 import React, { FC, useState, useCallback } from 'react';
 import { BackHandler, View, StyleSheet, Text, Platform, Pressable } from 'react-native';
 
-import { FontFamily } from '../GlobalStyles';
 import CameraSwitchIcon from '../assets/camera-switch.svg';
 import SvgComponentCameraBorder from '../icons/SVGCameraBorder';
 import SvgComponentScanIcon from '../icons/SVGScanIcon';
@@ -213,8 +212,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   containerDescriptionText: {
-    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
-    // fontWeight: '600',
+    fontWeight: '600',
     fontSize: 20,
     color: '#fff',
   },

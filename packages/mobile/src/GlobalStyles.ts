@@ -1,11 +1,3 @@
-/* fonts */
-export const FontFamily = {
-  robotoBold: 'roboto_bold',
-  robotoSemibold: 'roboto_black',
-  robotoRegular: 'roboto_regular',
-  robotoThin: 'roboto_thin',
-};
-
 /* font sizes */
 export const FontSize = {
   semibold_size: 14,

@@ -3,8 +3,6 @@ import React from 'react';
 import { StyleSheet, Text, TouchableHighlight, View, Modal } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
 
-import { FontFamily } from '../GlobalStyles';
-
 // ToDo: move to business logic?
 function makeShareUrl(to: string, user: string): string {
   let url = `https://monteq.dapplets.org/edcon2023/#/receive?to=${to}`;
@@ -109,10 +107,9 @@ const styles = StyleSheet.create({
     lineHeight: 16,
 
     color: '#ffffff',
-    fontFamily: FontFamily.robotoBold,
   },
   nameShareModal: {
-    fontFamily: FontFamily.robotoBold,
+    fontWeight: '600',
     fontSize: 20,
     lineHeight: 23,
     textAlign: 'center',

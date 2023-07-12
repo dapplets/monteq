@@ -1,14 +1,7 @@
 import React, { useMemo, memo } from 'react';
-import {
-  Image,
-  StyleSheet,
-  Text,
-  TouchableHighlight,
-  ImageSourcePropType,
-  Platform,
-} from 'react-native';
+import { Image, StyleSheet, Text, TouchableHighlight, ImageSourcePropType } from 'react-native';
 
-import { FontSize, FontFamily, Color, Border, Padding } from '../GlobalStyles';
+import { FontSize, Color, Border, Padding } from '../GlobalStyles';
 
 type MainButtonType = {
   image: ImageSourcePropType;
@@ -67,8 +60,8 @@ const styles = StyleSheet.create({
   },
   startWithWalletconnect: {
     fontSize: FontSize.semibold_size,
-    // fontWeight: '600',
-    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
+    fontWeight: '600',
+
     color: Color.white,
     textAlign: 'left',
     marginLeft: 10,

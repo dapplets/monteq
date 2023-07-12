@@ -1,7 +1,5 @@
 import * as React from 'react';
-import { Text, StyleSheet, View, Platform } from 'react-native';
-
-import { FontFamily } from '../GlobalStyles';
+import { Text, StyleSheet, View } from 'react-native';
 
 export type GeneralPayInfoType = {
   generalPayAmount: string | number;
@@ -58,7 +56,6 @@ const styles = StyleSheet.create({
     fontSize: 11,
     lineHeight: 13,
     color: '#777777',
-    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoRegular,
   },
   amountBlock: {
     width: '100%',
@@ -73,7 +70,6 @@ const styles = StyleSheet.create({
     fontSize: 28,
     lineHeight: 33,
     color: '#222222',
-    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
   generalPayAmountSubtitle: {
     fontWeight: '700',
@@ -83,7 +79,6 @@ const styles = StyleSheet.create({
     marginTop: 'auto',
     marginLeft: 5,
     marginBottom: 4,
-    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
   tipsBlock: {
     display: 'flex',
@@ -95,7 +90,6 @@ const styles = StyleSheet.create({
     fontSize: 11,
     lineHeight: 13,
     color: '#777777',
-    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoRegular,
   },
   tipsAmount: {
     fontWeight: '700',
@@ -104,7 +98,6 @@ const styles = StyleSheet.create({
     color: '#222222',
     marginLeft: 3,
     marginRight: 3,
-    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
 });
 

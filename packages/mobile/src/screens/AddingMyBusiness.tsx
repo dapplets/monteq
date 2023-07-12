@@ -4,7 +4,6 @@ import * as React from 'react';
 import { memo, useEffect, useState } from 'react';
 import { Text, StyleSheet, View, TouchableHighlight } from 'react-native';
 
-import { FontFamily } from '../GlobalStyles';
 import { RootStackParamList } from '../Router';
 import { BASE_FIAT_CURRENCY } from '../common/constants';
 import { ParsedReceipt } from '../common/parseReceipt';
@@ -121,7 +120,6 @@ const styles = StyleSheet.create({
     lineHeight: 16,
 
     color: '#ffffff',
-    fontFamily: FontFamily.robotoBold,
   },
   buttonSendAddingMyBusiness: {
     backgroundColor: 'transparent',

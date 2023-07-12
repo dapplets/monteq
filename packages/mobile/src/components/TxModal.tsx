@@ -8,12 +8,11 @@ import {
   View,
   Modal,
   ImageSourcePropType,
-  Platform,
 } from 'react-native';
 
 import PaymentParameters from './PaymentParameters';
 import Title from './TitlePage';
-import { FontFamily } from '../GlobalStyles';
+
 import {
   BASE_CRYPTO_CURRENCY,
   BASE_CRYPTO_MAX_DIGITS,
@@ -216,7 +215,6 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     color: '#222222',
     width: '50%',
-    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoRegular,
   },
   valueStatusTxModal: {
     display: 'flex',
@@ -231,14 +229,12 @@ const styles = StyleSheet.create({
     lineHeight: 17,
     fontWeight: '600',
     color: '#EBC200',
-    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
   valueStatusOkTextTxModal: {
     fontSize: 14,
     lineHeight: 17,
     fontWeight: '600',
     color: '#14C58B',
-    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
 
   valueStatusLabelTxModal: {
@@ -277,7 +273,6 @@ const styles = StyleSheet.create({
     lineHeight: 16,
 
     color: '#ffffff',
-    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
   secondaryButtonTxModal: {
     backgroundColor: '#F6F7F8',
@@ -296,7 +291,6 @@ const styles = StyleSheet.create({
 
     color: '#222222',
     textDecorationLine: 'underline',
-    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
   descriptionTextTxModal: {
     fontSize: 14,
@@ -306,7 +300,7 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     paddingRight: 10,
     marginBottom: 10,
-    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoRegular,
+    fontWeight: '400',
   },
 });
 

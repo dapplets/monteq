@@ -1,5 +1,5 @@
 import { useNetInfo } from '@react-native-community/netinfo';
-import { useFonts } from 'expo-font';
+
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect } from 'react';
@@ -18,20 +18,6 @@ enableScreens();
 function App() {
   const { isConnected: isInternetConnected } = useNetInfo();
   const { isOwnerViewPreferred, isInitializing } = useSettings();
-
-  useFonts({
-    roboto_black_italic: require('./assets/fonts/roboto_black_italic.ttf'),
-    roboto_black: require('./assets/fonts/roboto_black.ttf'),
-    roboto_bold_italic: require('./assets/fonts/roboto_bold_italic.ttf'),
-    roboto_bold: require('./assets/fonts/roboto_bold.ttf'),
-    roboto_italic: require('./assets/fonts/roboto_italic.ttf'),
-    roboto_light: require('./assets/fonts/roboto_light.ttf'),
-    roboto_medium_italic: require('./assets/fonts/roboto_medium_italic.ttf'),
-    roboto_medium: require('./assets/fonts/roboto_medium.ttf'),
-    roboto_regular: require('./assets/fonts/roboto_regular.ttf'),
-    roboto_thin_italic: require('./assets/fonts/roboto_thin_italic.ttf'),
-    roboto_thin: require('./assets/fonts/roboto_thin.ttf'),
-  });
 
   useEffect(() => {
     (async () => {

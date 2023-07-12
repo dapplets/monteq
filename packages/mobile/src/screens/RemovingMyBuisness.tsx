@@ -1,9 +1,8 @@
 import { NavigationProp, useIsFocused, useNavigation } from '@react-navigation/native';
 import * as React from 'react';
 import { memo, useEffect, useState } from 'react';
-import { Text, StyleSheet, View, TouchableHighlight, Platform } from 'react-native';
+import { Text, StyleSheet, View, TouchableHighlight } from 'react-native';
 
-import { FontFamily } from '../GlobalStyles';
 import { RootStackParamList } from '../Router';
 import PaymentParameters from '../components/PaymentParameters';
 import Title from '../components/TitlePage';
@@ -123,7 +122,6 @@ const styles = StyleSheet.create({
     textDecorationColor: '#fff',
     textDecorationStyle: 'solid',
     color: '#fff',
-    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
   payInfoRemovingMyBusiness: {
     display: 'flex',

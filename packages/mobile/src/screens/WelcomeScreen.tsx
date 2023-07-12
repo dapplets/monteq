@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
   mainButtonParentWelcomeScreen: {
     marginLeft: -133.5,
     bottom: 0,
-    width: 267,
+    width: 280,
     padding: Padding.p_3xs,
     left: '50%',
   },

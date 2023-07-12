@@ -1,7 +1,5 @@
 import React, { Dispatch, SetStateAction } from 'react';
-import { Platform, StyleSheet, Text, TextInput, View } from 'react-native';
-
-import { FontFamily } from '../GlobalStyles';
+import { StyleSheet, Text, TextInput, View } from 'react-native';
 
 export type CompanyParametersType = {
   parameters: string;
@@ -55,7 +53,6 @@ const styles = StyleSheet.create({
     lineHeight: 17,
     fontWeight: '400',
     color: '#222222',
-    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoRegular,
   },
   parametersValue: {
     fontSize: 14,
@@ -67,7 +64,6 @@ const styles = StyleSheet.create({
     margin: 0,
     textAlign: 'right',
     width: 100,
-    fontFamily: Platform.OS === 'ios' ? undefined : FontFamily.robotoBold,
   },
 });
 
