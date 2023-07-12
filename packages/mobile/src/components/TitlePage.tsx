@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-start',
     width: '100%',
-    height: 50,
+    height: 48,
     paddingLeft: 0,
     paddingTop: 0,
   },
@@ -39,8 +39,8 @@ const styles = StyleSheet.create({
   titleText: {
     color: '#222222',
     fontWeight: '600',
-    fontSize: FontSize.size_9xl,
-    lineHeight: 28,
+    fontSize: 24,
+    lineHeight: 24,
   },
 });
 

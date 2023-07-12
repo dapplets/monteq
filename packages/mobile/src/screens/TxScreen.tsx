@@ -1,7 +1,7 @@
 import { RouteProp, NavigationProp, useNavigation, useIsFocused } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { memo, useEffect, useState } from 'react';
-import { StyleSheet, Text, TouchableHighlight, View } from 'react-native';
+import { Platform, StyleSheet, Text, TouchableHighlight, View, Image } from 'react-native';
 
 import { type RootStackParamList } from '../Router';
 import {
@@ -63,7 +63,7 @@ const TxScreen: React.FC<Props> = memo(({ route }) => {
   }
 
   async function handleCloseButtonPress() {
-    navigation.navigate('InfoScreen');
+    navigation.navigate('CameraScreen');
   }
 
   // ToDo: move the calculations into business logic hook
@@ -98,6 +98,17 @@ const TxScreen: React.FC<Props> = memo(({ route }) => {
   return (
     <>
       <View style={styles.infoScreenWrapperTxScreen}>
+        <TouchableHighlight
+          underlayColor="transparent"
+          activeOpacity={0.5}
+          onPress={handleCloseButtonPress}
+          style={styles.initialLoginClose}>
+          <Image
+            style={styles.initialLoginClose}
+            resizeMode="cover"
+            source={require('../assets/new_close.png')}
+          />
+        </TouchableHighlight>
         <Title label="Check your payment" />
         <View style={styles.availableWrapperTxScreen}>
           <Text style={styles.availableTitleTxScreen}>Available</Text>
@@ -317,6 +328,17 @@ const styles = StyleSheet.create({
     textDecorationColor: '#fff',
     textDecorationStyle: 'solid',
     color: '#fff',
+  },
+  initialLoginClose: {
+    position: 'absolute',
+    right: 5,
+    top: 6,
+    width: 24,
+    height: 24,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 100,
   },
 });
 

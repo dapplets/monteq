@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: '#fff',
     marginBottom: 10,
-    borderRadius: 4,
+    borderRadius: 20,
   },
   parametersSwitchBlock: {
     fontSize: 14,

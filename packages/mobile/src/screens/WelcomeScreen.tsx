@@ -42,9 +42,19 @@ const WelcomeScreen = () => {
       <View
         style={[styles.mainButtonParentWelcomeScreen, styles.mainButtonParentFlexBoxWelcomeScreen]}>
         <MainButton
+          // onPress={handleWalletConnectPress}
+          image={require('../assets/biometry.png')}
+          label="Biometry"
+        />
+          <MainButton
+          // onPress={handleWalletConnectPress}
+          image={require('../assets/twitter.png')}
+          label="Twitter"
+        />
+          <MainButton
           onPress={handleWalletConnectPress}
           image={require('../assets/walletConnect.png')}
-          label="Start with WalletConnect"
+          label="WalletConnect"
         />
         <HollowButton />
       </View>
@@ -57,6 +67,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     position: 'absolute',
+
   },
 
   bgWelcomeScreen: {
@@ -99,6 +110,7 @@ const styles = StyleSheet.create({
     width: '100%',
     overflow: 'hidden',
     height: '100%',
+    zIndex: 100
   },
 });
 

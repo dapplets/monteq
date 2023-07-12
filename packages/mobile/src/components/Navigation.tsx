@@ -1,43 +1,65 @@
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import * as React from 'react';
-import { View, Alert, StyleSheet, TouchableHighlight, Platform, Image } from 'react-native';
-
+import { View, Alert, StyleSheet, TouchableHighlight, Platform, Image, Text } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import ButtonNavigationDefault from './ButtonNavigationDefault';
 import { DomainType, parseQrCodeData } from '../common/parseReceipt';
 import { useCamera } from '../contexts/CameraContext';
 import { useWallet } from '../contexts/WalletContext';
-import SvgComponentExitDefault from '../icons/SVGExitDefault';
-import SvgComponentHomeActive from '../icons/SVGHomeActive';
-import SvgComponentHomeDefault from '../icons/SVGHomeDefault';
-import SvgComponentHowActive from '../icons/SVGHowActive';
 import SvgComponentHowDefault from '../icons/SVGHowDefault';
-import SvgComponentUserActive from '../icons/SVGUserActive';
 import SvgComponentUserDefault from '../icons/SVGUserDefault';
+import { useEffect, useState } from 'react';
+import CameraModal from './CameraModal';
+import { Color, Padding } from '../GlobalStyles';
+import SvgComponentClock from '../icons/SVGClock';
+import { WalletTypes } from '../contexts/WalletContext/WalletContext';
+import LoginRequested from './LoginRequested';
+
+const TEST_BUTTONS = [{ text: 'Pay receipt' }, { text: 'Use reward' }, { text: 'Share table' }];
 
 const Navigation: React.FC<BottomTabBarProps> = ({ navigation, state }) => {
-  const { disconnect } = useWallet();
+  const { disconnect, connect } = useWallet();
   const { scan, stop: stopScanning, isScanning } = useCamera();
-
+  const { isConnected: isWalletConnected } = useWallet();
   const routeName = state.routeNames[state.index];
+  const [isModalCamera, setModalCamera] = useState(false);
+  const [isLoginRequested, setLoginRequested] = useState(false);
 
-  function handleDisconnectPress() {
-    stopScanning();
-    disconnect();
-  }
-
-  async function navigationMyBusiness() {
-    stopScanning();
-    navigation.navigate('MyBusiness');
-  }
+  useEffect(() => {
+    if (isWalletConnected && routeName === 'WelcomeScreen') {
+      navigation.navigate('ProfileScreen');
+    }
+  }, [isWalletConnected, isModalCamera, isLoginRequested]);
 
   async function navigationHowUse() {
     stopScanning();
     navigation.navigate('HowUse');
   }
-
+  async function navigationLogInRequest() {
+    setModalCamera(false);
+  }
   async function navigationUserHistory() {
-    stopScanning();
-    navigation.navigate('InfoScreen');
+    if (isWalletConnected) {
+      stopScanning();
+      navigation.navigate('ProfileScreen');
+    } else {
+      stopScanning();
+      navigation.navigate('WelcomeScreen');
+    }
+  }
+
+  const handleLoginRequest = async () => {
+    setModalCamera(false);
+  };
+  const closeLoginRequest = () => {
+    setLoginRequested(false);
+    navigation.navigate('CameraScreen');
+  };
+
+  function handleWalletConnectPress() {
+    console.log('1');
+    connect(WalletTypes.WalletConnect);
+    setLoginRequested(false);
   }
 
   async function handleGmsScanPress() {
@@ -51,9 +73,21 @@ const Navigation: React.FC<BottomTabBarProps> = ({ navigation, state }) => {
       const parsedQrCode = parseQrCodeData(url);
 
       if (parsedQrCode.domain === DomainType.MontenegroFiscalCheck) {
-        navigation.navigate('TxScreen', {
-          parsedReceipt: parsedQrCode.payload,
-        });
+        if (isWalletConnected) {
+          stopScanning();
+          setModalCamera(true);
+          navigation.navigate('TxScreen', {
+            parsedReceipt: parsedQrCode.payload,
+          });
+        } else {
+          stopScanning();
+          setModalCamera(true);
+
+          setLoginRequested(true);
+          navigation.navigate('TxScreen', {
+            parsedReceipt: parsedQrCode.payload,
+          });
+        }
       } else if (parsedQrCode.domain === DomainType.EDCON2023) {
         navigation.navigate('SendTokenScreen', {
           parsedQrCode: parsedQrCode.payload,
@@ -78,50 +112,83 @@ const Navigation: React.FC<BottomTabBarProps> = ({ navigation, state }) => {
   }
 
   return (
-    <View style={styles.navigationWrapper}>
-      <ButtonNavigationDefault
-        onPress={navigationMyBusiness}
-        isActive={routeName === 'MyBusiness'}
-        children={
-          routeName === 'MyBusiness' ? <SvgComponentHomeActive /> : <SvgComponentHomeDefault />
-        }
-      />
-      <ButtonNavigationDefault
-        onPress={navigationHowUse}
-        isActive={routeName === 'HowUse'}
-        children={routeName === 'HowUse' ? <SvgComponentHowActive /> : <SvgComponentHowDefault />}
-      />
-      <TouchableHighlight
-        disabled={isScanning}
-        style={isScanning ? styles.scanButtonCamera : styles.scanButton}
-        underlayColor="transparent"
-        activeOpacity={0.5}
-        onPress={handleGmsScanPress}>
-        <Image
-          style={styles.scanButtonImg}
-          source={
-            isScanning
-              ? require('../assets/circularButtonDisabled.png')
-              : require('../assets/circularButton.png')
+    <>
+      {routeName === 'WelcomeScreen' ||
+      routeName === 'TxScreen' ||
+      (routeName === 'WhatNextScreen' && isLoginRequested) ? null : (
+        <View style={styles.navigationWrapper}>
+          <ButtonNavigationDefault
+            onPress={navigationHowUse}
+            children={<SvgComponentHowDefault />}
+          />
+          <TouchableHighlight
+            disabled={isScanning}
+            style={isScanning ? styles.scanButtonCamera : styles.scanButton}
+            underlayColor="transparent"
+            activeOpacity={0.5}
+            onPress={handleGmsScanPress}>
+            <Image
+              style={styles.scanButtonImg}
+              source={
+                isScanning
+                  ? require('../assets/circularButtonDisabled.png')
+                  : require('../assets/circularButton.png')
+              }
+            />
+          </TouchableHighlight>
+          <ButtonNavigationDefault
+            onPress={navigationUserHistory}
+            children={
+              routeName === 'ProfileScreen' ? <SvgComponentClock /> : <SvgComponentUserDefault />
+            }
+          />
+        </View>
+      )}
+      {isModalCamera ? (
+        <CameraModal
+          isVisible={isModalCamera}
+          onRequestClose={() => setModalCamera(false)}
+          children={
+            <>
+              {TEST_BUTTONS.map((x, i) => (
+                <LinearGradient
+                  key={i}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={styles.linearGradientShareModal}
+                  colors={['#0dd977', '#1da4ac', '#14c48c']}>
+                  <TouchableHighlight
+                    underlayColor="#1da4ac"
+                    activeOpacity={0.5}
+                    onPress={isWalletConnected ? navigationLogInRequest : handleLoginRequest}
+                    style={styles.primaryButtonShareModal}>
+                    <Text style={styles.primaryButtonTextShareModal}>{x.text}</Text>
+                  </TouchableHighlight>
+                </LinearGradient>
+              ))}
+            </>
           }
         />
-      </TouchableHighlight>
-      <ButtonNavigationDefault
-        onPress={navigationUserHistory}
-        isActive={routeName === 'InfoScreen'}
-        children={
-          routeName === 'InfoScreen' ? <SvgComponentUserActive /> : <SvgComponentUserDefault />
-        }
-      />
-      <ButtonNavigationDefault
-        onPress={handleDisconnectPress}
-        children={<SvgComponentExitDefault />}
-      />
-    </View>
+      ) : null}
+      {isLoginRequested ? (
+        <LoginRequested
+          handleWalletConnectPress={handleWalletConnectPress}
+          closeLoginRequest={closeLoginRequest}
+        />
+      ) : null}
+    </>
   );
 };
 
 const styles = StyleSheet.create({
+  viewModal: {
+    backgroundColor: '#fff',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: 200,
+    height: 200,
+  },
   navigationWrapper: {
     display: 'flex',
     flexDirection: 'row',
@@ -146,7 +213,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 1,
     shadowRadius: 3.84,
     elevation: 5,
-    zIndex: 100,
+    zIndex: 99,
   },
   scanButton: {
     width: 70,
@@ -177,6 +244,63 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     width: 70,
     height: 70,
+  },
+
+  linearGradientShareModal: {
+    display: 'flex',
+    borderRadius: 50,
+    width: 200,
+    marginTop: 10,
+  },
+  primaryButtonShareModal: {
+    backgroundColor: 'transparent',
+    width: 200,
+    height: 48,
+    display: 'flex',
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    borderRadius: 50,
+  },
+  primaryButtonTextShareModal: {
+    fontSize: 14,
+    fontWeight: '700',
+    lineHeight: 16,
+
+    color: '#ffffff',
+  },
+  mainButtonParentFlexBoxWelcomeScreen: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+  },
+
+  bgWelcomeScreen: {
+    width: '100%',
+    height: '100%',
+  },
+
+  monteqLogo1WelcomeScreen: {
+    width: 236,
+    height: 100,
+  },
+  monteqLogo1WrapperWelcomeScreen: {
+    width: '100%',
+    height: '100%',
+  },
+
+  startWithWalletconnectWelcomeScreen: {
+    color: Color.white,
+    marginLeft: 10,
+  },
+
+  mainButtonParentWelcomeScreen: {
+    marginLeft: -133.5,
+    bottom: 200,
+
+    width: 267,
+    padding: Padding.p_3xs,
+    left: '50%',
   },
 });
 
