@@ -137,9 +137,10 @@ const TxModal: React.FC<TxModalProps> = ({
 
           {date !== undefined ? <PaymentParameters isGray parameters="Date" value={date} /> : null}
 
-          {onPrimaryButtonPress !== undefined &&
-          primaryButton !== undefined &&
-          isDelayTransaction ? (
+          {(onPrimaryButtonPress !== undefined &&
+            primaryButton !== undefined &&
+            isDelayTransaction) ||
+          status === 'Confirmed' ? (
             <LinearGradient
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}

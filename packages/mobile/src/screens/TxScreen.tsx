@@ -63,6 +63,7 @@ const TxScreen: React.FC<Props> = memo(({ route }) => {
   }
 
   async function handleCloseButtonPress() {
+    setModalVisible(false);
     navigation.navigate('InfoScreen');
   }
 

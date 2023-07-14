@@ -58,7 +58,6 @@ const TxStatusModal: React.FC<Props> = ({
       status: 'Mining',
       type: TxStatusType.Yellow,
       image: require('../assets/inProgress.png'),
-      
     },
     [TxStatus.Done]: {
       isVisible,
