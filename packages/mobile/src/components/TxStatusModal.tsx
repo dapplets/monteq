@@ -14,6 +14,7 @@ type Props = {
   error?: string | null;
   onClose?: () => void;
   onRetry?: () => void;
+  redirectClose?: () => void;
 };
 
 const TxStatusModal: React.FC<Props> = ({
@@ -27,6 +28,7 @@ const TxStatusModal: React.FC<Props> = ({
   error,
   onClose,
   onRetry,
+  redirectClose,
 }) => {
   if (txStatus === TxStatus.Idle) return null;
 
@@ -58,7 +60,6 @@ const TxStatusModal: React.FC<Props> = ({
       status: 'Mining',
       type: TxStatusType.Yellow,
       image: require('../assets/inProgress.png'),
-      
     },
     [TxStatus.Done]: {
       isVisible,
@@ -73,7 +74,7 @@ const TxStatusModal: React.FC<Props> = ({
       type: TxStatusType.Green,
       image: require('../assets/confirmed.png'),
       primaryButton: 'Close',
-      onPrimaryButtonPress: onClose,
+      onPrimaryButtonPress: redirectClose,
     },
     [TxStatus.Rejected]: {
       isVisible,

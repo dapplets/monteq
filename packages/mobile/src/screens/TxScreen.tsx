@@ -61,9 +61,14 @@ const TxScreen: React.FC<Props> = memo(({ route }) => {
     // ToDo: invalid receipt
     return null;
   }
-
+  // todo: only close modal
   async function handleCloseButtonPress() {
     navigation.navigate('CameraScreen');
+  }
+
+  async function redirectClose() {
+    navigation.navigate('WhatNextScreen');
+    setModalVisible(false);
   }
 
   // ToDo: move the calculations into business logic hook
@@ -209,6 +214,7 @@ const TxScreen: React.FC<Props> = memo(({ route }) => {
         onRetry={handleSendPress}
         error={paymentTxError}
         txStatus={paymentTxStatus}
+        redirectClose={redirectClose}
       />
     </>
   );
