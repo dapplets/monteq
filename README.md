@@ -1,5 +1,5 @@
-![Repository Banner](/docs/MonteQ-App.png#gh-dark-mode-only)
-![Repository Banner](/docs/MonteQ-App-light.png#gh-light-mode-only)
+![Repository Banner](/docs/dark.png#gh-dark-mode-only)
+![Repository Banner](/docs/light.png#gh-light-mode-only)
 
 # MonteQ
 
